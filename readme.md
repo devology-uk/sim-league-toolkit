@@ -14,3 +14,6 @@ Currently, the kit supports the following games. Development is ongoing to add m
 - Assetto Corsa
 - Automobilista 2
 
+#### Project Status
+
+This project is in the early stages of development and is being updated daily.
