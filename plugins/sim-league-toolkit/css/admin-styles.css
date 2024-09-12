@@ -84,3 +84,19 @@ fieldset {
     border: solid 1px #b6b5b5;
     padding: .5rem;
 }
+
+.sltk-user-profile-extension {
+    margin-top: 2rem;
+    border: solid grey 1px;
+    border-radius: 1rem;
+    padding: .5rem;
+}
+
+.sltk-user-profile-extension header {
+    display: flex;
+    align-items: baseline;
+}
+
+.sltk-user-profile-extension header h3 {
+    margin-left: 1rem;
+}

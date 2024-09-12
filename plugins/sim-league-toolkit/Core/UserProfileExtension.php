@@ -17,7 +17,12 @@
     private const string WORDPRESS_NONCE_PREFIX = 'update-user_';
     private const string XBOX_ID_FIELD_NAME = 'sltk-xbox-id';
 
-    public static function handleCustomFieldsError(): void {
+    /**
+     * Handles registered as a transient value during save of profile extensions
+     *
+     * @return void
+     */
+    public static function handleErrors(): void {
       if(empty($_GET[Constants::WORDPRESS_UPDATED_KEY])) {
         return;
       }
@@ -40,81 +45,105 @@
      * @return void
      */
     public static function init(): void {
-      add_action('show_user_profile', [self::class, 'renderCustomFields']);
-      add_action('edit_user_profile', [self::class, 'renderCustomFields']);
+      add_action('show_user_profile', [self::class, 'renderUserProfileExtension']);
+      add_action('edit_user_profile', [self::class, 'renderUserProfileExtension']);
       add_action('personal_options_update', [self::class, 'saveChanges']);
       add_action('edit_user_profile_update', [self::class, 'saveChanges']);
-      add_action('load-user-edit.php', [self::class, 'handleCustomFieldsError']);
-      add_action('load-profile.php', [self::class, 'handleCustomFieldsError']);
+      add_action('load-user-edit.php', [self::class, 'handleErrors']);
+      add_action('load-profile.php', [self::class, 'handleErrors']);
     }
 
-    public static function renderCustomFields(WP_User $user): void {
+    public static function renderUserProfileExtension(WP_User $user): void {
       $userData = get_user_meta($user->ID);
       $currentRaceNumber = (int)($userData[UserMetaKeys::RACE_NUMBER][0] ?? 0);
 
       ?>
-      <h3><?= esc_html__('Sim League Toolkit', 'sim-league-tool-kit') ?></h3>
-      <p><?= esc_html__('At least one of the following platform IDs must be provided.', 'sim-league-tool-kit') ?></p>
-      <table class='form-table'>
-        <tr>
-          <th scope='row'><?= esc_html__('Steam ID', 'sim-league-tool-kit') ?></th>
-          <td>
-            <input type='text' name='<?= self::STEAM_ID_FIELD_NAME ?>' id='<?= self::STEAM_ID_FIELD_NAME ?>'
-                   value='<?= $userData[UserMetaKeys::STEAM_ID][0] ?? '' ?>' />
-          </td>
-        </tr>
-        <tr>
-          <th scope='row'><?= esc_html__('PlayStation ID', 'sim-league-tool-kit') ?></th>
-          <td>
-            <input type='text' name='<?= self::PLAYSTATION_ID_FIELD_NAME ?>' id='<?= self::PLAYSTATION_ID_FIELD_NAME ?>'
-                   value='<?= $userData[UserMetaKeys::PLAYSTATION_ID][0] ?? '' ?>' />
-          </td>
-        </tr>
-        <tr>
-          <th scope='row'><?= esc_html__('XBox ID', 'sim-league-tool-kit') ?></th>
-          <td>
-            <input type='text' name='<?= self::XBOX_ID_FIELD_NAME ?>' id='<?= self::XBOX_ID_FIELD_NAME ?>'
-                   value='<?= $userData[UserMetaKeys::XBOX_ID][0] ?? '' ?>' />
-          </td>
-        </tr>
-        <tr>
-          <th scope='row'><?= esc_html__('Race Number', 'sim-league-tool-kit') ?></th>
-          <td>
-            <span><?= $currentRaceNumber ?></span>
-          </td>
-          <th scope='row'>Change To</th>
-          <td>
-            <select type='text' name='<?= self::RACE_NUMBER_FIELD_NAME ?>' id='<?= self::RACE_NUMBER_FIELD_NAME ?>'
-                    title='<?= esc_html__('Available race numbers', 'sim-league-tool-kit') ?>
+      <section class='sltk-user-profile-extension'>
+        <header>
+          <img src='<?= SLTK_PLUGIN_ROOT_URL . '/images/logo-small.png' ?>' alt='Sim Racing Toolkit logo' />
+          <h3><?= esc_html__('Sim League Toolkit', 'sim-league-tool-kit') ?></h3>
+        </header>
+        <p>
+          <?= esc_html__('This extension to the user profile is provided by Sim League Toolkit to capture settings that are needed for the plugin to provide full functionality. ', 'sim-league-tool-kit') ?>
+          <?= esc_html__('These settings are optional, however if your league runs events for games that run on Steam (PC), PlayStation or XBox then the relevant ID will be needed to support automated features like result import..', 'sim-league-tool-kit') ?>
+        </p>
+        <?php
+          if(is_admin()) {
+            ?>
+            <p><?= esc_html__('As an administrator you have the ability to override the selected race number.  If you use this feature and enter a race number that is already allocated to a member, their race number will be set to 0 (zero).', 'sim-league-tool-kit') ?></p>
+            <?php
+          }
+        ?>
+        <table class='form-table'>
+          <tr>
+            <th scope='row'><?= esc_html__('Steam ID', 'sim-league-tool-kit') ?></th>
+            <td>
+              <input type='text' name='<?= self::STEAM_ID_FIELD_NAME ?>' id='<?= self::STEAM_ID_FIELD_NAME ?>'
+                     value='<?= $userData[UserMetaKeys::STEAM_ID][0] ?? '' ?>' />
+            </td>
+          </tr>
+          <tr>
+            <th scope='row'><?= esc_html__('PlayStation ID', 'sim-league-tool-kit') ?></th>
+            <td>
+              <input type='text' name='<?= self::PLAYSTATION_ID_FIELD_NAME ?>'
+                     id='<?= self::PLAYSTATION_ID_FIELD_NAME ?>'
+                     value='<?= $userData[UserMetaKeys::PLAYSTATION_ID][0] ?? '' ?>' />
+            </td>
+          </tr>
+          <tr>
+            <th scope='row'><?= esc_html__('XBox ID', 'sim-league-tool-kit') ?></th>
+            <td>
+              <input type='text' name='<?= self::XBOX_ID_FIELD_NAME ?>' id='<?= self::XBOX_ID_FIELD_NAME ?>'
+                     value='<?= $userData[UserMetaKeys::XBOX_ID][0] ?? '' ?>' />
+            </td>
+          </tr>
+          <tr>
+            <th scope='row'><?= esc_html__('Race Number', 'sim-league-tool-kit') ?></th>
+            <td>
+              <span><?= $currentRaceNumber ?></span>
+            </td>
+            <th scope='row'>Change To</th>
+            <td>
+              <select type='text' name='<?= self::RACE_NUMBER_FIELD_NAME ?>' id='<?= self::RACE_NUMBER_FIELD_NAME ?>'
+                      title='<?= esc_html__('Available race numbers', 'sim-league-tool-kit') ?>
                                                                                                                       '>
-              <option value='0'><?= esc_html__('Select an available race number...', 'sim-league-tool-kit') ?></option>
-              <?php
-                $availableRaceNumbers = RaceNumber::listAvailable();
-                foreach($availableRaceNumbers as $raceNumber) {
-                  ?>
-                  <option value='<?= $raceNumber ?>' <?= selected($raceNumber, $currentRaceNumber, false) ?>><?= $raceNumber ?></option>
-                  <?php
-                }
-              ?>
-            </select>
-          </td>
-          <?php
-            if(is_admin()) {
-              ?>
-              <th scope='row'><?= esc_html__('Admin Race Number Override', 'sim-league-tool-kit') ?></th>
-              <td>
-                <input type='text' name='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
-                       id='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
-                       title='<?= esc_html__('WARNING: If the number allocated here is already in use the existing allocation will be set to 0.', 'sim-league-tool-kit') ?>' />
-              </td>
-              <?php
-            }
-          ?>
-        </tr>
-      </table>
+                <option value='0'><?= esc_html__('Select an available race number...', 'sim-league-tool-kit') ?></option>
+                <?php
+                  $availableRaceNumbers = RaceNumber::listAvailable();
+                  foreach($availableRaceNumbers as $raceNumber) {
+                    ?>
+                    <option value='<?= $raceNumber ?>' <?= selected($raceNumber, $currentRaceNumber, false) ?>><?= $raceNumber ?></option>
+                    <?php
+                  }
+                ?>
+              </select>
+            </td>
+            <?php
+              if(is_admin()) {
+                ?>
+                <th scope='row'><?= esc_html__('Admin Race Number Override', 'sim-league-tool-kit') ?></th>
+                <td>
+                  <input type='text' name='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
+                         id='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
+                         title='<?= esc_html__('WARNING: If the number allocated here is already in use the existing allocation will be set to 0.', 'sim-league-tool-kit') ?>' />
+                </td>
+                <?php
+              }
+            ?>
+          </tr>
+        </table>
+
+      </section>
       <?php
     }
 
+    /**
+     * Saves changes to profile extensions
+     *
+     * @param int $userId ID of user whose profile has just been saved
+     *
+     * @return void
+     */
     public static function saveChanges(int $userId): void {
       delete_transient(self::ERRORS_TRANSIENT_KEY);
 
@@ -146,10 +175,6 @@
       }
 
       $errors = [];
-
-      if(empty($steamId) && empty($playStationId) && empty($xboxId)) {
-        $errors[] = esc_html__('At least one of the platform ID fields is required for Sim League Toolkit to function properly.', 'sim-league-toolkit');
-      }
 
       if(!empty($steamId) && (!is_numeric($steamId) || mb_strlen($steamId) !== 17)) {
         $errors[] = esc_html__('Steam ID is not valid, it must be a 17 digit number without any prefix or suffix.', 'sim-league-toolkit');
