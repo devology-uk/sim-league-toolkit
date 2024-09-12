@@ -1,0 +1,86 @@
+.form-label {
+    font-weight: bold;
+    min-width: 100px;
+}
+
+.admin-table,
+.scoring-set-scores-table,
+.generate-config-table {
+    border-collapse: collapse;
+    min-width: 20rem;
+}
+
+.admin-table {
+    min-width: 10rem;
+}
+
+.admin-table,
+.admin-table th,
+.admin-table td,
+.scoring-set-scores-table,
+.scoring-set-scores-table th,
+.scoring-set-scores-table td,
+.generate-config-table,
+.generate-config-table th,
+.generate-config-table td {
+    border: 1px solid;
+    padding: 0.25rem;
+}
+
+.scoring-set-scores-table td {
+    text-align: center;
+}
+
+.admin-table th,
+.admin-table td,
+.generate-config-table th,
+.generate-config-table td {
+    text-align: left;
+}
+
+.donate-header {
+    border-color: goldenrod;
+    border-width: 2px;
+    border-style: solid;
+    padding: .75rem;
+    text-align: center;
+}
+
+.donate-header .donate-header-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+
+.donate-header .donate-header-buttons .donate-header-button {
+    margin: 1rem;
+}
+
+.form-field-20 {
+    width: 20rem;
+}
+
+legend {
+    font-weight: bolder;
+}
+
+.championship-builder-table th {
+    text-align: left;
+}
+
+.championship-builder-table td {
+    text-align: left;
+    padding-left: 1rem;
+}
+
+.trophy-icon-small {
+    height: 24px;
+    width: 24px;
+}
+
+fieldset {
+    margin-top: 1rem;
+    border: solid 1px #b6b5b5;
+    padding: .5rem;
+}

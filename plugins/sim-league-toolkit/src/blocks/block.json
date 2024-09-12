@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sim-league-toolkit/member-status",
+  "version": "1.0.0",
+  "title": "Member Status",
+  "category": "Sim Leauge Toolkit",
+  "icon": "generic",
+  "description": "Displays the status of the current league member",
+  "keywords": [
+    "user"
+  ],
+  "textdomain": "sim-league-toolkit",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file./edit.css",
+  "style": "file:./index.css",
+  "render": "file:./render.php",
+  "attributes": {},
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "variations": []
+}

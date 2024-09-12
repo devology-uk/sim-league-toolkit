@@ -1,0 +1,23 @@
+{
+  "name": "sim-leauge-toolkit",
+  "version": "1.0.0",
+  "main": "blocks/index.js",
+  "scripts": {
+    "start": "wp-scripts start",
+    "start:admin": "wp-scripts start src/admin/raceNumbers/raceNumbers.js"
+  },
+  "keywords": [],
+  "author": "Devology UK",
+  "license": "GPL-2.0-or-later",
+  "description": "A WordPress plugin providing custom blocks and admin pages for running a league for virtually any motor racing simulator or game.",
+  "private": true,
+  "devDependencies": {
+    "@wordpress/api-fetch": "^7.4.0",
+    "@wordpress/dom-ready": "^4.4.0",
+    "@wordpress/element": "^6.4.0",
+    "@wordpress/scripts": "^28.3.0"
+  },
+  "dependencies": {
+    "@wordpress/components": "^28.4.0"
+  }
+}

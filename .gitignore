@@ -1,0 +1,12 @@
+plugins/debug-log-manager
+plugins/plugin-check
+plugins/theme-check
+plugins/index.php
+themes/twenty*
+themes/index.php
+upgrade
+upgrade-temp-backup
+uploads
+/index.php
+node_modules
+
