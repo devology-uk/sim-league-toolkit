@@ -17,7 +17,7 @@
      */
     public function theActiveAllocationsTab(): void { ?>
       <a href='?page=<?= AdminPageSlugs::RACE_NUMBERS ?>'
-         class="nav-tab <?= empty($this->currentTab) ? 'nav-tab-active' : '' ?>">Active Allocations</a>
+         class="nav-tab <?= empty($this->currentTab) ? 'nav-tab-active' : '' ?>"><?= esc_html__('Allocations', 'sim-league-tool-kit') ?></a>
       <?php
     }
 
@@ -30,7 +30,7 @@
       $tabName = PreAllocationsTab::NAME;
       ?>
       <a href='?page=<?= AdminPageSlugs::RACE_NUMBERS ?>&tab=<?= $tabName ?>'
-         class="nav-tab <?= $this->currentTab === $tabName ? 'nav-tab-active' : '' ?>">Pre-Allocations</a>
+         class="nav-tab <?= $this->currentTab === $tabName ? 'nav-tab-active' : '' ?>"><?= esc_html__('Pre-Allocations', 'sim-league-tool-kit') ?></a>
       <?php
     }
 

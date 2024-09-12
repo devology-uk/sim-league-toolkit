@@ -18,10 +18,22 @@
     }
 
     /**
+     * @param int $userId
+     * @param int $raceNumber
+     *
+     * @return void
+     */
+    public static function allocate(int $userId, int $raceNumber): void {
+      self::reset($raceNumber);
+      update_user_meta($userId, UserMetaKeys::RACE_NUMBER, $raceNumber);
+    }
+
+    /**
      * @inheritDoc
      */
     public static function get(int $id): object|null {
       // TODO: Implement get() method.
+      return null;
     }
 
     /**
@@ -36,6 +48,7 @@
      */
     public function save(): bool {
       // TODO: Implement save() method.
+      return false;
     }
 
     /**

@@ -7,6 +7,7 @@
   use SLTK\Core\AdminPageSlugs;
   use SLTK\Core\Constants;
   use SLTK\Core\FieldNames;
+  use SLTK\Core\HtmlTagProvider;
   use SLTK\Core\QueryParamNames;
   use SLTK\Core\UrlBuilder;
   use SLTK\Domain\Game;
@@ -343,7 +344,7 @@
           $url = UrlBuilder::getAdminPageRelativeUrl(AdminPageSlugs::SERVER, $params);
           HtmlTagProvider::theRedirectScript($url, 2);
         }
-        public staticessMessage(esc_html__('The server was created successfully, please wait...', 'sim-league-toolkit'));
+        esc_html__('The server was created successfully, please wait...', 'sim-league-toolkit');
       }
     }
 

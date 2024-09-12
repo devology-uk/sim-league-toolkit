@@ -12,6 +12,7 @@
 
 .admin-table {
     min-width: 10rem;
+    margin-top: 1rem !important;
 }
 
 .admin-table,

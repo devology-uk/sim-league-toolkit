@@ -22,64 +22,38 @@
      */
     public function render(): void { ?>
       <div class='wrap'>
-        <!--        --><?php
-          //          if($this->controller->isEditing()) {
-          //            ?>
-        <!--            <p>--><?php //= esc_html__('Please note: If the race number you set here is already allocated the existing allocation will be set
-          //               to 0, resulting in that member receiving a game assigned number when they participate in events.', 'sim-league-tool-kit') ?>
-        <!--            </p>-->
-        <!--            <form method='post'>-->
-        <!--              --><?php
-          //                $this->controller->theEditHiddenFields();
-          //                $this->controller->theRaceNumberField();
-          //              ?>
-        <!--              <input type='submit' class='button button-small button-primary'-->
-        <!--                     value='--><?php //= esc_html__('Update', 'sim-league-tool-kit') ?><!--'-->
-        <!--                     style='margin-top: .125rem'>-->
-        <!--            </form>-->
-        <!--            --><?php
-          //          } else {
-          //            $this->controller->theEditCompletedMessage();
-          //            ?>
-        <!--            <p>-->
-        <!--              --><?php //= esc_html__('Below is the list of members who have an allocated race number. It is likely to be long so we recommend
-          //              using the search feature provided to find what you are looking for.', 'sim-league-tool-kit') ?>
-        <!--            </p>-->
-        <!---->
-        <!--            <h3>--><?php //= esc_html__('Search', 'sim-league-tool-kit') ?><!--</h3>-->
-        <!--            <p>-->
-        <!--              --><?php //= esc_html__('Enter some characters in the field below then click the Search button. The table below will be filtered
-          //              to show only rows where the Name columns contain the search term, the Steam ID starts with the search
-          //              term or the Race Number is an exact match.', 'sim-league-tool-kit') ?>
-        <!--            </p>-->
-        <!--            <form method='post'>-->
-        <!--              --><?php
-          //                $this->controller->theSearchHiddenFields();
-          //                $this->controller->theSearchTermField();
-          //              ?>
-        <!--              <input type='submit' class='button button-small button-primary'-->
-        <!--                     value='--><?php //= esc_html__('Search', 'sim-league-tool-kit') ?><!--'-->
-        <!--                     style='margin-top: .125rem'>-->
-        <!--            </form>-->
-        <!---->
-        <!--            <h2>--><?php //= esc_html__('Allocations', 'sim-league-tool-kit') ?><!--</h2>-->
-        <!--            <table class='admin-table'>-->
-        <!--              <thead>-->
-        <!--              <tr>-->
-        <!--                <th>--><?php //= esc_html__('First Name', 'sim-league-tool-kit') ?><!--</th>-->
-        <!--                <th>--><?php //= esc_html__('Last Name', 'sim-league-tool-kit') ?><!--</th>-->
-        <!--                <th>--><?php //= esc_html__('Username', 'sim-league-tool-kit') ?><!--</th>-->
-        <!--                <th>--><?php //= esc_html__('Race Number', 'sim-league-tool-kit') ?><!--</th>-->
-        <!--                <th></th>-->
-        <!--              </tr>-->
-        <!--              </thead>-->
-        <!--              <tbody>-->
-        <!--              --><?php //= $this->controller->theAllocationRows() ?>
-        <!--              </tbody>-->
-        <!--            </table>-->
-        <!--            --><?php
-          //          }
-          //        ?>
+        <p>
+          <?= esc_html__('The table below shows members who have been allocated a race number and what that number is. ', 'sim-league-tool-kit') ?>
+          <?= esc_html__('Use the form below to allocate or change a members race number. ', 'sim-league-tool-kit') ?>
+          <?= esc_html__('Be aware that allocating a race number that is already allocated will result in the original allocation being set to 0 (zero).', 'sim-league-tool-kit') ?>
+        </p>
+        <form method='post'>
+          <?php
+            $this->controller->theHiddenFields();
+          ?>
+          <table class='form-table'>
+            <?php
+              $this->controller->theMemberSelector();
+              $this->controller->theRaceNumberSelector();
+            ?>
+          </table>
+          <input type='submit' value='Allocate' class='button button-primary' />
+        </form>
+        
+        <table class='admin-table'>
+          <thead>
+          <tr>
+            <th><?= esc_html__('Member', 'sim-league-tool-kit') ?></th>
+            <th>#</th>
+          </tr>
+          </thead>
+          <tbody>
+          <?php
+            $this->controller->theAllocations();
+          ?>
+          </tbody>
+        </table>
+
       </div>
       <?php
     }
