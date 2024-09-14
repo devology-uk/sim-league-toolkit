@@ -10,7 +10,6 @@
    * Adds the top level menu for Sim League Toolkit
    */
   class MainAdminMenu implements AdminMenu {
-    private const string SUB_MENU_TITLE = 'General';
     private const string TOP_LEVEL_SLUG = AdminPageSlugs::HOME;
     private const string TOP_LEVEL_TITLE = 'Sim League Toolkit';
 
@@ -35,10 +34,11 @@
         1000
       );
 
+      $subMenuTitle = esc_html__('Overview', 'sim-league-toolkit');
       add_submenu_page(
         self::TOP_LEVEL_SLUG,
         self::TOP_LEVEL_TITLE,
-        self::SUB_MENU_TITLE,
+        $subMenuTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         self::TOP_LEVEL_SLUG,
         function() {

@@ -11,8 +11,6 @@
    */
   class GamesAdminMenu implements AdminMenu {
 
-    private const PAGE_TITLE = 'Games';
-
     /**
      * Adds the Games sub menu item to the custom admin menu for Sim League Toolkit
      *
@@ -21,10 +19,12 @@
      * @return string
      */
     public function init(string|null $parentSlug = null): string {
+      $pageTitle = esc_html__('Games', 'sim-league-toolkit');
+      
       add_submenu_page(
         $parentSlug,
-        self::PAGE_TITLE,
-        self::PAGE_TITLE,
+        $pageTitle,
+        $pageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::GAMES,
         function() {

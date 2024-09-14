@@ -10,16 +10,16 @@
    * Adds the Race Numbers sub menu item to the custom admin menu for Sim League Toolkit
    */
   class RaceNumbersMenu implements AdminMenu {
-    private const string PAGE_TITLE = 'Race Numbers';
 
     /**
      * @inheritDoc
      */
     public function init(?string $parentSlug = null): string {
+      $pageTitle = esc_html__('Race Numbers', 'sim-league-toolkit');
       add_submenu_page(
         $parentSlug,
-        self::PAGE_TITLE,
-        self::PAGE_TITLE,
+        $pageTitle,
+        $pageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::RACE_NUMBERS,
         function() {

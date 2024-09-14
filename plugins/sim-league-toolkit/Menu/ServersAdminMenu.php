@@ -8,18 +8,17 @@
   use SLTK\Pages\Server\ServersAdminPage;
 
   class ServersAdminMenu implements AdminMenu {
-
-    private const string PAGE_TITLE = 'Servers';
-    private const string SERVER_PAGE_TITLE = 'Server';
-
     /**
      * @inheritDoc
      */
     public function init(string|null $parentSlug = null): string {
+      $pluralPateTitle = esc_html__('Servers', 'sim-league-toolkit');
+      $singlePageTitle = esc_html__('Server', 'sim-league-toolkit');
+
       add_submenu_page(
         $parentSlug,
-        self::PAGE_TITLE,
-        self::PAGE_TITLE,
+        $pluralPateTitle,
+        $pluralPateTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::SERVERS,
         function() {
@@ -29,8 +28,8 @@
 
       add_submenu_page(
         '',
-        self::SERVER_PAGE_TITLE,
-        self::SERVER_PAGE_TITLE,
+        $singlePageTitle,
+        $singlePageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::SERVER,
         function() {
