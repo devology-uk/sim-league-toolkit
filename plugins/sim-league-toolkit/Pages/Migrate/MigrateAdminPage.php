@@ -27,7 +27,7 @@
           <?= esc_html__('If you have all of this information from an existing league and have or can get that data in a CSV file, this tool allows you to import that file.', 'sim-league-toolkit') ?>
           <?= esc_html__('The data in the file will be used to update existing users or create new users.  Existing users will be matched by email address, which should be unique for each user.', 'sim-league-toolkit') ?>
         </p>
-        <h6><?= esc_html__('File Format', 'sim-league-toolkit') ?></h6>
+        <h4><?= esc_html__('File Format', 'sim-league-toolkit') ?></h4>
         <p><?= esc_html__('The CSV file must be in a specific format.  The first line must contain the following column names exactly as shown, in the order shown and separated by commas', 'sim-league-toolkit') ?></p>
         <ul>
           <li>Email</li>

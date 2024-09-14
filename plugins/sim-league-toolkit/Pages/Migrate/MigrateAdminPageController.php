@@ -195,6 +195,7 @@
       if(!empty($raceNumber)) {
         $userUpdate['meta_input'][UserMetaKeys::RACE_NUMBER] = (int)$raceNumber;
         $requiresUpdate = true;
+        RaceNumber::reset((int)$raceNumber);
       }
 
       $row[self::ROW_ERRORS_INDEX] = [];
@@ -237,6 +238,10 @@
         ]
       ];
 
+      if($raceNumber !== 0) {
+        RaceNumber::reset($raceNumber);
+      }
+      
       $row[self::ROW_ERRORS_INDEX] = [];
       $insertResult = wp_insert_user($userdata);
       if(is_wp_error($insertResult)) {
