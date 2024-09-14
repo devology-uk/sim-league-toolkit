@@ -63,13 +63,13 @@
     public function theRaceNumberSelector(): void { ?>
       <tr>
         <th scope='row'>
-          <?= esc_html__('Race Number', 'sim-league-tool-kit') ?>
+          <?= esc_html__('Race Number', 'sim-league-toolkit') ?>
         </th>
         <td>
           <select id='<?= self::RACE_NUMBER_FIELD_NAME ?>' name='<?= self::RACE_NUMBER_FIELD_NAME ?>'>
-            <option value=''><?= esc_html__('Please select...', 'sim-league-tool-kit') ?></option>
+            <option value=''><?= esc_html__('Please select...', 'sim-league-toolkit') ?></option>
             <?php
-              $raceNumbers = range(1, 99);
+              $raceNumbers = RaceNumber::getRange();
               foreach($raceNumbers as $raceNumber) {
                 ?>
                 <option value='<?= $raceNumber ?>'><?= $raceNumber ?></option>
@@ -107,7 +107,7 @@
       }
 
       RaceNumber::allocate($userId, $raceNumber);
-      HtmlTagProvider::theSuccessMessage(esc_html__('The race number was allocated successfully', 'sim-league-tool-kit'));#
+      HtmlTagProvider::theSuccessMessage(esc_html__('The race number was allocated successfully', 'sim-league-toolkit'));#
       $this->memberSelector->setValue(0);
     }
   }

@@ -17,6 +17,7 @@
       $adminMenuSlug = $adminMenu->init();
 
       (new GamesAdminMenu())->init($adminMenuSlug);
+      (new MigrateAdminMenu())->init($adminMenuSlug);
       (new RaceNumbersMenu())->init($adminMenuSlug);
       (new ServersAdminMenu())->init($adminMenuSlug);
 

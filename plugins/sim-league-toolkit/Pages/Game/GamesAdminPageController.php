@@ -2,12 +2,11 @@
 
   namespace SLTK\Pages\Game;
 
+  use SLTK\Core\HtmlTagProvider;
   use SLTK\Domain\Game;
   use SLTK\Pages\ControllerBase;
 
   class GamesAdminPageController extends ControllerBase {
-    private const string NONCE_ACTION = 'sltk-games-nonce-action';
-    private const string NONCE_NAME = 'sltk-games-nonce-name';
     private const string UNSUPPORTED_GAME_NAME_FIELD = 'sltk-unsupported-game-name';
 
     public function theGamesRows(): void {
@@ -58,6 +57,6 @@
       $siteTitle = get_bloginfo('name');
       $message = "A request has been submitted by {$siteTitle} to have support for {$requestedGame} added to SLTK.";
       wp_mail('playologyio@gmail.com', 'SLTK Game Request', $message);
-      HtmlTagProvider::theSuccessMessage(esc_html__('Your request to have support for ', 'sim-league-tool-kit') . $requestedGame . esc_html__(' added to Sim League Toolkit has been sent to the team.', 'sim-league-toolkit'));
+      HtmlTagProvider::theSuccessMessage(esc_html__('Your request to have support for ', 'sim-league-toolkit') . $requestedGame . esc_html__(' added to Sim League Toolkit has been sent to the team.', 'sim-league-toolkit'));
     }
   }

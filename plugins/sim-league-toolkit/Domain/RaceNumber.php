@@ -7,6 +7,8 @@
   use stdClass;
 
   class RaceNumber extends DomainBase {
+    public final const int MAXIMUM = 998;
+    public final const int MINIMUM = 1;
 
     public int $raceNumber = 0;
 
@@ -52,10 +54,32 @@
     }
 
     /**
+     * Gets an array containing the full range of race numbers supported
+     *
+     * @return int[]
+     */
+    public static function getRange(): array {
+      return range(self::MINIMUM, self::MAXIMUM);
+    }
+
+    /**
+     * Indicates whether a race number is within the valid range
+     *
+     * @param int $raceNumber
+     *
+     * @return bool
+     */
+    public static function isValid(int $raceNumber): bool {
+      return $raceNumber >= self::MINIMUM && $raceNumber <= self::MAXIMUM;
+    }
+
+    /**
+     * Provides collection of race numbers not allocated to a member
+     *
      * @return int[]
      */
     public static function listAvailable(): array {
-      $possibleNumbers = range(1, 99);
+      $possibleNumbers = self::getRange();
       $users = get_users(['fields' => 'ID']);
       $results = [];
 

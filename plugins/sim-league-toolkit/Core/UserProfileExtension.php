@@ -61,29 +61,29 @@
       <section class='sltk-user-profile-extension'>
         <header>
           <img src='<?= SLTK_PLUGIN_ROOT_URL . '/images/logo-small.png' ?>' alt='Sim Racing Toolkit logo' />
-          <h3><?= esc_html__('Sim League Toolkit', 'sim-league-tool-kit') ?></h3>
+          <h3><?= esc_html__('Sim League Toolkit', 'sim-league-toolkit') ?></h3>
         </header>
         <p>
-          <?= esc_html__('This extension to the user profile is provided by Sim League Toolkit to capture settings that are needed for the plugin to provide full functionality. ', 'sim-league-tool-kit') ?>
-          <?= esc_html__('These settings are optional, however if your league runs events for games that run on Steam (PC), PlayStation or XBox then the relevant ID will be needed to support automated features like result import..', 'sim-league-tool-kit') ?>
+          <?= esc_html__('This extension to the user profile is provided by Sim League Toolkit to capture settings that are needed for the plugin to provide full functionality. ', 'sim-league-toolkit') ?>
+          <?= esc_html__('These settings are optional, however if your league runs events for games that run on Steam (PC), PlayStation or XBox then the relevant ID will be needed to support automated features like result import..', 'sim-league-toolkit') ?>
         </p>
         <?php
           if(is_admin()) {
             ?>
-            <p><?= esc_html__('As an administrator you have the ability to override the selected race number.  If you use this feature and enter a race number that is already allocated to a member, their race number will be set to 0 (zero).', 'sim-league-tool-kit') ?></p>
+            <p><?= esc_html__('As an administrator you have the ability to override the selected race number.  If you use this feature and enter a race number that is already allocated to a member, their race number will be set to 0 (zero).', 'sim-league-toolkit') ?></p>
             <?php
           }
         ?>
         <table class='form-table'>
           <tr>
-            <th scope='row'><?= esc_html__('Steam ID', 'sim-league-tool-kit') ?></th>
+            <th scope='row'><?= esc_html__('Steam ID', 'sim-league-toolkit') ?></th>
             <td>
               <input type='text' name='<?= self::STEAM_ID_FIELD_NAME ?>' id='<?= self::STEAM_ID_FIELD_NAME ?>'
                      value='<?= $userData[UserMetaKeys::STEAM_ID][0] ?? '' ?>' />
             </td>
           </tr>
           <tr>
-            <th scope='row'><?= esc_html__('PlayStation ID', 'sim-league-tool-kit') ?></th>
+            <th scope='row'><?= esc_html__('PlayStation ID', 'sim-league-toolkit') ?></th>
             <td>
               <input type='text' name='<?= self::PLAYSTATION_ID_FIELD_NAME ?>'
                      id='<?= self::PLAYSTATION_ID_FIELD_NAME ?>'
@@ -91,23 +91,23 @@
             </td>
           </tr>
           <tr>
-            <th scope='row'><?= esc_html__('XBox ID', 'sim-league-tool-kit') ?></th>
+            <th scope='row'><?= esc_html__('XBox ID', 'sim-league-toolkit') ?></th>
             <td>
               <input type='text' name='<?= self::XBOX_ID_FIELD_NAME ?>' id='<?= self::XBOX_ID_FIELD_NAME ?>'
                      value='<?= $userData[UserMetaKeys::XBOX_ID][0] ?? '' ?>' />
             </td>
           </tr>
           <tr>
-            <th scope='row'><?= esc_html__('Race Number', 'sim-league-tool-kit') ?></th>
+            <th scope='row'><?= esc_html__('Race Number', 'sim-league-toolkit') ?></th>
             <td>
               <span><?= $currentRaceNumber ?></span>
             </td>
             <th scope='row'>Change To</th>
             <td>
               <select type='text' name='<?= self::RACE_NUMBER_FIELD_NAME ?>' id='<?= self::RACE_NUMBER_FIELD_NAME ?>'
-                      title='<?= esc_html__('Available race numbers', 'sim-league-tool-kit') ?>
+                      title='<?= esc_html__('Available race numbers', 'sim-league-toolkit') ?>
                                                                                                                       '>
-                <option value='0'><?= esc_html__('Select an available race number...', 'sim-league-tool-kit') ?></option>
+                <option value='0'><?= esc_html__('Select an available race number...', 'sim-league-toolkit') ?></option>
                 <?php
                   $availableRaceNumbers = RaceNumber::listAvailable();
                   foreach($availableRaceNumbers as $raceNumber) {
@@ -121,11 +121,12 @@
             <?php
               if(is_admin()) {
                 ?>
-                <th scope='row'><?= esc_html__('Admin Race Number Override', 'sim-league-tool-kit') ?></th>
+                <th scope='row'><?= esc_html__('Admin Race Number Override', 'sim-league-toolkit') ?></th>
                 <td>
                   <input type='text' name='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
                          id='<?= self::RACE_NUMBER_OVERRIDE_FIELD_NAME ?>'
-                         title='<?= esc_html__('WARNING: If the number allocated here is already in use the existing allocation will be set to 0.', 'sim-league-tool-kit') ?>' />
+                         title='<?= esc_html__('WARNING: If the number allocated here is already in use the existing allocation will be set to 0.', 'sim-league-toolkit') ?>'
+                         min='<?= RaceNumber::MINIMUM ?>' max='<?= RaceNumber::MAXIMUM ?>' />
                 </td>
                 <?php
               }

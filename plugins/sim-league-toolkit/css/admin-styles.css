@@ -101,3 +101,12 @@ fieldset {
 .sltk-user-profile-extension header h3 {
     margin-left: 1rem;
 }
+
+.sltk-migrate-form {
+    margin-top: 1rem;
+}
+
+.sltk-error-text {
+    font-size: .75rem;
+    color: red;
+}

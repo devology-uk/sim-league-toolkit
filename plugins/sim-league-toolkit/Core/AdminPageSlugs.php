@@ -6,9 +6,10 @@
    * Navigation slugs for admin pages
    */
   class AdminPageSlugs {
-    public const string GAMES = 'sltk-games';
-    public const string HOME = 'sltk-admin';
-    public const string RACE_NUMBERS = 'sltk-race-numbers';
-    public const string SERVER = 'sltk-server';
-    public const string SERVERS = 'sltk-servers';
+    public final const string GAMES = 'sltk-games';
+    public final const string HOME = 'sltk-admin';
+    public final const string MIGRATE = 'sltk-migrate';
+    public final const string RACE_NUMBERS = 'sltk-race-numbers';
+    public final const string SERVER = 'sltk-server';
+    public final const string SERVERS = 'sltk-servers';
   }
