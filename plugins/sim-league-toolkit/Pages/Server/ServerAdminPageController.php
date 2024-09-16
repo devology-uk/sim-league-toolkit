@@ -16,9 +16,6 @@
   use SLTK\Pages\Server\Settings\ServerSettingsProvider;
   use SLTK\Pages\Server\Settings\ServerSettingsProviderFactory;
 
-  /**
-   * Provides members to support the Server Admin page
-   */
   class ServerAdminPageController extends ControllerBase {
 
     private const string GAME_ID_FIELD_NAME = 'sltk-game-id';
@@ -40,27 +37,16 @@
     private Server $server;
     private ServerSettingsProvider $settingsProvider;
 
-    /**
-     * Creates a new instance of ServerAdminPageController
-     */
     public function __construct() {
       $this->gameSelectorComponent = new GameSelectorComponent();
       $this->platformSelectorComponent = new PlatformSelectorComponent();
       parent::__construct();
     }
 
-    /**
-     * @return bool Indicates whether the server settings section should be shown
-     */
     public function showSettings(): bool {
       return $this->server->id !== Constants::DEFAULT_ID;
     }
 
-    /**
-     * Renders a button for returning to the servers page
-     *
-     * @return void
-     */
     public function theBackButton(): void {
       $url = UrlBuilder::getAdminPageRelativeUrl(AdminPageSlugs::SERVERS);
       ?>
@@ -69,11 +55,6 @@
       <?php
     }
 
-    /**
-     * Renders a message guiding the user of next steps when editing an existing server
-     *
-     * @return void
-     */
     public function theExistingServerMessage(): void {
       if($this->action !== Constants::ACTION_EDIT) {
         return;
@@ -85,10 +66,6 @@
       <?php
     }
 
-    /**
-     * Renders the component for selecting a game.
-     * @return void
-     */
     public function theGameSelector(): void {
       ?>
       <tr>
@@ -102,18 +79,10 @@
       <?php
     }
 
-    /**
-     * Renders the setting table using a game specific provider
-     */
     public function theGameSpecificSettings(): void {
       $this->settingsProvider->render();
     }
 
-    /**
-     * Renders a checkbox allowing the user to indicate whether the server is hosted with a game server provider
-     *
-     * @return void
-     */
     public function theIsHostedField(): void {
       if($this->server->gameId === Constants::DEFAULT_ID) {
         return;
@@ -133,11 +102,6 @@
       <?php
     }
 
-    /**
-     * Renders an input field for the name of the server
-     *
-     * @return void
-     */
     public function theNameField(): void {
       if($this->server->gameId === Constants::DEFAULT_ID) {
         return;
@@ -159,11 +123,6 @@
       <?php
     }
 
-    /**
-     * Renders a message guiding the user of next steps when creating a new server
-     *
-     * @return void
-     */
     public function theNewServerMessage(): void {
       if($this->action !== Constants::ACTION_ADD) {
         return;
@@ -191,10 +150,6 @@
       <?php
     }
 
-    /**
-     * Renders a button to save the server details
-     * @return void
-     */
     public function theSaveServerButton(): void {
       if($this->server->gameId === Constants::DEFAULT_ID) {
         return;
@@ -206,10 +161,6 @@
       <?php
     }
 
-    /**
-     * Renders a button to save the server settings
-     * @return void
-     */
     public function theSaveServerSettingsButton(): void {
       if($this->server->gameId === Constants::DEFAULT_ID) {
         return;
@@ -222,10 +173,6 @@
       <?php
     }
 
-    /**
-     * Render hidden fields for state and control of the server form
-     * @return void
-     */
     public function theServerHiddenFields(): void {
       wp_nonce_field(self::SERVER_NONCE_ACTION, self::SERVER_NONCE_NAME);
       $this->theHiddenField(FieldNames::PAGE_ACTION, $this->action);
@@ -234,19 +181,12 @@
       $this->theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
-    /**
-     * Render hidden fields for state and control of the settings form
-     * @return void
-     */
     public function theSettingsHiddenFields(): void {
       wp_nonce_field(self::SETTINGS_NONCE_ACTION, self::SETTINGS_NONCE_NAME);
       $this->theHiddenField(FieldNames::ID, $this->id);
       $this->theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function handleGet(): void {
       $this->action = $this->getActionFromUrl();
 
@@ -264,9 +204,6 @@
       $this->server = new Server();
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function handlePost(): void {
       $this->action = $this->getActionFromPost();
       $this->id = $this->getSanitisedFieldFromPost(FieldNames::ID, Constants::DEFAULT_ID);

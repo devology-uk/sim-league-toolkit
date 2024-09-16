@@ -5,9 +5,6 @@
   use SLTK\Core\Constants;
   use SLTK\Domain\Member;
 
-  /**
-   * A form input for selecting a Member
-   */
   class MemberSelectorComponent implements FormFieldComponent {
     private const string FIELD_ID = 'sltk-member-selector';
 
@@ -15,11 +12,6 @@
     private int $currentValue = Constants::DEFAULT_ID;
     private bool $isDisabled = false;
 
-    /**
-     * Creates and instance of the MemberSelectorComponent
-     *
-     * @param MemberSelectorComponentConfig|null $config Configuration settings for the component
-     */
     public function __construct(MemberSelectorComponentConfig $config = null) {
       $this->config = $config ?? new MemberSelectorComponentConfig();
       $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
@@ -29,16 +21,10 @@
       }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getValue(): string {
       return $this->currentValue;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function render(): void {
 
       $members = Member::list();
@@ -65,9 +51,6 @@
       <?php
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setValue(string $value): void {
       $this->currentValue = $value;
       $this->isDisabled = $this->config->disableOnSetValue;

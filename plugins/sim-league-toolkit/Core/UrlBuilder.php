@@ -2,16 +2,13 @@
 
   namespace SLTK\Core;
 
-  /**
-   * Utility for building urls to pages within the admin app
-   */
   class UrlBuilder {
 
     /**
-     * @param string $pageSlug The slug of the target page
-     * @param array $params Associative array of url parameters names and values to include
+     * @param string $pageSlug
+     * @param array $params {name: string, value: mixed}
      *
-     * @return string Absolute url for the target page with query parameters
+     * @return string
      */
     public static function getAdminPageAbsoluteUrl(string $pageSlug, array $params = []): string {
       $url = get_admin_url() . 'admin.php?page=' . $pageSlug;
@@ -26,10 +23,10 @@
     }
 
     /**
-     * @param string $pageSlug The slug of the target page
-     * @param array $params Associative array of url parameter names and values to include
+     * @param string $pageSlug
+     * @param array $params {name: string, value: mixed}
      *
-     * @return string Relative url for the target page with query parameters
+     * @return string
      */
     public static function getAdminPageRelativeUrl(string $pageSlug, array $params = []): string {
       $url = '?page=' . $pageSlug;
@@ -44,8 +41,8 @@
     }
 
     /**
-     * @param string $slug The of the target page or view in the website
-     * @param array $params Associate array of url parameter names and values to include
+     * @param string $slug
+     * @param array $params {name: string, value: mixed}
      *
      * @return string Absolute url to a page or view in the website
      */

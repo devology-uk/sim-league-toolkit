@@ -2,18 +2,10 @@
 
   namespace SLTK\Api;
 
-  /**
-   * Handles registration of api endpoints for current page
-   */
   class ApiRegistrar {
 
     private const string API_NAMESPACE = 'sltk/v1';
 
-    /**
-     * Initialises the service
-     *
-     * @return void
-     */
     public static function init(): void {
       add_action('rest_api_init', [self::class, 'registerRoutes']);
     }

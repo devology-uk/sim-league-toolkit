@@ -6,18 +6,10 @@
   use WP_REST_Request;
   use WP_REST_Response;
 
-  /**
-   * Custom api handler for Race Numbers
-   */
   class RaceNumbersApiController extends ApiController {
     private const string RESOURCE_BASE = '/race-numbers';
     private array $schema;
 
-    /**
-     * @param WP_REST_Request $request The submitted request
-     *
-     * @return WP_REST_Response
-     */
     public function index(WP_REST_Request $request): WP_REST_Response {
       $raceNumbers = RaceNumber::list();
 
@@ -34,16 +26,10 @@
       return rest_ensure_response($responseData);
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function canExecute(): bool {
       return current_user_can('read');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function registerRoutes(): void {
       $this->registerListActiveRoute();
     }

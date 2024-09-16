@@ -3,7 +3,6 @@
   namespace SLTK\Domain;
 
   use SLTK\Core\UserMetaKeys;
-  use SLTK\Database\Repositories\RaceNumberRepository;
   use stdClass;
 
   class RaceNumber extends DomainBase {
@@ -42,7 +41,7 @@
      * @inheritDoc
      */
     public static function list(): array {
-      return RaceNumberRepository::listActiveAllocations();
+      return [];
     }
 
     /**
@@ -112,26 +111,5 @@
           update_user_meta($user->ID, UserMetaKeys::RACE_NUMBER, 0);
         }
       }
-    }
-
-    /**
-     * @return array Representation of properties as array for data transfer via rest api
-     */
-    public function toDto(): array {
-      $result = [
-        'userId'     => $this->id,
-        'raceNumber' => $this->raceNumber
-      ];
-
-      $userData = get_userdata($this->id);
-      $firstName = $userData->first_name;
-      $lastName = $userData->last_name;
-      $displayName = $userData->display_name;
-      if(!empty($displayName)) {
-        $displayName = $firstName . ' ' . $lastName;
-      }
-      $result['userDisplayName'] = trim($displayName);
-
-      return $result;
     }
   }

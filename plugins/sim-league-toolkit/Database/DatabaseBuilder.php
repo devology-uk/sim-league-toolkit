@@ -16,6 +16,8 @@
       self::$builders[] = new RaceNumbersTableBuilder();
       self::$builders[] = new ServersTableBuilder();
       self::$builders[] = new ServerSettingsTableBuilder();
+      self::$builders[] = new ScoringSetsTableBuilder();
+      self::$builders[] = new ScoringSetScoresTableBuilder();
     }
 
     /**

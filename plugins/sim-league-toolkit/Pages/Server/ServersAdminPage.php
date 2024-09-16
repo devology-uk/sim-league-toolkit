@@ -17,7 +17,7 @@
     public function render(): void {
       ?>
       <div class='wrap'>
-        <h3><?= esc_html__('servers', 'sim-league-toolkit') ?></h3>
+        <h3><?= esc_html__('Servers', 'sim-league-toolkit') ?></h3>
         <p>
           <?= esc_html__('A server in Sim League Toolkit is a representation of a game server and the configuration settings to use when when generating configuration files for an event.', 'sim-league-toolkit') ?>
           <?= esc_html__('Server settings are used as defaults for any event that uses the server.  They are copied to any event created for the same game and platform, but can be overridden at the event level.', 'sim-league-toolkit') ?>

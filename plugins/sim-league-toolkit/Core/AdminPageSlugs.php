@@ -2,9 +2,6 @@
 
   namespace SLTK\Core;
 
-  /**
-   * Navigation slugs for admin pages
-   */
   class AdminPageSlugs {
     public final const string GAMES = 'sltk-games';
     public final const string HOME = 'sltk-admin';

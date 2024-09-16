@@ -2,9 +2,6 @@
 
   namespace SLTK\Core;
 
-  /**
-   * Name constants for frequently used query parameters
-   */
   class QueryParamNames {
     public final const string ACTION = 'action';
     public final const string CHAMPIONSHIP_ID = 'championshipId';

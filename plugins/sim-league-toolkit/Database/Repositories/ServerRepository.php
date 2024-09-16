@@ -58,7 +58,7 @@
     }
 
     /**
-     * @return array Collection of all servers in the database
+     * @return Server[] Collection of all servers in the database
      */
     public static function list(): array {
       $queryResults = self::getResultsFromTable(TableNames::SERVERS);
