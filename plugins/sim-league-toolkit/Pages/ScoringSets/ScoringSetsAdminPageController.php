@@ -12,17 +12,7 @@
       $table->display();
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function handleGet(): void {
-      // TODO: Implement handleGet() method.
-    }
+    protected function handleGet(): void {}
 
-    /**
-     * @inheritDoc
-     */
-    protected function handlePost(): void {
-      // TODO: Implement handlePost() method.
-    }
+    protected function handlePost(): void {}
   }

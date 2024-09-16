@@ -62,7 +62,5 @@
       }
     }
 
-    protected function handlePost(): void {
-      // TODO: Implement handlePost() method.
-    }
+    protected function handlePost(): void {}
   }

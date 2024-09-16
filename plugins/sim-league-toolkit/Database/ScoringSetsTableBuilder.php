@@ -9,9 +9,7 @@
     /**
      * @inheritDoc
      */
-    public function applyAdjustments(string $tablePrefix): void {
-      // TODO: Implement applyAdjustments() method.
-    }
+    public function applyAdjustments(string $tablePrefix): void {}
 
     /**
      * @inheritDoc

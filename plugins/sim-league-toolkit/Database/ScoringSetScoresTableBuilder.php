@@ -6,16 +6,8 @@
 
   class ScoringSetScoresTableBuilder implements TableBuilder {
 
-    /**
-     * @inheritDoc
-     */
-    public function applyAdjustments(string $tablePrefix): void {
-      // TODO: Implement applyAdjustments() method.
-    }
+    public function applyAdjustments(string $tablePrefix): void {}
 
-    /**
-     * @inheritDoc
-     */
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
       $tableName = $this->tableName($tablePrefix);
       $parentTableName = $tablePrefix . TableNames::SCORING_SETS;
@@ -30,9 +22,6 @@
       ) {$charsetCollate};";
     }
 
-    /**
-     * @inheritDoc
-     */
     public function initialData(string $tablePrefix): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
@@ -257,9 +246,6 @@
       }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function tableName(string $tablePrefix): string {
       return $tablePrefix . TableNames::SCORING_SET_SCORES;
     }
