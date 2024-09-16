@@ -175,16 +175,16 @@
 
     public function theServerHiddenFields(): void {
       wp_nonce_field(self::SERVER_NONCE_ACTION, self::SERVER_NONCE_NAME);
-      $this->theHiddenField(FieldNames::PAGE_ACTION, $this->action);
-      $this->theHiddenField(FieldNames::ID, $this->id);
-      $this->theHiddenField(self::GAME_ID_FIELD_NAME, $this->server->gameId);
-      $this->theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
+      HtmlTagProvider::theHiddenField(FieldNames::PAGE_ACTION, $this->action);
+      HtmlTagProvider::theHiddenField(FieldNames::ID, $this->id);
+      HtmlTagProvider::theHiddenField(self::GAME_ID_FIELD_NAME, $this->server->gameId);
+      HtmlTagProvider::theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
     public function theSettingsHiddenFields(): void {
       wp_nonce_field(self::SETTINGS_NONCE_ACTION, self::SETTINGS_NONCE_NAME);
-      $this->theHiddenField(FieldNames::ID, $this->id);
-      $this->theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
+      HtmlTagProvider::theHiddenField(FieldNames::ID, $this->id);
+      HtmlTagProvider::theHiddenField(self::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
     protected function handleGet(): void {

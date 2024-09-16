@@ -44,6 +44,7 @@
      */
     public function save(): bool {
       // TODO: Implement save() method.
+      return true;
     }
 
     public function toTableItem(): array {
