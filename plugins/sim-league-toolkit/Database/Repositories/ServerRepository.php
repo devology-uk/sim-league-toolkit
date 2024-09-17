@@ -6,47 +6,22 @@
   use SLTK\Domain\Server;
   use SLTK\Domain\ServerSetting;
 
-  /**
-   * Provides access to the server related data in the database
-   */
   class ServerRepository extends RepositoryBase {
 
-    /**
-     * @param Server $server The server instance to be added
-     *
-     * @return int The id of the server assigned by the database
-     */
     public static function add(Server $server): int {
       return self::insert(TableNames::SERVERS, $server->toArray());
     }
 
-    /**
-     * Adds a setting for a server
-     *
-     * @param ServerSetting $setting The setting to be added
-     *
-     * @return int
-     */
     public static function addSetting(ServerSetting $setting): int {
       return self::insert(TableNames::SERVER_SETTINGS, $setting->toArray());
     }
 
-    /**
-     * @param int $id The id of a server to get
-     *
-     * @return Server Instance of server populated from database
-     */
     public static function getById(int $id): Server {
       $row = self::getRowById(TableNames::SERVERS, $id);
 
       return new Server($row);
     }
 
-    /**
-     * @param int $id The id of the target setting
-     *
-     * @return ServerSetting|null The target setting or null
-     */
     public static function getSettingById(int $id): ?ServerSetting {
       $row = self::getRowById(TableNames::SERVER_SETTINGS, $id);
 
@@ -67,9 +42,7 @@
     }
 
     /**
-     * @param int $serverId The id of the target server
-     *
-     * @return array Collection of server settings for the target server or empty array
+     * @return ServerSetting[] Collection of server settings for the target server or empty array
      */
     public static function listSettings(int $serverId): array {
       $filter = "serverId = {$serverId}";
@@ -82,13 +55,6 @@
       return self::mapServerSettings($queryResults);
     }
 
-    /**
-     * Saves changes to a server setting
-     *
-     * @param ServerSetting $setting The setting to be updated
-     *
-     * @return void
-     */
     public static function updateSetting(ServerSetting $setting): void {
       $existingSetting = self::getSettingById($setting->id);
 

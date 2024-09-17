@@ -28,7 +28,7 @@
       );
 
       add_submenu_page(
-        '',
+        '-',
         $singlePageTitle,
         $singlePageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,

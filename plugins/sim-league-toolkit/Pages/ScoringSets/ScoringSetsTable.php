@@ -14,9 +14,6 @@
                           AdminPageSlugs::SCORING_SET);
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getColumns(): array {
       return [
         'name'                => esc_html__('Name', 'sim-league-toolkit'),
@@ -26,16 +23,10 @@
       ];
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getHiddenColumns(): array {
       return [];
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getItems(): array {
       $scoringSets = ScoringSet::list();
 
@@ -48,9 +39,6 @@
       return $results;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getSortableColumns(): array {
       return array(
         'name' => ['name', true]

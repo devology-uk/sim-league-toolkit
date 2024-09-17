@@ -69,11 +69,11 @@
       $deleteUrl = UrlBuilder::getAdminPageRelativeUrl($_REQUEST['page'], $deleteParams);
 
       $actions = array(
-        Constants::ACTION_EDIT   => sprintf('<a href="%s">%s</a>', $editUrl, esc_html__('Edit', 'sim-league-toolkit')),
-        Constants::ACTION_DELETE => sprintf('<a href="%s">%s</a>', $deleteUrl, esc_html__('Delete', 'sim-league-toolkit')),
+        Constants::ACTION_EDIT   => '<a href="' . $editUrl . '">' . esc_html__('Edit', 'sim-league-toolkit') . '</a>',
+        Constants::ACTION_DELETE => '<a href="' . $deleteUrl . '">' . esc_html__('Delete', 'sim-league-toolkit') . '</a>',
       );
 
-      return sprintf('<a href="%s">%s</a>%s', $editUrl, $item['name'], $this->row_actions($actions, false));
+      return "<a href='{$editUrl}'>{$item['name']}</a>{$this->row_actions($actions, false)}";
     }
 
     /**
@@ -82,14 +82,14 @@
     protected abstract function getColumns(): array;
 
     /**
-     * @return array(name: string, hidden: bool)
+     * @return array{name: string, hidden: bool}
      */
     protected abstract function getHiddenColumns(): array;
 
     protected abstract function getItems(): array;
 
     /**
-     * @return array {name: string, title: string}
+     * @return array{name: string, title: string}
      */
     protected abstract function getSortableColumns(): array;
 

@@ -4,28 +4,50 @@
 
   class HtmlTagProvider {
 
-    public static function theAdminNumberInput(string $label, string $name, string $value, ?int $minValue = null, ?int $maxValue = null): void {
+    public static function theAdminNumberInput(string $label, string $name, string $value, string $error = '', ?int $minValue = null, ?int $maxValue = null): void {
       ?>
       <tr>
         <th scope='row'>
-          <label for='<?= $name ?>'><?= $label ?></label>
+          <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
         </th>
         <td>
           <input type='number' id='<?= $name ?>' name='<?= $name ?>'
                  value='<?= $value ?>' <?= isset($minValue) ? "min={$minValue}" : '' ?> <?= isset($maxValue) ? "min={$maxValue}" : '' ?>/>
+          <?php
+            self::theValidationError($error);
+          ?>
         </td>
       </tr>
       <?php
     }
 
-    public static function theAdminTextInput(string $label, string $name, string $value): void {
+    public static function theAdminTextArea(string $label, string $name, string $value, string $error = '', int $columns = 30, int $rows = 5): void {
+      ?>
+      <tr>
+        <th scope='row' class='va-top'>
+          <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
+        </th>
+        <td>
+          <textarea name='<?= $name ?>' cols='<?= $columns ?>' rows='<?= $rows ?>'><?= $value ?></textarea>
+          <?php
+            self::theValidationError($error);
+          ?>
+        </td>
+      </tr>
+      <?php
+    }
+
+    public static function theAdminTextInput(string $label, string $name, string $value, string $error = ''): void {
       ?>
       <tr>
         <th scope='row'>
-          <label for='<?= $name ?>'><?= $label ?></label>
+          <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
         </th>
         <td>
           <input type='text' id='<?= $name ?>' name='<?= $name ?>' value='<?= $value ?>' />
+          <?php
+            self::theValidationError($error);
+          ?>
         </td>
       </tr>
       <?php
@@ -115,5 +137,23 @@
         </p>
       </div>
       <?php
+    }
+
+    private static function errorLabel(string $error): string {
+      if(!empty($error)) {
+        return 'class="sltk-error-label"';
+      }
+
+      return '';
+    }
+
+    private static function theValidationError(string $error): void {
+      if(!empty($error)) {
+        ?>
+        <div class='sltk-error-text'>
+          <?= $error ?>
+        </div>
+        <?php
+      }
     }
   }

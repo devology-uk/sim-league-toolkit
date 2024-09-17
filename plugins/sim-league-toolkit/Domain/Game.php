@@ -23,15 +23,12 @@
       }
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function get(int $id): Game {
-      return GamesRepository::getGame($id);
+      return new Game(GamesRepository::getGame($id));
     }
 
     /**
-     * @inheritDoc
+     * @return Game[]
      */
     public static function list(): array {
       $queryResults = GamesRepository::listAll();
@@ -39,16 +36,11 @@
       return self::mapGames($queryResults);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function save(): bool {
       return false;
     }
 
     /**
-     * @param int $id The id of the target game
-     *
      * @return string The well known key for the target game
      */
     public static function getGameKey(int $id): string {

@@ -108,5 +108,13 @@ fieldset {
 
 .sltk-error-text {
     font-size: .75rem;
+}
+
+.sltk-error-label,
+.sltk-error-text {
     color: red;
+}
+
+.va-top {
+    vertical-align: top;
 }

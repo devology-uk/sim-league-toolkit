@@ -10,6 +10,11 @@
     protected final const string NONCE_ACTION = 'sltk-nonce-action';
     protected final const string NONCE_NAME = 'sltk-nonce';
 
+    /**
+     * @var string[]
+     */
+    protected array $errors = [];
+
     public function __construct() {
       if($this->isGetRequest()) {
         $this->handleGet();
@@ -20,6 +25,10 @@
 
     public function isLoggedIn(): bool {
       return is_user_logged_in();
+    }
+
+    protected function getError(string $key): string {
+      return $this->errors[$key] ?? '';
     }
 
     protected function getNotificationIdFromUrl(): int {
