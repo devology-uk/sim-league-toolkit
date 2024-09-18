@@ -6,14 +6,8 @@
 
   class ScoringSetsTableBuilder implements TableBuilder {
 
-    /**
-     * @inheritDoc
-     */
     public function applyAdjustments(string $tablePrefix): void {}
 
-    /**
-     * @inheritDoc
-     */
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
       $tableName = $this->tableName($tablePrefix);
 
@@ -28,9 +22,6 @@
       ) {$charsetCollate};";
     }
 
-    /**
-     * @inheritDoc
-     */
     public function initialData(string $tablePrefix): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
@@ -45,21 +36,24 @@
         ],
         [
           'name'                => BuiltinScoringSetNames::F1_SPRINT,
-          'description'         => esc_html__('The scoring system used by Formula 1 for Sprint races', 'sim-league-toolkit'),
+          'description'         => esc_html__('The scoring system used by Formula 1 for Sprint races',
+                                              'sim-league-toolkit'),
           'pointsForFastestLap' => 0,
           'pointsForPole'       => 0,
           'pointsForFinishing'  => 0,
         ],
         [
           'name'                => BuiltinScoringSetNames::WEC,
-          'description'         => esc_html__('The scoring system used for World Endurance Championship races', 'sim-league-toolkit'),
+          'description'         => esc_html__('The scoring system used for World Endurance Championship races',
+                                              'sim-league-toolkit'),
           'pointsForFastestLap' => 0,
           'pointsForPole'       => 1,
           'pointsForFinishing'  => 0,
         ],
         [
           'name'                => BuiltinScoringSetNames::GT_WORLD_CHALLENGE,
-          'description'         => esc_html__('The scoring system used for GT World Challenge races', 'sim-league-toolkit'),
+          'description'         => esc_html__('The scoring system used for GT World Challenge races',
+                                              'sim-league-toolkit'),
           'pointsForFastestLap' => 0,
           'pointsForPole'       => 1,
           'pointsForFinishing'  => 0,
@@ -82,9 +76,6 @@
       }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function tableName(string $tablePrefix): string {
       return $tablePrefix . TableNames::SCORING_SETS;
     }

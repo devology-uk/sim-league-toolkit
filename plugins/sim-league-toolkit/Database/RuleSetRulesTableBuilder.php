@@ -13,9 +13,9 @@
       return "CREATE TABLE {$tableName} (
         id bigint NOT NULL AUTO_INCREMENT,
         ruleSetId bigint NOT NULL,
-        rule tinytext NOT NULL,            
+        rule text NOT NULL,            
         PRIMARY KEY  (id),
-        FOREIGN KEY (ruleSetId) REFERENCES {$parentTableName}(id),
+        FOREIGN KEY (ruleSetId) REFERENCES {$parentTableName}(id)
       ) {$charsetCollate};";
     }
 

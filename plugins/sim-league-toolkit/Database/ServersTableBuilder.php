@@ -4,16 +4,8 @@
 
   class ServersTableBuilder implements TableBuilder {
 
-    /**
-     * @inheritDoc
-     */
-    public function applyAdjustments(string $tablePrefix): void {
-      // TODO: Implement applyAdjustments() method.
-    }
+    public function applyAdjustments(string $tablePrefix): void {}
 
-    /**
-     * @inheritDoc
-     */
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
       $serversTableName = $this->tableName($tablePrefix);
       $gamesTableName = $tablePrefix . TableNames::GAMES;
@@ -31,16 +23,8 @@
         ) {$charsetCollate};";
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function initialData(string $tablePrefix): void {
-      // TODO: Implement initialData() method.
-    }
+    public function initialData(string $tablePrefix): void {}
 
-    /**
-     * @inheritDoc
-     */
     public function tableName(string $tablePrefix): string {
       return $tablePrefix . TableNames::SERVERS;
     }

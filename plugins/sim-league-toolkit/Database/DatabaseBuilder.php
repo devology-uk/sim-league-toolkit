@@ -8,7 +8,6 @@
     public static function init(): void {
       self::$builders[] = new GamesTableBuilder();
       self::$builders[] = new PlatformsTableBuilder();
-      self::$builders[] = new RaceNumbersTableBuilder();
       self::$builders[] = new RuleSetsTableBuilder();
       self::$builders[] = new RuleSetRulesTableBuilder();
       self::$builders[] = new ServersTableBuilder();

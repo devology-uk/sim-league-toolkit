@@ -13,7 +13,7 @@
     protected static function deleteById(string $tableNameWithoutPrefix, int $id): void {
       global $wpdb;
 
-      $wpdb->delete(self::prefixedTableName($tableNameWithoutPrefix), array('id' => $id));
+      $wpdb->delete(self::prefixedTableName($tableNameWithoutPrefix), ['id' => $id]);
 
       self::throwIfError(esc_html__('Unexpected error deleting data from database.', 'sim-league-toolkit'));
     }
@@ -34,7 +34,7 @@
     }
 
     /**
-     * @param string|null $filter Optional WHERE express to filter rows
+     * @param string|null $filter Optional WHERE expression to filter rows
      *
      * @return int Count of rows that match the filter
      *
