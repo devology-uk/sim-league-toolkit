@@ -5,26 +5,20 @@
   class DatabaseBuilder {
     private static array $builders = [];
 
-    /**
-     * Initialises the database builder
-     *
-     * @return void
-     */
     public static function init(): void {
       self::$builders[] = new GamesTableBuilder();
       self::$builders[] = new PlatformsTableBuilder();
       self::$builders[] = new RaceNumbersTableBuilder();
+      self::$builders[] = new RuleSetsTableBuilder();
+      self::$builders[] = new RuleSetRulesTableBuilder();
       self::$builders[] = new ServersTableBuilder();
       self::$builders[] = new ServerSettingsTableBuilder();
       self::$builders[] = new ScoringSetsTableBuilder();
       self::$builders[] = new ScoringSetScoresTableBuilder();
+
+      self::$builders[] = new ChampionshipsTableBuilder();
     }
 
-    /**
-     * Creates or alters custom tables required by Sim League Toolkit during activation of the plugin
-     *
-     * @return void
-     */
     public static function initialiseOrUpdate(): void {
       global $wpdb;
       $tablePrefix = $wpdb->prefix;
@@ -32,7 +26,7 @@
 
       require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-      $tableScripts = array();
+      $tableScripts = [];
       foreach(self::$builders as $builder) {
         $tableScripts[] = $builder->definitionSql($tablePrefix, $charsetCollate);
       }
@@ -45,11 +39,6 @@
       }
     }
 
-    /**
-     * Removes database tables created by the plugin when the plugin is deleted
-     *
-     * @return void
-     */
     public static function uninstall(): void {
       global $wpdb;
       $tablePrefix = $wpdb->prefix;
