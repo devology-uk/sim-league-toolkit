@@ -16,7 +16,7 @@
       self::$builders[] = new ScoringSetsTableBuilder();
       self::$builders[] = new ScoringSetScoresTableBuilder();
 
-      self::$builders[] = new ChampionshipsTableBuilder();
+//      self::$builders[] = new ChampionshipsTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {
