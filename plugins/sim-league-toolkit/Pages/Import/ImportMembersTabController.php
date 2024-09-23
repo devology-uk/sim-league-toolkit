@@ -1,13 +1,13 @@
 <?php
 
-  namespace SLTK\Pages\Migrate;
+  namespace SLTK\Pages\Import;
 
   use SLTK\Core\HtmlTagProvider;
   use SLTK\Core\UserMetaKeys;
   use SLTK\Domain\RaceNumber;
   use SLTK\Pages\ControllerBase;
 
-  class MigrateAdminPageController extends ControllerBase {
+  class ImportMembersTabController extends ControllerBase {
     private const int ACTION_INDEX = 9;
     private const string EMAIL_HEADER = 'Email';
     private const int EMAIL_INDEX = 0;
@@ -29,11 +29,6 @@
     private const int XBOX_ID_INDEX = 6;
     private array $processedRows = [];
 
-    /**
-     * Renders a file input for selecting the file to be imported
-     *
-     * @return void
-     */
     public function theFileSelector(): void { ?>
       <input type='file' name='<?= self::IMPORT_FILE_FIELD_NAME ?>' accept='text/csv'
              title='<?= esc_html__('Select the file to be imported', 'sim-league-toolkit') ?>' />
@@ -44,11 +39,6 @@
       $this->theNonce();
     }
 
-    /**
-     * Renders a table of results
-     *
-     * @return void
-     */
     public function theResults(): void {
       if(count($this->processedRows) < 1) {
         return;
@@ -86,7 +76,8 @@
               <td><?= $row[self::RACE_NUMBER_INDEX] ?></td>
               <td><?php
                   $rowErrors = $row[self::ROW_ERRORS_INDEX] ?? [];
-                  echo count($rowErrors) > 0 ? '<span class="sltk-error-text">' . implode('<br />', $rowErrors) . '</span>' : '';
+                  echo count($rowErrors) > 0 ? '<span class="sltk-error-text">' . implode('<br />',
+                                                                                          $rowErrors) . '</span>' : '';
                 ?></td>
               <td><?= $row[self::ACTION_INDEX] ?></td>
             </tr>
@@ -98,27 +89,18 @@
       <?php
     }
 
-    /**
-     * Renders a link as a button to download the CSV template file
-     *
-     * @return void
-     */
     public function theTemplateLink(): void {
       ?>
       <a class='button button-secondary' href='<?= SLTK_PLUGIN_ROOT_URL . '/assets/migrate.csv' ?>'
          target='_blank'
-         title='<?= esc_html__('Download a template for the CSV file', 'sim-league-toolkit') ?>'><?= esc_html__('Download Template', 'sim-league-toolkit') ?></a>
+         title='<?= esc_html__('Download a template for the CSV file',
+                               'sim-league-toolkit') ?>'><?= esc_html__('Download Template',
+                                                                        'sim-league-toolkit') ?></a>
       <?php
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function handleGet(): void {}
 
-    /**
-     * @inheritDoc
-     */
     protected function handlePost(): void {
       if(!$this->validateNonce()) {
         return;
@@ -241,7 +223,7 @@
       if($raceNumber !== 0) {
         RaceNumber::reset($raceNumber);
       }
-      
+
       $row[self::ROW_ERRORS_INDEX] = [];
       $insertResult = wp_insert_user($userdata);
       if(is_wp_error($insertResult)) {
@@ -283,7 +265,8 @@
         || $headers[self::XBOX_ID_INDEX] !== self::XBOX_ID_HEADER
         || $headers[self::RACE_NUMBER_INDEX] !== self::RACE_NUMBER_HEADER
       ) {
-        HtmlTagProvider::theErrorMessage(esc_html__('The file is not in the correct format, please check the format of the file matches the specification shown.', 'sim-league-toolkit'));
+        HtmlTagProvider::theErrorMessage(esc_html__('The file is not in the correct format, please check the format of the file matches the specification shown.',
+                                                    'sim-league-toolkit'));
 
         return false;
       }
@@ -363,5 +346,4 @@
     private function validateXBoxId(mixed $xBoxId): bool {
       return empty($xBoxId) || (strlen($xBoxId) <= 12 || !is_numeric(substr($xBoxId, 0, 1)));
     }
-
   }

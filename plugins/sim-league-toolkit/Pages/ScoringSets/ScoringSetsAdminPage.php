@@ -18,7 +18,7 @@
     public function render(): void {
       ?>
       <div class='wrap'>
-        <h3><?= esc_html__('Scoring Sets', 'sim-league-toolkit') ?></h3>
+        <h1><?= esc_html__('Scoring Sets', 'sim-league-toolkit') ?></h1>
         <?php
           $this->controller->theTable();
         ?>

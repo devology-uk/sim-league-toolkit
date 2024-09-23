@@ -4,23 +4,24 @@
 
   use SLTK\Core\AdminPageSlugs;
   use SLTK\Core\Constants;
-  use SLTK\Pages\ScoringSets\ScoringSetAdminPage;
-  use SLTK\Pages\ScoringSets\ScoringSetsAdminPage;
+  use SLTK\Pages\Rules\RuleSetAdminPage;
+  use SLTK\Pages\Rules\RuleSetsAdminPage;
 
-  class ScoringSetsMenu implements AdminMenu {
+  class RuleSetsAdminMenu implements AdminMenu {
 
     public function init(?string $parentSlug = null): string {
-      $pluralPageTitle = esc_html__('Scoring Sets', 'sim-league-toolkit');
-      $singlePageTitle = esc_html__('Scoring Set', 'sim-league-toolkit');
+
+      $pluralPageTitle = esc_html__('Rule Sets', 'sim-league-toolkit');
+      $singlePageTitle = esc_html__('Rule Set', 'sim-league-toolkit');
 
       add_submenu_page(
         $parentSlug,
         $pluralPageTitle,
         $pluralPageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
-        AdminPageSlugs::SCORING_SETS,
+        AdminPageSlugs::RULE_SETS,
         function() {
-          (new ScoringSetsAdminPage())->render();
+          (new RuleSetsAdminPage())->render();
         }
       );
 
@@ -29,12 +30,12 @@
         $singlePageTitle,
         $singlePageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
-        AdminPageSlugs::SCORING_SET,
+        AdminPageSlugs::RULE_SET,
         function() {
-          (new ScoringSetAdminPage())->render();
+          (new RuleSetAdminPage())->render();
         }
       );
 
-      return AdminPageSlugs::SERVERS;
+      return AdminPageSlugs::RULE_SETS;
     }
   }

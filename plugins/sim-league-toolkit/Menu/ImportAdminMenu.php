@@ -4,18 +4,11 @@
 
   use SLTK\Core\AdminPageSlugs;
   use SLTK\Core\Constants;
-  use SLTK\Pages\Migrate\MigrateAdminPage;
+  use SLTK\Pages\Import\ImportAdminPage;
 
-  class MigrateAdminMenu implements AdminMenu {
-    /**
-     * Adds the Migrate sub menu item to the custom admin menu for Sim League Toolkit
-     *
-     * @param string|null $parentSlug
-     *
-     * @return string
-     */
+  class ImportAdminMenu implements AdminMenu {
     public function init(?string $parentSlug = null): string {
-      $pageTitle = esc_html__('Migrate', 'sim-league-toolkit');
+      $pageTitle = esc_html__('Import', 'sim-league-toolkit');
       add_submenu_page(
         $parentSlug,
         $pageTitle,
@@ -23,7 +16,7 @@
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::MIGRATE,
         function() {
-          (new MigrateAdminPage())->render();
+          (new ImportAdminPage())->render();
         }
       );
 

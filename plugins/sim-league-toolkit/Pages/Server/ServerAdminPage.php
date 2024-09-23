@@ -4,36 +4,23 @@
 
   use SLTK\Pages\AdminPage;
 
-  /**
-   * Renders a page for adding or editing a Server
-   */
   class ServerAdminPage implements AdminPage {
     private ServerAdminPageController $controller;
 
-    /**
-     * Creates a new instance of ServerAdminPage
-     */
     public function __construct() {
       $this->controller = new ServerAdminPageController();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function init(): void {
-      // TODO: Implement init() method.
-    }
+    public function init(): void {}
 
-    /**
-     * @inheritDoc
-     */
     public function render(): void {
       ?>
       <div class='wrap'>
-        <h2>Server</h2>
+        <h1>Server</h1>
         <p>
           <?php
-            echo esc_html__('Sim League Toolkit supports multiple games, the server configuration for each game is different.  ', 'sim-league-toolkit');
+            echo esc_html__('Sim League Toolkit supports multiple games, the server configuration for each game is different.  ',
+                            'sim-league-toolkit');
             $this->controller->theNewServerMessage();
             $this->controller->theExistingServerMessage();
           ?>

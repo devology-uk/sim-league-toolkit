@@ -8,9 +8,7 @@
   use SLTK\Pages\Server\ServersAdminPage;
 
   class ServersAdminMenu implements AdminMenu {
-    /**
-     * @inheritDoc
-     */
+
     public function init(string|null $parentSlug = null): string {
       $pluralPateTitle = esc_html__('Servers', 'sim-league-toolkit');
       $singlePageTitle = esc_html__('Server', 'sim-league-toolkit');

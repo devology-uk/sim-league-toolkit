@@ -15,7 +15,7 @@
     public function render(): void {
       ?>
       <div class='wrap'>
-        <h2><?= esc_html__('Scoring Set Details', 'sim-league-toolkit') ?></h2>
+        <h1><?= esc_html__('Scoring Set Details', 'sim-league-toolkit') ?></h1>
         <?php
           $this->controller->theInstructions();
         ?>
