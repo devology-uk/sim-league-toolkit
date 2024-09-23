@@ -1,25 +1,25 @@
 <?php
 
-  namespace SLTK\Menu;
+namespace SLTK\Menu;
 
-  use SLTK\Core\AdminPageSlugs;
-  use SLTK\Core\Constants;
-  use SLTK\Pages\Import\ImportAdminPage;
+use SLTK\Core\AdminPageSlugs;
+use SLTK\Core\Constants;
+use SLTK\Pages\Import\ImportAdminPage;
 
-  class ImportAdminMenu implements AdminMenu {
+class ImportAdminMenu implements AdminMenu {
     public function init(?string $parentSlug = null): string {
-      $pageTitle = esc_html__('Import', 'sim-league-toolkit');
-      add_submenu_page(
-        $parentSlug,
-        $pageTitle,
-        $pageTitle,
-        Constants::MANAGE_OPTIONS_PERMISSION,
-        AdminPageSlugs::MIGRATE,
-        function() {
-          (new ImportAdminPage())->render();
-        }
-      );
+        $pageTitle = esc_html__('Import', 'sim-league-toolkit');
+        add_submenu_page(
+            $parentSlug,
+            $pageTitle,
+            $pageTitle,
+            Constants::MANAGE_OPTIONS_PERMISSION,
+            AdminPageSlugs::IMPORT,
+            function () {
+                (new ImportAdminPage())->render();
+            }
+        );
 
-      return AdminPageSlugs::MIGRATE;
+        return AdminPageSlugs::IMPORT;
     }
-  }
+}

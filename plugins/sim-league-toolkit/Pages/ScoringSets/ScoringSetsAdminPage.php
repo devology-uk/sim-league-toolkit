@@ -1,28 +1,25 @@
 <?php
 
-  namespace SLTK\Pages\ScoringSets;
+namespace SLTK\Pages\ScoringSets;
 
-  use SLTK\Pages\AdminPage;
+use SLTK\Pages\AdminPage;
 
-  class ScoringSetsAdminPage implements AdminPage {
+class ScoringSetsAdminPage implements AdminPage {
 
     private ScoringSetsAdminPageController $controller;
 
     public function __construct() {
-      $this->controller = new ScoringSetsAdminPageController();
+        $this->controller = new ScoringSetsAdminPageController();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function render(): void {
-      ?>
-      <div class='wrap'>
-        <h1><?= esc_html__('Scoring Sets', 'sim-league-toolkit') ?></h1>
-        <?php
-          $this->controller->theTable();
         ?>
-      </div>
-      <?php
+        <div class='wrap'>
+            <h1><?= esc_html__('Scoring Sets', 'sim-league-toolkit') ?></h1>
+            <?php
+            $this->controller->theTable();
+            ?>
+        </div>
+        <?php
     }
-  }
+}
