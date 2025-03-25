@@ -60,7 +60,7 @@
                        'sim-league-toolkit') ?>
       </p>
       <p>
-        <?= esc_html__('The second data row provides only Email, Username, FirstName, LastName and RaceNumber.  If no user exists with this email address one will be created and the profile populated with the information from the other columns. SteamID, PlayStationId and XBoxID will be empty.  If a user exists with this email address the RaceNumber will be set on the user profile.  FirstName and LastName will be only be set on the existing user profile if they are currently empty.',
+        <?= esc_html__('The second data row provides only Email, Username, FirstName, LastName and RaceNumber.  If no user exists with this email address one will be created and the profile populated with the information from the other columns. SteamID, PlayStationId and XBoxID will be empty.  If a user exists with this email address the RaceNumber will be set on the user profile.  FirstName and LastName will only be set on the existing user profile if they are currently empty.',
                        'sim-league-toolkit') ?>
       </p>
       <p>
