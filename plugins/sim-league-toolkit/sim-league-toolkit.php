@@ -22,7 +22,7 @@
   define('SLTK_PLUGIN_DIR', plugin_dir_path(__FILE__));
   define('SLTK_PLUGIN_ROOT_URL', plugins_url('', __FILE__));
 
-  require_once(SLTK_PLUGIN_DIR . 'core\AutoLoader.php');
+  require_once(SLTK_PLUGIN_DIR . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php');
 
   AutoLoader::init();
 
