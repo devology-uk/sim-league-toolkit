@@ -21,7 +21,7 @@
     private int $pointsForPole = 0;
 
     public function __construct(stdClass $data = null) {
-      if($data != null) {
+      if ($data != null) {
         $this->id = $data->id;
         $this->description = $data->description ?? '';
         $this->name = $data->name ?? '';
@@ -33,7 +33,7 @@
 
     public static function get(int $id): ScoringSet|null {
       $result = ScoringSetRepository::getById($id);
-      if($result != null) {
+      if ($result != null) {
         return new ScoringSet($result);
       }
 
@@ -47,40 +47,6 @@
       $results = ScoringSetRepository::list();
 
       return self::mapScoringSets($results);
-    }
-
-    public function save(): bool {
-      try {
-        if($this->id == Constants::DEFAULT_ID) {
-          $this->id = ScoringSetRepository::add($this->toArray(false));
-        } else {
-          ScoringSetRepository::update($this->id, $this->toArray(false));
-        }
-      } catch(Exception) {
-        return false;
-      }
-
-      return true;
-    }
-
-    private static function mapScoringSetScores(array $queryResults): array {
-      $results = array();
-
-      foreach($queryResults as $item) {
-        $results[] = new ScoringSetScore($item);
-      }
-
-      return $results;
-    }
-
-    private static function mapScoringSets(array $queryResults): array {
-      $results = array();
-
-      foreach($queryResults as $item) {
-        $results[] = new ScoringSet($item);
-      }
-
-      return $results;
     }
 
     public function getDescription(): string {
@@ -131,34 +97,48 @@
       return self::mapScoringSetScores(ScoringSetRepository::listScores($this->id));
     }
 
+    public function save(): bool {
+      try {
+        if ($this->id == Constants::DEFAULT_ID) {
+          $this->id = ScoringSetRepository::add($this->toArray(false));
+        } else {
+          ScoringSetRepository::update($this->id, $this->toArray(false));
+        }
+      } catch (Exception) {
+        return false;
+      }
+
+      return true;
+    }
+
     public function saveScore(ScoringSetScore $score): bool {
       try {
         $existing = ScoringSetRepository::getScore($this->id, $score->getPosition());
-        if(isset($existing->id)) {
+        if (isset($existing->id)) {
           ScoringSetRepository::updateScore($existing->id, $score->toArray(false));
         } else {
           $score->id = ScoringSetRepository::addScore($score->toArray(false));
         }
 
         return true;
-      } catch(Exception) {
+      } catch (Exception) {
         return false;
       }
     }
 
     /**
-     * @return array{columnName: string, value: mixed}
+     * @return array{fieldName: string, value: mixed}
      */
     public function toArray(bool $includeId = true): array {
       $result = [
-        'name'                => $this->name,
-        'description'         => $this->description,
+        'name' => $this->name,
+        'description' => $this->description,
         'pointsForFastestLap' => $this->pointsForFastestLap,
-        'pointsForFinishing'  => $this->pointsForFinishing,
-        'pointsForPole'       => $this->pointsForPole,
+        'pointsForFinishing' => $this->pointsForFinishing,
+        'pointsForPole' => $this->pointsForPole,
       ];
 
-      if($includeId && $this->id != Constants::DEFAULT_ID) {
+      if ($includeId && $this->id != Constants::DEFAULT_ID) {
         $result['id'] = $this->id;
       }
 
@@ -170,26 +150,46 @@
      */
     public function toTableItem(): array {
       return [
-        'id'                  => $this->id,
-        'name'                => $this->name,
+        'id' => $this->id,
+        'name' => $this->name,
         'pointsForFastestLap' => $this->pointsForFastestLap,
-        'pointsForFinishing'  => $this->pointsForFinishing,
-        'pointsForPole'       => $this->pointsForPole,
+        'pointsForFinishing' => $this->pointsForFinishing,
+        'pointsForPole' => $this->pointsForPole,
       ];
     }
 
     public function validate(): ValidationResult {
       $result = new ValidationResult();
 
-      if(empty($this->name)) {
+      if (empty($this->name)) {
         $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
       }
 
-      if(empty($this->description)) {
+      if (empty($this->description)) {
         $result->addValidationError(self::DESCRIPTION_FIELD_NAME,
-                                    esc_html__('Description is required.', 'sim-league-toolkit'));
+          esc_html__('Description is required.', 'sim-league-toolkit'));
       }
 
       return $result;
+    }
+
+    private static function mapScoringSetScores(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new ScoringSetScore($item);
+      }
+
+      return $results;
+    }
+
+    private static function mapScoringSets(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new ScoringSet($item);
+      }
+
+      return $results;
     }
   }

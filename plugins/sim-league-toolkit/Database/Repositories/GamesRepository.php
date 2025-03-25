@@ -25,9 +25,6 @@
       return $row->name ?? '';
     }
 
-    /**
-     * @return stdClass[]
-     */
     public static function listAll(): array {
       return self::getResultsFromTable(TableNames::GAMES);
     }

@@ -3,7 +3,7 @@
   namespace SLTK\Core;
 
   class AutoLoader {
-    private const NAMESPACE_ROOT = 'SLTK';
+    private const string NAMESPACE_ROOT = 'SLTK';
 
     public static function init(): void {
       spl_autoload_register([self::class, 'load']);
