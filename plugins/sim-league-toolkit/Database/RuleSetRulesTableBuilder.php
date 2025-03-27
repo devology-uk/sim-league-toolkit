@@ -12,6 +12,7 @@
 
       return "CREATE TABLE {$tableName} (
         id bigint NOT NULL AUTO_INCREMENT,
+        ruleIndex tinytext NULL,
         ruleSetId bigint NOT NULL,
         rule text NOT NULL,            
         PRIMARY KEY  (id),

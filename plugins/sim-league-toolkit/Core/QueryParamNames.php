@@ -11,6 +11,7 @@
     public final const string NOTIFICATION_ID = 'notificationId';
     public final const string PENALTY_ID = 'penaltyId';
     public final const string RETURN = 'return';
+    public final const string RULE_ID = 'ruleId';
     public final const string SESSION_ID = 'sessionId';
     public final const string TAB = 'tab';
   }

@@ -22,6 +22,13 @@
       return self::insert(TableNames::RULE_SET_RULES, $rule);
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function deleteRule(int $ruleId): void {
+        self::deleteById(TableNames::RULE_SET_RULES, $ruleId);
+    }
+
     public static function getById(int $id): stdClass|null {
       return self::getRowById(TableNames::RULE_SETS, $id);
     }

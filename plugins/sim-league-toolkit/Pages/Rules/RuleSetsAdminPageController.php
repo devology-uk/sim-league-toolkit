@@ -3,7 +3,6 @@
   namespace SLTK\Pages\Rules;
 
   use SLTK\Pages\ControllerBase;
-  use SLTK\Pages\Rules\RuleSetsTable;
 
   class RuleSetsAdminPageController extends ControllerBase {
 

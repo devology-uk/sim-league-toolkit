@@ -9,8 +9,9 @@
 
   class RuleSet extends DomainBase implements TableItem, Validator {
     public final const string NAME_FIELD_NAME = 'sltk_name';
+    public final const string TYPE_CHAMPIONSHIP = 'Championship';
+    public final const string TYPE_EVENT = 'Event';
     public final const string TYPE_FIELD_NAME = 'sltk_type';
-
     private string $name = '';
     private string $type = '';
 
@@ -33,12 +34,35 @@
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getRuleById(int $ruleSetRuleId): RuleSetRule|null {
+      $result = RuleSetRepository::getRuleById($ruleSetRuleId);
+
+      if ($result != null) {
+        return new RuleSetRule($result);
+      }
+
+      return null;
+    }
+
+    /**
      * @return RuleSet[] Collection of all rule sets
      */
     public static function list(): array {
       $results = RuleSetRepository::list();
 
       return self::mapRuleSets($results);
+    }
+
+    public function deleteRule(int $ruleId): bool {
+      try {
+        RuleSetRepository::deleteRule($ruleId);
+
+        return true;
+      } catch (Exception) {
+        return false;
+      }
     }
 
     public function getName(): string {
@@ -72,11 +96,11 @@
         } else {
           RuleSetRepository::update($this->id, $this->toArray(false));
         }
+
+        return true;
       } catch (Exception) {
         return false;
       }
-
-      return true;
     }
 
     public function saveRule(RuleSetRule $rule): bool {
