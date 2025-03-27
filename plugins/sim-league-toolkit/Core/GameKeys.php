@@ -3,8 +3,9 @@
   namespace SLTK\Core;
 
   class GameKeys {
-    public const AssettoCorsa = 'AC';
-    public const AssettoCorsaCompetizione = 'ACC';
-    public const AssettoCorsaEvo = 'ACE';
-    public const AutoMobilista2 = 'AM2';
+    public final const string AssettoCorsa = 'AC';
+    public final const string AssettoCorsaCompetizione = 'ACC';
+    public final const string AssettoCorsaEvo = 'ACE';
+    public final const string AutoMobilista2 = 'AM2';
+    public final const string LeMansUltimate = 'LMU';
   }

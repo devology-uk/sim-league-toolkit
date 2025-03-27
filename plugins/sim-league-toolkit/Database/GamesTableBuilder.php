@@ -37,6 +37,12 @@
           'gameKey'              => GameKeys::AssettoCorsa,
           'latestVersion'        => '1.16.0',
           'supportsResultUpload' => false,
+        ],
+        [
+          'name'                 => 'Le Mans Ultimate',
+          'gameKey'              => GameKeys::LeMansUltimate,
+          'latestVersion'        => '1.4',
+          'supportsResultUpload' => false,
         ]
       ];
 
