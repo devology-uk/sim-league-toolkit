@@ -2,6 +2,8 @@
 
   namespace SLTK\Domain;
 
+  use SLTK\Components\GameSelectorComponent;
+  use SLTK\Components\PlatformSelectorComponent;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\GamesRepository;
   use SLTK\Database\Repositories\PlatformRepository;
@@ -9,6 +11,10 @@
   use stdClass;
 
   class Server extends DomainBase {
+    public final const string GAME_ID_FIELD_NAME = 'sltk-game-id';
+    public final const string GAME_KEY_FIELD_NAME = 'sltk-game-key';
+    public final const string IS_HOSTED_FIELD_NAME = 'sltk-server-is-hosted';
+    public final const string NAME_FIELD_NAME = 'sltk-server-name';
 
     public int $gameId = Constants::DEFAULT_ID;
     public bool $isHostedServer = false;
@@ -30,23 +36,14 @@
       }
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function get(int $id): Server {
       return ServerRepository::getById($id);
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function list(): array {
       return ServerRepository::list();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function save(): bool {
       if($this->id === Constants::DEFAULT_ID) {
         $this->id = ServerRepository::add($this);
@@ -55,34 +52,23 @@
       return $this->id !== Constants::DEFAULT_ID;
     }
 
-    /**
-     * @param string $settingName The name of the setting to add or update
-     * @param string $settingValue The value of the setting
-     *
-     * @return void
-     */
     public function applySetting(string $settingName, string $settingValue): void {
       $this->settings[$settingName] = $settingValue;
     }
 
-    /**
-     * @param string $settingName The name of the setting to get
-     *
-     * @return string|null The current value of the setting or null
-     */
     public function getSetting(string $settingName): ?string {
       return $this->settings[$settingName] ?? null;
     }
 
     /**
-     * @return array Collection of settings for this server
+     * @return ServerSetting[]
      */
     public function getSettings(): array {
       return $this->settings;
     }
 
     /**
-     * @return array Associative array of properties
+     * @return array{fieldName: string, value: mixed}
      */
     public function toArray(): array {
       return [
@@ -94,14 +80,7 @@
     }
 
     /**
-     * @return array Associative array of properties for transfer to client
-     */
-    public function toDto(): array {
-      return $this->toTableItem();
-    }
-
-    /**
-     * @return array Associative array of property for display in admin table
+     * @return array{columnName: string, value: mixed}
      */
     public function toTableItem(): array {
       return [
@@ -111,5 +90,26 @@
         'isHostedServer' => $this->isHostedServer ? 'Yes' : 'No',
         'platform'       => PlatformRepository::getName($this->platformId)
       ];
+    }
+
+
+    public function validate(): ValidationResult {
+      $result = new ValidationResult();
+
+      if ($this->gameId === Constants::DEFAULT_ID) {
+        $result->addValidationError(GameSelectorComponent::FIELD_ID,
+          esc_html__('You must select a game.', 'sim-league-toolkit'));
+      }
+
+      if (empty($this->name)) {
+        $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('A unique name is required.', 'sim-league-toolkit'));
+      }
+
+      if ($this->platformId === Constants::DEFAULT_ID) {
+        $result->addValidationError(PlatformSelectorComponent::FIELD_ID,
+          esc_html__('You must select a platform.', 'sim-league-toolkit'));
+      }
+
+      return $result;
     }
   }

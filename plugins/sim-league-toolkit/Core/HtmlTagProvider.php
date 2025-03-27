@@ -8,7 +8,7 @@
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
+                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
                 <input type='number' id='<?= $name ?>' name='<?= $name ?>'
@@ -25,7 +25,7 @@
       ?>
         <tr>
             <th scope='row' class='va-top'>
-                <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
+                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
                 <textarea id='<?= $name ?>' name='<?= $name ?>' cols='<?= $columns ?>' rows='<?= $rows ?>'><?= $value ?></textarea>
@@ -37,14 +37,14 @@
       <?php
     }
 
-    public static function theAdminTextInput(string $label, string $name, string $value, string $error = '', string $placeHolder = ''): void {
+    public static function theAdminTextInput(string $label, string $name, string $value, string $error = '', string $placeHolder = '', int $size = 30): void {
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $name ?>' <?= self::errorLabel($error) ?>><?= $label ?></label>
+                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
-                <input type='text' id='<?= $name ?>' name='<?= $name ?>' value='<?= $value ?>' placeholder='<?= $placeHolder ?>' />
+                <input type='text' id='<?= $name ?>' name='<?= $name ?>' value='<?= $value ?>' placeholder='<?= $placeHolder ?>' size='<?= $size ?>' />
               <?php
                 self::theValidationError($error);
               ?>
@@ -139,7 +139,7 @@
       <?php
     }
 
-    private static function errorLabel(string $error): string {
+    public static function errorLabelClass(string $error): string {
       if (!empty($error)) {
         return 'class="sltk-error-label"';
       }
@@ -147,7 +147,7 @@
       return '';
     }
 
-    private static function theValidationError(string $error): void {
+    public static function theValidationError(string $error): void {
       if (!empty($error)) {
         ?>
           <div class='sltk-error-text'>

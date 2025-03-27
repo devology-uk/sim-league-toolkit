@@ -6,7 +6,7 @@
   use SLTK\Domain\Game;
 
   class GameSelectorComponent implements FormFieldComponent {
-    private const string FIELD_ID = 'sltk-game-selector';
+    public final const string FIELD_ID = 'sltk-game-selector';
 
     private GameSelectorComponentConfig $config;
     private int $currentValue = Constants::DEFAULT_ID;

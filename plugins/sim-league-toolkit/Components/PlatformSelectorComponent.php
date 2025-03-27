@@ -6,7 +6,7 @@
   use SLTK\Database\Repositories\PlatformRepository;
 
   class PlatformSelectorComponent implements FormFieldComponent {
-    private const string FIELD_ID = 'sltk-platform-selector';
+    public final const string FIELD_ID = 'sltk-platform-selector';
     private PlatformSelectorComponentConfig $config;
     private int $currentValue = Constants::DEFAULT_ID;
     private bool $isDisabled = false;
