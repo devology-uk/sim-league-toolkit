@@ -29,6 +29,7 @@
                   <?= disabled($config->disabled, true, false) ?>
                   <?= $config->type === 'number' && isset($config->min) ? "min={$config->min}" : '' ?>
                   <?= $config->type === 'number' && isset($config->max) ? "max={$config->max}" : '' ?>
+                  <?= $config->type === 'number' && isset($config->step) ? "step={$config->step}" : '' ?>
                 />
               <?php
                 self::theValidationError($config->error);
@@ -38,14 +39,14 @@
       <?php
     }
 
-    public static function theAdminCheckboxInput(string $label, string $name, bool $isChecked, bool $isDisables = false): void {
+    public static function theAdminCheckboxInput(string $label, string $name, bool $isChecked, bool $isDisabled = false): void {
       ?>
         <tr>
             <th scope='row'>
                 <label for='<?= $name ?>' ><?= $label ?></label>
             </th>
             <td>
-                <input type='checkbox' id='<?= $name ?>' name='<?= $name ?>' <?= checked($isChecked, true, false)  ?>  <?= disabled($isChecked, true, false) ?> />
+                <input type='checkbox' id='<?= $name ?>' name='<?= $name ?>' <?= checked($isChecked, true, false)  ?>  <?= disabled($isDisabled, true, false) ?> />
             </td>
         </tr>
       <?php

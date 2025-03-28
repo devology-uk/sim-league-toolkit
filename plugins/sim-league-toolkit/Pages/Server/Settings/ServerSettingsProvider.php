@@ -22,6 +22,10 @@
 
     public abstract function save(): void;
 
+    public function canSave(): bool {
+      return true;
+    }
+
     protected function getError(string $key): string {
       return $this->errors[$key] ?? '';
     }

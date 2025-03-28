@@ -156,7 +156,7 @@
     }
 
     public function theSaveServerSettingsButton(): void {
-      if ($this->server->gameId === Constants::DEFAULT_ID) {
+      if ($this->server->gameId === Constants::DEFAULT_ID || !$this->settingsProvider->canSave()) {
         return;
       }
       ?>

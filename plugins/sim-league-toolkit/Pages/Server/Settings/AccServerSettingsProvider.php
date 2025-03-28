@@ -95,222 +95,129 @@
         <fieldset>
             <legend>settings.json <?= esc_html__('Settings', 'sim-league-toolkit') ?></legend>
             <table class='form-table'>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::SERVER_NAME_KEY ?>'><?= esc_html__('Server Name', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::SERVER_NAME_KEY);
-                      ?>
-                        <input type='text' id='<?= self::SERVER_NAME_KEY ?>'
-                               name='<?= self::SERVER_NAME_KEY ?>' value='<?= $settingValue ?? $this->server->name ?>'/>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::PASSWORD_KEY ?>'><?= esc_html__('Password', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::PASSWORD_KEY);
-                      ?>
-                        <input type='text' id='<?= self::PASSWORD_KEY ?>'
-                               name='<?= self::PASSWORD_KEY ?>' value='<?= $settingValue ?? '' ?>'/>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::ADMIN_PASSWORD_KEY ?>'><?= esc_html__('Admin Password', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::ADMIN_PASSWORD_KEY);
-                      ?>
-                        <input type='text' id='<?= self::ADMIN_PASSWORD_KEY ?>'
-                               name='<?= self::ADMIN_PASSWORD_KEY ?>' value='<?= $settingValue ?? '' ?>'/>
-                    </td>
-                </tr>
-                <tr>
-                  <?php
-                    $settingValue = $this->server->getSettingValue(self::SPECTATOR_PASSWORD_KEY);
-                    $validationError = $this->validationErrors[self::SPECTATOR_PASSWORD_KEY] ?? '';
-                  ?>
-                    <th scope='row'>
-                        <label for='<?= self::SPECTATOR_PASSWORD_KEY ?>'
-                               class='<?= empty($validationError) ? '' : 'error-message' ?>'><?= esc_html__('Spectator Password', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                        <input type='text' id='<?= self::SPECTATOR_PASSWORD_KEY ?>'
-                               name='<?= self::SPECTATOR_PASSWORD_KEY ?>'
-                               value='<?= $settingValue ?? '' ?>'/>
-                      <?php
-                        if (!empty($validationError)) {
-                          ?>
-                            <p class='small-text error-message'>
-                              <?= $validationError ?>
-                            </p>
-                          <?php
-                        }
-                      ?>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::TRACK_MEDALS_REQUIREMENT_KEY ?>'><?= esc_html__('Track Medals Requirement', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::TRACK_MEDALS_REQUIREMENT_KEY);
-                      ?>
-                        <input type='number' id='<?= self::TRACK_MEDALS_REQUIREMENT_KEY ?>'
-                               name='<?= self::TRACK_MEDALS_REQUIREMENT_KEY ?>' value='<?= $settingValue ?? 0 ?>'
-                               min='0'
-                               max='3' step='1'/>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::SAFETY_RATING_REQUIREMENT_KEY ?>'><?= esc_html__('Safety Rating Requirement', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::SAFETY_RATING_REQUIREMENT_KEY);
-                      ?>
-                        <input type='number' id='<?= self::SAFETY_RATING_REQUIREMENT_KEY ?>'
-                               name='<?= self::SAFETY_RATING_REQUIREMENT_KEY ?>' value='<?= $settingValue ?? -1 ?>'
-                               min='-1'
-                               max='99' step='1'/>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::RACE_CRAFT_REQUIREMENT_KEY ?>'><?= esc_html__('Race Craft Requirement', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::RACE_CRAFT_REQUIREMENT_KEY);
-                      ?>
-                        <input type='number' id='<?= self::RACE_CRAFT_REQUIREMENT_KEY ?>'
-                               name='<?= self::RACE_CRAFT_REQUIREMENT_KEY ?>' value='<?= $settingValue ?? -1 ?>'
-                               min='-1'
-                               max='99' step='1'/>
-                    </td>
-                </tr>
-                <tr>
-                  <?php
-                    $settingValue = $this->server->getSettingValue(self::MAX_CAR_SLOTS_KEY);
-                    $validationError = $this->validationErrors[self::MAX_CAR_SLOTS_KEY] ?? '';
-                  ?>
-                    <th scope='row'>
-                        <label for='<?= self::MAX_CAR_SLOTS_KEY ?>'
-                               class='<?= empty($validationError) ? '' : 'error-message' ?>'><?= esc_html__('Max Car Slots', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                        <input type='number' id='<?= self::MAX_CAR_SLOTS_KEY ?>'
-                               name='<?= self::MAX_CAR_SLOTS_KEY ?>' value='<?= $settingValue ?? 30 ?>' min='1'
-                               max='80' step='1'/>
-                      <?php
-                        if (!empty($validationError)) {
-                          ?>
-                            <p class='small-text error-message'>
-                              <?= $validationError ?>
-                            </p>
-                          <?php
-                        }
-                      ?>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::DUMP_LEADER_BOARDS_KEY ?>'><?= esc_html__('Dump Leader Boards', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::DUMP_LEADER_BOARDS_KEY) ?? true;
-                      ?>
-                        <input type='checkbox' id='<?= self::DUMP_LEADER_BOARDS_KEY ?>'
-                               name='<?= self::DUMP_LEADER_BOARDS_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::IS_RACE_LOCKED_KEY ?>'><?= esc_html__('Is Race Locked', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::IS_RACE_LOCKED_KEY) ?? false;
-                      ?>
-                        <input type='checkbox' id='<?= self::IS_RACE_LOCKED_KEY ?>'
-                               name='<?= self::IS_RACE_LOCKED_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY ?>'><?= esc_html__('Randomize Track When Empty', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY) ?? false;
-                      ?>
-                        <input type='checkbox' id='<?= self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY ?>'
-                               name='<?= self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::CENTRAL_ENTRY_LIST_PATH_KEY ?>'><?= esc_html__('Central Entry List Path', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::CENTRAL_ENTRY_LIST_PATH_KEY);
-                      ?>
-                        <input type='text' id='<?= self::CENTRAL_ENTRY_LIST_PATH_KEY ?>'
-                               name='<?= self::CENTRAL_ENTRY_LIST_PATH_KEY ?>' value='<?= $settingValue ?? '' ?>'/>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::ALLOW_AUTO_DQ_KEY ?>'><?= esc_html__('Allow Auto DQ', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::ALLOW_AUTO_DQ_KEY) ?? false;
-                      ?>
-                        <input type='checkbox' id='<?= self::ALLOW_AUTO_DQ_KEY ?>'
-                               name='<?= self::ALLOW_AUTO_DQ_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::SHORT_FORMATION_LAP_KEY ?>'><?= esc_html__('Short Formation Lap', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::SHORT_FORMATION_LAP_KEY) ?? false;
-                      ?>
-                        <input type='checkbox' id='<?= self::SHORT_FORMATION_LAP_KEY ?>'
-                               name='<?= self::SHORT_FORMATION_LAP_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::DUMP_ENTRY_LIST_KEY ?>'><?= esc_html__('Dump Entry List', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::DUMP_ENTRY_LIST_KEY) ?? true;
-                      ?>
-                        <input type='checkbox' id='<?= self::DUMP_ENTRY_LIST_KEY ?>'
-                               name='<?= self::DUMP_ENTRY_LIST_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
+                <?php
+
+                  $serverDisplayNameConfig = new HtmlTagProviderInputConfig(self::SERVER_NAME_KEY,
+                    esc_html__('Lobby Display Name', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::SERVER_NAME_KEY) ?? null,
+                    $this->getError(self::SERVER_NAME_KEY),
+                    esc_html__('Override default display name for server', 'sim-league-toolkit')
+                  );
+                  $serverDisplayNameConfig->size = 100;
+
+                  HtmlTagProvider::theAdminInputField($serverDisplayNameConfig);
+
+                  $passwordConfig = new HtmlTagProviderInputConfig(self::PASSWORD_KEY,
+                    esc_html__('Password', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::PASSWORD_KEY) ?? '',
+                    $this->getError(self::PASSWORD_KEY)
+                  );
+
+                  HtmlTagProvider::theAdminInputField($passwordConfig);
+
+                  $adminPasswordConfig = new HtmlTagProviderInputConfig(self::ADMIN_PASSWORD_KEY,
+                    esc_html__('Admin Password', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::ADMIN_PASSWORD_KEY) ?? '',
+                    $this->getError(self::ADMIN_PASSWORD_KEY)
+                  );
+
+                  HtmlTagProvider::theAdminInputField($adminPasswordConfig);
+
+                  $spectatorPasswordConfig = new HtmlTagProviderInputConfig(self::SPECTATOR_PASSWORD_KEY,
+                    esc_html__('Spectator Password', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::SPECTATOR_PASSWORD_KEY) ?? '',
+                    $this->getError(self::SPECTATOR_PASSWORD_KEY)
+                  );
+
+                  HtmlTagProvider::theAdminInputField($spectatorPasswordConfig);
+
+                  $trackMedalsRequirementConfig = new HtmlTagProviderInputConfig(self::TRACK_MEDALS_REQUIREMENT_KEY,
+                    esc_html__('Track Medals Requirement', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::TRACK_MEDALS_REQUIREMENT_KEY) ?? 0,
+                    $this->getError(self::TRACK_MEDALS_REQUIREMENT_KEY),
+                    type: 'number'
+                  );
+
+                  $trackMedalsRequirementConfig->min = 0;
+                  $trackMedalsRequirementConfig->max = 3;
+                  $trackMedalsRequirementConfig->step = 1;
+                  $trackMedalsRequirementConfig->size = 10;
+
+                  HtmlTagProvider::theAdminInputField($trackMedalsRequirementConfig);
+
+                  $safetyRatingRequirementConfig = new HtmlTagProviderInputConfig(self::SAFETY_RATING_REQUIREMENT_KEY,
+                    esc_html__('Safety Rating Requirement', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::SAFETY_RATING_REQUIREMENT_KEY) ?? -1,
+                    $this->getError(self::SAFETY_RATING_REQUIREMENT_KEY),
+                    type: 'number'
+                  );
+
+                  $safetyRatingRequirementConfig->min = -1;
+                  $safetyRatingRequirementConfig->max = 99;
+                  $safetyRatingRequirementConfig->step = 1;
+                  $safetyRatingRequirementConfig->size = 10;
+
+                  HtmlTagProvider::theAdminInputField($safetyRatingRequirementConfig);
+
+                  $raceCraftRequirementConfig = new HtmlTagProviderInputConfig(self::RACE_CRAFT_REQUIREMENT_KEY,
+                    esc_html__('Race Craft Requirement', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::RACE_CRAFT_REQUIREMENT_KEY) ?? -1,
+                    $this->getError(self::RACE_CRAFT_REQUIREMENT_KEY),
+                    type: 'number'
+                  );
+
+                  $raceCraftRequirementConfig->min = -1;
+                  $raceCraftRequirementConfig->max = 99;
+                  $raceCraftRequirementConfig->step = 1;
+                  $raceCraftRequirementConfig->size = 10;
+
+                  HtmlTagProvider::theAdminInputField($raceCraftRequirementConfig);
+
+                  $maxCarSlotsRequirementConfig = new HtmlTagProviderInputConfig(self::MAX_CAR_SLOTS_KEY,
+                    esc_html__('Max Car Slots', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::MAX_CAR_SLOTS_KEY) ?? 30,
+                    $this->getError(self::MAX_CAR_SLOTS_KEY),
+                    type: 'number'
+                  );
+
+                  $maxCarSlotsRequirementConfig->min = 1;
+                  $maxCarSlotsRequirementConfig->max = 80;
+                  $maxCarSlotsRequirementConfig->step = 1;
+                  $maxCarSlotsRequirementConfig->size = 10;
+
+                  HtmlTagProvider::theAdminInputField($maxCarSlotsRequirementConfig);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Dump Leader Boards', 'sim-league-toolkit'),
+                    self::DUMP_LEADER_BOARDS_KEY,
+                    $this->server->getSettingValue(self::DUMP_LEADER_BOARDS_KEY) ?? true);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Is Race Locked', 'sim-league-toolkit'),
+                    self::IS_RACE_LOCKED_KEY,
+                    $this->server->getSettingValue(self::IS_RACE_LOCKED_KEY) ?? false);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Randomize Track When Empty', 'sim-league-toolkit'),
+                    self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY,
+                    $this->server->getSettingValue(self::RANDOMIZE_TRACK_WHEN_EMPTY_KEY) ?? true);
+
+                  $centralEntryListPathConfig = new HtmlTagProviderInputConfig(self::CENTRAL_ENTRY_LIST_PATH_KEY,
+                    esc_html__('Central Entry List Path', 'sim-league-toolkit'),
+                    $this->server->getSettingValue(self::CENTRAL_ENTRY_LIST_PATH_KEY) ?? '',
+                    $this->getError(self::CENTRAL_ENTRY_LIST_PATH_KEY));
+                  $centralEntryListPathConfig->size = 100;
+                  HtmlTagProvider::theAdminInputField($centralEntryListPathConfig);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Allow Auto DQ', 'sim-league-toolkit'),
+                    self::ALLOW_AUTO_DQ_KEY,
+                    $this->server->getSettingValue(self::ALLOW_AUTO_DQ_KEY) ?? false);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Short Formation Lap', 'sim-league-toolkit'),
+                    self::SHORT_FORMATION_LAP_KEY,
+                    $this->server->getSettingValue(self::SHORT_FORMATION_LAP_KEY) ?? true);
+
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Dump Entry List', 'sim-league-toolkit'),
+                    self::DUMP_ENTRY_LIST_KEY,
+                    $this->server->getSettingValue(self::DUMP_ENTRY_LIST_KEY) ?? true);
+                ?>
                 <tr>
                     <th scope='row'>
                         <label for='<?= self::FORMATION_LAP_TYPE_KEY ?>'><?= esc_html__('Formation Lap Type', 'sim-league-toolkit') ?></label>
@@ -328,19 +235,11 @@
                         </select>
                     </td>
                 </tr>
-                <tr>
-                    <th scope='row'>
-                        <label for='<?= self::IGNORE_PREMATURE_DISCONNECTS_KEY ?>'><?= esc_html__('Ignore Premature Disconnects', 'sim-league-toolkit') ?></label>
-                    </th>
-                    <td>
-                      <?php
-                        $settingValue = $this->server->getSettingValue(self::IGNORE_PREMATURE_DISCONNECTS_KEY) ?? false;
-                      ?>
-                        <input type='checkbox' id='<?= self::IGNORE_PREMATURE_DISCONNECTS_KEY ?>'
-                               name='<?= self::IGNORE_PREMATURE_DISCONNECTS_KEY ?>'
-                          <?= checked($settingValue, true, false) ?> />
-                    </td>
-                </tr>
+                <?php
+                  HtmlTagProvider::theAdminCheckboxInput(esc_html__('Ignore Premature Disconnects', 'sim-league-toolkit'),
+                    self::IGNORE_PREMATURE_DISCONNECTS_KEY,
+                    $this->server->getSettingValue(self::IGNORE_PREMATURE_DISCONNECTS_KEY) ?? false);
+                ?>
             </table>
         </fieldset>
       <?php
