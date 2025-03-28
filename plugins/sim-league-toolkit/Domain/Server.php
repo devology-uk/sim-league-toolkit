@@ -53,11 +53,35 @@
     }
 
     public function applySetting(string $settingName, string $settingValue): void {
-      $this->settings[$settingName] = $settingValue;
+      $existing = $this->getSetting($settingName);
+      if($existing) {
+        $existing->settingValue = $settingValue;
+        return;
+      }
+
+      $newSetting = new ServerSetting();
+      $newSetting->serverId = $this->id;
+      $newSetting->settingName = $settingName;
+      $newSetting->settingValue = $settingValue;
+
+      $this->settings[] = $newSetting;
     }
 
-    public function getSetting(string $settingName): ?string {
-      return $this->settings[$settingName] ?? null;
+    public function getSettingValue(string $settingName): ?string {
+      $setting = $this->getSetting($settingName);
+
+      return $setting?->settingValue;
+    }
+
+
+
+    public function getSetting(string $settingName): ServerSetting|null {
+      foreach($this->settings as $setting) {
+        if($setting->settingName === $settingName) {
+          return $setting;
+        }
+      }
+      return null;
     }
 
     /**
@@ -65,6 +89,13 @@
      */
     public function getSettings(): array {
       return $this->settings;
+    }
+
+    public function saveSettings(): void {
+      $serverSettings = $this->getSettings();
+      foreach ($serverSettings as $setting) {
+        $setting->save();
+      }
     }
 
     /**

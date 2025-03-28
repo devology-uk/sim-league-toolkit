@@ -2,18 +2,25 @@
 
   namespace SLTK\Database\Repositories;
 
+  use Exception;
   use SLTK\Database\TableNames;
   use SLTK\Domain\Server;
   use SLTK\Domain\ServerSetting;
 
   class ServerRepository extends RepositoryBase {
 
+    /**
+     * @throws Exception
+     */
     public static function add(Server $server): int {
       return self::insert(TableNames::SERVERS, $server->toArray());
     }
 
+    /**
+     * @throws Exception
+     */
     public static function addSetting(ServerSetting $setting): int {
-      return self::insert(TableNames::SERVER_SETTINGS, $setting->toArray());
+      return self::insert(TableNames::SERVER_SETTINGS, $setting->toArray(false));
     }
 
     public static function getById(int $id): Server {
@@ -25,7 +32,7 @@
     public static function getSettingById(int $id): ?ServerSetting {
       $row = self::getRowById(TableNames::SERVER_SETTINGS, $id);
 
-      if(isset($row->id)) {
+      if (isset($row->id)) {
         return new ServerSetting($row);
       }
 
@@ -48,7 +55,7 @@
       $filter = "serverId = {$serverId}";
 
       $queryResults = self::getResultsFromTable(TableNames::SERVER_SETTINGS, $filter);
-      if(!count($queryResults)) {
+      if (!count($queryResults)) {
         return [];
       }
 
@@ -58,7 +65,7 @@
     public static function updateSetting(ServerSetting $setting): void {
       $existingSetting = self::getSettingById($setting->id);
 
-      if(!isset($existingSetting->id) || $existingSetting->settingValue === $setting->settingValue) {
+      if (!isset($existingSetting->id) || $existingSetting->settingValue === $setting->settingValue) {
         return;
       }
 
@@ -72,7 +79,7 @@
     private static function mapServerSettings(array $queryResults): array {
       $results = array();
 
-      foreach($queryResults as $item) {
+      foreach ($queryResults as $item) {
         $results[] = new ServerSetting($item);
       }
 
@@ -82,7 +89,7 @@
     private static function mapServers(array $queryResults): array {
       $results = array();
 
-      foreach($queryResults as $item) {
+      foreach ($queryResults as $item) {
         $results[] = new Server($item);
       }
 

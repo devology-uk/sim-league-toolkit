@@ -129,9 +129,9 @@
       ?>
         <tr>
             <th scope='row'>
-                <label  for='<?= PlatformSelectorComponent::FIELD_ID ?>'
-                    <?= HtmlTagProvider::errorLabelClass($error) ?>>
-                    <?= esc_html__('Platform', 'sim-league-toolkit') ?>
+                <label for='<?= PlatformSelectorComponent::FIELD_ID ?>'
+                  <?= HtmlTagProvider::errorLabelClass($error) ?>>
+                  <?= esc_html__('Platform', 'sim-league-toolkit') ?>
                 </label>
             </th>
             <td>
@@ -179,6 +179,12 @@
       wp_nonce_field(self::NONCE_ACTION, self::NONCE_NAME);
       HtmlTagProvider::theHiddenField(FieldNames::ID, $this->id);
       HtmlTagProvider::theHiddenField(Server::GAME_KEY_FIELD_NAME, $this->gameKey);
+    }
+
+    private function loadServer(): void {
+      $this->server = Server::get($this->id);
+      $this->gameSelectorComponent->setValue($this->server->gameId);
+      $this->platformSelectorComponent->setValue($this->server->platformId);
     }
 
     private function processGameSelection(): void {
@@ -238,9 +244,7 @@
 
       if ($this->action === Constants::ACTION_EDIT) {
         $this->id = (int)$this->getSanitisedFieldFromUrl(FieldNames::ID, Constants::DEFAULT_ID);
-        $this->server = Server::get($this->id);
-        $this->gameSelectorComponent->setValue($this->server->gameId);
-        $this->platformSelectorComponent->setValue($this->server->platformId);
+        $this->loadServer();
         $this->gameKey = Game::getGameKey($this->server->gameId);
         $this->settingsProvider = ServerSettingsProviderFactory::create($this->gameKey, $this->server);
 
@@ -270,7 +274,7 @@
         $this->server = new Server();
         $this->server->gameId = (int)$this->gameSelectorComponent->getValue();
       } else {
-        $this->server = Server::get($this->id);
+        $this->loadServer();
       }
 
       $this->settingsProvider = ServerSettingsProviderFactory::create($this->gameKey, $this->server);
