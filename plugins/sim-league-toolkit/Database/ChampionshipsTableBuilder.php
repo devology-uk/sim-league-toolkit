@@ -4,7 +4,11 @@
 
   class ChampionshipsTableBuilder implements TableBuilder {
 
-    public function applyAdjustments(string $tablePrefix): void {}
+    public function addConstraints(string $tablePrefix): void {
+    }
+
+    public function applyAdjustments(string $tablePrefix): void {
+    }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
       $tableName = $this->tableName($tablePrefix);
@@ -28,7 +32,8 @@
       ) {$charsetCollate};";
     }
 
-    public function initialData(string $tablePrefix): void {}
+    public function initialData(string $tablePrefix): void {
+    }
 
     public function tableName(string $tablePrefix): string {
       return TableNames::CHAMPIONSHIPS;

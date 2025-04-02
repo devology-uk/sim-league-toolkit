@@ -5,6 +5,7 @@
   class TableNames {
     public final const string CHAMPIONSHIPS = 'sltk_championships';
     public final const string GAMES = 'sltk_games';
+    public final const string GAME_PLATFORMS = 'sltk_game_platforms';
     public final const string PLATFORMS = 'sltk_platforms';
     public final const string RACE_NUMBERS = 'sltk_race_numbers';
     public final const string RULE_SETS = 'sltk_rule_sets';

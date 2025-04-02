@@ -3,17 +3,23 @@
   namespace SLTK\Database;
 
   class DatabaseBuilder {
+
+    /**
+     * var TableBuilder[]
+     */
     private static array $builders = [];
 
     public static function init(): void {
       self::$builders[] = new GamesTableBuilder();
       self::$builders[] = new PlatformsTableBuilder();
+      self::$builders[] = new GamePlatformsTableBuilder();
       self::$builders[] = new RuleSetsTableBuilder();
       self::$builders[] = new RuleSetRulesTableBuilder();
       self::$builders[] = new ServersTableBuilder();
       self::$builders[] = new ServerSettingsTableBuilder();
       self::$builders[] = new ScoringSetsTableBuilder();
       self::$builders[] = new ScoringSetScoresTableBuilder();
+
 
 //      self::$builders[] = new ChampionshipsTableBuilder();
     }
@@ -33,6 +39,7 @@
       dbDelta($tableScripts);
 
       foreach(self::$builders as $builder) {
+        $builder->addConstraints($tablePrefix);
         $builder->initialData($tablePrefix);
         $builder->applyAdjustments($tablePrefix);
       }

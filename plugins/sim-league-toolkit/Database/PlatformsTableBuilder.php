@@ -4,7 +4,11 @@
 
   class PlatformsTableBuilder implements TableBuilder {
 
-    public function applyAdjustments(string $tablePrefix): void {}
+    public function addConstraints(string $tablePrefix): void {
+    }
+
+    public function applyAdjustments(string $tablePrefix): void {
+    }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
 
@@ -22,23 +26,23 @@
     public function initialData(string $tablePrefix): void {
       $platforms = [
         [
-          'name'           => 'Steam',
+          'name' => 'Steam',
           'playerIdPrefix' => 'S',
-          'shortName'      => 'PC',
+          'shortName' => 'PC',
         ],
         [
-          'name'           => 'PlayStation',
+          'name' => 'PlayStation',
           'playerIdPrefix' => 'P',
-          'shortName'      => 'PS',
+          'shortName' => 'PS',
         ]
       ];
 
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
 
-      foreach($platforms as $platform) {
+      foreach ($platforms as $platform) {
         $existingId = $wpdb->get_var("SELECT id FROM {$tableName} WHERE shortName = '{$platform['shortName']}';");
-        if($existingId === null) {
+        if ($existingId === null) {
           $wpdb->insert($tableName, $platform);
         }
       }

@@ -6,7 +6,11 @@
 
   class GamesTableBuilder implements TableBuilder {
 
-    public function applyAdjustments(string $tablePrefix): void {}
+    public function addConstraints(string $tablePrefix): void {
+    }
+
+    public function applyAdjustments(string $tablePrefix): void {
+    }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
       $tableName = $this->tableName($tablePrefix);
@@ -27,29 +31,35 @@
 
       $data = [
         [
-          'name'                 => 'Assetto Corsa Competizione',
-          'gameKey'              => GameKeys::AssettoCorsaCompetizione,
-          'latestVersion'        => '1.10.2',
+          'name' => 'Assetto Corsa Competizione',
+          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'latestVersion' => '1.10.2',
           'supportsResultUpload' => true,
         ],
         [
-          'name'                 => 'Assetto Corsa',
-          'gameKey'              => GameKeys::AssettoCorsa,
-          'latestVersion'        => '1.16.0',
+          'name' => 'Assetto Corsa',
+          'gameKey' => GameKeys::AssettoCorsa,
+          'latestVersion' => '1.16.0',
           'supportsResultUpload' => false,
         ],
         [
-          'name'                 => 'Le Mans Ultimate',
-          'gameKey'              => GameKeys::LeMansUltimate,
-          'latestVersion'        => '1.4',
+          'name' => 'Le Mans Ultimate',
+          'gameKey' => GameKeys::LeMansUltimate,
+          'latestVersion' => '1.4',
+          'supportsResultUpload' => false,
+        ],
+        [
+          'name' => 'Automobilista 2',
+          'gameKey' => GameKeys::AutoMobilista2,
+          'latestVersion' => '1.6',
           'supportsResultUpload' => false,
         ]
       ];
 
-      foreach($data as $item) {
+      foreach ($data as $item) {
         $exists = $wpdb->get_var("SELECT COUNT(*) FROM {$tableName} WHERE gameKey = '{$item['gameKey']}';");
 
-        if(!$exists) {
+        if (!$exists) {
           $wpdb->insert($tableName, $item);
         }
       }

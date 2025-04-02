@@ -5,6 +5,8 @@
   interface TableBuilder {
     public function applyAdjustments(string $tablePrefix): void;
 
+    public function addConstraints(string $tablePrefix): void;
+
     public function definitionSql(string $tablePrefix, string $charsetCollate): string;
 
     public function initialData(string $tablePrefix): void;
