@@ -9,6 +9,7 @@
     public final const string FIELD_ID = 'sltk-platform-selector';
     private PlatformSelectorComponentConfig $config;
     private int $currentValue = Constants::DEFAULT_ID;
+    private int $gameId = Constants::DEFAULT_ID;
     private bool $isDisabled = false;
 
     public function __construct(PlatformSelectorComponentConfig $config = null) {
@@ -25,7 +26,7 @@
     }
 
     public function render(): void {
-      $platforms = PlatformRepository::listAll();
+      $platforms = PlatformRepository::listForGame($this->gameId);
 
       ?>
       <select id='<?= self::FIELD_ID ?>' name='<?= self::FIELD_ID ?>'
@@ -53,5 +54,9 @@
     public function setValue(string $value): void {
       $this->currentValue = $value;
       $this->isDisabled = $this->config->disableOnSetValue;
+    }
+
+    public function setGameId(int $gameId): void {
+        $this->gameId = $gameId;
     }
   }

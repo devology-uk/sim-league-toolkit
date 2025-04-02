@@ -185,6 +185,7 @@
       $this->server = Server::get($this->id);
       $this->gameSelectorComponent->setValue($this->server->gameId);
       $this->platformSelectorComponent->setValue($this->server->platformId);
+      $this->platformSelectorComponent->setGameId($this->server->gameId);
     }
 
     private function processGameSelection(): void {
@@ -195,6 +196,8 @@
         return;
       }
 
+
+      $this->platformSelectorComponent->setGameId($gameId);
       $this->server = new Server();
       $this->server->gameId = $gameId;
       $this->gameKey = Game::getGameKey($gameId);
