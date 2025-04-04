@@ -39,8 +39,7 @@
           }
         ?>
       >
-        <option value='<?= Constants::DEFAULT_ID ?>'><?= esc_html__('Please Select...', 'sim-league-toolkit') ?>.
-        </option>
+        <option value='<?= Constants::DEFAULT_ID ?>'><?= esc_html__('Please Select...', 'sim-league-toolkit') ?></option>
         <?php
           foreach($games as $game) { ?>
             <option value='<?= $game->id ?>' <?= selected($this->currentValue, $game->id, false) ?>><?= $game->name ?></option>
