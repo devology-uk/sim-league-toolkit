@@ -1,25 +1,30 @@
-barcelona,16,Barcelona,4655,Spain,ESP
-brands_hatch,9,Brands Hatch,3908,England,GBR-ENG
-cota,20,Circuit of the Americas,5513,USA,USA
-donington,12,Donington Park,4020,England,GBR-ENG
-hungaroring,14,Hungaroring,4381,Hungary,HUN
-imola,22,Imola,4959,Italy,ITA
-indianapolis,14,Indianapolis,4167,USA,USA
-kyalami,16,Kyalami,4522,South Africa,ZAF
-laguna_seca,11,Laguna Seca,33602,USA,USA
-misano,16,Misano,4226,Italy,ITA
-monza,11,Monza,5793,Italy,ITA
-mount_panorama,23,Mount Panorama,6213,Austrailia,AUT
-nurburgring,17,Nurburgring,5173,Germany,DEU
-oulton_park,17,Oulton Park,4307,England,GBR-ENG
-paul_ricard,13,Paul Ricard,5770,France,FRA
-silverstone,18,Silverstone,5891,England,GBR-ENG
-snetterton,12,Snetterton,4779,England,GBR-ENG
-spa,19,Spa Francorchamps,7004,Belgium,BEL
-suzuka,18,Suzuka,5807,Japan,JPN
-watkins_glen,11,Watkins Glen,5552,USA,USA
-zandvoort,14,Zandvoort,4252,Netherlands,NLD
-zolder,10,Zolder,4011,Belgium,BEL
-valencia,14,Valencia,4005,Spain,ESP
-red_bull_ring,10,Red Bull Ring,4318,Austria,AUT
-nurburgring_24h,170,24H Nurburgring,25300,Germany,DEU
+BAH,Bahrain,Bahrain International Circuit,Bahrain,BHR,26.0320946,50.510792
+BAR,Barcelona,Circuit de Barcelona,Spain,ESP,41.569617,2.257875
+BHA,Brands Hatch,Brands Hatch,England,GBR-ENG,51.356619,0.262247
+COTA,Circuit of the Americas,Circuit of the Americas,USA,USA,30.136039,-97.634468
+DON,Donington Park,Donington Park Circuit,England,GBR-ENG,52.830614,-1.374831
+HUN,Hungaroring,Hungaroring,Hungary,HUN,47.582284,19.251471
+IML,Imola,Autodromo Enzo e Dino Ferrari,Italy,ITA,44.342395,11.713122
+IND,Indianapolis,Indianapolis Motor Speedway,USA,USA,39.794840,-86.234573
+KYL,Kyalami,Kyalami Grand Prix Circuit,South Africa,ZAF,-25.997402,28.069076
+LAG,Laguna Seca,WeatherTech Raceway Laguna Seca,USA,USA,36.585999,-121.753974
+MIS,Misano,Misano World Circuit Marco Simoncelli,Italy,ITA,43.961691,12.683197
+MON,Monza,Autodromo Nazionale Monza,Italy,ITA,45.624191,9.28462
+BAT,Mount Panorama,Mount Panorama Motor Racing Circuit,Australia,AUT,-33.447317,149.55585
+NUR,Nürburgring,Nürburgring,Germany,DEU,50.332462,6.939407
+OUL,Oulton Park,Oulton Park Circuit,England,GBR-ENG,53.17835,-2.61698
+PRI,Paul Ricard,Circuit Paul Ricard,France,FRA,43.24983,5.796094
+SIL,Silverstone,Silverstone Circuit,England,GBR-ENG,52.07194,-1.0166871
+SNE,Snetterton,Snetterton Circuit,England,GBR-ENG,52.464906,0.947077
+SPA,Spa-Francorchamps,Circuit de Spa-Francorchamps,Belgium,BEL,50.43665,5.97111
+SUZ,Suzuka,Suzuka International Racing Course,Japan,JPN,34.845182,136.536831
+WAT,Watkins Glen,Watkins Glen International,USA,USA,42.33669,-76.92322
+ZAN,Zandvoort,Circuit Zandvoort,Netherlands,NLD,52.388068,4.545186
+ZOL,Zolder,Circuit Zolder,Belgium,BEL,50.99061,5.25762
+VAL,Valencia,Circuit Ricardo Tormo,Spain,ESP,39.485603,-0.630394
+RBR,Red Bull Ring,Red Bull Ring,Austria,AUT,47.22229,14.76168
+LMS,Le Mans,Le Mans,France,FRA,47.94393,0.20943
+FUJ,Fuji,Fuji International Speedway,Japan,JPN,35.37075,138.92710
+INT,Interlagos,Autódromo José Carlos Pace,Brazil,BRA,-23.702360,-46.697838
+POR,Portimão,Algarve International Circuit,Portugal,PRT,37.23176,-8.62899
+SEB,Sebring,Sebring International Raceway,USA,USA,27.45280,-81.34837

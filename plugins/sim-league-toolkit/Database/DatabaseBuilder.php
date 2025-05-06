@@ -20,6 +20,8 @@
       self::$builders[] = new ServerSettingsTableBuilder();
       self::$builders[] = new ScoringSetsTableBuilder();
       self::$builders[] = new ScoringSetScoresTableBuilder();
+      self::$builders[] = new TracksTableBuilder();
+      self::$builders[] = new TrackLayoutsTableBuilder();
 
 
 //      self::$builders[] = new ChampionshipsTableBuilder();
