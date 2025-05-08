@@ -35,6 +35,6 @@
         }
       );
 
-      return AdminPageSlugs::SERVERS;
+      return AdminPageSlugs::SCORING_SETS;
     }
   }

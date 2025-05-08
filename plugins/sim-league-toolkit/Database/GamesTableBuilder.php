@@ -21,6 +21,8 @@
         gameKey varchar(5) NOT NULL,
         latestVersion varchar(20) NOT NULL,
         supportsResultUpload bit NOT NULL DEFAULT 0,
+        published bit NOT NULL DEFAULT 0,
+        builtIn bit NOT NULL DEFAULT 1,
         PRIMARY KEY  (id)
       ) {$charsetCollate};";
     }
@@ -35,24 +37,40 @@
           'gameKey' => GameKeys::AssettoCorsaCompetizione,
           'latestVersion' => '1.10.2',
           'supportsResultUpload' => true,
+          'published' => true,
+          'builtIn' => true,
         ],
         [
           'name' => 'Assetto Corsa',
           'gameKey' => GameKeys::AssettoCorsa,
           'latestVersion' => '1.16.0',
           'supportsResultUpload' => false,
+          'published' => false,
+          'builtIn' => true,
         ],
         [
           'name' => 'Le Mans Ultimate',
           'gameKey' => GameKeys::LeMansUltimate,
           'latestVersion' => '1.4',
           'supportsResultUpload' => false,
+          'published' => false,
+          'builtIn' => true,
         ],
         [
           'name' => 'Automobilista 2',
           'gameKey' => GameKeys::AutoMobilista2,
           'latestVersion' => '1.6',
           'supportsResultUpload' => false,
+          'published' => false,
+          'builtIn' => true,
+        ],
+        [
+          'name' => 'F1 2025',
+          'gameKey' => GameKeys::F125,
+          'latestVersion' => '2025',
+          'supportsResultUpload' => false,
+          'published' => false,
+          'builtIn' => true,
         ]
       ];
 

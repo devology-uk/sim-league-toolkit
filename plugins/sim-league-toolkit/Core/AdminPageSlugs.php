@@ -3,6 +3,7 @@
   namespace SLTK\Core;
 
   class AdminPageSlugs {
+    public final const string GAME = 'sltk-game';
     public final const string GAMES = 'sltk-games';
     public final const string HOME = 'sltk-admin';
     public final const string IMPORT = 'sltk-import';

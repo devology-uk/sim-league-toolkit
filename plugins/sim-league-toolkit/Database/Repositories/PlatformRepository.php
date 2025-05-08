@@ -37,4 +37,24 @@
 
       return self::getResults($query);
     }
+
+    /**
+     * @return int[]
+     * @throws Exception
+     */
+    public static function listIdsForGame(int $gameId): array {
+      $gamePlatformsTableName = self::prefixedTableName(TableNames::GAME_PLATFORMS);
+
+      $query = "SELECT platformId
+                FROM {$gamePlatformsTableName}
+                WHERE gameId = {$gameId};";
+
+      $queryResults = self::getResults($query);
+
+      $results = [];
+      foreach ($queryResults as $row) {
+        $results[] = (int)$row->platformId;
+      }
+      return $results;
+    }
   }

@@ -12,6 +12,20 @@
       return '';
     }
 
+    public static function theAdminCheckboxInput(string $label, string $name, bool $isChecked, bool $isDisabled = false): void {
+      ?>
+        <tr>
+            <th scope='row'>
+                <label for='<?= $name ?>'><?= $label ?></label>
+            </th>
+            <td>
+                <input type='checkbox' id='<?= $name ?>'
+                       name='<?= $name ?>' <?= checked($isChecked, true, false) ?>  <?= disabled($isDisabled, true, false) ?> />
+            </td>
+        </tr>
+      <?php
+    }
+
     public static function theAdminInputField(HtmlTagProviderInputConfig $config): void {
       ?>
         <tr>
@@ -34,19 +48,6 @@
               <?php
                 self::theValidationError($config->error);
               ?>
-            </td>
-        </tr>
-      <?php
-    }
-
-    public static function theAdminCheckboxInput(string $label, string $name, bool $isChecked, bool $isDisabled = false): void {
-      ?>
-        <tr>
-            <th scope='row'>
-                <label for='<?= $name ?>' ><?= $label ?></label>
-            </th>
-            <td>
-                <input type='checkbox' id='<?= $name ?>' name='<?= $name ?>' <?= checked($isChecked, true, false)  ?>  <?= disabled($isDisabled, true, false) ?> />
             </td>
         </tr>
       <?php
@@ -86,7 +87,7 @@
       <?php
     }
 
-    public static function theAdminTextInput(string $label, string $name, string $value, string $error = '', string $placeHolder = '', int $size = 30): void {
+    public static function theAdminTextInput(string $label, string $name, string $value, string $error = '', string $placeHolder = '', int $size = 30, bool $isReadOnly = false): void {
       ?>
         <tr>
             <th scope='row'>
@@ -94,7 +95,7 @@
             </th>
             <td>
                 <input type='text' id='<?= $name ?>' name='<?= $name ?>' value='<?= $value ?>'
-                       placeholder='<?= $placeHolder ?>' size='<?= $size ?>'/>
+                       placeholder='<?= $placeHolder ?>' size='<?= $size ?>' <?= $isReadOnly ? 'readonly' : '' ?>/>
               <?php
                 self::theValidationError($error);
               ?>

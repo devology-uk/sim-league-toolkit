@@ -7,11 +7,11 @@
 
   class GamesRepository extends RepositoryBase {
 
-    public static function getGame(int $gameId): stdClass {
+    public static function getById(int $gameId): stdClass {
       return self::getRowById(TableNames::GAMES, $gameId);
     }
 
-    public static function getGameKey(int $gameId): string {
+    public static function getKey(int $gameId): string {
       $tableName = self::prefixedTableName(TableNames::GAMES);
 
       $query = "SELECT gameKey FROM {$tableName} WHERE id={$gameId};";
