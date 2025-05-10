@@ -7,13 +7,19 @@
 
   class GameCarClassesTab {
     private GameCarClassesTabController $controller;
-    private Game $game;
-    private bool $isReadOnly;
 
     public function __construct(Game $game, bool $isReadOnly) {
       $this->controller = new GameCarClassesTabController($game, $isReadOnly);
-      $this->isReadOnly = $isReadOnly;
     }
 
-    public function render(): void {}
+    public function render(): void {
+      ?>
+        <div class='wrap'>
+          <?php
+            $this->controller->theLeader();
+            $this->controller->theClasses();
+          ?>
+        </div>
+      <?php
+    }
   }

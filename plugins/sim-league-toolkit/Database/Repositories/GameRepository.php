@@ -5,7 +5,7 @@
   use SLTK\Database\TableNames;
   use stdClass;
 
-  class GamesRepository extends RepositoryBase {
+  class GameRepository extends RepositoryBase {
 
     public static function getById(int $gameId): stdClass {
       return self::getRowById(TableNames::GAMES, $gameId);

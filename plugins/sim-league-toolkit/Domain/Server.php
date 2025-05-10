@@ -5,7 +5,7 @@
   use SLTK\Components\GameSelectorComponent;
   use SLTK\Components\PlatformSelectorComponent;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\GamesRepository;
+  use SLTK\Database\Repositories\GameRepository;
   use SLTK\Database\Repositories\PlatformRepository;
   use SLTK\Database\Repositories\ServerRepository;
   use stdClass;
@@ -117,7 +117,7 @@
       return [
         'id'             => $this->id,
         'name'           => $this->name,
-        'game'           => GamesRepository::getName($this->gameId),
+        'game'           => GameRepository::getName($this->gameId),
         'isHostedServer' => $this->isHostedServer ? 'Yes' : 'No',
         'platform'       => PlatformRepository::getName($this->platformId)
       ];
