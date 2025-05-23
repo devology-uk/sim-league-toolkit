@@ -19,6 +19,8 @@
                <?php
                     $this->controller->theGeneralTab();
                     $this->controller->theCarClassesTab();
+                    $this->controller->theDriverCategoriesTab();
+                    $this->controller->theCarsTab();
                ?>
              </nav>
              <div class='tab-content'>

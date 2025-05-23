@@ -5,28 +5,24 @@
   use SLTK\Core\Constants;
   use stdClass;
 
-  class CarClass {
-    private string $displayName = '';
+  class DriverCategory {
     private int $gameId = Constants::DEFAULT_ID;
     private int $id = Constants::DEFAULT_ID;
     private string $name = '';
+    private string $plaque = '';
 
     public function __construct(stdClass $data = null) {
 
       if ($data !== null) {
         $this->gameId = $data->gameId;
         $this->name = $data->name;
-        $this->displayName = $data->displayName;
+        $this->plaque = $data->plaque;
 
         if (isset($data->id)) {
           $this->id = $data->id;
         }
       }
 
-    }
-
-    public function getDisplayName(): string {
-      return $this->displayName;
     }
 
     public function getGameId(): int {
@@ -41,11 +37,15 @@
       return $this->name;
     }
 
+    public function getPlaque(): string {
+      return $this->plaque;
+    }
+
     public function toArray(): array {
       $result = [
-        'displayName' => $this->displayName,
         'gameId' => $this->gameId,
         'name' => $this->name,
+        'plaque' => $this->plaque
       ];
 
       if ($this->id !== Constants::DEFAULT_ID) {

@@ -5,9 +5,6 @@
   use SLTK\Domain\RaceNumber;
   use WP_User;
 
-  /**
-   * Extends the user profile editing experience to capture properties that support Sim League Toolkit
-   */
   class UserProfileExtension {
     private const string ERRORS_TRANSIENT_KEY = 'sltk-profile-error-key';
     private const string PLAYSTATION_ID_FIELD_NAME = 'sltk-playstation-id';
@@ -17,11 +14,6 @@
     private const string WORDPRESS_NONCE_PREFIX = 'update-user_';
     private const string XBOX_ID_FIELD_NAME = 'sltk-xbox-id';
 
-    /**
-     * Handles registered as a transient value during save of profile extensions
-     *
-     * @return void
-     */
     public static function handleErrors(): void {
       if(empty($_GET[Constants::WORDPRESS_UPDATED_KEY])) {
         return;
@@ -39,11 +31,6 @@
       delete_transient(self::ERRORS_TRANSIENT_KEY);
     }
 
-    /**
-     * Initialises the extension to add custom fields to profile
-     *
-     * @return void
-     */
     public static function init(): void {
       add_action('show_user_profile', [self::class, 'renderUserProfileExtension']);
       add_action('edit_user_profile', [self::class, 'renderUserProfileExtension']);
@@ -60,7 +47,7 @@
       ?>
       <section class='sltk-user-profile-extension'>
         <header>
-          <img src='<?= SLTK_PLUGIN_ROOT_URL . '/images/logo-small.png' ?>' alt='Sim Racing Toolkit logo' />
+          <img src='<?= SLTK_PLUGIN_ROOT_URL . '/assets/images/logo-small.png' ?>' alt='Sim League Toolkit logo' />
           <h3><?= esc_html__('Sim League Toolkit', 'sim-league-toolkit') ?></h3>
         </header>
         <p>
@@ -138,13 +125,6 @@
       <?php
     }
 
-    /**
-     * Saves changes to profile extensions
-     *
-     * @param int $userId ID of user whose profile has just been saved
-     *
-     * @return void
-     */
     public static function saveChanges(int $userId): void {
       delete_transient(self::ERRORS_TRANSIENT_KEY);
 

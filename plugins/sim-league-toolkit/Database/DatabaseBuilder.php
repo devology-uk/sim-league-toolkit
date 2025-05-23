@@ -23,6 +23,8 @@
       self::$builders[] = new TracksTableBuilder();
       self::$builders[] = new TrackLayoutsTableBuilder();
       self::$builders[] = new CarClassTableBuilder();
+      self::$builders[] = new DriverCategoriesTableBuilder();
+      self::$builders[] = new CarsTableBuilder();
 
 
 //      self::$builders[] = new ChampionshipsTableBuilder();

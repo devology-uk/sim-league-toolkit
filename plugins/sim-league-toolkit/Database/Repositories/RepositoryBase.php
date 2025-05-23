@@ -75,8 +75,8 @@
     /**
      * @return stdClass[]
      */
-    protected static function getResultsFromTable(string $tableNameWithoutPrefix, string $filter = null): array {
-      $query = self::selectAllQuery($tableNameWithoutPrefix, $filter);
+    protected static function getResultsFromTable(string $tableNameWithoutPrefix, string $filter = null, string $sortBy = null): array {
+      $query = self::selectAllQuery($tableNameWithoutPrefix, $filter, $sortBy);
 
       return self::getResults($query);
     }
@@ -161,14 +161,21 @@
       }
     }
 
-    protected static function selectAllQuery(string $tableNameWithoutPrefix, string $filter = null): string {
+    protected static function selectAllQuery(string $tableNameWithoutPrefix, string $filter = null, string $sortBy = null, string $sortOrder = null): string {
       $tableName = self::prefixedTableName($tableNameWithoutPrefix);
       $query = "SELECT * FROM {$tableName}";
 
       if(isset($filter)) {
-        $query .= " WHERE {$filter};";
+        $query .= " WHERE {$filter}";
       }
 
+      if(isset($sortBy)) {
+        $query .= " ORDER BY {$sortBy} ";
+      }
+
+      if(isset($sortOrder)) {
+          $query .= $sortOrder;
+      }
       return $query . ';';
     }
 

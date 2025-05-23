@@ -4,17 +4,22 @@
 
   use Exception;
   use SLTK\Database\Repositories\CarClassRepository;
+  use SLTK\Database\Repositories\CarRepository;
+  use SLTK\Database\Repositories\DriverCategoryRepository;
   use SLTK\Database\Repositories\GameRepository;
   use stdClass;
 
   class Game extends DomainBase {
-    public final const string CAR_CLASSES_TAB = 'classes';
+    public final const string CARS_TAB = 'cars';
+    public final const string CAR_CLASSES_TAB = 'car_classes';
+    public final const string DRIVER_CATEGORIES_TAB = 'driver_categories';
     public final const string IS_BUILTIN_FIELD_NAME = 'sltk_is_builtin';
     public final const string IS_PUBLISHED_FIELD_NAME = 'sltk_is_published';
     public final const string LATEST_VERSION_FIELD_NAME = 'sltk_lastest_version';
     public final const string NAME_FIELD_NAME = 'sltk_name';
     public final const string PLATFORMS_FIELD_NAME = 'sltk_platforms[]';
     public final const string SUPPORTS_RESULT_UPLOAD_FIELD_NAME = 'sltk_supportS_result_upload';
+    public final const string TRACKS_TAB = 'tracks';
 
     private bool $builtIn = false;
     private string $latestVersion = '';
@@ -53,13 +58,31 @@
       return self::mapGames($queryResults);
     }
 
-    /***
+    /**
      * @return CarClass[]
      */
     public function getCarClasses(): array {
       $queryResult = CarClassRepository::listForGame($this->id);
 
       return $this->mapCarClasses($queryResult);
+    }
+
+    /**
+     * @return Car[]
+     */
+    public function getCars(): array {
+      $queryResults = CarRepository::listForGame($this->id);
+
+      return $this->mapCars($queryResults);
+    }
+
+    /**
+     * @return DriverCategory[]
+     */
+    public function getDriverCategories(): array {
+      $queryResult = DriverCategoryRepository::listForGame($this->id);
+
+      return $this->mapDriverCategories($queryResult);
     }
 
     public function getIsBuiltin(): bool {
@@ -78,7 +101,7 @@
       return trim($this->name ?? '');
     }
 
-    /***
+    /**
      * @return int[]
      * @throws Exception
      */
@@ -108,7 +131,17 @@
       ];
     }
 
-    private static function mapCarClasses(array $queryResults): array {
+    private static function mapGames(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new Game($item);
+      }
+
+      return $results;
+    }
+
+    private function mapCarClasses(array $queryResults): array {
       $results = array();
 
       foreach ($queryResults as $item) {
@@ -118,11 +151,21 @@
       return $results;
     }
 
-    private static function mapGames(array $queryResults): array {
+    private function mapCars(array $queryResults): array {
       $results = array();
 
       foreach ($queryResults as $item) {
-        $results[] = new Game($item);
+        $results[] = new Car($item);
+      }
+
+      return $results;
+    }
+
+    private function mapDriverCategories(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new DriverCategory($item);
       }
 
       return $results;
