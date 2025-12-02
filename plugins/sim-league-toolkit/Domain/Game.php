@@ -60,9 +60,10 @@
 
     /**
      * @return CarClass[]
+     * @throws Exception
      */
     public function getCarClasses(): array {
-      $queryResult = CarClassRepository::listForGame($this->id);
+      $queryResult = CarRepository::listCarClassesForGame($this->id);
 
       return $this->mapCarClasses($queryResult);
     }

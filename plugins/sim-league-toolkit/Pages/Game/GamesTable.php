@@ -12,16 +12,17 @@
 
       parent::__construct(esc_html__('Game', 'sim-league-toolkit'),
         esc_html__('Games', 'sim-league-toolkit'),
-        AdminPageSlugs::GAME);
+        AdminPageSlugs::GAME,
+        true);
     }
 
     protected function getColumns(): array {
       return [
-        'name'                => esc_html__('Name', 'sim-league-toolkit'),
+        'name' => esc_html__('Name', 'sim-league-toolkit'),
         'latestVersion' => esc_html__('Latest Version', 'sim-league-toolkit'),
-        'supportsResultUpload'  => esc_html__('Supports Result Upload', 'sim-league-toolkit'),
+        'supportsResultUpload' => esc_html__('Supports Result Upload', 'sim-league-toolkit'),
         'builtIn' => esc_html__('Built In', 'sim-league-toolkit'),
-        'published'           => esc_html__('Published', 'sim-league-toolkit'),
+        'published' => esc_html__('Published', 'sim-league-toolkit'),
       ];
     }
 
@@ -33,7 +34,7 @@
       $games = Game::list();
 
       $results = [];
-      foreach($games as $game) {
+      foreach ($games as $game) {
         $results[] = $game->toTableItem();
       }
 

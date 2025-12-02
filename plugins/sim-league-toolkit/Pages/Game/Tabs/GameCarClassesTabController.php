@@ -2,18 +2,17 @@
 
   namespace SLTK\Pages\Game\Tabs;
 
+  use Exception;
   use SLTK\Domain\Game;
   use SLTK\Pages\ControllerBase;
 
   class GameCarClassesTabController extends ControllerBase {
 
     private Game $game;
-    private bool $isReadOnly;
 
     public function __construct(Game $game, bool $isReadOnly) {
       parent::__construct();
       $this->game = $game;
-      $this->isReadOnly = $isReadOnly;
     }
 
 
@@ -24,11 +23,13 @@
       <?php
      }
 
-     public function theClasses(): void { ?>
+      /**
+       * @throws Exception
+       */
+      public function theClasses(): void { ?>
        <table class='admin-table'>
          <tr>
              <th>Name</th>
-             <th>Display Name</th>
          </tr>
          <?php
            $classes = $this->game->getCarClasses();
@@ -36,7 +37,6 @@
                ?>
                     <tr>
                         <td><?= $class->getName() ?></td>
-                        <td><?= $class->getDisplayName() ?></td>
                     </tr>
                <?php
            }

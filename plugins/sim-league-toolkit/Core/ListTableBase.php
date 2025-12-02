@@ -7,8 +7,9 @@
   abstract class ListTableBase extends WP_List_Table {
 
     private string $singularSlug = '';
+    private bool $isReadOnly = false;
 
-    public function __construct(string $singularName, string $pluralName, string $singularSlug) {
+    public function __construct(string $singularName, string $pluralName, string $singularSlug, bool $isReadOnly = false) {
       parent::__construct([
                             'singular' => $singularName,
                             'plural'   => $pluralName,
@@ -16,6 +17,7 @@
                           ]);
 
       $this->singularSlug = $singularSlug;
+      $this->isReadOnly = $isReadOnly;
     }
 
     public function column_default($item, $column_name): mixed {
@@ -23,6 +25,10 @@
     }
 
     public function extra_tablenav($which): void {
+        if($this->isReadOnly) {
+            return;
+        }
+
       $params = [
         QueryParamNames::ACTION => Constants::ACTION_ADD,
       ];
@@ -68,10 +74,15 @@
       $editUrl = UrlBuilder::getAdminPageRelativeUrl($this->singularSlug, $editParams);
       $deleteUrl = UrlBuilder::getAdminPageRelativeUrl($_REQUEST['page'], $deleteParams);
 
-      $actions = array(
-        Constants::ACTION_EDIT   => '<a href="' . $editUrl . '">' . esc_html__('Edit', 'sim-league-toolkit') . '</a>',
-        Constants::ACTION_DELETE => '<a href="' . $deleteUrl . '">' . esc_html__('Delete', 'sim-league-toolkit') . '</a>',
-      );
+      $actions = [];
+
+      if($this->isReadOnly) {
+          $actions[Constants::ACTION_EDIT] = '<a href="' . $editUrl . '">' . esc_html__('Open', 'sim-league-toolkit') . '</a>';
+      } else {
+
+          $actions[Constants::ACTION_EDIT] = '<a href="' . $editUrl . '">' . esc_html__('Edit', 'sim-league-toolkit') . '</a>';
+          $actions[Constants::ACTION_DELETE] = '<a href="' . $deleteUrl . '">' . esc_html__('Delete', 'sim-league-toolkit') . '</a>';
+      }
 
       return "<a href='{$editUrl}'>{$item['name']}</a>{$this->row_actions($actions, false)}";
     }

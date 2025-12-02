@@ -8,12 +8,10 @@
   class GameCarsTabController extends ControllerBase {
 
     private Game $game;
-    private bool $isReadOnly;
 
-    public function __construct(Game $game, bool $isReadOnly) {
+    public function __construct(Game $game) {
       parent::__construct();
       $this->game = $game;
-      $this->isReadOnly = $isReadOnly;
     }
 
     public function theCars(): void { ?>
@@ -23,7 +21,7 @@
                 <th>Class</th>
                 <th>Year</th>
                 <th>Manufacturer</th>
-                <th>Game Key</th>
+                <th>Data Key</th>
             </tr>
           <?php
             $cars = $this->game->getCars();
@@ -31,7 +29,7 @@
               ?>
                 <tr>
                     <td><?= $car->getName() ?></td>
-                    <td><?= $car->getClassName() ?></td>
+                    <td><?= $car->getCarClass() ?></td>
                     <td><?= $car->getYear() ?></td>
                     <td><?= $car->getManufacturer() ?></td>
                     <td><?= $car->getCarKey() ?></td>

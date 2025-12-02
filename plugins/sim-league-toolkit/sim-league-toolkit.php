@@ -1,16 +1,16 @@
 <?php
   /*
    * Plugin Name:       SIM League Toolkit
-   * Plugin URI:        https://kodeology.com/sim-leauge-toolkit
+   * Plugin URI:        https://www.simracertools.com/docs/sltk-getting-started/
    * Description:       A collection of blocks and admin pages to run and manage a league using almost any motor racing simulator or game
    * Version:           1.0.0
    * Requires at least: 6
    * Requires PHP:      8.3
-   * Author:            Kodeology
-   * Author URI:        https://kodeology.com
+   * Author:            Sim Racer Tools
+   * Author URI:        https://simracertools.com
    * License:           GPL v2 or later
    * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-   * Update URI:        https://kodeology.com/sim-leauge-toolkit
+   * Update URI:        https://www.simracertools.com/sltk/update
    * Text Domain:       sim-league-toolkit
    * Domain Path:       /languages
    * Requires Plugins:

@@ -14,27 +14,12 @@
     public function __construct(stdClass $data = null) {
 
       if ($data !== null) {
-        $this->gameId = $data->gameId;
-        $this->name = $data->name;
-        $this->displayName = $data->displayName;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
+        $this->name = $data->carClass;
       }
-
     }
 
     public function getDisplayName(): string {
       return $this->displayName;
-    }
-
-    public function getGameId(): int {
-      return $this->gameId;
-    }
-
-    public function getId(): int {
-      return $this->id;
     }
 
     public function getName(): string {

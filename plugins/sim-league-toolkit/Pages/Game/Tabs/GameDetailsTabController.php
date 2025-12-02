@@ -2,6 +2,7 @@
 
   namespace SLTK\Pages\Game\Tabs;
 
+  use Exception;
   use SLTK\Core\HtmlTagProvider;
   use SLTK\Domain\Game;
   use SLTK\Domain\Platform;
@@ -24,25 +25,17 @@
     }
 
     public function theLatestVersionField(): void {
-      HtmlTagProvider::theAdminTextInput(esc_html__('Latest Version', 'sim-league-toolkit'),
-        Game::LATEST_VERSION_FIELD_NAME,
-        $this->game->getLatestVersion() ?? '',
-        $this->getError(Game::LATEST_VERSION_FIELD_NAME),
-        esc_html__('The latest version of the game supported by Sim League Toolkit', 'sim-league-toolkit'),
-        isReadOnly: $this->isReadOnly
-      );
+      HtmlTagProvider::theAdminTextDisplay(esc_html__('Latest Version', 'sim-league-toolkit'), $this->game->getLatestVersion() ?? '');
     }
 
     public function theNameField(): void {
-      HtmlTagProvider::theAdminTextInput(esc_html__('Name', 'sim-league-toolkit'),
-        Game::NAME_FIELD_NAME,
-        $this->game->getName() ?? '',
-        $this->getError(Game::NAME_FIELD_NAME),
-        esc_html__('Name of the game as published.', 'sim-league-toolkit'),
-        isReadOnly: $this->isReadOnly);
+      HtmlTagProvider::theAdminTextDisplay(esc_html__('Name', 'sim-league-toolkit'), $this->game->getName() ?? '');
     }
 
-    public function thePlatformsSelector(): void {
+      /**
+       * @throws Exception
+       */
+      public function thePlatformsSelector(): void {
       $error = $this->getError(Game::PLATFORMS_FIELD_NAME)
       ?>
 
@@ -83,7 +76,7 @@
         'sim-league-toolkit'),
         Game::SUPPORTS_RESULT_UPLOAD_FIELD_NAME,
         $this->game->getSupportsResultUpload(),
-        $this->isReadOnly);
+        true);
     }
 
     public function theIsPublishedField(): void {
@@ -91,7 +84,7 @@
         'sim-league-toolkit'),
         Game::IS_PUBLISHED_FIELD_NAME,
         $this->game->getIsPublished(),
-        $this->isReadOnly);
+        true);
     }
 
     public function theIsBuiltinField(): void {
@@ -99,7 +92,7 @@
         'sim-league-toolkit'),
         Game::IS_BUILTIN_FIELD_NAME,
         $this->game->getIsBuiltin(),
-        $this->isReadOnly);
+        true);
     }
 
     protected function handleGet(): void {

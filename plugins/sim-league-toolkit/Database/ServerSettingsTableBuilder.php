@@ -35,7 +35,7 @@
                 serverId bigint NOT NULL,
                 settingName tinytext NOT NULL,
                 settingValue mediumtext NOT NULL,
-                PRIMARY KEY  (id),
+                PRIMARY KEY  (id)
               ) {$charsetCollate};";
     }
 

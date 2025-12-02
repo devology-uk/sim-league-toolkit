@@ -14,17 +14,16 @@
       self::$builders[] = new GamesTableBuilder();
       self::$builders[] = new PlatformsTableBuilder();
       self::$builders[] = new GamePlatformsTableBuilder();
+      self::$builders[] = new DriverCategoriesTableBuilder();
       self::$builders[] = new RuleSetsTableBuilder();
       self::$builders[] = new RuleSetRulesTableBuilder();
       self::$builders[] = new ServersTableBuilder();
       self::$builders[] = new ServerSettingsTableBuilder();
       self::$builders[] = new ScoringSetsTableBuilder();
       self::$builders[] = new ScoringSetScoresTableBuilder();
+      self::$builders[] = new CarsTableBuilder();
       self::$builders[] = new TracksTableBuilder();
       self::$builders[] = new TrackLayoutsTableBuilder();
-      self::$builders[] = new CarClassTableBuilder();
-      self::$builders[] = new DriverCategoriesTableBuilder();
-      self::$builders[] = new CarsTableBuilder();
 
 
 //      self::$builders[] = new ChampionshipsTableBuilder();

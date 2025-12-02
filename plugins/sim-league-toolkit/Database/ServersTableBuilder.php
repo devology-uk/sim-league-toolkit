@@ -49,7 +49,7 @@
           name tinytext NOT NULL,
           isHostedServer tinyint(1) NOT NULL DEFAULT 0,
           platformId bigint NOT NULL DEFAULT 1,
-          PRIMARY KEY  (id),
+          PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
 

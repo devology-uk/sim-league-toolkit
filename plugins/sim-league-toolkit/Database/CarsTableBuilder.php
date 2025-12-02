@@ -39,12 +39,13 @@
           name tinytext NOT NULL,
           year mediumint NOT NULL,
           manufacturer tinytext NOT NULL,
-          PRIMARY KEY  (Id)
+          PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
 
     public function initialData(string $tablePrefix): void {
       $this->loadCars($tablePrefix, 'acc-cars.csv', 'ACC');
+      $this->loadCars($tablePrefix, 'ams2-cars.csv', 'AMS2');
       $this->loadCars($tablePrefix, 'lmu-cars.csv', 'LMU');
     }
 

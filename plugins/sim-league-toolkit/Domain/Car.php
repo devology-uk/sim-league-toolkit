@@ -6,9 +6,9 @@
   use stdClass;
 
   class Car {
-    private int $carClassId = Constants::DEFAULT_ID;
+
     private string $carKey = '';
-    private string $className = '';
+    private string $carClass = '';
     private int $gameId = Constants::DEFAULT_ID;
     private int $id = Constants::DEFAULT_ID;
     private string $manufacturer = '';
@@ -18,8 +18,7 @@
     public function __construct(stdClass $data = null) {
       if ($data) {
         $this->gameId = $data->gameId;
-        $this->carClassId = $data->carClassId;
-        $this->className = $data->className;
+        $this->carClass = $data->carClass;
         $this->carKey = $data->carKey;
         $this->name = $data->name;
         $this->year = $data->year;
@@ -32,16 +31,12 @@
 
     }
 
-    public function getCarClassId(): int {
-      return $this->carClassId;
+    public function getCarClass(): string {
+      return $this->carClass;
     }
 
     public function getCarKey(): string {
       return $this->carKey;
-    }
-
-    public function getClassName(): string {
-      return $this->className;
     }
 
     public function getGameId(): int {
@@ -66,7 +61,7 @@
 
     public function toArray(): array {
       $result = [
-        'carClassId' => $this->carClassId,
+        'carClass' => $this->carClass,
         'carKey' => $this->carKey,
         'gameId' => $this->gameId,
         'manufacturer' => $this->manufacturer,

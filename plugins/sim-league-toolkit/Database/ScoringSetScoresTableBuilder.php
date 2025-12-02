@@ -36,7 +36,7 @@
         scoringSetId bigint NOT NULL,
         position tinyint NOT NULL DEFAULT 0,
         points tinyint NOT NULL DEFAULT 0,
-        PRIMARY KEY  (id),
+        PRIMARY KEY  (id)
       ) {$charsetCollate};";
     }
 

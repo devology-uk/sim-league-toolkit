@@ -20,7 +20,8 @@
 
       return "CREATE TABLE {$tableName} (
           id bigint NOT NULL AUTO_INCREMENT,
-          trackKey tinytext NOT NULL,
+          gameId bigint NOT NULL,
+          trackId tinytext NOT NULL,
           shortName tinytext NOT NULL,
           fullName mediumtext NOT NULL,
           country tinytext NOT NULL,
@@ -32,24 +33,36 @@
     }
 
     public function initialData(string $tablePrefix): void {
-      global $wpdb;
-      $tableName = $this->tableName($tablePrefix);
+      $this->loadTracks($tablePrefix, 'acc-tracks.csv', 'ACC');
+      $this->loadTracks($tablePrefix, 'ams2-tracks.csv', 'AMS2');
+      $this->loadTracks($tablePrefix, 'lmu-tracks.csv', 'LMU');
+    }
 
-      $dataFilePath = Constants::PLUGIN_ROOT_DIR . 'data/tracks.csv';
+    public function tableName(string $tablePrefix): string {
+      return $tablePrefix . TableNames::TRACKS;
+    }
+
+    private function loadTracks(string $tablePrefix, string $fileName, string $gameKey): void {
+      global $wpdb;
+      $tracksTableName = $this->tableName($tablePrefix);
+      $gamesTableName = $tablePrefix . TableNames::GAMES;
+
+      $dataFilePath = Constants::PLUGIN_ROOT_DIR . 'data/' . $fileName;
 
       $handle = fopen($dataFilePath, 'r');
       if ($handle !== false) {
 
         while (($data = fgetcsv($handle, 1000, ',')) != false) {
 
-          $trackKey = $data[0];
+          $trackId = $data[0];
 
-          $existingId = $wpdb->get_var("SELECT id FROM {$tableName} WHERE trackKey = '{$trackKey}';");
+          $gameId = $wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = '$gameKey'");
+          $existingId = $wpdb->get_var("SELECT id FROM {$tracksTableName} WHERE gameId = {$gameId} AND  trackId = '{$trackId}';");
 
           if ($existingId == null) {
-
             $track = array(
-              'trackKey' => $trackKey,
+              'gameId' => $gameId,
+              'trackId' => $trackId,
               'shortName' => $data[1],
               'fullName' => $data[2],
               'country' => $data[3],
@@ -58,15 +71,11 @@
               'longitude' => $data[6],
             );
 
-            $wpdb->insert($tableName, $track);
+            $wpdb->insert($tracksTableName, $track);
           }
         }
 
         fclose($handle);
       }
-    }
-
-    public function tableName(string $tablePrefix): string {
-      return $tablePrefix . TableNames::TRACKS;
     }
   }

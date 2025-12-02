@@ -65,7 +65,7 @@
       $accGameId = (int)$wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = 'ACC'");
       $acGameId = (int)$wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = 'AC'");
       $lmuGameId = (int)$wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = 'LMU'");
-      $ams2GameId = (int)$wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = 'AM2'");
+      $ams2GameId = (int)$wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = 'AMS2'");
 
       $pcPlatformId = (int)$wpdb->get_var("SELECT id FROM {$platformsTableName} WHERE shortName = 'PC'");
       $psPlatformId = (int)$wpdb->get_var("SELECT id FROM {$platformsTableName} WHERE shortName = 'PS'");

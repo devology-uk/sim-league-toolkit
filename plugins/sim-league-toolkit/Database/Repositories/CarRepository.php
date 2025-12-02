@@ -11,14 +11,16 @@
      * @throws Exception
      */
     public static function listForGame(int $gameId): array {
-      $carsTableName = self::prefixedTableName(TableNames::CARS);
-      $carClassesTableName = self::prefixedTableName(TableNames::CAR_CLASSES);
+      return self::getResultsFromTable(TableNames::CARS, "gameId = $gameId", "name");
+    }
 
-      $query = "SELECT c.*, cc.displayName as className FROM {$carsTableName} c
-         INNER JOIN {$carClassesTableName} cc
-        ON c.carClassId = cc.id
-        WHERE c.gameId = {$gameId}
-        ORDER BY c.name;";
+    /**
+     * @throws Exception
+     */
+    public static function listCarClassesForGame(int $gameId): array {
+      $tableName = self::prefixedTableName(TableNames::CARS);
+
+      $query = "SELECT DISTINCT carClass FROM $tableName WHERE gameId = $gameId";
 
       return self::getResults($query);
     }

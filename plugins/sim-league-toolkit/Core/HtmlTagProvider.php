@@ -104,6 +104,19 @@
       <?php
     }
 
+    public static function theAdminTextDisplay(string $label, string $value): void {
+        ?>
+        <tr>
+            <th scope='row'>
+                <label><?= $label ?></label>
+            </th>
+            <td>
+                <span><?= $value?></span>
+            </td>
+        </tr>
+            <?php
+    }
+
     public static function theBackScript(int $delaySeconds = 0): void {
       if ($delaySeconds > 0) {
         $delay = $delaySeconds * 1000;

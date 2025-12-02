@@ -14,7 +14,7 @@
 
     public function render(): void { ?>
         <div class="wrap">
-            <h1><?= esc_html__('Game Manager', 'sim-league-toolkit') ?></h1>
+            <h1><?= esc_html__('Game Details', 'sim-league-toolkit') ?></h1>
              <nav class='nav-tab-wrapper'>
                <?php
                     $this->controller->theGeneralTab();
