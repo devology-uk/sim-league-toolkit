@@ -12,6 +12,7 @@
   use SLTK\Pages\Game\Tabs\GameCarsTab;
   use SLTK\Pages\Game\Tabs\GameDetailsTab;
   use SLTK\Pages\Game\Tabs\GameDriverCategoriesTab;
+  use SLTK\Pages\Game\Tabs\GameTracksTab;
 
   class GameAdminPageController extends ControllerBase {
 
@@ -19,7 +20,7 @@
     private Game $game;
     private int $id = Constants::DEFAULT_ID;
     private bool $isReadOnly;
-    private GameDetailsTab|GameCarClassesTab|GameDriverCategoriesTab|GameCarsTab $tab;
+    private GameDetailsTab|GameCarClassesTab|GameDriverCategoriesTab|GameCarsTab|GameTracksTab $tab;
 
     public function theBackButton(): void { ?>
         <br/>
@@ -40,6 +41,17 @@
            class="nav-tab <?= $this->getActiveCssClass(Game::CARS_TAB) ?>"><?= esc_html__('Cars', 'sim-league-toolkit') ?></a>
       <?php
     }
+
+      public function theTracksTab(): void {
+          if ($this->id === Constants::DEFAULT_ID) {
+              return;
+          }
+
+          ?>
+          <a href="<?= $this->getTabUrl(Game::TRACKS_TAB) ?>"
+             class="nav-tab <?= $this->getActiveCssClass(Game::TRACKS_TAB) ?>"><?= esc_html__('Tracks', 'sim-league-toolkit') ?></a>
+          <?php
+      }
 
     public function theCarClassesTab(): void {
       if ($this->id === Constants::DEFAULT_ID) {
@@ -103,6 +115,7 @@
         Game::CAR_CLASSES_TAB => new GameCarClassesTab($this->game, $this->isReadOnly),
         Game::DRIVER_CATEGORIES_TAB => new GameDriverCategoriesTab($this->game, $this->isReadOnly),
         Game::CARS_TAB => new GameCarsTab($this->game, $this->isReadOnly),
+        Game::TRACKS_TAB => new GameTracksTab($this->game, $this->isReadOnly),
         default => new GameDetailsTab($this->game, $this->isReadOnly),
       };
     }

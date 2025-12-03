@@ -21,6 +21,7 @@
                     $this->controller->theCarClassesTab();
                     $this->controller->theDriverCategoriesTab();
                     $this->controller->theCarsTab();
+                    $this->controller->theTracksTab();
                ?>
              </nav>
              <div class='tab-content'>

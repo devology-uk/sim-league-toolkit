@@ -8,8 +8,8 @@
   class GameTracksTab {
     private GameTracksTabController $controller;
 
-    public function __construct(Game $game, bool $isReadOnly) {
-      $this->controller = new GameTracksTabController($game, $isReadOnly);
+    public function __construct(Game $game) {
+      $this->controller = new GameTracksTabController($game);
     }
 
     public function render(): void {

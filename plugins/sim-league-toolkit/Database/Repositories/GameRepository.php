@@ -2,6 +2,7 @@
 
   namespace SLTK\Database\Repositories;
 
+  use Exception;
   use SLTK\Database\TableNames;
   use stdClass;
 
@@ -11,6 +12,9 @@
       return self::getRowById(TableNames::GAMES, $gameId);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getKey(int $gameId): string {
       $tableName = self::prefixedTableName(TableNames::GAMES);
 
@@ -26,6 +30,6 @@
     }
 
     public static function listAll(): array {
-      return self::getResultsFromTable(TableNames::GAMES);
+      return self::getResultsFromTable(TableNames::GAMES, null, 'published DESC, name');
     }
   }

@@ -20,8 +20,8 @@
       return [
         'name' => esc_html__('Name', 'sim-league-toolkit'),
         'latestVersion' => esc_html__('Latest Version', 'sim-league-toolkit'),
+        'supportsLayouts' => esc_html__('Supports Layouts', 'sim-league-toolkit'),
         'supportsResultUpload' => esc_html__('Supports Result Upload', 'sim-league-toolkit'),
-        'builtIn' => esc_html__('Built In', 'sim-league-toolkit'),
         'published' => esc_html__('Published', 'sim-league-toolkit'),
       ];
     }

@@ -22,7 +22,7 @@
         latestVersion varchar(20) NOT NULL,
         supportsResultUpload bit NOT NULL DEFAULT 0,
         published bit NOT NULL DEFAULT 0,
-        builtIn bit NOT NULL DEFAULT 1,
+        supportsLayouts bit NOT NULL DEFAULT 0,
         PRIMARY KEY  (id)
       ) {$charsetCollate};";
     }
@@ -38,7 +38,7 @@
           'latestVersion' => '1.10.2',
           'supportsResultUpload' => true,
           'published' => true,
-          'builtIn' => true,
+          'supportsLayouts' => false,
         ],
         [
           'name' => 'Assetto Corsa',
@@ -46,23 +46,23 @@
           'latestVersion' => '1.16.0',
           'supportsResultUpload' => false,
           'published' => false,
-          'builtIn' => true,
+          'supportsLayouts' => false,
         ],
         [
           'name' => 'Le Mans Ultimate',
           'gameKey' => GameKeys::LeMansUltimate,
           'latestVersion' => '1.4',
           'supportsResultUpload' => false,
-          'published' => false,
-          'builtIn' => true,
+          'published' => true,
+          'supportsLayouts' => true,
         ],
         [
           'name' => 'Automobilista 2',
           'gameKey' => GameKeys::AutoMobilista2,
           'latestVersion' => '1.6',
           'supportsResultUpload' => false,
-          'published' => false,
-          'builtIn' => true,
+          'published' => true,
+          'supportsLayouts' => true,
         ],
         [
           'name' => 'F1 2025',
@@ -70,7 +70,7 @@
           'latestVersion' => '2025',
           'supportsResultUpload' => false,
           'published' => false,
-          'builtIn' => true,
+          'supportsLayouts' => true,
         ]
       ];
 

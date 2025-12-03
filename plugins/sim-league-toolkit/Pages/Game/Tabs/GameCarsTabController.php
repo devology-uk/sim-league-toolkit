@@ -2,6 +2,7 @@
 
   namespace SLTK\Pages\Game\Tabs;
 
+  use Exception;
   use SLTK\Domain\Game;
   use SLTK\Pages\ControllerBase;
 
@@ -14,7 +15,10 @@
       $this->game = $game;
     }
 
-    public function theCars(): void { ?>
+      /**
+       * @throws Exception
+       */
+      public function theCars(): void { ?>
         <table class='admin-table'>
             <tr>
                 <th>Name</th>

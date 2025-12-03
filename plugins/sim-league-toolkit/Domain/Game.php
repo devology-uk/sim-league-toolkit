@@ -3,10 +3,10 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Database\Repositories\CarClassRepository;
   use SLTK\Database\Repositories\CarRepository;
   use SLTK\Database\Repositories\DriverCategoryRepository;
   use SLTK\Database\Repositories\GameRepository;
+  use SLTK\Database\Repositories\TrackRepository;
   use stdClass;
 
   class Game extends DomainBase {
@@ -25,6 +25,7 @@
     private string $latestVersion = '';
     private string $name = '';
     private bool $published = false;
+    private bool $supportsLayouts = false;
     private bool $supportsResultUpload = false;
 
     public function __construct(stdClass $data = null) {
@@ -34,6 +35,7 @@
         $this->supportsResultUpload = $data->supportsResultUpload;
         $this->published = $data->published ?? false;
         $this->builtIn = $data->builtIn ?? false;
+        $this->supportsLayouts = $data->supportsLayouts ?? false;
 
         if (isset($data->id)) {
           $this->id = $data->id;
@@ -70,6 +72,7 @@
 
     /**
      * @return Car[]
+     * @throws Exception
      */
     public function getCars(): array {
       $queryResults = CarRepository::listForGame($this->id);
@@ -110,8 +113,18 @@
       return Platform::listIdsForGame($this->id);
     }
 
+    public function getSupportsLayouts(): bool {
+      return $this->supportsLayouts;
+    }
+
     public function getSupportsResultUpload(): bool {
       return $this->supportsResultUpload;
+    }
+
+    public function getTracks(): array {
+      $queryResult = TrackRepository::listForGame($this->id);
+
+      return $this->mapTracks($queryResult);
     }
 
     public function save(): bool {
@@ -129,6 +142,7 @@
         'supportsResultUpload' => $this->supportsResultUpload ? 'Yes' : 'No',
         'published' => $this->published ? 'Yes' : 'No',
         'builtIn' => $this->builtIn ? 'Yes' : 'No',
+        'supportsLayouts' => $this->supportsLayouts ? 'Yes' : 'No',
       ];
     }
 
@@ -137,6 +151,16 @@
 
       foreach ($queryResults as $item) {
         $results[] = new Game($item);
+      }
+
+      return $results;
+    }
+
+    private static function mapTracks(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new Track($item);
       }
 
       return $results;
