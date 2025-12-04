@@ -19,16 +19,15 @@
         <div class='wrap'>
             <h1><?= esc_html__('Games', 'sim-league-toolkit') ?></h1>
             <p>
-              <?= esc_html__('Sim League Toolkit comes with built-in support for several racing games, but allows you to add the data for other games.', 'sim-league-toolkit') ?>
-                <br/>
-              <?= esc_html__('Adding a game is not a trivial task, you will need to provide a significant amount of information before you can publish and use the game.', 'sim-league-toolkit') ?>
+              <?= esc_html__('Sim League Toolkit comes with built-in support for several racing games, others will be added in the future.', 'sim-league-toolkit') ?>
+
             </p>
           <?php
             $this->controller->theTable();
           ?>
 
             <p>
-              <?= esc_html__('If you prefer you can use the form below to submit a request for a game to be added.',
+              <?= esc_html__('If the game you use is not supported use the form below to submit a request for it to be added.',
                 'sim-league-toolkit') ?>
                 <br/>
               <?= esc_html__('In the first instance the sim/game will be added, but will only support manual entry of results and standings, this may take some time as the team need to gather all the information needed to support the game and release an update.',

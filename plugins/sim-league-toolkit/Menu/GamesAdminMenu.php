@@ -9,7 +9,7 @@
 
   class GamesAdminMenu implements AdminMenu {
 
-    public function init(string|null $parentSlug = null): string {
+    public function init(?string $parentSlug = null): string {
       $pluralPageTitle = esc_html__('Games', 'sim-league-toolkit');
       $singlePageTitle = esc_html__('Game', 'sim-league-toolkit');
       

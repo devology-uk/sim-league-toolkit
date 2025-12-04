@@ -2,20 +2,22 @@
 
   namespace SLTK\Pages\Game\Tabs;
 
+  use Exception;
   use SLTK\Domain\Game;
 
   class GameDetailsTab {
     private GameDetailsTabController $controller;
     private Game $game;
-    private bool $isReadOnly;
 
-    public function __construct(Game $game, bool $isReadOnly) {
+    public function __construct(Game $game) {
       $this->game = $game;
-      $this->isReadOnly = $isReadOnly;
-      $this->controller = new  GameDetailsTabController($this->game, $this->isReadOnly);
+      $this->controller = new  GameDetailsTabController($this->game);
     }
 
-    public function render(): void { ?>
+      /**
+       * @throws Exception
+       */
+      public function render(): void { ?>
         <div class='wrap'>
             <form method='post' enctype='multipart/form-data'>
               <?php

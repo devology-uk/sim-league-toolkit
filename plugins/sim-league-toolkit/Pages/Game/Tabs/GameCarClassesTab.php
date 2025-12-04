@@ -3,16 +3,20 @@
   namespace SLTK\Pages\Game\Tabs;
 
 
+  use Exception;
   use SLTK\Domain\Game;
 
   class GameCarClassesTab {
     private GameCarClassesTabController $controller;
 
-    public function __construct(Game $game, bool $isReadOnly) {
-      $this->controller = new GameCarClassesTabController($game, $isReadOnly);
+    public function __construct(Game $game) {
+      $this->controller = new GameCarClassesTabController($game);
     }
 
-    public function render(): void {
+      /**
+       * @throws Exception
+       */
+      public function render(): void {
       ?>
         <div class='wrap'>
           <?php

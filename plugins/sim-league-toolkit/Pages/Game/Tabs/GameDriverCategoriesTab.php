@@ -7,8 +7,8 @@
   class GameDriverCategoriesTab {
     private GameDriverCategoriesTabController $controller;
 
-    public function __construct(Game $game, bool $isReadOnly) {
-      $this->controller = new GameDriverCategoriesTabController($game, $isReadOnly);
+    public function __construct(Game $game) {
+      $this->controller = new GameDriverCategoriesTabController($game);
     }
 
     public function render(): void {

@@ -8,12 +8,10 @@
   class GameDriverCategoriesTabController extends ControllerBase {
 
     private Game $game;
-    private bool $isReadOnly;
 
-    public function __construct(Game $game, bool $isReadOnly) {
+    public function __construct(Game $game) {
       parent::__construct();
       $this->game = $game;
-      $this->isReadOnly = $isReadOnly;
     }
 
 

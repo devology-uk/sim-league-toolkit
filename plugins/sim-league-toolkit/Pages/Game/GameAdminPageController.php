@@ -19,7 +19,6 @@
     private string $currentTab;
     private Game $game;
     private int $id = Constants::DEFAULT_ID;
-    private bool $isReadOnly;
     private GameDetailsTab|GameCarClassesTab|GameDriverCategoriesTab|GameCarsTab|GameTracksTab $tab;
 
     public function theBackButton(): void { ?>
@@ -106,17 +105,16 @@
       $this->id = $this->getIdFromUrl();
       $this->currentTab = $this->getTabFromUrl();
       $this->game = Game::get($this->id) ?? new Game();
-      $this->isReadOnly = $this->game->getIsBuiltin();
       $this->prepareTabController();
     }
 
     private function prepareTabController(): void {
       $this->tab = match ($this->currentTab) {
-        Game::CAR_CLASSES_TAB => new GameCarClassesTab($this->game, $this->isReadOnly),
-        Game::DRIVER_CATEGORIES_TAB => new GameDriverCategoriesTab($this->game, $this->isReadOnly),
-        Game::CARS_TAB => new GameCarsTab($this->game, $this->isReadOnly),
-        Game::TRACKS_TAB => new GameTracksTab($this->game, $this->isReadOnly),
-        default => new GameDetailsTab($this->game, $this->isReadOnly),
+        Game::CAR_CLASSES_TAB => new GameCarClassesTab($this->game),
+        Game::DRIVER_CATEGORIES_TAB => new GameDriverCategoriesTab($this->game),
+        Game::CARS_TAB => new GameCarsTab($this->game),
+        Game::TRACKS_TAB => new GameTracksTab($this->game),
+        default => new GameDetailsTab($this->game),
       };
     }
 
