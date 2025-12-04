@@ -11,8 +11,8 @@
 
     public function init(?string $parentSlug = null): string {
 
-      $pluralPageTitle = esc_html__('Events', 'sim-league-toolkit');
-      $singlePageTitle = esc_html__('Event', 'sim-league-toolkit');
+      $pluralPageTitle = esc_html__('Individual Events', 'sim-league-toolkit');
+      $singlePageTitle = esc_html__('Individual Event', 'sim-league-toolkit');
 
       add_submenu_page(
         $parentSlug,
