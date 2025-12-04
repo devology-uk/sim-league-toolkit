@@ -8,6 +8,7 @@
       $adminMenu = new MainAdminMenu();
       $adminMenuSlug = $adminMenu->init();
 
+      (new EventsAdminMenu())->init($adminMenuSlug);
       (new GamesAdminMenu())->init($adminMenuSlug);
       (new ImportAdminMenu())->init($adminMenuSlug);
       (new RaceNumbersMenu())->init($adminMenuSlug);

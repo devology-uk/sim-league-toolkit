@@ -3,6 +3,10 @@
   namespace SLTK\Core;
 
   class AdminPageSlugs {
+    public final const string CHAMPIONSHIP = 'sltk-championship';
+    public final const string CHAMPIONSHIPS = 'sltk-championships';
+    public final const string EVENT = "sltk-event";
+    public final const string EVENTS = "sltk-events";
     public final const string GAME = 'sltk-game';
     public final const string GAMES = 'sltk-games';
     public final const string HOME = 'sltk-admin';
