@@ -17,7 +17,7 @@ class ServerAdminPage implements AdminPage {
     public function render(): void {
         ?>
         <div class='wrap'>
-            <h1>Server</h1>
+            <h1><?= esc_html__('Server', 'sim-league-toolkit') ?></h1>
             <p>
                 <?php
                 echo esc_html__('Sim League Toolkit supports multiple games, the server configuration for each game is different.  ',

@@ -4,7 +4,7 @@
 
   use SLTK\Core\BuiltinScoringSetNames;
 
-  class ScoringSetScoresTableBuilder implements TableBuilder {
+  class ScoringSetScoresTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;

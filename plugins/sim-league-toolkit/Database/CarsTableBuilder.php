@@ -4,7 +4,7 @@
 
   use SLTK\Core\Constants;
 
-  class CarsTableBuilder implements TableBuilder {
+  class CarsTableBuilder extends TableBuilder {
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);

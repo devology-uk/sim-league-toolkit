@@ -2,43 +2,40 @@
 
   namespace SLTK\Database;
 
-
-  use SLTK\Core\GameKeys;
-
   if (!defined('ABSPATH')) {
     die;
   }
 
-  class GamePlatformsTableBuilder implements TableBuilder {
+  class GamePlatformsTableBuilder extends TableBuilder {
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
       $gamesTableName = $tablePrefix . TableNames::GAMES;
       $platformsTableName = $tablePrefix . TableNames::PLATFORMS;
 
-      $gameConstraintName = 'fk_game_gameId';
-      $gameExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$gameConstraintName}';";
+      $constraintName = 'fk_game_gameId';
+      $constraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+                        WHERE TABLE_NAME = '$tableName'
+                        AND CONSTRAINT_NAME = '$constraintName';";
 
-      $gameExists = (int)$wpdb->get_var($gameExistsCheckSql);
-      if (!$gameExists) {
+      $constraintExists = (int)$wpdb->get_var($constraintExistsCheckSql);
+      if (!$constraintExists) {
         $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$gameConstraintName} 
-                        FOREIGN KEY (gameId) REFERENCES {$gamesTableName}(id);";
+                    ADD CONSTRAINT $constraintName 
+                        FOREIGN KEY (gameId) REFERENCES $gamesTableName(id);";
         $wpdb->query($fkSql);
       }
 
-      $platformConstraintName = 'fk_platform_platformId';
-      $platformExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$platformConstraintName}';";
+      $constraintName = 'fk_platform_platformId';
+      $constraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+                        WHERE TABLE_NAME = '$tableName'
+                        AND CONSTRAINT_NAME = '$constraintName';";
 
-      $platformExists = (int)$wpdb->get_var($platformExistsCheckSql);
-      if (!$platformExists) {
+      $constraintExists = (int)$wpdb->get_var($constraintExistsCheckSql);
+      if (!$constraintExists) {
         $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$platformConstraintName} 
-                        FOREIGN KEY (platformId) REFERENCES {$platformsTableName}(id);";
+                    ADD CONSTRAINT $constraintName 
+                        FOREIGN KEY (platformId) REFERENCES $platformsTableName(id);";
         $wpdb->query($fkSql);
       }
     }

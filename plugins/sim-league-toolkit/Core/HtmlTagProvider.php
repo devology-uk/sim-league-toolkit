@@ -16,7 +16,7 @@
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $name ?>'><?= $label ?></label>
+                <label class='form-label' for='<?= $name ?>'><?= $label ?></label>
             </th>
             <td>
                 <input type='checkbox' id='<?= $name ?>'
@@ -30,7 +30,7 @@
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $config->name ?>' <?= self::errorLabelClass($config->error) ?>><?= $config->label ?></label>
+                <label class='form-label' for='<?= $config->name ?>' <?= self::errorLabelClass($config->error) ?> title='<?= $config->tooltip ?>'><?= $config->label ?></label>
             </th>
             <td>
                 <input type='<?= $config->type ?>'
@@ -39,6 +39,7 @@
                        value='<?= $config->value ?>'
                        placeholder='<?= $config->placeholder ?>'
                        size='<?= $config->size ?>'
+                       title='<?= $config->tooltip ?>'
                   <?= $config->required ? 'required' : '' ?>
                   <?= disabled($config->disabled, true, false) ?>
                   <?= $config->type === 'number' && isset($config->min) ? "min={$config->min}" : '' ?>
@@ -53,15 +54,16 @@
       <?php
     }
 
-    public static function theAdminNumberInput(string $label, string $name, string $value, string $error = '', ?int $minValue = null, ?int $maxValue = null): void {
+    public static function theAdminNumberInput(string $label, string $name, string $value, string $error = '', ?int $minValue = null, ?int $maxValue = null, bool $isDisabled = false): void {
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
+                <label class='form-label' for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
                 <input type='number' id='<?= $name ?>' name='<?= $name ?>'
-                       value='<?= $value ?>' <?= isset($minValue) ? "min={$minValue}" : '' ?> <?= isset($maxValue) ? "min={$maxValue}" : '' ?>/>
+                       value='<?= $value ?>' <?= isset($minValue) ? "min={$minValue}" : '' ?> <?= isset($maxValue) ? "max={$maxValue}" : '' ?>
+                        <?= disabled($isDisabled, true, false) ?>/>
               <?php
                 self::theValidationError($error);
               ?>
@@ -73,8 +75,8 @@
     public static function theAdminTextArea(string $label, string $name, string $value, string $error = '', int $columns = 30, int $rows = 5): void {
       ?>
         <tr>
-            <th scope='row' class='va-top'>
-                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
+            <th scope='row' class='va-top' style='vertical-align: top'>
+                <label class='form-label' for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
                 <textarea id='<?= $name ?>' name='<?= $name ?>' cols='<?= $columns ?>'
@@ -91,7 +93,7 @@
       ?>
         <tr>
             <th scope='row'>
-                <label for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
+                <label class='form-label' for='<?= $name ?>' <?= self::errorLabelClass($error) ?>><?= $label ?></label>
             </th>
             <td>
                 <input type='text' id='<?= $name ?>' name='<?= $name ?>' value='<?= $value ?>'
@@ -147,7 +149,7 @@
 
     public static function theForceNavigationToSamePageScript(): void { ?>
         <script>
-            window.location.replace('<?= FieldNames::HTTP_REFERER ?>');
+            window.location.replace('<?= CommonFieldNames::HTTP_REFERER ?>');
         </script>
       <?php
     }

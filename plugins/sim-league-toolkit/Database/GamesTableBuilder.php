@@ -4,7 +4,7 @@
 
   use SLTK\Core\GameKeys;
 
-  class GamesTableBuilder implements TableBuilder {
+  class GamesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
     }

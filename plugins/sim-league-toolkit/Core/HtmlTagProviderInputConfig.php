@@ -22,6 +22,7 @@
     public bool $required = false;
     public int $size = 30;
     public ?int $step = null;
+    public string $tooltip = '';
     public string $type = 'text';
     public string $value = '';
   }

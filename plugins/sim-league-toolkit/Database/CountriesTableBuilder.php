@@ -5,7 +5,7 @@
 
   use SLTK\Core\Constants;
 
-  class CountriesTableBuilder implements TableBuilder {
+  class CountriesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
 

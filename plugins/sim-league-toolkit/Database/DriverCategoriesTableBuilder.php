@@ -9,7 +9,7 @@
     die;
   }
 
-  class DriverCategoriesTableBuilder implements TableBuilder {
+  class DriverCategoriesTableBuilder extends TableBuilder {
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);

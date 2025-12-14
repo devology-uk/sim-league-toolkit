@@ -4,7 +4,7 @@
 
   use SLTK\Core\Constants;
 
-  class TrackLayoutsTableBuilder implements TableBuilder {
+  class TrackLayoutsTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
@@ -37,6 +37,18 @@
                         FOREIGN KEY (trackId) REFERENCES {$tracksTableName}(id);";
         $wpdb->query($fkSql);
       }
+
+      $uniqueConstraintName = 'uq_track_layouts';
+      $uniqueConstraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+                        WHERE TABLE_NAME = '{$tableName}'
+                        AND CONSTRAINT_NAME = '{$uniqueConstraintName}';";
+      $uniqueConstraintExists = (int)$wpdb->get_var($uniqueConstraintExistsCheckSql);
+      if (!$uniqueConstraintExists) {
+        $uqSql = "ALTER TABLE {$tableName}
+                    ADD CONSTRAINT {$uniqueConstraintName}
+                        UNIQUE (gameId, trackId, layoutId);";
+        $wpdb->query($uqSql);
+      }
     }
 
     public function applyAdjustments(string $tablePrefix): void {
@@ -47,13 +59,14 @@
       $tableName = $this->tableName($tablePrefix);
 
       return "CREATE TABLE {$tableName} (
+          id bigint NOT NULL AUTO_INCREMENT,
           gameId bigint NOT NULL,
           trackId bigint NOT NULL,
           layoutId tinyText NOT NULL,
           name tinytext NOT NULL,
           corners tinyint NOT NULL,
           length int NOT NULL,
-          PRIMARY KEY  (gameId, trackId)
+          PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
 

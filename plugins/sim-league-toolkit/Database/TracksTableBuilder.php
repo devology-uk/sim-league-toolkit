@@ -5,7 +5,7 @@
 
   use SLTK\Core\Constants;
 
-  class TracksTableBuilder implements TableBuilder{
+  class TracksTableBuilder extends TableBuilder{
 
     public function applyAdjustments(string $tablePrefix): void {
 

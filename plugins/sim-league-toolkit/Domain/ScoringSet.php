@@ -3,13 +3,14 @@
   namespace SLTK\Domain;
 
   use Exception;
+  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ScoringSetRepository;
   use stdClass;
 
   class ScoringSet extends DomainBase implements Validator {
-    public final const string DESCRIPTION_FIELD_NAME = 'sltk_description';
-    public final const string NAME_FIELD_NAME = 'sltk_name';
+    public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
+    public final const string NAME_FIELD_NAME = CommonFieldNames::NAME;
     public final const string POINTS_FOR_FASTEST_LAP_FIELD_NAME = 'sltk_fastest_lap_points';
     public final const string POINTS_FOR_FINISHING_FIELD_NAME = 'sltk_finish_points';
     public final const string POINTS_FOR_POLE_FIELD_NAME = 'sltk_pole_points';

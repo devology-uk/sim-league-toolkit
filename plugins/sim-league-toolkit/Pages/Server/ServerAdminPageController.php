@@ -6,7 +6,7 @@
   use SLTK\Components\PlatformSelectorComponent;
   use SLTK\Core\AdminPageSlugs;
   use SLTK\Core\Constants;
-  use SLTK\Core\FieldNames;
+  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\HtmlTagProvider;
   use SLTK\Core\QueryParamNames;
   use SLTK\Core\UrlBuilder;
@@ -169,15 +169,15 @@
 
     public function theServerHiddenFields(): void {
       $this->theNonce();
-      HtmlTagProvider::theHiddenField(FieldNames::PAGE_ACTION, $this->action);
-      HtmlTagProvider::theHiddenField(FieldNames::ID, $this->id);
+      HtmlTagProvider::theHiddenField(CommonFieldNames::PAGE_ACTION, $this->action);
+      HtmlTagProvider::theHiddenField(CommonFieldNames::ID, $this->id);
       HtmlTagProvider::theHiddenField(Server::GAME_ID_FIELD_NAME, $this->server->gameId);
       HtmlTagProvider::theHiddenField(Server::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
     public function theSettingsHiddenFields(): void {
       wp_nonce_field(self::NONCE_ACTION, self::NONCE_NAME);
-      HtmlTagProvider::theHiddenField(FieldNames::ID, $this->id);
+      HtmlTagProvider::theHiddenField(CommonFieldNames::ID, $this->id);
       HtmlTagProvider::theHiddenField(Server::GAME_KEY_FIELD_NAME, $this->gameKey);
     }
 
@@ -246,7 +246,7 @@
       $this->action = $this->getActionFromUrl();
 
       if ($this->action === Constants::ACTION_EDIT) {
-        $this->id = (int)$this->getSanitisedFieldFromUrl(FieldNames::ID, Constants::DEFAULT_ID);
+        $this->id = (int)$this->getSanitisedFieldFromUrl(CommonFieldNames::ID, Constants::DEFAULT_ID);
         $this->loadServer();
         $this->gameKey = Game::getGameKey($this->server->gameId);
         $this->settingsProvider = ServerSettingsProviderFactory::create($this->gameKey, $this->server);
@@ -259,7 +259,7 @@
 
     protected function handlePost(): void {
       $this->action = $this->getActionFromPost();
-      $this->id = $this->getSanitisedFieldFromPost(FieldNames::ID, Constants::DEFAULT_ID);
+      $this->id = $this->getSanitisedFieldFromPost(CommonFieldNames::ID, Constants::DEFAULT_ID);
 
       if ($this->action === Constants::ACTION_ADD && !$this->postContainsField(self::SAVE_SERVER_BUTTON_NAME)) {
         $this->processGameSelection();

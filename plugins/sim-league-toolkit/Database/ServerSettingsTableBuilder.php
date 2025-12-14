@@ -2,7 +2,7 @@
 
   namespace SLTK\Database;
 
-  class ServerSettingsTableBuilder implements TableBuilder {
+  class ServerSettingsTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;

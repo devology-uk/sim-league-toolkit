@@ -5,7 +5,7 @@
   abstract class HttpRequestHandler {
 
     protected function getActionFromPost(): string {
-      return $this->getFieldFromPost(FieldNames::PAGE_ACTION, Constants::ACTION_EDIT);
+      return $this->getFieldFromPost(CommonFieldNames::PAGE_ACTION, Constants::ACTION_EDIT);
     }
 
     protected function getActionFromUrl(): string {
@@ -45,11 +45,11 @@
     }
 
     protected function isFormPost(): bool {
-      return strtoupper($_SERVER[FieldNames::REQUEST_METHOD]) === 'POST';
+      return strtoupper($_SERVER[CommonFieldNames::REQUEST_METHOD]) === 'POST';
     }
 
     protected function isGetRequest(): bool {
-      return strtoupper($_SERVER[FieldNames::REQUEST_METHOD]) === 'GET';
+      return strtoupper($_SERVER[CommonFieldNames::REQUEST_METHOD]) === 'GET';
     }
 
     protected function postContainsField(string $fieldId): bool {

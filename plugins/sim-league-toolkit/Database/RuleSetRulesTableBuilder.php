@@ -2,7 +2,7 @@
 
   namespace SLTK\Database;
 
-  class RuleSetRulesTableBuilder implements TableBuilder {
+  class RuleSetRulesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;

@@ -4,7 +4,9 @@
 
   interface FormFieldComponent extends Component {
 
-    public function getValue(): string;
+    public function getTooltip(): string;
 
-    public function setValue(string $value): void;
+    public function getValue(): mixed;
+
+    public function setValue(mixed $value): void;
   }

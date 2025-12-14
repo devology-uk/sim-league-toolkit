@@ -1,62 +1,69 @@
 <?php
 
-  namespace SLTK\Components;
+    namespace SLTK\Components;
 
-  use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\PlatformRepository;
+    use Exception;
+    use SLTK\Core\Constants;
+    use SLTK\Domain\Platform;
 
-  class PlatformSelectorComponent implements FormFieldComponent {
-    public final const string FIELD_ID = 'sltk-platform-selector';
-    private PlatformSelectorComponentConfig $config;
-    private int $currentValue = Constants::DEFAULT_ID;
-    private int $gameId = Constants::DEFAULT_ID;
-    private bool $isDisabled = false;
+    class PlatformSelectorComponent implements FormFieldComponent {
+        public final const string FIELD_ID = 'sltk-platform-selector';
+        private SelectorComponentConfig $config;
+        private int $currentValue = Constants::DEFAULT_ID;
+        private int $gameId = Constants::DEFAULT_ID;
+        private bool $isDisabled = false;
 
-    public function __construct(PlatformSelectorComponentConfig $config = null) {
-      $this->config = $config ?? new PlatformSelectorComponentConfig();
-      $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
+        public function __construct(SelectorComponentConfig $config = null) {
+            $this->config = $config ?? new SelectorComponentConfig();
+            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
 
-      if($postedValue !== $this->currentValue) {
-        $this->currentValue = $postedValue;
-      }
-    }
+            if ($postedValue !== $this->currentValue) {
+                $this->currentValue = $postedValue;
+            }
+        }
 
-    public function getValue(): string {
-      return $this->currentValue;
-    }
+        public function getValue(): string {
+            return $this->currentValue;
+        }
 
-    public function render(): void {
-      $platforms = PlatformRepository::listForGame($this->gameId);
+        public function getTooltip(): string {
+            return $this->config->toolTip;
+        }
 
-      ?>
-      <select id='<?= self::FIELD_ID ?>' name='<?= self::FIELD_ID ?>'
-        <?php
-          disabled($this->isDisabled);
-          if($this->config->submitOnSelect) {
+        /**
+         * @throws Exception
+         */
+        public function render(): void {
+            $platforms = Platform::listForGame($this->gameId);
+
             ?>
-            onchange='this.form.submit()'
+            <select id='<?= self::FIELD_ID ?>' name='<?= self::FIELD_ID ?>' title='<?= $this->config->toolTip ?>'
+                    <?php
+                        disabled($this->isDisabled);
+                        if ($this->config->submitOnSelect) {
+                            ?>
+                            onchange='this.form.submit()'
+                            <?php
+                        }
+                    ?>
+            >
+                <option value='<?= Constants::DEFAULT_ID ?>'><?= esc_html__('Please Select...', 'sim-league-toolkit') ?></option>
+                <?php
+                    foreach ($platforms as $platform) { ?>
+                        <option value='<?= $platform->id ?>' <?= selected($this->currentValue, $platform->id, false) ?>><?= $platform->getName() ?></option>
+                        <?php
+                    }
+                ?>
+            </select>
             <?php
-          }
-        ?>
-      >
-        <option value='<?= Constants::DEFAULT_ID ?>'><?= esc_html__('Please Select...', 'sim-league-toolkit') ?>.
-        </option>
-        <?php
-          foreach($platforms as $platform) { ?>
-            <option value='<?= $platform->id ?>' <?= selected($this->currentValue, $platform->id, false) ?>><?= $platform->name ?></option>
-            <?php
-          }
-        ?>
-      </select>
-      <?php
-    }
+        }
 
-    public function setValue(string $value): void {
-      $this->currentValue = $value;
-      $this->isDisabled = $this->config->disableOnSetValue;
-    }
+        public function setGameId(int $gameId): void {
+            $this->gameId = $gameId;
+        }
 
-    public function setGameId(int $gameId): void {
-        $this->gameId = $gameId;
+        public function setValue(mixed $value): void {
+            $this->currentValue = (int)$value;
+            $this->isDisabled = $this->config->disableOnSetValue;
+        }
     }
-  }

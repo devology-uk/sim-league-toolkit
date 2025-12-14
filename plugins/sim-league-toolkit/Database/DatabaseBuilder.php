@@ -24,9 +24,7 @@
       self::$builders[] = new CarsTableBuilder();
       self::$builders[] = new TracksTableBuilder();
       self::$builders[] = new TrackLayoutsTableBuilder();
-
-
-//      self::$builders[] = new ChampionshipsTableBuilder();
+      self::$builders[] = new ChampionshipsTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {

@@ -15,7 +15,6 @@
     public final const string DRIVER_CATEGORIES_TAB = 'driver_categories';
     public final const string IS_BUILTIN_FIELD_NAME = 'sltk_is_builtin';
     public final const string IS_PUBLISHED_FIELD_NAME = 'sltk_is_published';
-    public final const string LATEST_VERSION_FIELD_NAME = 'sltk_lastest_version';
     public final const string NAME_FIELD_NAME = 'sltk_name';
     public final const string PLATFORMS_FIELD_NAME = 'sltk_platforms[]';
     public final const string SUPPORTS_RESULT_UPLOAD_FIELD_NAME = 'sltk_supportS_result_upload';
@@ -47,6 +46,9 @@
       return new Game(GameRepository::getById($id));
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getGameKey(int $id): string {
       return GameRepository::getKey($id);
     }
@@ -121,6 +123,9 @@
       return $this->supportsResultUpload;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getTracks(): array {
       $queryResult = TrackRepository::listForGame($this->id);
 

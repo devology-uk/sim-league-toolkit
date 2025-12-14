@@ -14,24 +14,10 @@ class ImportAdminPageController extends ControllerBase {
     private ImportMembersTab $tab;
 
     public function theMembersTab(): void { ?>
-        <a href="<?= $this->getTabUrl(self::MEMBERS_TAB_NAME) ?>"
-           class="nav-tab <?= $this->getActiveCssClass(self::MEMBERS_TAB_NAME) ?>"><?= esc_html__('Members',
+        <a href="<?= $this->getTabUrl(AdminPageSlugs::IMPORT, self::MEMBERS_TAB_NAME) ?>"
+           class="nav-tab <?= $this->getActiveCssClass($this->currentTab, self::MEMBERS_TAB_NAME) ?>"><?= esc_html__('Members',
                 'sim-league-toolkit') ?></a>
         <?php
-    }
-
-    private function getTabUrl(string $tabName = ''): string {
-        $urlParams = [];
-
-        if (!empty($tabName)) {
-            $urlParams[QueryParamNames::TAB] = $tabName;
-        }
-
-        return UrlBuilder::getAdminPageAbsoluteUrl(AdminPageSlugs::IMPORT, $urlParams);
-    }
-
-    private function getActiveCssClass(string $tabName = ''): string {
-        return $this->currentTab === $tabName ? 'nav-tab-active' : '';
     }
 
     public function theTabContent(): void {

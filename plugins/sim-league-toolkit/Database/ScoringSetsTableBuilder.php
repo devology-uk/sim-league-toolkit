@@ -4,7 +4,7 @@
 
   use SLTK\Core\BuiltinScoringSetNames;
 
-  class ScoringSetsTableBuilder implements TableBuilder {
+  class ScoringSetsTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
     }

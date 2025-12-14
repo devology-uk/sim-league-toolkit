@@ -2,7 +2,7 @@
 
   namespace SLTK\Database;
 
-  class RuleSetsTableBuilder implements TableBuilder {
+  class RuleSetsTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
     }
