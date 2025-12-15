@@ -447,6 +447,7 @@
                     QueryParamNames::ACTION => Constants::ACTION_EDIT
                 ];
                 $url = UrlBuilder::getAdminPageAbsoluteUrl(AdminPageSlugs::CHAMPIONSHIP, $urlParameters);
+                $this->theSuccessMessage($this->championship->getName() . ' has been created successfully, please wait while it is loaded for further editing...', $url);
                 $this->theRedirectScript($url, 2);
             }
         }
