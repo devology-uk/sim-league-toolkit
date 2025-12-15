@@ -63,6 +63,15 @@
     }
 
     /**
+     * @return Game[]
+     */
+    public static function listPublished(): array {
+      $queryResults = GameRepository::listPublished();
+
+      return self::mapGames($queryResults);
+    }
+
+    /**
      * @return CarClass[]
      * @throws Exception
      */

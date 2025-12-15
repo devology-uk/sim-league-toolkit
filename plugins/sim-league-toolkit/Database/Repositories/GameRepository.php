@@ -32,4 +32,8 @@
     public static function listAll(): array {
       return self::getResultsFromTable(TableNames::GAMES, null, 'published DESC, name');
     }
+
+    public static function listPublished(): array {
+      return self::getResultsFromTable(TableNames::GAMES, 'published = 1', 'published DESC, name');
+    }
   }

@@ -31,7 +31,7 @@
 
         public function render(): void {
 
-            $games = Game::list();
+            $games = Game::listPublished();
             ?>
             <select id='<?= self::FIELD_ID ?>' name='<?= self::FIELD_ID ?>' title='<?= $this->config->toolTip ?>'
                     <?php
