@@ -2,15 +2,16 @@
 
   namespace SLTK\Domain;
 
+  use Exception;
   use SLTK\Core\Constants;
+  use SLTK\Database\Repositories\CarRepository;
   use stdClass;
 
-  class Car {
+  class Car extends EntityBase {
 
-    private string $carKey = '';
     private string $carClass = '';
+    private string $carKey = '';
     private int $gameId = Constants::DEFAULT_ID;
-    private int $id = Constants::DEFAULT_ID;
     private string $manufacturer = '';
     private string $name = '';
     private int $year = 0;
@@ -29,6 +30,32 @@
         }
       }
 
+    }
+
+    public static function get(int $id): Car|null {
+      $queryResult = CarRepository::getById($id);
+
+      return new Car($queryResult);
+    }
+
+    /**
+     * @return Car[]
+     * @throws Exception
+     */
+    public static function list(): array {
+      $queryResult = CarRepository::list();
+
+      return self::mapCars($queryResult);
+    }
+
+    /**
+     * @return Car[]
+     * @throws Exception
+     */
+    public static function listForGame(int $gameId): array {
+      $queryResult = CarRepository::listForGame($gameId);
+
+      return self::mapCars($queryResult);
     }
 
     public function getCarClass(): string {
@@ -75,5 +102,15 @@
 
       return $result;
 
+    }
+
+    private static function mapCars(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new Car($item);
+      }
+
+      return $results;
     }
   }
