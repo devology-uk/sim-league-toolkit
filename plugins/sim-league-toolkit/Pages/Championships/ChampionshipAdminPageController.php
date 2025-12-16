@@ -12,7 +12,7 @@
     class ChampionshipAdminPageController extends ControllerBase {
 
         private string $currentTab = '';
-        private int $id = Constants::DEFAULT_ID;
+        private int $championshipId = Constants::DEFAULT_ID;
         private ChampionshipDetailsTab $tab;
         private string $action = '';
 
@@ -33,14 +33,19 @@
         }
 
         public function theGeneralTab(): void { ?>
-            <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, '', $this->id) ?>"
+            <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, '', $this->championshipId) ?>"
                class="nav-tab <?= $this->getActiveCssClass($this->currentTab) ?>"><?= esc_html__('General', 'sim-league-toolkit') ?></a>
             <?php
         }
-
         private function initialiseState(): void {
-            $this->id = $this->getIdFromUrl();
+            $this->championshipId = $this->getIdFromUrl();
             $this->action = $this->getActionFromUrl();
+
+            if($this->action === Constants::ACTION_DELETE) {
+                $this->processDelete();
+                return;
+            }
+
             $this->currentTab = $this->getTabFromUrl();
             $this->prepareTabController();
         }
@@ -53,6 +58,10 @@
 //                Game::TRACKS_TAB => new GameTracksTab($this->game),
                 default => new ChampionshipDetailsTab(),
             };
+        }
+
+        private function processDelete() {
+
         }
 
         protected function handleGet(): void {

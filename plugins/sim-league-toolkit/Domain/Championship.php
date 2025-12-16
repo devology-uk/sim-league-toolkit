@@ -74,8 +74,12 @@
       }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): Championship|null {
-      return new Championship();
+      $queryResult = ChampionshipRepository::getById($id);
+      return new Championship($queryResult);
     }
 
     /**

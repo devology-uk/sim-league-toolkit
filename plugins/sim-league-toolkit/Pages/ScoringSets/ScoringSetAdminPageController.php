@@ -33,7 +33,7 @@
     }
 
     public function theDescriptionField(): void {
-      HtmlTagProvider::theAdminTextArea(esc_html__('Description', 'sltk-league-toolkit'),
+      HtmlTagProvider::theAdminTextArea(esc_html__('Description', 'sim-league-toolkit'),
                                         ScoringSet::DESCRIPTION_FIELD_NAME,
                                         $this->scoringSet->getDescription(),
                                         $this->getError(ScoringSet::DESCRIPTION_FIELD_NAME),

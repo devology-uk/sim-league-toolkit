@@ -87,7 +87,7 @@
             if ($this->championship->getGameId() === Constants::DEFAULT_ID) {
                 return;
             }
-            HtmlTagProvider::theAdminTextArea(esc_html__('Description', 'sltk-league-toolkit'),
+            HtmlTagProvider::theAdminTextArea(esc_html__('Description', 'sim-league-toolkit'),
                     Championship::DESCRIPTION_FIELD_NAME,
                     $this->championship->getDescription(),
                     $this->getError(Championship::DESCRIPTION_FIELD_NAME),
@@ -102,15 +102,15 @@
             $error = $this->getError(Championship::ENTRY_CHANGE_LIMIT_FIELD_NAME);
 
             $config = new HtmlTagProviderInputConfig(Championship::ENTRY_CHANGE_LIMIT_FIELD_NAME,
-                    esc_html__('Entry Change Limit', 'sltk-league-toolkit'),
+                    esc_html__('Entry Change Limit', 'sim-league-toolkit'),
                     $this->championship->getEntryChangeLimit(),
                     $error,
-                    esc_html__('Entry Change Limit', 'sltk-league-toolkit'),
+                    esc_html__('Entry Change Limit', 'sim-league-toolkit'),
                     'number');
             $config->min = 0;
             $config->max = 100;
             $config->step = 1;
-            $config->tooltip = esc_html__('The number of times a driver can change their entry during the championship.', 'sltk-league-toolkit');
+            $config->tooltip = esc_html__('The number of times a driver can change their entry during the championship.', 'sim-league-toolkit');
 
             HtmlTagProvider::theAdminInputField($config);
         }
@@ -194,15 +194,15 @@
             $error = $this->getError(Championship::RESULTS_TO_DISCARD_FIELD_NAME);
 
             $config = new HtmlTagProviderInputConfig(Championship::RESULTS_TO_DISCARD_FIELD_NAME,
-                    esc_html__('Results to Discard', 'sltk-league-toolkit'),
+                    esc_html__('Results to Discard', 'sim-league-toolkit'),
                     $this->championship->getResultsToDiscard(),
                     $error,
-                    esc_html__('Results To Discard', 'sltk-league-toolkit'),
+                    esc_html__('Results To Discard', 'sim-league-toolkit'),
                     'number');
             $config->min = 0;
             $config->max = 100;
             $config->step = 1;
-            $config->tooltip = esc_html__('The number of low scoring results that will be discarded to ensure a fair chance for all drivers to do well in the championship even if they miss an event or two.', 'sltk-league-toolkit');
+            $config->tooltip = esc_html__('The number of low scoring results that will be discarded to ensure a fair chance for all drivers to do well in the championship even if they miss an event or two.', 'sim-league-toolkit');
 
             HtmlTagProvider::theAdminInputField($config);
 
@@ -281,7 +281,7 @@
             ?>
             <tr>
                 <th scope='row'>
-                    <label class='form-label' for="<?= Championship::START_DATE_FIELD_NAME ?>"><?= esc_html__('Start Date', 'sltk-league-toolkit') ?></label>
+                    <label class='form-label' for="<?= Championship::START_DATE_FIELD_NAME ?>"><?= esc_html__('Start Date', 'sim-league-toolkit') ?></label>
                 </th>
                 <td>
                     <input
@@ -423,12 +423,12 @@
         }
 
         private function initialiseState(): void {
-            $this->gameSelectorComponent = new GameSelectorComponent(new SelectorComponentConfig(true, true, esc_html__('The game used for the championship', 'sltk-league-toolkit')));
-            $this->platformSelectorComponent = new PlatformSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The platform used for the championship', 'sltk-league-toolkit')));
-            $this->ruleSetSelectorComponent = new RuleSetSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The optional rule set that applies for the championship', 'sltk-league-toolkit')));
-            $this->scoringSetSelectorComponent = new ScoringSetSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The scoring set that applies for the championship', 'sltk-league-toolkit')));
-            $this->trackSelectorComponent = new TrackSelectorComponent(new SelectorComponentConfig(false, true, toolTip: esc_html__('The track to be used for the entire track master championship', 'sltk-league-toolkit')));
-            $this->trackLayoutSelectorComponent = new TrackLayoutSelectorComponent(new SelectorComponentConfig(false, true, toolTip: esc_html__('The track layout to be used for the entire track master championship', 'sltk-league-toolkit')));
+            $this->gameSelectorComponent = new GameSelectorComponent(new SelectorComponentConfig(true, true, esc_html__('The game used for the championship', 'sim-league-toolkit')));
+            $this->platformSelectorComponent = new PlatformSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The platform used for the championship', 'sim-league-toolkit')));
+            $this->ruleSetSelectorComponent = new RuleSetSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The optional rule set that applies for the championship', 'sim-league-toolkit')));
+            $this->scoringSetSelectorComponent = new ScoringSetSelectorComponent(new SelectorComponentConfig(toolTip: esc_html__('The scoring set that applies for the championship', 'sim-league-toolkit')));
+            $this->trackSelectorComponent = new TrackSelectorComponent(new SelectorComponentConfig(false, true, toolTip: esc_html__('The track to be used for the entire track master championship', 'sim-league-toolkit')));
+            $this->trackLayoutSelectorComponent = new TrackLayoutSelectorComponent(new SelectorComponentConfig(false, true, toolTip: esc_html__('The track layout to be used for the entire track master championship', 'sim-league-toolkit')));
 
             $this->championship = new Championship();
         }

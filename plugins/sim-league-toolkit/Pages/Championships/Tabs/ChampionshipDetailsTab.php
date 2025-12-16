@@ -2,6 +2,7 @@
 
     namespace SLTK\Pages\Championships\Tabs;
 
+    use Exception;
     use SLTK\Pages\AdminTab;
 
     class ChampionshipDetailsTab implements AdminTab {
@@ -12,6 +13,9 @@
             $this->controller = new ChampionshipDetailsTabController();
         }
 
+        /**
+         * @throws Exception
+         */
         public function render(): void { ?>
             <div class='wrap'>
             <form method='post' enctype='multipart/form-data'>
@@ -20,33 +24,25 @@
                 ?>
                 <table class='form-table'>
                     <?php
+                        $this->controller->theGameField();
+                        $this->controller->thePlatformField();
                         $this->controller->theNameField();
                         $this->controller->theDescriptionField();
-                        $this->controller->theGameSelector();
-                        $this->controller->thePlatformSelector();
-                        //            $this->controller->theStartDateField();
-                        //            $this->controller->theRuleSetSelector();
-                        //            $this->controller->theChampionshipTypeField();
-                        //            $this->controller->theTrackMasterTrackSelector();
-                        //            $this->controller->theEntryChangeLimitField();
-                        //            $this->controller->theResultsToDiscardField();
+                        $this->controller->theStartDateField();
+                        $this->controller->theRuleSetSelector();
+                        $this->controller->theScoringSetSelector();
+                        $this->controller->theResultsToDiscardField();
+                        $this->controller->theEntryChangeLimitField();
+                        $this->controller->theChampionshipTypeField();
+                        $this->controller->theTrackMasterTrackSelector();
+                        $this->controller->theTrackMasterTrackLayoutSelector();
+                        $this->controller->theActiveField();
                     ?>
                 </table>
-
                 <p>
                     <?php
-                        esc_html__('Championships are displayed with a banner image. By default, one of our built-in banner images will be randomly selected, alternatively you can upload your own PNG image. If you choose to upload an image, it will be resized to 300px wide and 169px high so make sure the image size has similar proportions, or it will be distorted when displayed.', 'sim-league-toolkit');
+                        $this->controller->theSaveButton();
                     ?>
-                </p>
-
-                <?php
-                    //          $this->controller->theBannerImageField();
-                    //          $this->controller->theBannerImage();
-                    $this->controller->theActiveField();
-                ?>
-
-                <p>
-                    <input type="submit" name="submitFrm" class="button button-primary" value="Save Changes">
                 </p>
             </form>
             <?php

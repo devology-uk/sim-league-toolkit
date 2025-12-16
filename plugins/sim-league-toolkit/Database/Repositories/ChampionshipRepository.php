@@ -14,8 +14,24 @@
       return self::insert(TableNames::CHAMPIONSHIPS, $championship);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): stdClass {
-      return self::getRowById(TableNames::CHAMPIONSHIPS, $id);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+
+      $query = "SELECT c.*, p.name as platform, g.name as game 
+                FROM $championshipsTableName c
+                INNER JOIN $platformsTableName p
+                ON c.platformId = p.id
+                INNER JOIN $gamesTableName g
+                ON c.gameId = g.id
+                WHERE c.id = $id
+                ORDER BY c.isActive DESC, startDate;";
+
+      return self::getRow($query);
     }
 
     /**
