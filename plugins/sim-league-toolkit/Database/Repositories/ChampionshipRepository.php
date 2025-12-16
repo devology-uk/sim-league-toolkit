@@ -17,6 +17,13 @@
     /**
      * @throws Exception
      */
+    public static function delete(int $id): void {
+      self::deleteById(TableNames::CHAMPIONSHIPS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): stdClass {
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);

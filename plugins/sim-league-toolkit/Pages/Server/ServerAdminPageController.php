@@ -257,7 +257,10 @@
       $this->server = new Server();
     }
 
-    protected function handlePost(): void {
+      /**
+       * @throws \Exception
+       */
+      protected function handlePost(): void {
       $this->action = $this->getActionFromPost();
       $this->id = $this->getSanitisedFieldFromPost(CommonFieldNames::ID, Constants::DEFAULT_ID);
 

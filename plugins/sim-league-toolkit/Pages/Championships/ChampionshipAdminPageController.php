@@ -4,8 +4,10 @@
 
     use Exception;
     use SLTK\Core\AdminPageSlugs;
+    use SLTK\Core\CommonFieldNames;
     use SLTK\Core\Constants;
     use SLTK\Core\UrlBuilder;
+    use SLTK\Domain\Championship;
     use SLTK\Pages\Championships\Tabs\ChampionshipDetailsTab;
     use SLTK\Pages\ControllerBase;
 
@@ -14,7 +16,6 @@
         private string $currentTab = '';
         private int $championshipId = Constants::DEFAULT_ID;
         private ChampionshipDetailsTab $tab;
-        private string $action = '';
 
         public function theBackButton(): void { ?>
             <br/>
@@ -39,13 +40,6 @@
         }
         private function initialiseState(): void {
             $this->championshipId = $this->getIdFromUrl();
-            $this->action = $this->getActionFromUrl();
-
-            if($this->action === Constants::ACTION_DELETE) {
-                $this->processDelete();
-                return;
-            }
-
             $this->currentTab = $this->getTabFromUrl();
             $this->prepareTabController();
         }
@@ -58,10 +52,6 @@
 //                Game::TRACKS_TAB => new GameTracksTab($this->game),
                 default => new ChampionshipDetailsTab(),
             };
-        }
-
-        private function processDelete() {
-
         }
 
         protected function handleGet(): void {

@@ -5,9 +5,11 @@
   class CommonFieldNames {
     public final const string BANNER_IMAGE_FILE = 'sltk_banner_image_file';
     public final const string BANNER_IMAGE_URL = 'sltk_banner_image_url';
+    public final const string CANCEL_DELETE = 'sltk_cancel_delete';
     public final const string CHAMPIONSHIP_ID = 'sltk_championship_id';
-    public final const string EVENT_ID = 'sltk_event_id';
+    public final const string CONFIRM_DELETE = 'sltk_confirm_delete';
     public final const string DESCRIPTION = 'sltk_description';
+    public final const string EVENT_ID = 'sltk_event_id';
     public final const string FORM_SUBMITTED = 'sltk_form_submitted';
     public final const string GAME_ID = 'sltk_game_id';
     public final const string HTTP_REFERER = 'HTTP_REFERER';

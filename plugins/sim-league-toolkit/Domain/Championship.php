@@ -77,8 +77,16 @@
     /**
      * @throws Exception
      */
+    public static function delete(int $id): void {
+      ChampionshipRepository::delete($id);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): Championship|null {
       $queryResult = ChampionshipRepository::getById($id);
+
       return new Championship($queryResult);
     }
 
@@ -192,7 +200,7 @@
     }
 
     public function getRuleSetId(): ?int {
-      return $this->ruleSetId > 0 ? (int) $this->ruleSetId : null;
+      return $this->ruleSetId > 0 ? (int)$this->ruleSetId : null;
     }
 
     public function setRuleSetId(?int $value): void {
@@ -216,7 +224,7 @@
     }
 
     public function getTrackMasterTrackId(): ?int {
-      return $this->trackMasterTrackId > 0 ? (int) $this->trackMasterTrackId : null;
+      return $this->trackMasterTrackId > 0 ? (int)$this->trackMasterTrackId : null;
     }
 
     public function setTrackMasterTrackId(?int $value): void {
@@ -224,7 +232,7 @@
     }
 
     public function getTrackMasterTrackLayoutId(): ?int {
-      return $this->trackMasterTrackLayoutId > 0 ? (int) $this->trackMasterTrackLayoutId : null;
+      return $this->trackMasterTrackLayoutId > 0 ? (int)$this->trackMasterTrackLayoutId : null;
     }
 
     public function setTrackMasterTrackLayoutId(?int $value): void {
