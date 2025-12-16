@@ -14,6 +14,7 @@
 
     public final const string ALLOW_ENTRY_CHANGE_FIELD_NAME = 'sltk_allow_entry_change';
     public final const string BANNER_IMAGE_FILE_FIELD_NAME = CommonFieldNames::BANNER_IMAGE_FILE;
+    public final const string BANNER_IMAGE_TAB = 'banner_image';
     public final const string BANNER_IMAGE_URL_HIDDEN_FIELD_NAME = CommonFieldNames::BANNER_IMAGE_URL;
     public final const string CHAMPIONSHIP_ID_FIELD_NAME = CommonFieldNames::CHAMPIONSHIP_ID;
     public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;

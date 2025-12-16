@@ -12,6 +12,7 @@
     use SLTK\Components\TrackLayoutSelectorComponent;
     use SLTK\Components\TrackSelectorComponent;
     use SLTK\Core\AdminPageSlugs;
+    use SLTK\Core\BannerImageProvider;
     use SLTK\Core\ChampionshipTypes;
     use SLTK\Core\CommonFieldNames;
     use SLTK\Core\Constants;
@@ -434,8 +435,13 @@
         }
 
         private function processForm(): void {
+            $bannerImageUrl = $this->championship->getBannerImageUrl();
+
+            if(empty($bannerImageUrl)) {
+                $this->championship->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
+            }
+
             $validationResult = $this->championship->validate();
-            var_dump($validationResult);
             if (!$validationResult->success) {
                 $this->errors = $validationResult->validationErrors;
                 return;

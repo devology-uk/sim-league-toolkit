@@ -4,18 +4,18 @@
 
     use Exception;
     use SLTK\Core\AdminPageSlugs;
-    use SLTK\Core\CommonFieldNames;
     use SLTK\Core\Constants;
     use SLTK\Core\UrlBuilder;
     use SLTK\Domain\Championship;
+    use SLTK\Pages\Championships\Tabs\ChampionshipBannerImageTab;
     use SLTK\Pages\Championships\Tabs\ChampionshipDetailsTab;
     use SLTK\Pages\ControllerBase;
 
     class ChampionshipAdminPageController extends ControllerBase {
 
-        private string $currentTab = '';
         private int $championshipId = Constants::DEFAULT_ID;
-        private ChampionshipDetailsTab $tab;
+        private string $currentTab = '';
+        private ChampionshipDetailsTab|ChampionshipBannerImageTab $tab;
 
         public function theBackButton(): void { ?>
             <br/>
@@ -26,6 +26,18 @@
             <?php
         }
 
+        public function theGeneralTab(): void { ?>
+            <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, '', $this->championshipId) ?>"
+               class="nav-tab <?= $this->getActiveCssClass($this->currentTab) ?>"><?= esc_html__('General', 'sim-league-toolkit') ?></a>
+            <?php
+        }
+
+        public function theBannerImageTab(): void { ?>
+            <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, Championship::BANNER_IMAGE_TAB, $this->championshipId) ?>"
+               class="nav-tab <?= $this->getActiveCssClass($this->currentTab, Championship::BANNER_IMAGE_TAB) ?>"><?= esc_html__('Banner Image', 'sim-league-toolkit') ?></a>
+            <?php
+        }
+
         /**
          * @throws Exception
          */
@@ -33,11 +45,6 @@
             $this->tab->render();
         }
 
-        public function theGeneralTab(): void { ?>
-            <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, '', $this->championshipId) ?>"
-               class="nav-tab <?= $this->getActiveCssClass($this->currentTab) ?>"><?= esc_html__('General', 'sim-league-toolkit') ?></a>
-            <?php
-        }
         private function initialiseState(): void {
             $this->championshipId = $this->getIdFromUrl();
             $this->currentTab = $this->getTabFromUrl();
@@ -46,10 +53,7 @@
 
         private function prepareTabController(): void {
             $this->tab = match ($this->currentTab) {
-//                Game::CAR_CLASSES_TAB => new GameCarClassesTab($this->game),
-//                Game::DRIVER_CATEGORIES_TAB => new GameDriverCategoriesTab($this->game),
-//                Game::CARS_TAB => new GameCarsTab($this->game),
-//                Game::TRACKS_TAB => new GameTracksTab($this->game),
+                Championship::BANNER_IMAGE_TAB => new ChampionshipBannerImageTab(),
                 default => new ChampionshipDetailsTab(),
             };
         }

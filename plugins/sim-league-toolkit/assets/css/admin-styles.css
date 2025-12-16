@@ -118,3 +118,7 @@ fieldset {
 .va-top {
     vertical-align: top;
 }
+
+.mw-900 {
+    max-width: 900px;
+}
