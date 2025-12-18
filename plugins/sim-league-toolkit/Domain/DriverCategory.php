@@ -6,27 +6,23 @@
   use stdClass;
 
   class DriverCategory {
-    private int $gameId = Constants::DEFAULT_ID;
     private int $id = Constants::DEFAULT_ID;
     private string $name = '';
     private string $plaque = '';
+    private int $participationRequirement = 0;
 
     public function __construct(stdClass $data = null) {
 
       if ($data !== null) {
-        $this->gameId = $data->gameId;
         $this->name = $data->name;
         $this->plaque = $data->plaque;
+        $this->participationRequirement = $data->participation_requirement;
 
         if (isset($data->id)) {
           $this->id = $data->id;
         }
       }
 
-    }
-
-    public function getGameId(): int {
-      return $this->gameId;
     }
 
     public function getId(): int {
@@ -41,11 +37,15 @@
       return $this->plaque;
     }
 
+    public function getParticipationRequirement(): int {
+      return $this->participationRequirement;
+    }
+
     public function toArray(): array {
       $result = [
-        'gameId' => $this->gameId,
         'name' => $this->name,
-        'plaque' => $this->plaque
+        'plaque' => $this->plaque,
+        'participationRequirement' => $this->participationRequirement,
       ];
 
       if ($this->id !== Constants::DEFAULT_ID) {

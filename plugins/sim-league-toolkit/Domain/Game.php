@@ -4,7 +4,7 @@
 
   use Exception;
   use SLTK\Database\Repositories\CarRepository;
-  use SLTK\Database\Repositories\DriverCategoryRepository;
+  use SLTK\Database\Repositories\DriverCategoriesRepository;
   use SLTK\Database\Repositories\GameRepository;
   use SLTK\Database\Repositories\TrackRepository;
   use stdClass;
@@ -89,15 +89,6 @@
       $queryResults = CarRepository::listForGame($this->id);
 
       return $this->mapCars($queryResults);
-    }
-
-    /**
-     * @return DriverCategory[]
-     */
-    public function getDriverCategories(): array {
-      $queryResult = DriverCategoryRepository::listForGame($this->id);
-
-      return $this->mapDriverCategories($queryResult);
     }
 
     public function getIsBuiltin(): bool {
