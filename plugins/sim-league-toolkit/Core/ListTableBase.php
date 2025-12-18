@@ -8,9 +8,10 @@
 
         private ?string $createSlugOverride = null;
         private bool $isReadOnly = false;
+        private int $pageSize = -10;
         private string $singularSlug = '';
 
-        public function __construct(string $singularName, string $pluralName, string $singularSlug, bool $isReadOnly = false, ?string $createSlugOverride = null) {
+        public function __construct(string $singularName, string $pluralName, string $singularSlug, bool $isReadOnly = false, ?string $createSlugOverride = null, int $pageSize = 10) {
             parent::__construct([
                     'singular' => $singularName,
                     'plural' => $pluralName,
@@ -20,6 +21,7 @@
             $this->singularSlug = $singularSlug;
             $this->isReadOnly = $isReadOnly;
             $this->createSlugOverride = $createSlugOverride;
+            $this->pageSize = $pageSize;
         }
 
         public function column_default($item, $column_name): mixed {
@@ -81,12 +83,27 @@
 
         public function prepare_items(): void {
 
-            $this->items = $this->getItems();
+            $tableData = $this->getItems();
 
             $columns = $this->getColumns();
             $hidden = $this->getHiddenColumns();
             $sortable = $this->get_sortable_columns();
-            $this->_column_headers = array($columns, $hidden, $sortable);
+            $this->_column_headers = [$columns, $hidden, $sortable];
+
+            usort($tableData, [&$this, 'usort_reorder']);
+
+            $currentPage = $this->get_pagenum();
+            $totalItems = count($tableData);
+
+            $tableData = array_slice($tableData, (($currentPage - 1) * $this->pageSize), $this->pageSize);
+
+            $this->set_pagination_args([
+                    'total_items' => $totalItems,
+                    'per_page' => $this->pageSize,
+                    'total_pages' => ceil($totalItems / $this->pageSize)
+            ]);
+
+            $this->items = $tableData;
         }
 
         /**
