@@ -8,36 +8,11 @@
 
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
+
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_track_layouts_gameId', 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACKS, 'fk_track_layouts_trackId', 'trackId');
+
       $tableName = $this->tableName($tablePrefix);
-      $gamesTableName = $tablePrefix . TableNames::GAMES;
-      $tracksTableName = $tablePrefix . TableNames::TRACKS;
-
-      $gameConstraintName = 'fk_track_layouts_gameId';
-      $gameConstraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$gameConstraintName}';";
-
-      $gameConstraintExists = (int)$wpdb->get_var($gameConstraintExistsCheckSql);
-      if (!$gameConstraintExists) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$gameConstraintName} 
-                        FOREIGN KEY (gameId) REFERENCES {$gamesTableName}(id);";
-        $wpdb->query($fkSql);
-      }
-
-      $tracksConstraintName = 'fk_track_layouts_trackId';
-      $trackConstraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$tracksConstraintName}';";
-
-      $trackConstraintExists = (int)$wpdb->get_var($trackConstraintExistsCheckSql);
-      if (!$trackConstraintExists) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$tracksConstraintName} 
-                        FOREIGN KEY (trackId) REFERENCES {$tracksTableName}(id);";
-        $wpdb->query($fkSql);
-      }
-
       $uniqueConstraintName = 'uq_track_layouts';
       $uniqueConstraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
                         WHERE TABLE_NAME = '{$tableName}'
@@ -46,10 +21,11 @@
       if (!$uniqueConstraintExists) {
         $uqSql = "ALTER TABLE {$tableName}
                     ADD CONSTRAINT {$uniqueConstraintName}
-                        UNIQUE (gameId, trackId, layoutId);";
+                        UNIQUE (gameId, trackId, layoutId(100));";
         $wpdb->query($uqSql);
       }
     }
+
 
     public function applyAdjustments(string $tablePrefix): void {
 
@@ -62,7 +38,7 @@
           id bigint NOT NULL AUTO_INCREMENT,
           gameId bigint NOT NULL,
           trackId bigint NOT NULL,
-          layoutId tinyText NOT NULL,
+          layoutId varchar(100) NOT NULL,
           name tinytext NOT NULL,
           corners tinyint NOT NULL,
           length int NOT NULL,
@@ -86,7 +62,7 @@
       $handle = fopen($dataFilePath, 'r');
       if ($handle !== false) {
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
 
           $trackKey = $data[0];
           $layoutId = $data[1];

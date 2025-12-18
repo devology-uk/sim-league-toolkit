@@ -52,7 +52,7 @@
       $handle = fopen($dataFilePath, 'r');
       if ($handle !== false) {
 
-        while (($data = fgetcsv($handle, 1000, ',')) != false) {
+        while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
 
           $trackId = $data[0];
 
