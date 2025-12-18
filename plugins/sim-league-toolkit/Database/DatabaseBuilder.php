@@ -24,6 +24,7 @@
       self::$builders[] = new CarsTableBuilder();
       self::$builders[] = new TracksTableBuilder();
       self::$builders[] = new TrackLayoutsTableBuilder();
+      self::$builders[] = new EventClassesTableBuilder();
       self::$builders[] = new ChampionshipsTableBuilder();
     }
 
