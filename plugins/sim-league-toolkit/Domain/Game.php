@@ -190,14 +190,4 @@
 
       return $results;
     }
-
-    private function mapDriverCategories(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new DriverCategory($item);
-      }
-
-      return $results;
-    }
   }

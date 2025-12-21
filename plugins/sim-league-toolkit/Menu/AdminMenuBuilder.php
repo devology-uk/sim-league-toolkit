@@ -10,6 +10,7 @@
 
       (new ChampionshipsAdminMenu())->init($adminMenuSlug);
       (new EventsAdminMenu())->init($adminMenuSlug);
+      (new EventClassesAdminMenu())->init($adminMenuSlug);
       (new GamesAdminMenu())->init($adminMenuSlug);
       (new ImportAdminMenu())->init($adminMenuSlug);
       (new RaceNumbersMenu())->init($adminMenuSlug);

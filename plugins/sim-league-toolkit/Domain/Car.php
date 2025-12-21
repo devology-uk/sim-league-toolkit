@@ -49,11 +49,27 @@
     }
 
     /**
+     * @return string[]
+     * @throws Exception
+     */
+    public static function listClassesForGame(int $gameId): array {
+      $queryResults = CarRepository::listCarClassesForGame($gameId);
+
+      $results = [];
+
+      foreach ($queryResults as $carClass) {
+        $results[] = $carClass->carClass;
+      }
+
+      return $results;
+    }
+
+    /**
      * @return Car[]
      * @throws Exception
      */
-    public static function listForGame(int $gameId): array {
-      $queryResult = CarRepository::listForGame($gameId);
+    public static function listForGame(int $gameId, ?string $carClass = null): array {
+      $queryResult = CarRepository::listForGame($gameId, $carClass);
 
       return self::mapCars($queryResult);
     }
@@ -84,6 +100,10 @@
 
     public function getYear(): int {
       return $this->year;
+    }
+
+    public function getDisplayName(): string {
+      return $this->name . ' (' . $this->year . ')';
     }
 
     public function toArray(): array {

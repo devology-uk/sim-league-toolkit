@@ -26,8 +26,13 @@
     /**
      * @throws Exception
      */
-    public static function listForGame(int $gameId): array {
-      return self::getResultsFromTable(TableNames::CARS, "gameId = $gameId", "name");
+    public static function listForGame(int $gameId, ?string $carClass = null): array {
+      $filter = "gameId = $gameId";
+      if(isset($carClass)) {
+        $filter .= " AND carClass = '$carClass'";
+      }
+
+      return self::getResultsFromTable(TableNames::CARS, $filter, "name, year");
     }
 
 

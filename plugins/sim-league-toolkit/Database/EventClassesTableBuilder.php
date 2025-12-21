@@ -131,7 +131,7 @@
         [
           'carClass' => 'GT4',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKeys::AutoMobilista2,
           'isSingleCarClass' => false,
           'name' => 'GT4 Open',
           'singleCarKey' => null,

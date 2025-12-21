@@ -5,15 +5,13 @@
     use Exception;
     use SLTK\Core\Constants;
     use SLTK\Domain\Car;
-    use SLTK\Domain\Track;
+    use SLTK\Domain\DriverCategory;
 
-    class CarSelectorComponent implements FormFieldComponent {
-        public final const string FIELD_ID = 'sltk-car-selector';
+    class DriverCategorySelectorComponent implements FormFieldComponent {
+        public final const string FIELD_ID = 'sltk-driver-category-selector';
 
         private SelectorComponentConfig $config;
         private int $currentValue = Constants::DEFAULT_ID;
-        private int $gameId = Constants::DEFAULT_ID;
-        private ?string $carClass = null;
         private bool $isDisabled = false;
 
         public function __construct(SelectorComponentConfig $config = null) {
@@ -30,7 +28,7 @@
         }
 
         public function getValue(): ?int {
-            return $this->currentValue > 0 ? $this->currentValue : null;
+            return max($this->currentValue, Constants::DEFAULT_ID);
         }
 
         /**
@@ -38,7 +36,7 @@
          */
         public function render(): void {
 
-            $cars = Car::listForGame($this->gameId, $this->carClass);
+            $driverCategories = DriverCategory::list();
             ?>
             <select id='<?= self::FIELD_ID ?>' name='<?= self::FIELD_ID ?>' title='<?= $this->config->toolTip ?>'
                     <?php
@@ -52,22 +50,13 @@
             >
                 <option value='<?= Constants::DEFAULT_ID ?>'><?= esc_html__('Please Select...', 'sim-league-toolkit') ?></option>
                 <?php
-                    foreach ($cars as $car) { ?>
-                        <option value='<?= $car->id ?>' <?= selected($this->currentValue, $car->id, false) ?>><?= $car->getDisplayName() ?></option>
+                    foreach ($driverCategories as $driverCategory) { ?>
+                        <option value='<?= $driverCategory->id ?>' <?= selected($this->currentValue, $driverCategory->id, false) ?>><?= $driverCategory->getName() ?></option>
                         <?php
                     }
                 ?>
             </select>
             <?php
-        }
-
-
-        public function setGameId(int $gameId): void {
-            $this->gameId = $gameId;
-        }
-
-        public function setCarClass(?string $carClass): void {
-            $this->carClass = $carClass;
         }
 
         public function setValue(mixed $value): void {

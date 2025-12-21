@@ -137,7 +137,7 @@
 
         public function theHiddenFields(): void {
             $this->theNonce();
-            HtmlTagProvider::theHiddenField(Server::GAME_ID_FIELD_NAME, $this->championship->getGameId());
+            HtmlTagProvider::theHiddenField(Championship::GAME_ID_FIELD_NAME, $this->championship->getGameId());
         }
 
         public function theNameField(): void {

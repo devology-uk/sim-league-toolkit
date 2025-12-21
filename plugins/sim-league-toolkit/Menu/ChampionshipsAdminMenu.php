@@ -14,7 +14,7 @@
 
       $pluralPageTitle = esc_html__('Championships', 'sim-league-toolkit');
       $singlePageTitle = esc_html__('Championship', 'sim-league-toolkit');
-      $newPageTitle = esc_html__('New Championship', 'sim-league-toolkit');
+      $addPageTitle = esc_html__('New Championship', 'sim-league-toolkit');
 
       add_submenu_page(
         $parentSlug,
@@ -40,8 +40,8 @@
 
       add_submenu_page(
         '-',
-        $newPageTitle,
-        $newPageTitle,
+        $addPageTitle,
+        $addPageTitle,
         Constants::MANAGE_OPTIONS_PERMISSION,
         AdminPageSlugs::CREATE_CHAMPIONSHIP,
         function() {

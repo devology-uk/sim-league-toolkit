@@ -42,6 +42,11 @@
                     QueryParamNames::ID => $item['id'],
             ];
 
+            $tablePage = $_GET[QueryParamNames::PAGE] ?? '';
+            if(!empty($tablePage)) {
+                $deleteParams[QueryParamNames::PAGE] = $tablePage;
+            }
+
             $editUrl = UrlBuilder::getAdminPageRelativeUrl($this->singularSlug, $editParams);
             $deleteUrl = UrlBuilder::getAdminPageRelativeUrl($_REQUEST['page'], $deleteParams);
 

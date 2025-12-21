@@ -8,36 +8,8 @@
 
   class GamePlatformsTableBuilder extends TableBuilder {
     public function addConstraints(string $tablePrefix): void {
-      global $wpdb;
-      $tableName = $this->tableName($tablePrefix);
-      $gamesTableName = $tablePrefix . TableNames::GAMES;
-      $platformsTableName = $tablePrefix . TableNames::PLATFORMS;
-
-      $constraintName = 'fk_game_gameId';
-      $constraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '$tableName'
-                        AND CONSTRAINT_NAME = '$constraintName';";
-
-      $constraintExists = (int)$wpdb->get_var($constraintExistsCheckSql);
-      if (!$constraintExists) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT $constraintName 
-                        FOREIGN KEY (gameId) REFERENCES $gamesTableName(id);";
-        $wpdb->query($fkSql);
-      }
-
-      $constraintName = 'fk_platform_platformId';
-      $constraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '$tableName'
-                        AND CONSTRAINT_NAME = '$constraintName';";
-
-      $constraintExists = (int)$wpdb->get_var($constraintExistsCheckSql);
-      if (!$constraintExists) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT $constraintName 
-                        FOREIGN KEY (platformId) REFERENCES $platformsTableName(id);";
-        $wpdb->query($fkSql);
-      }
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_game_gameId', 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::PLATFORMS, 'fk_platform_platformId', 'platformId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

@@ -10,8 +10,10 @@
       $this->value = $value;
       $this->type = $type;
       $this->error = $error;
+      $this->placeholder = $placeholder;
     }
 
+    public bool $checked = false;
     public bool $disabled = false;
     public string $error = '';
     public string $label = '';
@@ -22,6 +24,7 @@
     public bool $required = false;
     public int $size = 30;
     public ?int $step = null;
+    public bool $submitOnChange = false;
     public string $tooltip = '';
     public string $type = 'text';
     public string $value = '';

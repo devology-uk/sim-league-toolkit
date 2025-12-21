@@ -5,9 +5,12 @@
   class AdminPageSlugs {
     public final const string CHAMPIONSHIP = 'sltk-championship';
     public final const string CREATE_CHAMPIONSHIP = 'sltk-create-championship';
+    public final const string CREATE_EVENT_CLASS = 'sltk-create-event-class';
     public final const string CHAMPIONSHIPS = 'sltk-championships';
     public final const string EVENT = "sltk-event";
     public final const string EVENTS = "sltk-events";
+    public final const string EVENT_CLASS = 'sltk-event-class';
+    public final const string EVENT_CLASSES = 'sltk-event-classes';
     public final const string GAME = 'sltk-game';
     public final const string GAMES = 'sltk-games';
     public final const string HOME = 'sltk-admin';

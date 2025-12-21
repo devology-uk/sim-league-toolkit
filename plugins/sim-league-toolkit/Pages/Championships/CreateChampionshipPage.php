@@ -18,11 +18,9 @@
         public function render(): void { ?>
             <div class='wrap'>
                 <h1><?= esc_html__('New Championship', 'sim-league-toolkit') ?></h1>
-                <p>
-                    <?php
-                        $this->controller->theNewChampionshipMessage();
-                    ?>
-                </p>
+                <?php
+                    $this->controller->theNewChampionshipMessage();
+                ?>
                 <form method='post'>
                     <?php
                         $this->controller->theHiddenFields();

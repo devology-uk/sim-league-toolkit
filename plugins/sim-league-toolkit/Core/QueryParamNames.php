@@ -14,4 +14,5 @@
     public final const string RULE_ID = 'ruleId';
     public final const string SESSION_ID = 'sessionId';
     public final const string TAB = 'tab';
+    public final const string PAGE = 'paged';
   }

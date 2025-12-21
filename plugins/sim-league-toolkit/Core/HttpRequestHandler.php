@@ -12,6 +12,10 @@
       return $this->getFieldFromUrl(QueryParamNames::ACTION, Constants::ACTION_EDIT);
     }
 
+    protected function getPageFromUrl(): string {
+      return $this->getFieldFromUrl(QueryParamNames::PAGE, '');
+    }
+
     protected function getFieldFromPost(string $fieldId, string $defaultValue = null): string|null {
       return $_POST[$fieldId] ?? $defaultValue;
     }

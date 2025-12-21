@@ -38,8 +38,8 @@
     }
 
     protected function getSortableColumns(): array {
-      return array(
+      return [
         'name' => ['name', true]
-      );
+      ];
     }
   }
