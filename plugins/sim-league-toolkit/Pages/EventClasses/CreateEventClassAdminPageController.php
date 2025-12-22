@@ -27,7 +27,13 @@
         private GameSelectorComponent $gameSelectorComponent;
 
         public function theBackButton(): void {
-            $url = UrlBuilder::getAdminPageRelativeUrl(AdminPageSlugs::EVENT_CLASSES);
+            $page = $this->getFieldFromUrl(QueryParamNames::PAGE, '');
+            $queryParams = [];
+            if(!empty($page)) {
+                $queryParams[QueryParamNames::PAGE] = $page;
+            }
+
+            $url = UrlBuilder::getAdminPageRelativeUrl(AdminPageSlugs::EVENT_CLASSES, $queryParams);
             ?>
             <a class='button button-secondary' href='<?= $url ?>'
                title='<?= esc_html__('Back To Event Classes', 'sim-league-toolkit') ?>'><?= esc_html__('Back To Event Classes', 'sim-league-toolkit') ?></a>

@@ -44,6 +44,7 @@
 
             $tablePage = $_GET[QueryParamNames::PAGE] ?? '';
             if(!empty($tablePage)) {
+                $editParams[QueryParamNames::PAGE] = $tablePage;
                 $deleteParams[QueryParamNames::PAGE] = $tablePage;
             }
 
