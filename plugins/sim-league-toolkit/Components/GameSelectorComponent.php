@@ -5,7 +5,7 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\Game;
 
-    class GameSelectorComponent implements FormFieldComponent {
+    class GameSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-game-selector';
 
         private SelectorComponentConfig $config;
@@ -14,11 +14,6 @@
 
         public function __construct(SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig(true, true);
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -26,6 +21,10 @@
         }
 
         public function getValue(): string {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return $this->currentValue;
         }
 

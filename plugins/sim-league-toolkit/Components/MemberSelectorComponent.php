@@ -5,7 +5,7 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\Member;
 
-    class MemberSelectorComponent implements FormFieldComponent {
+    class MemberSelectorComponent extends FormFieldComponent {
         private const string FIELD_ID = 'sltk-member-selector';
 
         private SelectorComponentConfig $config;
@@ -14,11 +14,6 @@
 
         public function __construct(SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig();
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -26,6 +21,10 @@
         }
 
         public function getValue(): string {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return $this->currentValue;
         }
 

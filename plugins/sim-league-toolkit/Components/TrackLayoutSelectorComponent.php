@@ -6,21 +6,16 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\Track;
 
-    class TrackLayoutSelectorComponent implements FormFieldComponent {
+    class TrackLayoutSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-track-layout-selector';
 
         private SelectorComponentConfig $config;
         private ?int $currentValue = Constants::DEFAULT_ID;
-        private int $trackId = Constants::DEFAULT_ID;
         private bool $isDisabled = false;
+        private int $trackId = Constants::DEFAULT_ID;
 
         public function __construct(SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig(false, false);
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -28,6 +23,10 @@
         }
 
         public function getValue(): ?int {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return $this->currentValue > 0 ? $this->currentValue : null;
         }
 

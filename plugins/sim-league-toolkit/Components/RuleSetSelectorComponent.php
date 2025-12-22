@@ -5,28 +5,26 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\RuleSet;
 
-    class RuleSetSelectorComponent implements FormFieldComponent {
-
+    class RuleSetSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-rule-set-selector';
+
         private SelectorComponentConfig $config;
         private int $currentValue = Constants::DEFAULT_ID;
         private bool $isDisabled = false;
 
         public function __construct(?SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig();
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
-
         }
 
         public function getTooltip(): string {
             return $this->config->toolTip;
         }
 
-        public function getValue(): mixed {
+        public function getValue(): int {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return $this->currentValue;
         }
 

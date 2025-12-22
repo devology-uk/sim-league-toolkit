@@ -6,7 +6,7 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\Car;
 
-    class CarClassSelectorComponent implements FormFieldComponent {
+    class CarClassSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-car-class-selector';
 
         private SelectorComponentConfig $config;
@@ -14,13 +14,8 @@
         private int $gameId = Constants::DEFAULT_ID;
         private bool $isDisabled = false;
 
-        public function __construct(SelectorComponentConfig $config = null) {
+        public function __construct(?SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig(false, true);
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -28,6 +23,10 @@
         }
 
         public function getValue(): ?string {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return !empty($this->currentValue) ? $this->currentValue : '';
         }
 
@@ -51,7 +50,7 @@
                 <option value=''><?= esc_html__('Please Select...', 'sim-league-toolkit') ?></option>
                 <?php
                     foreach ($carClasses as $carClass) { ?>
-                        <option value='<?= $carClass?>' <?= selected($this->currentValue, $carClass, false) ?>><?= $carClass ?></option>
+                        <option value='<?= $carClass ?>' <?= selected($this->currentValue, $carClass, false) ?>><?= $carClass ?></option>
                         <?php
                     }
                 ?>

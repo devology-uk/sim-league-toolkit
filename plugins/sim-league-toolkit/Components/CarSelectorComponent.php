@@ -7,7 +7,7 @@
     use SLTK\Domain\Car;
     use SLTK\Domain\Track;
 
-    class CarSelectorComponent implements FormFieldComponent {
+    class CarSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-car-selector';
 
         private SelectorComponentConfig $config;
@@ -16,13 +16,8 @@
         private ?string $carClass = null;
         private bool $isDisabled = false;
 
-        public function __construct(SelectorComponentConfig $config = null) {
+        public function __construct(?SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig(false, false);
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -30,6 +25,10 @@
         }
 
         public function getValue(): ?int {
+            if($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return $this->currentValue > 0 ? $this->currentValue : null;
         }
 

@@ -4,23 +4,17 @@
 
     use Exception;
     use SLTK\Core\Constants;
-    use SLTK\Domain\Car;
     use SLTK\Domain\DriverCategory;
 
-    class DriverCategorySelectorComponent implements FormFieldComponent {
+    class DriverCategorySelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-driver-category-selector';
 
         private SelectorComponentConfig $config;
         private int $currentValue = Constants::DEFAULT_ID;
         private bool $isDisabled = false;
 
-        public function __construct(SelectorComponentConfig $config = null) {
+        public function __construct(?SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig(false, false);
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
         }
 
         public function getTooltip(): string {
@@ -28,6 +22,10 @@
         }
 
         public function getValue(): ?int {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
             return max($this->currentValue, Constants::DEFAULT_ID);
         }
 

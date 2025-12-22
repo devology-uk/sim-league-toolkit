@@ -6,8 +6,9 @@
     use SLTK\Core\Constants;
     use SLTK\Domain\Platform;
 
-    class PlatformSelectorComponent implements FormFieldComponent {
+    class PlatformSelectorComponent extends FormFieldComponent {
         public final const string FIELD_ID = 'sltk-platform-selector';
+
         private SelectorComponentConfig $config;
         private int $currentValue = Constants::DEFAULT_ID;
         private int $gameId = Constants::DEFAULT_ID;
@@ -15,19 +16,18 @@
 
         public function __construct(SelectorComponentConfig $config = null) {
             $this->config = $config ?? new SelectorComponentConfig();
-            $postedValue = sanitize_text_field($_POST[self::FIELD_ID] ?? Constants::DEFAULT_ID);
-
-            if ($postedValue !== $this->currentValue) {
-                $this->currentValue = $postedValue;
-            }
-        }
-
-        public function getValue(): string {
-            return $this->currentValue;
         }
 
         public function getTooltip(): string {
             return $this->config->toolTip;
+        }
+
+        public function getValue(): string {
+            if ($this->isFormPost()) {
+                $this->currentValue = $this->getPostedValue(self::FIELD_ID);
+            }
+
+            return $this->currentValue;
         }
 
         /**
