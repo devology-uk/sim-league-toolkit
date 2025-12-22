@@ -18,7 +18,7 @@
          */
         public function render(): void { ?>
             <div class='wrap'>
-            <form method='post' enctype='multipart/form-data'>
+            <form method='post'>
                 <?php
                     $this->controller->theHiddenFields();
                 ?>

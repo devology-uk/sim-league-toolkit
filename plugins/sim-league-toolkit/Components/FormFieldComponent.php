@@ -2,11 +2,21 @@
 
   namespace SLTK\Components;
 
-  interface FormFieldComponent extends Component {
+  use SLTK\Core\CommonFieldNames;
 
-    public function getTooltip(): string;
+  abstract class FormFieldComponent implements Component {
 
-    public function getValue(): mixed;
+    public abstract function getTooltip(): string;
 
-    public function setValue(mixed $value): void;
+    public abstract function getValue(): mixed;
+
+    public abstract function setValue(mixed $value): void;
+
+    protected function isFormPost(): bool {
+      return strtoupper($_SERVER[CommonFieldNames::REQUEST_METHOD]) === 'POST';
+    }
+
+    protected function getPostedValue(string $fieldName): string {
+      return sanitize_text_field($_POST[$fieldName]);
+    }
   }
