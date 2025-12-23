@@ -8,6 +8,7 @@
   use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ChampionshipRepository;
+  use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
 
   class Championship extends DomainBase {
@@ -19,6 +20,7 @@
     public final const string CHAMPIONSHIP_ID_FIELD_NAME = CommonFieldNames::CHAMPIONSHIP_ID;
     public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
     public final const string ENTRY_CHANGE_LIMIT_FIELD_NAME = 'sltk_entry_change_limit';
+    public final const string EVENT_CLASSES_TAB = 'sltk_event_classes';
     public final const string GAME_ID_FIELD_NAME = CommonFieldNames::GAME_ID;
     public final const string IS_ACTIVE_FIELD_NAME = CommonFieldNames::IS_ACTIVE;
     public final const string NAME_FIELD_NAME = CommonFieldNames::NAME;
@@ -248,6 +250,26 @@
       $this->trophiesAwarded = $value;
     }
 
+    /**
+     * @return ChampionshipEventClass[]
+     * @throws Exception
+     */
+    public function listEventClasses(): array {
+      $queryResults = EventClassesRepository::listForChampionship($this->id);
+
+      return self::mapChampionshipEventClasses($queryResults);
+    }
+
+
+    private static function mapChampionshipEventClasses(array $queryResults): array {
+      $results = array();
+
+      foreach($queryResults as $item) {
+        $results[] = new ChampionshipEventClass($item);
+      }
+
+      return $results;
+    }
     public function save(): bool {
       try {
         if ($this->id == Constants::DEFAULT_ID) {
