@@ -9,13 +9,14 @@
     use SLTK\Domain\Championship;
     use SLTK\Pages\Championships\Tabs\ChampionshipBannerImageTab;
     use SLTK\Pages\Championships\Tabs\ChampionshipDetailsTab;
+    use SLTK\Pages\Championships\Tabs\ChampionshipEventClassesTab;
     use SLTK\Pages\ControllerBase;
 
     class ChampionshipAdminPageController extends ControllerBase {
 
         private int $championshipId = Constants::DEFAULT_ID;
         private string $currentTab = '';
-        private ChampionshipDetailsTab|ChampionshipBannerImageTab $tab;
+        private ChampionshipDetailsTab|ChampionshipBannerImageTab|ChampionshipEventClassesTab $tab;
 
         public function theBackButton(): void { ?>
             <br/>
@@ -26,7 +27,13 @@
             <?php
         }
 
-        public function theGeneralTab(): void { ?>
+      public function theEventClassesTab(): void {    ?>
+          <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, Championship::EVENT_CLASSES_TAB, $this->championshipId) ?>"
+             class="nav-tab <?= $this->getActiveCssClass($this->currentTab, Championship::EVENT_CLASSES_TAB) ?>"><?= esc_html__('Event Classes', 'sim-league-toolkit') ?></a>
+          <?php
+      }
+
+      public function theGeneralTab(): void { ?>
             <a href="<?= $this->getTabUrl(AdminPageSlugs::CHAMPIONSHIP, '', $this->championshipId) ?>"
                class="nav-tab <?= $this->getActiveCssClass($this->currentTab) ?>"><?= esc_html__('General', 'sim-league-toolkit') ?></a>
             <?php
@@ -54,6 +61,7 @@
         private function prepareTabController(): void {
             $this->tab = match ($this->currentTab) {
                 Championship::BANNER_IMAGE_TAB => new ChampionshipBannerImageTab(),
+                Championship::EVENT_CLASSES_TAB => new ChampionshipEventClassesTab(),
                 default => new ChampionshipDetailsTab(),
             };
         }

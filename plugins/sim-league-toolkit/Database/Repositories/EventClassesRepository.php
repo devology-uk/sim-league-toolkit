@@ -74,6 +74,32 @@
     }
 
     /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function listForChampionship($id): array {
+      $tableName = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $driverCategoriesTableName = self::prefixedTableName(TableNames::DRIVER_CATEGORIES);
+      $carsTableName = self::prefixedTableName(TableNames::CARS);
+      $championshipEventClassesTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+
+      $query = "SELECT ec.*, g.name as game, dc.name as driverCategory, c.name as singleCarName
+                FROM $tableName ec
+                INNER JOIN $championshipEventClassesTableName cec
+                ON ec.Id = cec.eventClassId                
+                INNER JOIN $gamesTableName g
+                ON ec.gameId = g.id
+                INNER JOIN $driverCategoriesTableName dc
+                ON ec.driverCategoryId = dc.id
+                LEFT OUTER JOIN $carsTableName c
+                ON ec.singleCarId = c.id
+                WHERE cec.championshipId = $id;";
+
+      return self::getResults($query);
+    }
+
+    /**
      * @returns stdClass[]
      * @throws Exception
      */

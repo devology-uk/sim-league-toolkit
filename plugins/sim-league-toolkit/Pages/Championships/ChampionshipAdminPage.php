@@ -23,7 +23,7 @@
                     <?php
                         $this->controller->theGeneralTab();
                         $this->controller->theBannerImageTab();
-                        //      $this->controller->theCarClassesTab();
+                              $this->controller->theEventClassesTab();
                         //      $this->controller->theDriverCategoriesTab();
                         //      $this->controller->theCarsTab();
                         //      $this->controller->theTracksTab();
