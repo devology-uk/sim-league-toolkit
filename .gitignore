@@ -10,3 +10,4 @@ uploads
 /index.php
 node_modules
 
+/plugins/sim-league-toolkit/build
