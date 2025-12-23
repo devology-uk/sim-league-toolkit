@@ -1,0 +1,70 @@
+
+#racket-club-root {
+  max-width: 800px;
+
+  h1 {
+    padding-block: 8px;
+  }
+
+  .components-base-control:has(textarea) {
+    flex-basis: 400px;
+  }
+
+  .components-notice {
+    &, &__content {
+      margin: 0;
+    }
+  }
+
+  .components-notice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-block-end: 16px;
+  }
+
+  .components-panel {
+    margin-block-start: 8px;
+    margin-block-end: 8px;
+  }
+
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: .25rem;
+  }
+}
+
+.p-dialog {
+  .components-base-control__field {
+    margin-bottom: 8px !important;
+  }
+
+  .components-text-control__input {
+    min-width: 300px;
+  }
+}
+
+.validation-error {
+  color: red;
+  font-size: 11px;
+}
+
+.p-button {
+  margin-top: .5rem !important;
+}
+
+.mr-2 {
+  margin-right: .2rem;
+}
+
+.mt-2 {
+  margin-top: .2rem;
+}
+
+.mt-4 {
+  margin-top: .4rem;
+}

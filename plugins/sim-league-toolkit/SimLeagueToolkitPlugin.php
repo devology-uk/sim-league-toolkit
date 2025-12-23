@@ -3,6 +3,7 @@
   namespace SLTK;
 
   use SLTK\Api\ApiRegistrar;
+  use SLTK\Core\MenuManager;
   use SLTK\Core\ScriptManager;
   use SLTK\Core\StyleManager;
   use SLTK\Core\UserProfileExtension;
@@ -19,13 +20,13 @@
     public static function deactivate(): void {}
 
     public static function init(): void {
-      StyleManager::init();
-      ScriptManager::init();
       UserProfileExtension::init();
     }
 
     public static function loaded(): void {
-      AdminMenuBuilder::init();
+      MenuManager::init();
+      StyleManager::init();
+      ScriptManager::init();
       ApiRegistrar::init();
     }
 
