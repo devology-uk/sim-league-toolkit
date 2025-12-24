@@ -1,6 +1,7 @@
 plugins/debug-log-manager
 plugins/plugin-check
 plugins/theme-check
+plugins/enable-cors
 plugins/index.php
 themes/twenty*
 themes/index.php
