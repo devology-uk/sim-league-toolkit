@@ -13,14 +13,12 @@
     public final const string CARS_TAB = 'cars';
     public final const string CAR_CLASSES_TAB = 'car_classes';
     public final const string DRIVER_CATEGORIES_TAB = 'driver_categories';
-    public final const string IS_BUILTIN_FIELD_NAME = 'sltk_is_builtin';
     public final const string IS_PUBLISHED_FIELD_NAME = 'sltk_is_published';
     public final const string NAME_FIELD_NAME = 'sltk_name';
     public final const string PLATFORMS_FIELD_NAME = 'sltk_platforms[]';
     public final const string SUPPORTS_RESULT_UPLOAD_FIELD_NAME = 'sltk_supportS_result_upload';
     public final const string TRACKS_TAB = 'tracks';
 
-    private bool $builtIn = false;
     private string $latestVersion = '';
     private string $name = '';
     private bool $published = false;
@@ -33,7 +31,6 @@
         $this->latestVersion = $data->latestVersion ?? '';
         $this->supportsResultUpload = $data->supportsResultUpload;
         $this->published = $data->published ?? false;
-        $this->builtIn = $data->builtIn ?? false;
         $this->supportsLayouts = $data->supportsLayouts ?? false;
 
         if (isset($data->id)) {
@@ -91,10 +88,6 @@
       return $this->mapCars($queryResults);
     }
 
-    public function getIsBuiltin(): bool {
-      return $this->builtIn;
-    }
-
     public function getIsPublished(): bool {
       return $this->published;
     }
@@ -144,9 +137,9 @@
         'id' => $this->id,
         'name' => $this->name,
         'latestVersion' => $this->latestVersion,
-        'supportsResultUpload' => $this->supportsResultUpload ? 'Yes' : 'No',
-        'published' => $this->published ? 'Yes' : 'No',
-        'supportsLayouts' => $this->supportsLayouts ? 'Yes' : 'No',
+        'supportsResultUpload' => $this->supportsResultUpload,
+        'published' => $this->published,
+        'supportsLayouts' => $this->supportsLayouts,
       ];
     }
 

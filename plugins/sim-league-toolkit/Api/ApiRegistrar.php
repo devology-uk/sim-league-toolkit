@@ -13,16 +13,21 @@
     public static function registerRoutes(): void {
       global $wp;
 
-      if(!str_contains($wp->request, self::API_NAMESPACE)) {
+      if (!str_contains($wp->request, self::API_NAMESPACE)) {
         return;
       }
 
-      if(str_contains($wp->request, 'race-numbers')) {
+      if (str_contains($wp->request, 'game')) {
+        $apiController = new GamesApiController();
+        $apiController->registerRoutes();
+      }
+
+      if (str_contains($wp->request, 'race-numbers')) {
         $apiController = new RaceNumbersApiController();
         $apiController->registerRoutes();
       }
 
-      if(str_contains($wp->request, 'server')) {
+      if (str_contains($wp->request, 'server')) {
         $apiController = new ServerApiController();
         $apiController->registerRoutes();
       }

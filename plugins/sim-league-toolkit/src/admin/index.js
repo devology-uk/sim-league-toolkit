@@ -4,8 +4,6 @@ import {createRoot} from '@wordpress/element';
 
 import {SimLeagueToolkitApp} from './simLeagueToolkitApp';
 
-
-
 domReady(() => {
     const root = createRoot(
         document.getElementById('sltk-admin-root')

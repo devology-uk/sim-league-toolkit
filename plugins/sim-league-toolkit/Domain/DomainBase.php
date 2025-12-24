@@ -9,7 +9,7 @@
 
     public abstract function save(): bool;
 
-    private function toArray(): array {
+    public function toArray(): array {
       return get_object_vars($this);
     }
   }
