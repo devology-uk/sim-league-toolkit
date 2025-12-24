@@ -146,7 +146,6 @@
         'latestVersion' => $this->latestVersion,
         'supportsResultUpload' => $this->supportsResultUpload ? 'Yes' : 'No',
         'published' => $this->published ? 'Yes' : 'No',
-        'builtIn' => $this->builtIn ? 'Yes' : 'No',
         'supportsLayouts' => $this->supportsLayouts ? 'Yes' : 'No',
       ];
     }
