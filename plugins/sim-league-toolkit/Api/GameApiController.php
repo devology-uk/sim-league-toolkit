@@ -2,20 +2,31 @@
 
   namespace SLTK\Api;
 
-  use SLTK\Domain\Server;
+  use Exception;
+  use SLTK\Core\Constants;
+  use SLTK\Domain\Game;
   use WP_REST_Request;
   use WP_REST_Response;
   use WP_REST_Server;
 
-  class ServerApiController extends ApiController {
-    private const string RESOURCE_BASE = '/' . ResourceNames::SERVER;
+  class GameApiController extends ApiController {
+    private const string RESOURCE_BASE = '/' . ResourceNames::GAME;
 
+    /**
+     * @throws Exception
+     */
     public function get(WP_REST_Request $request): WP_REST_Response {
-      $servers = Server::list();
+      $games = Game::list();
 
-      $responseData = array_map(function ($server) {
-        return $server->toDto();
-      }, $servers);
+      if (empty($games)) {
+        return rest_ensure_response($games);
+      }
+
+      $responseData = [];
+
+      foreach ($games as $game) {
+        $responseData[] = $game->toTableItem();
+      }
 
       return rest_ensure_response($responseData);
     }
@@ -25,7 +36,7 @@
     }
 
     protected function canExecute(): bool {
-      return current_user_can('manage_options');
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
     private function registerGetRoute(): void {
@@ -37,6 +48,7 @@
             'callback' => [$this, 'get'],
             'permission_callback' => [$this, 'checkPermission'],
           ]
-        ]);
+        ]
+      );
     }
   }

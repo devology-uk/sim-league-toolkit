@@ -1,31 +1,29 @@
 
 #sltk-admin-root {
-  max-width: 800px;
+  background-color: var(--surface-ground);
+  padding: 0;
+  margin: 0;
+  margin-left: -20px;
 
-  h1 {
-    padding-block: 8px;
+  h3 {
+    color: var(--primary-color);
   }
 
-  .components-base-control:has(textarea) {
-    flex-basis: 400px;
+  p {
+    font-size: 1rem;
+    color: var(--surface-900);
   }
 
-  .components-notice {
-    &, &__content {
-      margin: 0;
-    }
+  .logo {
+    width: 128px;
+    height: 59px;
+    position: relative;
   }
 
-  .components-notice-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-block-end: 16px;
-  }
-
-  .components-panel {
-    margin-block-start: 8px;
-    margin-block-end: 8px;
+  .header-text {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-left: 1rem;
   }
 
   table, th, td {
@@ -35,6 +33,39 @@
 
   th, td {
     padding: .25rem;
+  }
+
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+    .menu-container {
+      width: 200px;
+      height: 100%;
+    }
+
+    .content-container {
+      padding-left: 2rem;
+      padding-top: 2rem;
+    }
+  }
+
+  .validation-error {
+    color: red;
+    font-size: 11px;
+  }
+
+  .mr-2 {
+    margin-right: .2rem;
+  }
+
+  .mt-2 {
+    margin-top: .2rem;
+  }
+
+  .mt-4 {
+    margin-top: .4rem;
   }
 }
 
@@ -48,25 +79,8 @@
   }
 }
 
-.validation-error {
-  color: red;
-  font-size: 11px;
-}
-
 .p-button {
   margin-top: .5rem !important;
-}
-
-.mr-2 {
-  margin-right: .2rem;
-}
-
-.mt-2 {
-  margin-top: .2rem;
-}
-
-.mt-4 {
-  margin-top: .4rem;
 }
 
 .p-panel {

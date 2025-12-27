@@ -6,21 +6,21 @@ import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import {Panel} from 'primereact/panel';
 
-import {BusySpinner} from './busySpinner';
+import {BusySpinner} from './BusySpinner';
 
 
-export const GamesList = () => {
+export const Games = () => {
 
-    const [publishedGames, setPublishedGames] = useState([]);
-    const [plannedGames, setPlannedGames] = useState([]);
     const [isBusy, setIsBusy] = useState(false);
+    const [plannedGames, setPlannedGames] = useState([]);
+    const [publishedGames, setPublishedGames] = useState([]);
 
     useEffect(() => {
-        loadGames();
+        loadTableData();
     }, []);
 
 
-    const loadGames = () => {
+    const loadTableData = () => {
         setIsBusy(true);
         apiFetch({path: '/sltk/v1/game'}).then((r) => {
             console.log(r);

@@ -3,15 +3,18 @@
   namespace SLTK\Domain;
 
   use Exception;
+  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\RuleSetRepository;
   use stdClass;
 
   class RuleSet extends DomainBase implements TableItem, Validator {
+    public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
     public final const string NAME_FIELD_NAME = 'sltk_name';
     public final const string TYPE_CHAMPIONSHIP = 'Championship';
     public final const string TYPE_EVENT = 'Event';
     public final const string TYPE_FIELD_NAME = 'sltk_type';
+    private string $description = '';
     private string $name = '';
     private string $type = '';
 
@@ -19,8 +22,16 @@
       if ($data != null) {
         $this->id = $data->id;
         $this->name = $data->name ?? '';
+        $this->description = $data->description ?? '';
         $this->type = $data->type ?? '';
       }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function delete(int $locationId): void {
+      RuleSetRepository::delete($locationId);
     }
 
     public static function get(int $id): RuleSet|null {
@@ -55,6 +66,16 @@
       return self::mapRuleSets($results);
     }
 
+    /**
+     * @return RuleSetRule[]
+     * @throws Exception
+     */
+    public static function listRules(mixed $id): array {
+      $ruleSet = RuleSet::get($id);
+
+      return $ruleSet->getRules() ?? [];
+    }
+
     public function deleteRule(int $ruleId): bool {
       try {
         RuleSetRepository::deleteRule($ruleId);
@@ -63,6 +84,14 @@
       } catch (Exception) {
         return false;
       }
+    }
+
+    public function getDescription(): string {
+      return $this->description;
+    }
+
+    public function setDescription(string $description): void {
+      $this->description = $description;
     }
 
     public function getName(): string {
@@ -124,6 +153,7 @@
     public function toArray(bool $includeId = true): array {
       $result = [
         'name' => $this->name,
+        'description' => $this->description,
         'type' => $this->type,
       ];
 
@@ -132,6 +162,18 @@
       }
 
       return $result;
+    }
+
+    /**
+     * @return array{columnName: string, value: mixed}
+     */
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'description' => $this->description,
+        'type' => $this->type,
+      ];
     }
 
     /**
@@ -150,6 +192,10 @@
 
       if (empty($this->name)) {
         $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
+      }
+
+      if (empty($this->name)) {
+        $result->addValidationError(self::DESCRIPTION_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
       }
 
       if (empty($this->type)) {

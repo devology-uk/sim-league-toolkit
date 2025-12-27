@@ -17,17 +17,27 @@
         return;
       }
 
-      if (str_contains($wp->request, 'game')) {
-        $apiController = new GamesApiController();
+      if (str_contains($wp->request, ResourceNames::GAME)) {
+        $apiController = new GameApiController();
         $apiController->registerRoutes();
       }
 
-      if (str_contains($wp->request, 'race-numbers')) {
-        $apiController = new RaceNumbersApiController();
+      if (str_contains($wp->request, ResourceNames::RACE_NUMBER)) {
+        $apiController = new RaceNumberApiController();
         $apiController->registerRoutes();
       }
 
-      if (str_contains($wp->request, 'server')) {
+      if (str_contains($wp->request, ResourceNames::RULE_SET)) {
+        $apiController = new RuleSetApiController();
+        $apiController->registerRoutes();
+      }
+
+      if (str_contains($wp->request, ResourceNames::RULE_SET_RULE)) {
+        $apiController = new RuleSetRuleApiController();
+        $apiController->registerRoutes();
+      }
+
+      if (str_contains($wp->request, ResourceNames::SERVER)) {
         $apiController = new ServerApiController();
         $apiController->registerRoutes();
       }

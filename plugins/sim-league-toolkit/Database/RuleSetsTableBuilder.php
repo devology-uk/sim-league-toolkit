@@ -16,6 +16,7 @@
       return "CREATE TABLE {$tableName} (
         id bigint NOT NULL AUTO_INCREMENT,
         name tinytext NOT NULL,
+        description mediumtext NOT NULL,
         type tinytext NOT NULL,            
         PRIMARY KEY  (id)
       ) {$charsetCollate};";

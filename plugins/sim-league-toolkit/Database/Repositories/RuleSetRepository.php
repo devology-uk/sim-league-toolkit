@@ -25,6 +25,13 @@
     /**
      * @throws Exception
      */
+    public static function delete(int $locationId): void {
+      self::deleteById(TableNames::RULE_SETS, $locationId);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function deleteRule(int $ruleId): void {
         self::deleteById(TableNames::RULE_SET_RULES, $ruleId);
     }
