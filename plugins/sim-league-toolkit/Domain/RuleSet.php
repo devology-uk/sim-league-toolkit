@@ -30,8 +30,8 @@
     /**
      * @throws Exception
      */
-    public static function delete(int $locationId): void {
-      RuleSetRepository::delete($locationId);
+    public static function delete(int $id): void {
+      RuleSetRepository::delete($id);
     }
 
     public static function get(int $id): RuleSet|null {

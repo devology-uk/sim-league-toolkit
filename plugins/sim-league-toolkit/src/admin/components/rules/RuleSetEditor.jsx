@@ -1,29 +1,23 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
-import {Dropdown} from 'primereact/dropdown';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
 
 import {BusySpinner} from '../BusySpinner';
-import {SaveSubmitButton} from '../SaveSubmitButton';
 import {CancelButton} from '../CancelButton';
+import {RuleList} from './RuleList';
+import {SaveSubmitButton} from '../SaveSubmitButton';
 import {ValidationError} from '../ValidationError';
-import apiFetch from '@wordpress/api-fetch';
 
 export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
-    const types = [
-        {'label': 'Any', 'value': 'any'},
-        {'label': 'Championship', 'value': 'championship'},
-        {'label': 'Individual Event', 'value': 'event'}
-    ];
 
     const [isBusy, setIsBusy] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedType, setSelectedType] = useState('any');
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
@@ -37,15 +31,13 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
         }).then((r) => {
             setName(r.name);
             setDescription(r.description);
-            setSelectedType(r.type);
             setIsBusy(false);
-        })
+        });
     }, [])
 
     const resetForm = () => {
         setName('');
         setDescription('');
-        setSelectedType('any');
     }
 
     const onSave = (evt) => {
@@ -58,8 +50,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
         setIsBusy(true);
         const ruleSet = {
             name: name,
-            description: description,
-            type: selectedType
+            description: description
         }
 
         if(ruleSetId && ruleSetId > 0) {
@@ -90,10 +81,6 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
             errors.push('description');
         }
 
-        if (!selectedType || selectedType.length < 3) {
-            errors.push('type');
-        }
-
         setValidationErrors(errors);
         return errors.length === 0;
     }
@@ -119,20 +106,15 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
                                 <ValidationError
                                     message={__('A brief description of the rule set with at least 15 characters is required.', 'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
-                                <label htmlFor='rule-set-type'>{__('Rule Set Type', 'sim-league-toolkit')}</label>
-                                <Dropdown inputId='rule-set-type' value={selectedType}
-                                          onChange={(e) => setSelectedType(e.value)} options={types}
-                                          optionLabel='label'
-                                          optionValue='value'/>
-                                <ValidationError
-                                    message={__('A type for the rule set must be selected', 'sim-league-toolkit')}
-                                    show={validationErrors.includes('type')}/>
+
                             </div>
                         </div>
                         <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
-                        <BusySpinner isActive={isBusy}/>
                     </form>
+                    {ruleSetId && (<RuleList ruleSetId={ruleSetId} />)
+                    }
+                    <BusySpinner isActive={isBusy} />
                 </Dialog>
             )}
         </>

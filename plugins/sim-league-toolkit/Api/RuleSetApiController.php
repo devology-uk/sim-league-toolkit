@@ -13,14 +13,13 @@
   class RuleSetApiController extends ApiController {
     private const string RESOURCE_BASE = '/' . ResourceNames::RULE_SET;
 
-
     /**
      * @throws Exception
      */
     public function delete(WP_REST_Request $request): WP_REST_Response {
-      $locationId = $request->get_param('id');
+      $id = $request->get_param('id');
 
-      RuleSet::delete($locationId);
+      RuleSet::delete($id);
 
       return rest_ensure_response(true);
     }
@@ -48,7 +47,6 @@
 
       return rest_ensure_response($data->toDto());
     }
-
 
     /**
      * @throws JsonException

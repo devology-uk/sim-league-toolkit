@@ -59,6 +59,7 @@ export const RuleSets = () => {
         }).then(() => {
             loadData();
             setItemToDelete(null);
+            setIsBusy(false);
         });
     }
 
@@ -115,8 +116,8 @@ export const RuleSets = () => {
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
-                               acceptLabel={__('Yes', 'racket-club)')} rejectLabel={__('No', 'racket-club')}
-                               message={__('Deleting', 'racket-club') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               acceptLabel={__('Yes', 'sim-league-toolkit)')} rejectLabel={__('No', 'sim-league-toolkit')}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                 style={{maxWidth: '50%'}}/>
             }
             <BusySpinner isActive={isBusy}/>
