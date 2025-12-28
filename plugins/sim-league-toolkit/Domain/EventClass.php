@@ -193,6 +193,19 @@
       return $result;
     }
 
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'carClass' => $this->getCarClass(),
+        'driverCategory' => $this->getDriverCategory(),
+        'game' => $this->getGame(),
+        'isBuiltIn' => $this->getIsBuiltIn() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
+        'isSingleCarClass' => $this->getIsSingleCarClass() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
+        'name' => $this->getName(),
+        'singleCarName' => $this->getSingleCarName(),
+      ];
+    }
+
     public function validate(): ValidationResult {
       $result = new ValidationResult();
 
