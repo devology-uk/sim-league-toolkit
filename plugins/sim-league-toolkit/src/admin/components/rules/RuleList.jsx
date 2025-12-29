@@ -11,6 +11,7 @@ import {ValidationError} from '../ValidationError';
 import {Button} from 'primereact/button';
 import {BusySpinner} from '../BusySpinner';
 import {ConfirmDialog} from 'primereact/confirmdialog';
+import {CancelButton} from '../CancelButton';
 
 export const RuleList = ({ruleSetId}) => {
 
@@ -45,6 +46,13 @@ export const RuleList = ({ruleSetId}) => {
     const onAdd = () => {
         setSelectedRule(null);
         setIsAdding(true);
+    }
+
+    const onCancelEdit = () => {
+        setIsAdding(false);
+        setIsEditing(false);
+        setRuleText('');
+        setSelectedRule(null);
     }
 
     const onCancelDelete = () => {
@@ -134,11 +142,11 @@ export const RuleList = ({ruleSetId}) => {
 
     const itemTemplate = (item) => {
         return (
-            <div key={item.data.id} className='flex flex-row'>
-                <div className='flex-grow-1'>{item.data.rule}</div>
+            <div key={item.id} className='flex flex-row'>
+                <div className='flex-grow-1'>{item.rule}</div>
                 <div className='flex row flex-grow-0 flex-shrink-1 justify-content-between' style={{flexBasis: '55px'}}>
-                    <Button severity='success' size='small' onClick={() => onEdit(item.data)} icon='pi pi-pencil'/>
-                    <Button severity='danger' size='small' onClick={() => onDelete(item.data)} icon='pi pi-trash'
+                    <Button severity='success' size='small' onClick={() => onEdit(item)} icon='pi pi-pencil'/>
+                    <Button severity='danger' size='small' onClick={() => onDelete(item)} icon='pi pi-trash'
                             className='ml-1'/>
                 </div>
             </div>
@@ -148,7 +156,7 @@ export const RuleList = ({ruleSetId}) => {
     return (
         <>
             {!isAdding && !isEditing && (<Panel headerTemplate={headerTemplate}>
-                <ListBox value={selectedRule} onChange={(e) => setSelectedRule(e.value.data)} options={rules}
+                <ListBox value={selectedRule} onChange={(e) => setSelectedRule(e.value)} options={rules}
                          optionLabel='rule'
                          itemTemplate={itemTemplate} className='w-full'
                          listStyle={{maxHeight: '250px', maxWidth: '550px'}}/>
@@ -161,7 +169,8 @@ export const RuleList = ({ruleSetId}) => {
                     message={__('The text for the rule with at least 15 characters is required.', 'sim-league-toolkit')}
                     show={validationErrors.includes('description')}/>
                 <br/>
-                <SaveButton onClick={onSave}></SaveButton>
+                <SaveButton onClick={onSave} disabled={isBusy}/>
+                <CancelButton onCancel={onCancelEdit} disabled={isBusy}/>
             </Panel>)}
             {selectedRule && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

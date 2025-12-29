@@ -8,6 +8,7 @@
   use SLTK\Domain\RuleSetRule;
   use WP_REST_Request;
   use WP_REST_Response;
+  use WP_REST_Server;
 
   class RuleSetRuleApiController extends BasicApiController {
 
@@ -51,11 +52,7 @@
      * @throws Exception
      */
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      $data = RuleSet::getRuleById($id);
-
-      return rest_ensure_response($data->toDto());
+      return $this->onGet($request);
     }
 
     /**
@@ -82,4 +79,5 @@
 
     protected function onRegisterRoutes(): void {
     }
+
   }

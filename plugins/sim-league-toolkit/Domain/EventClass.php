@@ -175,6 +175,41 @@
       }
     }
 
+    public function toArray(): array {
+      $result = [
+        'carClass' => $this->getCarClass(),
+        'driverCategoryId' => $this->getDriverCategoryId(),
+        'gameId' => $this->getGameId(),
+        'isBuiltIn' => $this->getIsBuiltIn(),
+        'isSingleCarClass' => $this->getIsSingleCarClass(),
+        'name' => $this->getName(),
+        'singleCarId' => $this->getSingleCarId(),
+      ];
+
+      if ($this->id != Constants::DEFAULT_ID) {
+        $result['id'] = $this->id;
+      }
+
+      return $result;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'carClass' => $this->getCarClass(),
+        'driverCategory' => $this->getDriverCategory(),
+        'game' => $this->getGame(),
+        'isBuiltIn' => $this->getIsBuiltIn(),
+        'isSingleCarClass' => $this->getIsSingleCarClass(),
+        'name' => $this->getName(),
+        'singleCarName' => $this->getSingleCarName(),
+        'isInUse' => $this->isInUse(),
+      ];
+    }
+
     public function toTableItem(): array {
       $result = [
         'carClass' => $this->getCarClass(),
@@ -191,19 +226,6 @@
       }
 
       return $result;
-    }
-
-    public function toDto(): array {
-      return [
-        'id' => $this->id,
-        'carClass' => $this->getCarClass(),
-        'driverCategory' => $this->getDriverCategory(),
-        'game' => $this->getGame(),
-        'isBuiltIn' => $this->getIsBuiltIn() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-        'isSingleCarClass' => $this->getIsSingleCarClass() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-        'name' => $this->getName(),
-        'singleCarName' => $this->getSingleCarName(),
-      ];
     }
 
     public function validate(): ValidationResult {
@@ -241,23 +263,5 @@
       }
 
       return $results;
-    }
-
-    private function toArray(): array {
-      $result = [
-        'carClass' => $this->getCarClass(),
-        'driverCategoryId' => $this->getDriverCategoryId(),
-        'gameId' => $this->getGameId(),
-        'isBuiltIn' => $this->getIsBuiltIn(),
-        'isSingleCarClass' => $this->getIsSingleCarClass(),
-        'name' => $this->getName(),
-        'singleCarId' => $this->getSingleCarId(),
-      ];
-
-      if ($this->id != Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
-      }
-
-      return $result;
     }
   }

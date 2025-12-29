@@ -43,7 +43,7 @@
         $apiController = new ServerApiController();
       }
 
-      if(is_subclass_of($apiController, ApiController::class)) {
+      if(is_subclass_of($apiController, ApiController::class) || is_subclass_of($apiController, BasicApiController::class)) {
         $apiController->registerRoutes();
       }
     }

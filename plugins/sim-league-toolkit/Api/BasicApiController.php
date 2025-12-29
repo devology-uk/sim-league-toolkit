@@ -97,7 +97,7 @@
 
     private function registerGetRoute(): void {
       register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)',
+        $this->getResourceName(),
         [
           [
             'methods' => WP_REST_Server::READABLE,

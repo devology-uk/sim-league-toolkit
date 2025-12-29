@@ -32,7 +32,19 @@
   }
 
   th, td {
-    padding: .25rem;
+    padding: .5rem;
+  }
+
+  th[scope="row"] {
+    text-align: left;
+  }
+
+  .table-no-border {
+    border: none;
+
+    th, td {
+      border: none;
+    }
   }
 
   .main-container {

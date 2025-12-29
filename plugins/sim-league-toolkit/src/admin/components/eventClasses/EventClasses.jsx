@@ -6,11 +6,10 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusySpinner} from '../BusySpinner';
-import {RuleSetEditor} from './RuleSetEditor';
-import {RuleSetCard} from './RuleSetCard';
+import {EventClassCard} from './EventClassCard';
+import {EventClassEditor} from './EventClassEditor';
 
-export const RuleSets = () => {
-
+export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [tableData, setTableData] = useState([]);
@@ -25,7 +24,7 @@ export const RuleSets = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/rule-set'}).then((r) => {
+        apiFetch({path: '/sltk/v1/event-class'}).then((r) => {
             setTableData(r ?? [])
             setIsBusy(false);
         });
@@ -54,7 +53,7 @@ export const RuleSets = () => {
         setShowDeleteConfirmation(false)
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/rule-set/' + itemToDelete.id,
+            path: 'sltk/v1/event-class/' + itemToDelete.id,
             method: 'DELETE'
         }).then(() => {
             loadData();
@@ -77,10 +76,10 @@ export const RuleSets = () => {
     const headerTemplate = () => {
         return (
             <div className='flex justify-content-between'>
-                <div>{__('Rule Sets', 'sim-league-toolkit')}</div>
+                <div>{__('Event Classes', 'sim-league-toolkit')}</div>
                 <div>
                     <button className='p-panel-header-icon p-link mr-2' onClick={onAdd}
-                            title={__('Add a new Rule Set', 'sim-league-toolkit')}>
+                            title={__('Add a new Event Class', 'sim-league-toolkit')}>
                         <span className='pi pi-plus'></span>
                     </button>
                 </div>
@@ -89,36 +88,33 @@ export const RuleSets = () => {
     }
 
     const itemTemplate = (item) => {
-        return <RuleSetCard ruleSet={item.data} key={item.id}  onRequestEdit={(item) => onEdit(item)} onRequestDelete={(item) => onDelete(item)} />
+        return <EventClassCard eventClass={item} key={item.id} onRequestEdit={onEdit}
+                               onRequestDelete={onDelete}/>
     }
 
     return (
         <>
-            <h3>{__('Rule Sets', 'sim-league-toolkit')}</h3>
+            <h3>{__('Event Classes', 'sim-league-toolkit')}</h3>
             <p>
-                {__('Sim League Toolkit allows you create re-usable Rule Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to write them multiple times.', 'sim-league-toolkit')}
-            </p>
-            <p>
-                {__('A Rule Set is a collection of Rules, when you create a championship or individual event you have the option to select a rule set that applies in addition to any community rules you have defined.', 'sim-league-toolkit')}
-            </p>
-            <p>
-                {__('When members sign up for championships or individual events they are required to accept each set of rules.', 'sim-league-toolkit')}
+                {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
             </p>
 
             <DataView value={tableData} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
-                      emptyMessage={__('No Rule Sets have been defined.', 'sim-league-toolkit')} style={{marginRight:'1rem'}}/>
+                      emptyMessage={__('No Event Classes have been defined.', 'sim-league-toolkit')}
+                      style={{marginRight: '1rem'}}/>
             {showEditor &&
-                <RuleSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                               ruleSetId={selectedItem?.id}/>
+                <EventClassEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
+                                  ruleSetId={selectedItem?.id}/>
             }
             {itemToDelete && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
-                               acceptLabel={__('Yes', 'sim-league-toolkit)')} rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
-                style={{maxWidth: '50%'}}/>
+                               acceptLabel={__('Yes', 'sim-league-toolkit)')}
+                               rejectLabel={__('No', 'sim-league-toolkit')}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it from all championships or individual events and any driver registrations for the class in those events will be removed!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               style={{maxWidth: '50%'}}/>
             }
             <BusySpinner isActive={isBusy}/>
         </>
