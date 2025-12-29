@@ -90,7 +90,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Rule Set', 'sim-league-toolkit')}>
                     <form onSubmit={onSave} noValidate>
-                        <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750spx'}}>
+                        <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                             <div className='flex flex-column align-items-stretch gap-2'>
                                 <label htmlFor='rule-set-name'>{__('Name', 'sim-league-toolkit')}</label>
                                 <InputText id='rule-set-name' value={name} onChange={(e) => setName(e.target.value)}

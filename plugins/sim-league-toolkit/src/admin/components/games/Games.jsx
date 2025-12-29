@@ -6,7 +6,7 @@ import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import {Panel} from 'primereact/panel';
 
-import {BusySpinner} from './BusySpinner';
+import {BusySpinner} from '../BusySpinner';
 
 
 export const Games = () => {
