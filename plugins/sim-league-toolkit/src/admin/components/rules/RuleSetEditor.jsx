@@ -7,11 +7,11 @@ import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
 
-import {BusySpinner} from '../BusySpinner';
-import {CancelButton} from '../CancelButton';
+import {BusySpinner} from '../shared/BusySpinner';
+import {CancelButton} from '../shared/CancelButton';
 import {RuleList} from './RuleList';
-import {SaveSubmitButton} from '../SaveSubmitButton';
-import {ValidationError} from '../ValidationError';
+import {SaveSubmitButton} from '../shared/SaveSubmitButton';
+import {ValidationError} from '../shared/ValidationError';
 
 export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
 

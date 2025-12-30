@@ -3,7 +3,7 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown} from 'primereact/dropdown';
-import {ValidationError} from '../ValidationError';
+import {ValidationError} from '../shared/ValidationError';
 
 
 export const GameSelector = ({onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
@@ -28,7 +28,7 @@ export const GameSelector = ({onSelectedItemChanged, disabled = false, isInvalid
 
     return (
         <>
-            <label htmlFor='game-selector'>{__('Name', 'sim-league-toolkit')}</label>
+            <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
             <Dropdown id='game-selector' value={selectedItem} options={items} onChange={onSelect} optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError

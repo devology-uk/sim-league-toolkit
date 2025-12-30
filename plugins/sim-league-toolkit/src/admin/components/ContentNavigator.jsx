@@ -1,13 +1,13 @@
-import {Dashboard} from './Dashboard';
+import {Dashboard} from './dashboard/Dashboard';
 import {Games} from './games/Games';
 import {RuleSets} from './rules/RuleSets';
-import {Championships} from './Championships';
-import {Events} from './Events';
+import {Championships} from './championships/Championships';
+import {Events} from './events/Events';
 import {EventClasses} from './eventClasses/EventClasses';
-import {RaceNumbers} from './RaceNumbers';
-import {ScoringSets} from './ScoringSets';
-import {Servers} from './Servers';
-import {Tools} from './Tools';
+import {RaceNumbers} from './raceNumbers/RaceNumbers';
+import {ScoringSets} from './scoringSets/ScoringSets';
+import {Servers} from './servers/Servers';
+import {Tools} from './tools/Tools';
 
 export const ContentNavigator = ({currentView}) => {
     switch (currentView) {

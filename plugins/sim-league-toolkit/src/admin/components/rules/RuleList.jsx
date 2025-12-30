@@ -6,12 +6,12 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {ListBox} from 'primereact/listbox';
 import {Panel} from 'primereact/panel';
 
-import {SaveButton} from '../SaveButton';
-import {ValidationError} from '../ValidationError';
+import {SaveButton} from '../shared/SaveButton';
+import {ValidationError} from '../shared/ValidationError';
 import {Button} from 'primereact/button';
-import {BusySpinner} from '../BusySpinner';
+import {BusySpinner} from '../shared/BusySpinner';
 import {ConfirmDialog} from 'primereact/confirmdialog';
-import {CancelButton} from '../CancelButton';
+import {CancelButton} from '../shared/CancelButton';
 
 export const RuleList = ({ruleSetId}) => {
 
