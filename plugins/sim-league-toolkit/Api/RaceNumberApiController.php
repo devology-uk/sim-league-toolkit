@@ -9,7 +9,10 @@
   use WP_REST_Server;
 
   class RaceNumberApiController extends ApiController {
-    private const string RESOURCE_BASE = '/' . ResourceNames::RACE_NUMBER;
+
+    public function __construct() {
+      parent::__construct(ResourceNames::RACE_NUMBER);
+    }
 
     public function get(WP_REST_Request $request): WP_REST_Response {
       $data = RaceNumber::list();
@@ -37,7 +40,7 @@
 
     private function registerGetRoute(): void {
       register_rest_route(self::NAMESPACE,
-        self::RESOURCE_BASE,
+        self::getResourceName(),
         [
           [
             'methods' => WP_REST_Server::READABLE,

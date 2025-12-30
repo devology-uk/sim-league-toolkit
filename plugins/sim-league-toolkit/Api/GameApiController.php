@@ -2,20 +2,18 @@
 
   namespace SLTK\Api;
 
-  use Exception;
   use SLTK\Core\Constants;
   use SLTK\Domain\Game;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
-  class GameApiController extends ApiController {
-    private const string RESOURCE_BASE = '/' . ResourceNames::GAME;
+  class GameApiController extends LookupApiController {
 
-    /**
-     * @throws Exception
-     */
-    public function get(WP_REST_Request $request): WP_REST_Response {
+    public function __construct() {
+      parent::__construct(ResourceNames::GAME);
+    }
+
+    public function onGet(WP_REST_Request $request): WP_REST_Response {
       $games = Game::list();
 
       if (empty($games)) {
@@ -25,30 +23,25 @@
       $responseData = [];
 
       foreach ($games as $game) {
-        $responseData[] = $game->toTableItem();
+        $responseData[] = $game->toDto();
       }
 
       return rest_ensure_response($responseData);
-    }
-
-    public function registerRoutes(): void {
-      $this->registerGetRoute();
     }
 
     protected function canExecute(): bool {
       return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
-    private function registerGetRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        self::RESOURCE_BASE,
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'get'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Game::get($id);
+
+      return rest_ensure_response($data->toDto());
+    }
+
+    protected function onRegisterRoutes(): void {
+
     }
   }

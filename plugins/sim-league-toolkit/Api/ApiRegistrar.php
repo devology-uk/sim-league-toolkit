@@ -19,6 +19,10 @@
 
       $apiController = null;
 
+      if (str_contains($wp->request, ResourceNames::DRIVER_CATEGORY)) {
+        $apiController = new DriverCategoryApiController();
+      }
+
       if (str_contains($wp->request, ResourceNames::EVENT_CLASS)) {
         $apiController = new EventClassesApiController();
       }
@@ -43,7 +47,7 @@
         $apiController = new ServerApiController();
       }
 
-      if(is_subclass_of($apiController, ApiController::class) || is_subclass_of($apiController, BasicApiController::class)) {
+      if (is_subclass_of($apiController, ApiController::class) || is_subclass_of($apiController, LookupApiController::class) || is_subclass_of($apiController, BasicApiController::class)) {
         $apiController->registerRoutes();
       }
     }

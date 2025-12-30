@@ -8,7 +8,10 @@
   use WP_REST_Server;
 
   class ServerApiController extends ApiController {
-    private const string RESOURCE_BASE = '/' . ResourceNames::SERVER;
+
+    public function __construct() {
+      parent::__construct(ResourceNames::SERVER);
+    }
 
     public function get(WP_REST_Request $request): WP_REST_Response {
       $servers = Server::list();
@@ -30,7 +33,7 @@
 
     private function registerGetRoute(): void {
       register_rest_route(self::NAMESPACE,
-        self::RESOURCE_BASE,
+        self::getResourceName(),
         [
           [
             'methods' => WP_REST_Server::READABLE,
