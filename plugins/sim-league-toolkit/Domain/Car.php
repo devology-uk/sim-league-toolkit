@@ -82,6 +82,10 @@
       return $this->carKey;
     }
 
+    public function getDisplayName(): string {
+      return $this->name . ' (' . $this->year . ')';
+    }
+
     public function getGameId(): int {
       return $this->gameId;
     }
@@ -102,10 +106,6 @@
       return $this->year;
     }
 
-    public function getDisplayName(): string {
-      return $this->name . ' (' . $this->year . ')';
-    }
-
     public function toArray(): array {
       $result = [
         'carClass' => $this->carClass,
@@ -121,6 +121,19 @@
       }
 
       return $result;
+
+    }
+
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'carClass' => $this->carClass,
+        'carKey' => $this->carKey,
+        'gameId' => $this->gameId,
+        'manufacturer' => $this->manufacturer,
+        'name' => $this->name,
+        'year' => $this->year,
+      ];
 
     }
 

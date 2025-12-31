@@ -63,11 +63,6 @@
     }
   }
 
-  .validation-error {
-    color: red;
-    font-size: 11px;
-  }
-
   .mr-2 {
     margin-right: .2rem;
   }
@@ -97,4 +92,10 @@
 
 .p-panel {
   margin-top: 1rem;
+}
+
+.validation-error {
+  color: var(--red-700);
+  font-size: 1rem;
+  max-width: 350px
 }

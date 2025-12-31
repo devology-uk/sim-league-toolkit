@@ -29,6 +29,9 @@
       return null;
     }
 
+    /**
+     * @return DriverCategory[]
+     */
     public static function list(): array {
       $queryResults = DriverCategoriesRepository::list();
 
@@ -67,6 +70,15 @@
       }
 
       return $result;
+    }
+
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'plaque' => $this->plaque,
+        'participationRequirement' => $this->participationRequirement,
+      ];
     }
 
     private static function mapDriverCategories(array $queryResults): array {

@@ -3,17 +3,18 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown} from 'primereact/dropdown';
+
 import {ValidationError} from '../shared/ValidationError';
 
 
-export const GameSelector = ({onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const DriverCategorySelector = ({onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(0);
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/game',
-            method: 'GET'
+            path: '/sltk/v1/driver-category',
+            method: 'GET',
         }).then((r) => {
             setItems(r);
         });
@@ -31,9 +32,8 @@ export const GameSelector = ({onSelectedItemChanged, disabled = false, isInvalid
 
     return (
         <>
-            <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
-            <Dropdown id='game-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
-                      optionLabel='label'
+            <label htmlFor='driver-category-selector'>{__('Driver Category', 'sim-league-toolkit')}</label>
+            <Dropdown id='driver-category-selector' value={selectedItem} options={itemOptions} onChange={onSelect} optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError
                 message={validationMessage}

@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusySpinner} from '../BusySpinner';
+import {BusySpinner} from '../shared/BusySpinner';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
 

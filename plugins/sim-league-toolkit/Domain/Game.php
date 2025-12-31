@@ -4,7 +4,6 @@
 
   use Exception;
   use SLTK\Database\Repositories\CarRepository;
-  use SLTK\Database\Repositories\DriverCategoriesRepository;
   use SLTK\Database\Repositories\GameRepository;
   use SLTK\Database\Repositories\TrackRepository;
   use stdClass;
@@ -127,6 +126,20 @@
 
     public function save(): bool {
       return false;
+    }
+
+    /**
+     * @return array{columnName: string, value: mixed}
+     */
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'latestVersion' => $this->latestVersion,
+        'supportsResultUpload' => $this->supportsResultUpload,
+        'published' => $this->published,
+        'supportsLayouts' => $this->supportsLayouts,
+      ];
     }
 
     /**

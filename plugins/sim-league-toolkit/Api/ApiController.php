@@ -37,6 +37,6 @@
     }
 
     protected function getResourceName(): string {
-      return $this->resourceName;
+      return '/' . $this->resourceName;
     }
   }

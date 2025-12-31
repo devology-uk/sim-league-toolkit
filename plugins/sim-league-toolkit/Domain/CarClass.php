@@ -39,4 +39,13 @@
 
       return $result;
     }
+
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'displayName' => $this->displayName,
+        'gameId' => $this->gameId,
+        'name' => $this->name,
+      ];
+    }
   }

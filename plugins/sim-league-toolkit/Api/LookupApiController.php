@@ -32,6 +32,7 @@
     public function registerRoutes(): void {
       $this->registerGetRoute();
       $this->registerGetByIdRoute();
+      $this->onRegisterRoutes();
     }
 
     protected function canExecute(): bool {

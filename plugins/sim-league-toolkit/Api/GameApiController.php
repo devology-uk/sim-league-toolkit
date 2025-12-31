@@ -2,10 +2,13 @@
 
   namespace SLTK\Api;
 
+  use Exception;
   use SLTK\Core\Constants;
+  use SLTK\Domain\Car;
   use SLTK\Domain\Game;
   use WP_REST_Request;
   use WP_REST_Response;
+  use WP_REST_Server;
 
   class GameApiController extends LookupApiController {
 
@@ -13,17 +16,50 @@
       parent::__construct(ResourceNames::GAME);
     }
 
-    public function onGet(WP_REST_Request $request): WP_REST_Response {
-      $games = Game::list();
+    /**
+     * @throws Exception
+     */
+    public function listCars(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+      $class = $request->get_param('class');
 
-      if (empty($games)) {
-        return rest_ensure_response($games);
+      $data = Car::listForGame($id, $class);
+
+      if (empty($data)) {
+        return rest_ensure_response($data);
       }
 
       $responseData = [];
 
-      foreach ($games as $game) {
-        $responseData[] = $game->toDto();
+      foreach ($data as $item) {
+        $responseData[] = $item->toDto();
+      }
+
+      return rest_ensure_response($responseData);
+    }
+
+    /**
+   * @throws Exception
+   */
+    public function listCarClasses(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Car::listClassesForGame($id);
+
+      return rest_ensure_response($data);
+    }
+
+    public function onGet(WP_REST_Request $request): WP_REST_Response {
+      $data = Game::list();
+
+      if (empty($data)) {
+        return rest_ensure_response($data);
+      }
+
+      $responseData = [];
+
+      foreach ($data as $item) {
+        $responseData[] = $item->toDto();
       }
 
       return rest_ensure_response($responseData);
@@ -42,6 +78,33 @@
     }
 
     protected function onRegisterRoutes(): void {
+      $this->registerCarsRoute();
+      $this->registerCarClassesRoute();
+    }
 
+    private function registerCarClassesRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/(?P<id>\d+)/car-classes',
+        [
+          [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'listCarClasses'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
+    }
+
+    private function registerCarsRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/(?P<id>[\d]+)/cars/(?P<class>[\w]+)',
+        [
+          [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'listCars'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
     }
   }

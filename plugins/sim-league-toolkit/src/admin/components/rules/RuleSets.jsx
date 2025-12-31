@@ -89,7 +89,7 @@ export const RuleSets = () => {
     }
 
     const itemTemplate = (item) => {
-        return <RuleSetCard ruleSet={item.data} key={item.id}  onRequestEdit={(item) => onEdit(item)} onRequestDelete={(item) => onDelete(item)} />
+        return <RuleSetCard ruleSet={item} key={item.id}  onRequestEdit={onEdit} onRequestDelete={onDelete} />
     }
 
     return (
