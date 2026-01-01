@@ -6,9 +6,9 @@ import {Dropdown} from 'primereact/dropdown';
 import {ValidationError} from '../shared/ValidationError';
 
 
-export const GameSelector = ({onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = false, isInvalid = false, validationMessage = ''}) => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(gameId);
 
     useEffect(() => {
         apiFetch({

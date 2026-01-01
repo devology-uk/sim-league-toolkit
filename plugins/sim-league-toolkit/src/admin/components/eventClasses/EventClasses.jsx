@@ -104,7 +104,7 @@ export const EventClasses = () => {
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <EventClassEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                                  ruleSetId={selectedItem?.id}/>
+                                  eventClassId={selectedItem?.id}/>
             }
             {itemToDelete && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

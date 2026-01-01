@@ -8,10 +8,10 @@ import {ValidationError} from './ValidationError';
 
 export const CAR_CLASS_SELECTOR_DEFAULT_VALUE = 'any';
 
-export const CarClassSelector = ({gameId, onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const CarClassSelector = ({carClass = CAR_CLASS_SELECTOR_DEFAULT_VALUE, gameId, onSelectedItemChanged, disabled = false, isInvalid = false, validationMessage = ''}) => {
 
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
+    const [selectedItem, setSelectedItem] = useState(carClass);
 
     useEffect(() => {
         apiFetch({

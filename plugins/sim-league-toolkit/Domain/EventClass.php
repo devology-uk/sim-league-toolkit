@@ -201,10 +201,13 @@
         'id' => $this->id,
         'carClass' => $this->getCarClass(),
         'driverCategory' => $this->getDriverCategory(),
+        'driverCategoryId' => $this->getDriverCategoryId(),
         'game' => $this->getGame(),
+        'gameId' => $this->getGameId(),
         'isBuiltIn' => $this->getIsBuiltIn(),
         'isSingleCarClass' => $this->getIsSingleCarClass(),
         'name' => $this->getName(),
+        'singleCarId' => $this->getSingleCarId(),
         'singleCarName' => $this->getSingleCarName(),
         'isInUse' => $this->isInUse(),
       ];

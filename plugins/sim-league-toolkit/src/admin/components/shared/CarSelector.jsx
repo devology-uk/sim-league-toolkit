@@ -7,9 +7,17 @@ import {Dropdown} from 'primereact/dropdown';
 import {ValidationError} from './ValidationError';
 
 
-export const CarSelector = ({gameId, onSelectedItemChanged, carClass = '*', disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const CarSelector = ({
+                                gameId,
+                                onSelectedItemChanged,
+                                carId = 0,
+                                carClass = '*',
+                                disabled = false,
+                                isInvalid = false,
+                                validationMessage = ''
+                            }) => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(carId);
 
     useEffect(() => {
         apiFetch({
@@ -33,7 +41,8 @@ export const CarSelector = ({gameId, onSelectedItemChanged, carClass = '*', disa
     return (
         <>
             <label htmlFor='car-selector'>{__('Car', 'sim-league-toolkit')}</label>
-            <Dropdown id='car-selector' value={selectedItem} options={itemOptions} onChange={onSelect} optionLabel='label'
+            <Dropdown id='car-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
+                      optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError
                 message={validationMessage}

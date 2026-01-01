@@ -19,6 +19,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
     const [driverCategoryId, setDriverCategoryId] = useState(0);
     const [gameId, setGameId] = useState(0);
+    const [gameName, setGameName] = useState('');
     const [isBusy, setIsBusy] = useState(false);
     const [isSingleCarClass, setIsSingleCarClass] = useState(false);
     const [name, setName] = useState('');
@@ -34,10 +35,18 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
             path: `/sltk/v1/event-class/${eventClassId}`,
             method: 'GET',
         }).then((r) => {
+            setGameId(r.gameId);
+            setGameName(r.game);
+            setDriverCategoryId(r.driverCategoryId);
+            setCarClass(r.carClass);
+            setIsSingleCarClass(r.isSingleCarClass);
             setName(r.name);
+            if (r.isSingleCarClass) {
+                setSingleCarId(r.singleCarId);
+            }
             setIsBusy(false);
         });
-    }, [])
+    }, [eventClassId])
 
     const resetForm = () => {
         setCarClass(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
@@ -51,7 +60,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
     const onSave = (evt) => {
         evt.preventDefault();
 
-        if(!validate()) {
+        if (!validate()) {
             return;
         }
 
@@ -62,10 +71,10 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
             gameId: gameId,
             isSingleCarClass: isSingleCarClass,
             name: name,
-            singleCarId: isSingleCarClass? singleCarId : null,
+            singleCarId: isSingleCarClass ? singleCarId : null,
         };
 
-        if(eventClassId && eventClassId > 0){
+        if (eventClassId && eventClassId > 0) {
             eventClass.id = eventClassId;
         }
 
@@ -96,15 +105,15 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
             errors.push('name');
         }
 
-        if(driverCategoryId < 1) {
+        if (driverCategoryId < 1) {
             errors.push('driverCategoryId');
         }
 
-        if(!carClass || carClass.length < 1 || carClass === CAR_CLASS_SELECTOR_DEFAULT_VALUE) {
+        if (!carClass || carClass.length < 1 || carClass === CAR_CLASS_SELECTOR_DEFAULT_VALUE) {
             errors.push('carClass');
         }
 
-        if(isSingleCarClass && singleCarId < 1) {
+        if (isSingleCarClass && singleCarId < 1) {
             errors.push('singleCarId');
         }
         setValidationErrors(errors);
@@ -118,10 +127,19 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
-                                <GameSelector disabled={eventClassId !== 0}
-                                              isInvalid={validationErrors.includes('game')}
-                                              validationMessage={__('You must select the game that this class will be used with.')}
-                                              onSelectedItemChanged={onSelectedGameChanged}/>
+                                {eventClassId < 1 &&
+                                    <GameSelector gameId={gameId}
+                                                  disabled={eventClassId !== 0}
+                                                  isInvalid={validationErrors.includes('game')}
+                                                  validationMessage={__('You must select the game that this class will be used with.')}
+                                                  onSelectedItemChanged={onSelectedGameChanged}/>
+                                }
+                                {eventClassId >= 1 &&
+                                <>
+                                    <label htmlFor='event-class-name'>{__('Game', 'sim-league-toolkit')}</label>
+                                    <span>{gameName}</span>
+                                </>
+                                }
                                 {gameId !== 0 &&
                                     <>
                                         <label htmlFor='event-class-name'>{__('Name', 'sim-league-toolkit')}</label>
@@ -132,24 +150,28 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
                                             message={__('A name with at least 5 characters is required', 'sim-league-toolkit')}
                                             show={validationErrors.includes('name')}/>
 
-                                        <DriverCategorySelector isInvalid={validationErrors.includes('driverCategoryId')}
+                                        <DriverCategorySelector driverCategoryId={driverCategoryId}
+                                                                isInvalid={validationErrors.includes('driverCategoryId')}
                                                                 onSelectedItemChanged={setDriverCategoryId}
-                                                                validationMessage={__('You must select the driver category the this class applies to.', 'sim-league-toolkit')}/>
+                                                                validationMessage={__('You must select a driver category.', 'sim-league-toolkit')}/>
                                         <CarClassSelector gameId={gameId}
+                                                          carClass={carClass}
                                                           isInvalid={validationErrors.includes('carClass')}
                                                           onSelectedItemChanged={setCarClass}
-                                                          validationMessage={__('You must select the car class for this event class applies to.', 'sim-league-toolkit')}/>
+                                                          validationMessage={__('You must select a car class.', 'sim-league-toolkit')}/>
                                         <div className='flex flex-row justify-content-between'>
                                             <label
                                                 htmlFor='is-single-car-class'>{__('Is Fixed Car', 'sim-league-toolkit')}</label>
                                             <Checkbox id='is-single-car-class' checked={isSingleCarClass}
                                                       onChange={(e) => setIsSingleCarClass(e.checked)}/>
                                         </div>
-                                        {isSingleCarClass && carClass !== CAR_CLASS_SELECTOR_DEFAULT_VALUE && <CarSelector carClass={carClass}
-                                                                          gameId={gameId}
-                                                                          isInvalid={validationErrors.includes('singleCarId')}
-                                                                          onSelectedItemChanged={setSingleCarId}
-                                                                          validationMessage={__('When Is Fixed Car is enabled you must select a car.', 'sim-league-toolkit')} />}
+                                        {isSingleCarClass && carClass !== CAR_CLASS_SELECTOR_DEFAULT_VALUE &&
+                                            <CarSelector gameId={gameId}
+                                                         carClass={carClass}
+                                                         carId={singleCarId}
+                                                         isInvalid={validationErrors.includes('singleCarId')}
+                                                         onSelectedItemChanged={setSingleCarId}
+                                                         validationMessage={__('When Is Fixed Car is enabled you must select a car.', 'sim-league-toolkit')}/>}
                                     </>
 
                                 }

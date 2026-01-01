@@ -68,7 +68,8 @@
                 INNER JOIN $driverCategoriesTableName dc
                 ON ec.driverCategoryId = dc.id
                 LEFT OUTER JOIN $carsTableName c
-                ON ec.singleCarId = c.id;";
+                ON ec.singleCarId = c.id
+                ORDER BY isBuiltIn, ec.name;";
 
       return self::getResults($query);
     }
