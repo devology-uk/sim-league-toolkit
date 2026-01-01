@@ -29,7 +29,7 @@
     }
 
     public static function getFlagIconUrl(string $alpha3Code): string {
-      return Constants::PLUGIN_ROOT_URL . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'flags' . DIRECTORY_SEPARATOR . $alpha3Code . '.png';
+      return Constants::PLUGIN_ROOT_URL . '/assets/flags/' . $alpha3Code . '.png';
     }
 
     public static function getSiteAbsoluteUrl(string $slug, array $params = []): string {

@@ -10,10 +10,10 @@
         /**
          * @throws Exception
          */
-        protected static function deleteById(string $tableNameWithoutPrefix, int $id): void {
+        protected static function deleteById(string $tableNameWithoutPrefix, int $id, string $idColumnName = 'id'): void {
             global $wpdb;
 
-            $wpdb->delete(self::prefixedTableName($tableNameWithoutPrefix), ['id' => $id]);
+            $wpdb->delete(self::prefixedTableName($tableNameWithoutPrefix), [$idColumnName => $id]);
 
             self::throwIfError(esc_html__('Unexpected error deleting data from database.', 'sim-league-toolkit'));
         }

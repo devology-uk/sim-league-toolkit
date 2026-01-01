@@ -9,6 +9,7 @@
 
     public function __construct(stdClass $data = null) {
       if ($data) {
+        $this->id = $data->id;
         $this->name = $data->name ?? '';
         $this->alpha2 = $data->alpha2 ?? '';
         $this->alpha3 = $data->alpha3 ?? '';

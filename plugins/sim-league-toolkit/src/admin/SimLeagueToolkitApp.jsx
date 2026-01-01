@@ -40,11 +40,6 @@ export const SimLeagueToolkitApp = () => {
             command: () => setCurrentView('games'),
         },
         {
-            label: __('Race Numbers', 'sim-league-toolkit'),
-            icon: 'fa-solid fa-hashtag',
-            command: () => setCurrentView('raceNumbers'),
-        },
-        {
             label: __('Scoring Sets', 'sim-league-toolkit'),
             icon: 'fa-solid fa-table-list',
             command: () => setCurrentView('scoringSets'),
