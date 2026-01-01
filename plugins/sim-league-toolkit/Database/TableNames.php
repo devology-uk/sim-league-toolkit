@@ -22,4 +22,6 @@
     public final const string SERVER_SETTINGS = 'sltk_server_settings';
     public final const string TRACKS = 'sltk_tracks';
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
+    public final const string USERS = 'users';
+    public final const string USER_PROFILE = 'sltk_user_profile';
   }

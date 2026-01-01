@@ -13,7 +13,7 @@
 
     abstract public function tableName(string $tablePrefix): string;
 
-    protected function addSimpleForeignKey(string $tablePrefix, string $parentTableName, string $constraintName, string $columnName): void {
+    protected function addSimpleForeignKey(string $tablePrefix, string $parentTableName, string $constraintName, string $columnName, string $parentColumn = 'id'): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
       $prefixedParentTableName = $tablePrefix . $parentTableName;
@@ -26,7 +26,7 @@
       if (!$constraintExists) {
         $fkSql = "ALTER TABLE {$tableName}
                     ADD CONSTRAINT $constraintName 
-                        FOREIGN KEY ($columnName) REFERENCES $prefixedParentTableName(id);";
+                        FOREIGN KEY ($columnName) REFERENCES $prefixedParentTableName($parentColumn);";
         $wpdb->query($fkSql);
       }
     }

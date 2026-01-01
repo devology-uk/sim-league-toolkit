@@ -11,6 +11,7 @@
 
     public static function init(): void {
       self::$builders[] = new CountriesTableBuilder();
+      self::$builders[] = new UserProfileTableBuilder();
       self::$builders[] = new GamesTableBuilder();
       self::$builders[] = new PlatformsTableBuilder();
       self::$builders[] = new GamePlatformsTableBuilder();
