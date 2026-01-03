@@ -32,7 +32,7 @@ export const RuleList = ({ruleSetId}) => {
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
-            path: `/sltk/v1/rule-set-rule/${ruleSetId}`,
+            path: `/sltk/v1/rule-set/${ruleSetId}/rules`,
             method: 'GET',
         }).then((r) => {
             setRules(r);
@@ -64,7 +64,7 @@ export const RuleList = ({ruleSetId}) => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/rule-set-rule/' + selectedRule.id,
+            path: `sltk/v1/rule-set/rules/${selectedRule.id}`,
             method: 'DELETE'
         }).then(() => {
             loadData();
@@ -100,7 +100,7 @@ export const RuleList = ({ruleSetId}) => {
         }
 
         apiFetch({
-            path: '/sltk/v1/rule-set-rule',
+            path: `sltk/v1/rule-set/rules`,
             method: 'POST',
             data: rule,
         }).then(() => {

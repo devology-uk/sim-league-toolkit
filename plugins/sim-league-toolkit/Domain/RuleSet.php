@@ -3,17 +3,11 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\RuleSetRepository;
   use stdClass;
 
-  class RuleSet extends DomainBase implements TableItem, Validator {
-    public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
-    public final const string NAME_FIELD_NAME = 'sltk_name';
-    public final const string TYPE_CHAMPIONSHIP = 'Championship';
-    public final const string TYPE_EVENT = 'Event';
-    public final const string TYPE_FIELD_NAME = 'sltk_type';
+  class RuleSet extends DomainBase {
     private string $description = '';
     private string $name = '';
     private string $type = '';
@@ -32,6 +26,10 @@
      */
     public static function delete(int $id): void {
       RuleSetRepository::delete($id);
+    }
+
+    public static function deleteRule(int $id): void {
+      RuleSetRepository::deleteRule($id);
     }
 
     public static function get(int $id): RuleSet|null {
@@ -58,7 +56,7 @@
     }
 
     /**
-     * @return RuleSet[] Collection of all rule sets
+     * @return RuleSet[]
      */
     public static function list(): array {
       $results = RuleSetRepository::list();
@@ -74,16 +72,6 @@
       $ruleSet = RuleSet::get($id);
 
       return $ruleSet->getRules() ?? [];
-    }
-
-    public function deleteRule(int $ruleId): bool {
-      try {
-        RuleSetRepository::deleteRule($ruleId);
-
-        return true;
-      } catch (Exception) {
-        return false;
-      }
     }
 
     public function getDescription(): string {
@@ -174,36 +162,6 @@
         'description' => $this->description,
         'type' => $this->type,
       ];
-    }
-
-    /**
-     * @return array{columnName: string, value: mixed}
-     */
-    public function toTableItem(): array {
-      return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'type' => $this->type,
-      ];
-    }
-
-    public function validate(): ValidationResult {
-      $result = new ValidationResult();
-
-      if (empty($this->name)) {
-        $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
-      }
-
-      if (empty($this->name)) {
-        $result->addValidationError(self::DESCRIPTION_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
-      }
-
-      if (empty($this->type)) {
-        $result->addValidationError(self::TYPE_FIELD_NAME,
-          esc_html__('Type is required.', 'sim-league-toolkit'));
-      }
-
-      return $result;
     }
 
     private static function mapRuleSetRules(array $queryResults): array {

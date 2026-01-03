@@ -39,10 +39,6 @@
         $apiController = new RuleSetApiController();
       }
 
-      if (str_contains($wp->request, ResourceNames::RULE_SET_RULE)) {
-        $apiController = new RuleSetRuleApiController();
-      }
-
       if(str_contains($wp->request, ResourceNames::SCORING_SET)) {
         $apiController = new ScoringSetApiController();
       }
