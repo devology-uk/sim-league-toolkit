@@ -98,6 +98,12 @@ export const EventClasses = () => {
             <p>
                 {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
             </p>
+            <p>
+                {__('An Event Class is a combination of a Car Class, Driver Category and optionally the single car that can be used in the class.', 'sim-league-toolkit')}
+            </p>
+            <p>
+                {__('Sim League Toolkit provides a set of built-in event classes for each game, these cannot be deleted or changed.', 'sim-league-toolkit')}
+            </p>
 
             <DataView value={tableData} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Event Classes have been defined.', 'sim-league-toolkit')}

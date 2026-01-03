@@ -69,6 +69,14 @@
       ];
     }
 
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'position' => $this->position,
+        'points' => $this->points,
+      ];
+    }
+
     public function validate(): ValidationResult {
       $result = new ValidationResult();
 

@@ -16,6 +16,8 @@
     public final const string POINTS_FOR_POLE_FIELD_NAME = 'sltk_pole_points';
 
     private string $description = '';
+    private bool $isBuiltIn = false;
+    private bool $isInUse = false;
     private string $name = '';
     private int $pointsForFastestLap = 0;
     private int $pointsForFinishing = 0;
@@ -25,11 +27,22 @@
       if ($data != null) {
         $this->id = $data->id;
         $this->description = $data->description ?? '';
+        $this->isBuiltIn = $data->isBuiltIn ?? false;
+        $this->isInUse = $data->isInUse ?? false;
         $this->name = $data->name ?? '';
-        $this->pointsForFastestLap = $data->pointsForFastestLap;
-        $this->pointsForFinishing = $data->pointsForFinishing;
-        $this->pointsForPole = $data->pointsForPole;
+        $this->pointsForFastestLap = $data->pointsForFastestLap ?? 0;
+        $this->pointsForFinishing = $data->pointsForFinishing ?? 0;
+        $this->pointsForPole = $data->pointsForPole ?? 0;
       }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function delete(int $id): bool {
+      ScoringSetRepository::delete($id);
+
+      return true;
     }
 
     public static function get(int $id): ScoringSet|null {
@@ -42,7 +55,8 @@
     }
 
     /**
-     * @return ScoringSet[] Collection of all scoring sets
+     * @return ScoringSet[]
+     * @throws Exception
      */
     public static function list(): array {
       $results = ScoringSetRepository::list();
@@ -56,6 +70,22 @@
 
     public function setDescription(string $value): void {
       $this->description = trim($value);
+    }
+
+    public function getIsBuiltIn() {
+      return $this->isBuiltIn ?? false;
+    }
+
+    public function setIsBuiltIn(bool $value): void {
+      $this->isBuiltIn = $value;
+    }
+
+    public function getIsInUse() {
+      return $this->isInUse ?? false;
+    }
+
+    public function setIsInUse(bool $value): void {
+      $this->isInUse = $value;
     }
 
     public function getName(): string {
@@ -144,6 +174,22 @@
       }
 
       return $result;
+    }
+
+    /**
+     * @return array{columnName: string, value: mixed}
+     */
+    public function toDto(): array {
+      return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'description' => $this->description,
+        'isBuiltIn' => $this->isBuiltIn,
+        'isInUse' => $this->isInUse,
+        'pointsForFastestLap' => $this->pointsForFastestLap,
+        'pointsForFinishing' => $this->pointsForFinishing,
+        'pointsForPole' => $this->pointsForPole,
+      ];
     }
 
     /**

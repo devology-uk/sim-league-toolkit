@@ -9,6 +9,7 @@
     public final const string CHAMPIONSHIP_EVENT_CLASSES = 'sltk_championship_event_classes';
     public final const string COUNTRIES = 'sltk_countries';
     public final const string DRIVER_CATEGORIES = 'sltk_driver_categories';
+    public final const string EVENTS = 'sltk_events';
     public final const string EVENT_CLASSES = 'sltk_event_classes';
     public final const string GAMES = 'sltk_games';
     public final const string GAME_PLATFORMS = 'sltk_game_platforms';

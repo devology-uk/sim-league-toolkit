@@ -43,9 +43,14 @@
         $apiController = new RuleSetRuleApiController();
       }
 
+      if(str_contains($wp->request, ResourceNames::SCORING_SET)) {
+        $apiController = new ScoringSetApiController();
+      }
+
       if (str_contains($wp->request, ResourceNames::SERVER)) {
         $apiController = new ServerApiController();
       }
+
 
       if (is_subclass_of($apiController, ApiController::class) || is_subclass_of($apiController, LookupApiController::class) || is_subclass_of($apiController, BasicApiController::class)) {
         $apiController->registerRoutes();

@@ -22,6 +22,7 @@
         pointsForFastestLap tinyint NOT NULL DEFAULT 0,
         pointsForPole tinyint NOT NULL DEFAULT 0,
         pointsForFinishing tinyint NOT NULL DEFAULT 0,
+        isBuiltIn bit NOT NULL DEFAULT false,
         PRIMARY KEY  (id)
       ) {$charsetCollate};";
     }
@@ -37,6 +38,7 @@
           'pointsForFastestLap' => 1,
           'pointsForPole' => 0,
           'pointsForFinishing' => 0,
+          'isBuiltin' => true,
         ],
         [
           'name' => BuiltinScoringSetNames::F1_SPRINT,
@@ -45,6 +47,7 @@
           'pointsForFastestLap' => 0,
           'pointsForPole' => 0,
           'pointsForFinishing' => 0,
+          'isBuiltin' => true,
         ],
         [
           'name' => BuiltinScoringSetNames::WEC,
@@ -53,6 +56,7 @@
           'pointsForFastestLap' => 0,
           'pointsForPole' => 1,
           'pointsForFinishing' => 0,
+          'isBuiltin' => true,
         ],
         [
           'name' => BuiltinScoringSetNames::GT_WORLD_CHALLENGE,
@@ -61,6 +65,7 @@
           'pointsForFastestLap' => 0,
           'pointsForPole' => 1,
           'pointsForFinishing' => 0,
+          'isBuiltin' => true,
         ],
         [
           'name' => BuiltinScoringSetNames::LE_MANS_24H,
@@ -68,6 +73,7 @@
           'pointsForFastestLap' => 0,
           'pointsForPole' => 1,
           'pointsForFinishing' => 1,
+          'isBuiltin' => true,
         ]
       ];
 

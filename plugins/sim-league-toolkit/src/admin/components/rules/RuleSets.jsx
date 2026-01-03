@@ -13,7 +13,7 @@ export const RuleSets = () => {
 
     const [isBusy, setIsBusy] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
-    const [tableData, setTableData] = useState([]);
+    const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
@@ -26,7 +26,7 @@ export const RuleSets = () => {
     const loadData = () => {
         setIsBusy(true);
         apiFetch({path: '/sltk/v1/rule-set'}).then((r) => {
-            setTableData(r ?? [])
+            setData(r ?? [])
             setIsBusy(false);
         });
     }
@@ -105,7 +105,7 @@ export const RuleSets = () => {
                 {__('When members sign up for championships or individual events they are required to accept each set of rules.', 'sim-league-toolkit')}
             </p>
 
-            <DataView value={tableData} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Rule Sets have been defined.', 'sim-league-toolkit')} style={{marginRight:'1rem'}}/>
             {showEditor &&
                 <RuleSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}

@@ -4,16 +4,16 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
+import {Checkbox} from 'primereact/checkbox';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
 import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../shared/CarClassSelector';
+import {CarSelector} from '../shared/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
-import {Checkbox} from 'primereact/checkbox';
-import {CarSelector} from '../shared/CarSelector';
 
 export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}) => {
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
@@ -135,10 +135,10 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
                                                   onSelectedItemChanged={onSelectedGameChanged}/>
                                 }
                                 {eventClassId >= 1 &&
-                                <>
-                                    <label htmlFor='event-class-name'>{__('Game', 'sim-league-toolkit')}</label>
-                                    <span>{gameName}</span>
-                                </>
+                                    <>
+                                        <label htmlFor='event-class-name'>{__('Game', 'sim-league-toolkit')}</label>
+                                        <span>{gameName}</span>
+                                    </>
                                 }
                                 {gameId !== 0 &&
                                     <>

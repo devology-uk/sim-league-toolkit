@@ -57,18 +57,18 @@
 
       $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
 
-      $ruleSet = new RuleSet();
-      $ruleSet->setName($data->name);
-      $ruleSet->setDescription($data->description);
-      $ruleSet->setType($data->type);
+      $newItem = new RuleSet();
+      $newItem->setName($data->name);
+      $newItem->setDescription($data->description);
+      $newItem->setType($data->type);
 
       if (isset($data->id) && $data->id > 0) {
-        $ruleSet->id = $data->id;
+        $newItem->id = $data->id;
       }
 
-      $ruleSet->save();
+      $newItem->save();
 
-      return new WP_REST_Response($ruleSet, 200);
+      return new WP_REST_Response($newItem, 200);
     }
 
     protected function onRegisterRoutes(): void {

@@ -22,6 +22,13 @@
       return self::insert(TableNames::SCORING_SET_SCORES, $score);
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function delete(int $id): void {
+      self::deleteById(TableNames::SCORING_SETS, $id);
+    }
+
     public static function getById(int $id): stdClass|null {
       return self::getRowById(TableNames::SCORING_SETS, $id);
     }
@@ -38,9 +45,19 @@
 
     /**
      * @return stdClass[]
+     * @throws Exception
      */
     public static function list(): array {
-      return self::getResultsFromTable(TableNames::SCORING_SETS);
+      $tableName = self::prefixedTableName(TableNames::SCORING_SETS);
+      $championshipShipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+//      $eventsTableName = self::prefixedTableName(TableNames::EVENTS);
+
+      $query = "SELECT ss.*,
+                (SELECT COUNT(*) FROM $championshipShipsTableName c WHERE ss.id = c.scoringSetId) as isInUse 
+                FROM {$tableName} ss
+                ORDER BY isBuiltIn, name";
+
+      return self::getResults($query);
     }
 
     /**

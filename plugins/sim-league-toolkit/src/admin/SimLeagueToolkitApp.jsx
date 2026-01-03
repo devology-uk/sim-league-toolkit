@@ -40,14 +40,14 @@ export const SimLeagueToolkitApp = () => {
             command: () => setCurrentView('games'),
         },
         {
-            label: __('Scoring Sets', 'sim-league-toolkit'),
-            icon: 'fa-solid fa-table-list',
-            command: () => setCurrentView('scoringSets'),
-        },
-        {
             label: __('Rule Sets', 'sim-league-toolkit'),
             icon: 'fa-solid fa-scale-balanced',
             command: () => setCurrentView('ruleSets'),
+        },
+        {
+            label: __('Scoring Sets', 'sim-league-toolkit'),
+            icon: 'fa-solid fa-table-list',
+            command: () => setCurrentView('scoringSets'),
         },
         {
             label: __('Servers', 'sim-league-toolkit'),
