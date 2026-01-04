@@ -49,7 +49,7 @@
       $result = [
         'scoringSetId' => $this->getScoringSetId(),
         'position' => $this->getPosition(),
-        'points' => $this->getPosition(),
+        'points' => $this->getPoints(),
       ];
 
       if ($includeId && $this->getId() !== Constants::DEFAULT_ID) {

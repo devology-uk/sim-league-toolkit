@@ -10,6 +10,7 @@ import {InputText} from 'primereact/inputtext';
 import {ValidationError} from '../shared/ValidationError';
 import {InputTextarea} from 'primereact/inputtextarea';
 import {InputNumber} from 'primereact/inputnumber';
+import {ScoreList} from './ScoreList';
 
 export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}) => {
 
@@ -109,7 +110,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
     return (
         <>
             {show && (
-                <Dialog visible={show} onHide={onCancelled} header={__('Event Class', 'sim-league-toolkit')}>
+                <Dialog visible={show} onHide={onCancelled} header={__('Scoring Set', 'sim-league-toolkit')}>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -121,24 +122,28 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
                                     message={__('A name with at least 2 characters is required', 'sim-league-toolkit')}
                                     show={validationErrors.includes('name')}/>
 
-                                <label htmlFor='scoring-set-description'>{__('Description', 'sim-league-toolkit')}</label>
-                                <InputTextarea id='scoring-set-description' value={description} onChange={(e) => setDescription(e.target.value)}
+                                <label
+                                    htmlFor='scoring-set-description'>{__('Description', 'sim-league-toolkit')}</label>
+                                <InputTextarea id='scoring-set-description' value={description}
+                                               onChange={(e) => setDescription(e.target.value)}
                                                placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
                                                rows={5} cols={40}/>
                                 <ValidationError
                                     message={__('A brief description of the scoring set with at least 15 characters is required.', 'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
 
-                                <label htmlFor='scoring-set-points-for-fastest-lap'>{__('Points for Fastest Lap', 'sim-league-toolkit')}</label>
+                                <label
+                                    htmlFor='scoring-set-points-for-fastest-lap'>{__('Points for Fastest Lap', 'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-fastest-lap' value={pointsForFastestLap}
-                                           onChange={(e) => setPointsForFastestLap(e.value)}
+                                             onChange={(e) => setPointsForFastestLap(e.value)}
                                              min={0}
-                                           placeholder={__('Points for Fastest Lap', 'sim-league-toolkit')}/>
+                                             placeholder={__('Points for Fastest Lap', 'sim-league-toolkit')}/>
                                 <ValidationError
                                     message={__('Points for fastest lap cannot be less than zero', 'sim-league-toolkit')}
                                     show={validationErrors.includes('pointsForFastestLap')}/>
 
-                                <label htmlFor='scoring-set-points-for-finishing'>{__('Points for Finishing', 'sim-league-toolkit')}</label>
+                                <label
+                                    htmlFor='scoring-set-points-for-finishing'>{__('Points for Finishing', 'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-finishing' value={pointsForFinishing}
                                              onChange={(e) => setPointsForFinishing(e.value)}
                                              min={0}
@@ -147,7 +152,8 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
                                     message={__('Points for finishing cannot be less than zero', 'sim-league-toolkit')}
                                     show={validationErrors.includes('pointsForFinishing')}/>
 
-                                <label htmlFor='scoring-set-points-for-pole'>{__('Points for Pole', 'sim-league-toolkit')}</label>
+                                <label
+                                    htmlFor='scoring-set-points-for-pole'>{__('Points for Pole', 'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-pole' value={pointsForPole}
                                              onChange={(e) => setPointsForPole(e.value)}
                                              min={0}
@@ -161,6 +167,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
                         <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
+                    {scoringSetId > 0 && (<ScoreList scoringSetId={scoringSetId}/>)}
                     <BusySpinner isActive={isBusy}/>
                 </Dialog>
             )}

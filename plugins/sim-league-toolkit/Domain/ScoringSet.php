@@ -39,6 +39,15 @@
       return true;
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function deleteScore(int $id): bool {
+      ScoringSetRepository::deleteScore($id);
+
+      return true;
+    }
+
     public static function get(int $id): ScoringSet|null {
       $result = ScoringSetRepository::getById($id);
       if ($result != null) {
@@ -119,15 +128,15 @@
      * @throws Exception
      */
     public function getScores(): array {
-      return self::mapScoringSetScores(ScoringSetRepository::listScores($this->id));
+      return self::mapScoringSetScores(ScoringSetRepository::listScores($this->getId()));
     }
 
     public function save(): bool {
       try {
-        if ($this->id == Constants::DEFAULT_ID) {
-          $this->id = ScoringSetRepository::add($this->toArray(false));
+        if ($this->getId() == Constants::DEFAULT_ID) {
+          $this->setId(ScoringSetRepository::add($this->toArray(false)));
         } else {
-          ScoringSetRepository::update($this->id, $this->toArray(false));
+          ScoringSetRepository::update($this->getId(), $this->toArray(false));
         }
       } catch (Exception) {
         return false;
@@ -142,7 +151,7 @@
         if (isset($existing->id)) {
           ScoringSetRepository::updateScore($existing->id, $score->toArray(false));
         } else {
-          $score->id = ScoringSetRepository::addScore($score->toArray(false));
+          $score->setId(ScoringSetRepository::addScore($score->toArray(false)));
         }
 
         return true;

@@ -29,6 +29,14 @@
       self::deleteById(TableNames::SCORING_SETS, $id);
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function deleteScore(int $id): void {
+      self::deleteById(TableNames::SCORING_SET_SCORES, $id);
+
+    }
+
     public static function getById(int $id): stdClass|null {
       return self::getRowById(TableNames::SCORING_SETS, $id);
     }

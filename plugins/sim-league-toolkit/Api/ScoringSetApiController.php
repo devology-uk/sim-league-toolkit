@@ -19,6 +19,17 @@
     /**
      * @throws Exception
      */
+    public function deleteScore(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      ScoringSet::deleteScore($id);
+
+      return rest_ensure_response(true);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function getScores(WP_REST_Request $request): WP_REST_Response {
       $id = $request->get_param('id');
 
@@ -52,7 +63,7 @@
       $newItem->setScoringSetId($data->scoringSetId);
 
       if (isset($data->id) && $data->id > 0) {
-        $newItem->id = $data->id;
+        $newItem->setId($data->id);
       }
 
       $scoringSet = ScoringSet::get($data->scoringSetId);
@@ -116,7 +127,7 @@
       $newItem->setIsBuiltIn(false);
 
       if (isset($data->id) && $data->id > 0) {
-        $newItem->id = $data->id;
+        $newItem->setId($data->id);
       }
 
       $newItem->save();
@@ -125,8 +136,22 @@
     }
 
     protected function onRegisterRoutes(): void {
+      $this->registerDeleteScoreRoute();
       $this->registerGetScoresRoute();
       $this->registerPostScoreRoute();
+    }
+
+    private function registerDeleteScoreRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/scores/(?P<id>[\d]+)',
+        [
+          [
+            'methods' => WP_REST_Server::DELETABLE,
+            'callback' => [$this, 'deleteScore'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
     }
 
     private function registerGetScoresRoute(): void {
@@ -144,7 +169,7 @@
 
     private function registerPostScoreRoute(): void {
       register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)/scores',
+        $this->getResourceName() . '/scores',
         [
           [
             'methods' => WP_REST_Server::CREATABLE,

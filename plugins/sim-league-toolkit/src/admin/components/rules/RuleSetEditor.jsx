@@ -21,7 +21,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
-        if(ruleSetId === 0){
+        if (ruleSetId === 0) {
             return;
         }
 
@@ -43,7 +43,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
     const onSave = (evt) => {
         evt.preventDefault();
 
-        if(!validate()) {
+        if (!validate()) {
             return;
         }
 
@@ -53,7 +53,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
             description: description
         }
 
-        if(ruleSetId && ruleSetId > 0) {
+        if (ruleSetId && ruleSetId > 0) {
             ruleSet.id = ruleSetId;
         }
 
@@ -100,9 +100,10 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
                                     show={validationErrors.includes('name')}/>
 
                                 <label htmlFor='rule-set-description'>{__('Description', 'sim-league-toolkit')}</label>
-                                <InputTextarea id='rule-set-description' value={description} onChange={(e) => setDescription(e.target.value)}
-                                           placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
-                                rows={5} cols={40}/>
+                                <InputTextarea id='rule-set-description' value={description}
+                                               onChange={(e) => setDescription(e.target.value)}
+                                               placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
+                                               rows={5} cols={40}/>
                                 <ValidationError
                                     message={__('A brief description of the rule set with at least 15 characters is required.', 'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
@@ -112,9 +113,8 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
                         <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
-                    {ruleSetId && (<RuleList ruleSetId={ruleSetId} />)
-                    }
-                    <BusySpinner isActive={isBusy} />
+                    {ruleSetId && (<RuleList ruleSetId={ruleSetId}/>)}
+                    <BusySpinner isActive={isBusy}/>
                 </Dialog>
             )}
         </>

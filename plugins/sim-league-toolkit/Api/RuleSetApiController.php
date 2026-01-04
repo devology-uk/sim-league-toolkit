@@ -97,7 +97,7 @@
       $entity->setType($data->type);
 
       if (isset($data->id) && $data->id > 0) {
-        $entity->id = $data->id;
+        $entity->setId($data->id);
       }
 
       $entity->save();
@@ -118,7 +118,7 @@
       $entity->setRule($data->rule);
 
       if (isset($data->id) && $data->id > 0) {
-        $entity->id = $data->id;
+        $entity->setId($data->id);
       }
 
       $ruleSet = RuleSet::get($entity->getRuleSetId());
