@@ -4,7 +4,6 @@ import {RuleSets} from './rules/RuleSets';
 import {Championships} from './championships/Championships';
 import {Events} from './events/Events';
 import {EventClasses} from './eventClasses/EventClasses';
-import {RaceNumbers} from './raceNumbers/RaceNumbers';
 import {ScoringSets} from './scoringSets/ScoringSets';
 import {Servers} from './servers/Servers';
 import {Tools} from './tools/Tools';
@@ -19,8 +18,6 @@ export const ContentNavigator = ({currentView}) => {
             return <EventClasses/>;
         case 'games':
             return <Games/>
-        case 'raceNumbers':
-            return <RaceNumbers/>;
         case 'ruleSets':
             return <RuleSets/>
         case 'scoringSets':

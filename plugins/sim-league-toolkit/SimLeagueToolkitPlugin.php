@@ -8,7 +8,6 @@
   use SLTK\Core\StyleManager;
   use SLTK\Core\UserProfileExtension;
   use SLTK\Database\DatabaseBuilder;
-  use SLTK\Menu\AdminMenuBuilder;
 
   class SimLeagueToolkitPlugin {
 
