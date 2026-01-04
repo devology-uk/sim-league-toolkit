@@ -13,8 +13,8 @@
     private string $type = '';
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
       if ($data != null) {
-        $this->id = $data->id;
         $this->name = $data->name ?? '';
         $this->description = $data->description ?? '';
         $this->type = $data->type ?? '';
@@ -28,6 +28,9 @@
       RuleSetRepository::delete($id);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function deleteRule(int $id): void {
       RuleSetRepository::deleteRule($id);
     }
@@ -95,7 +98,7 @@
      * @throws Exception
      */
     public function getRules(): array {
-      return self::mapRuleSetRules(RuleSetRepository::listRules($this->id));
+      return self::mapRuleSetRules(RuleSetRepository::listRules($this->getId()));
     }
 
     public function getType(): string {
@@ -108,10 +111,10 @@
 
     public function save(): bool {
       try {
-        if ($this->id == Constants::DEFAULT_ID) {
-          $this->id = RuleSetRepository::add($this->toArray(false));
+        if ($this->getId() == Constants::DEFAULT_ID) {
+          $this->setId(RuleSetRepository::add($this->toArray(false)));
         } else {
-          RuleSetRepository::update($this->id, $this->toArray(false));
+          RuleSetRepository::update($this->getId(), $this->toArray(false));
         }
 
         return true;
@@ -122,7 +125,7 @@
 
     public function saveRule(RuleSetRule $rule): bool {
       try {
-        $existing = RuleSetRepository::getRuleById($rule->id);
+        $existing = RuleSetRepository::getRuleById($rule->getId());
         if (isset($existing->id)) {
           RuleSetRepository::updateRule($existing->id, $rule->toArray(false));
         } else {
@@ -140,13 +143,13 @@
      */
     public function toArray(bool $includeId = true): array {
       $result = [
-        'name' => $this->name,
-        'description' => $this->description,
-        'type' => $this->type,
+        'name' => $this->getName(),
+        'description' => $this->getDescription(),
+        'type' => $this->getType(),
       ];
 
-      if ($includeId && $this->id != Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($includeId && $this->getId() != Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
@@ -157,10 +160,10 @@
      */
     public function toDto(): array {
       return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'description' => $this->description,
-        'type' => $this->type,
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'description' => $this->getDescription(),
+        'type' => $this->getType(),
       ];
     }
 

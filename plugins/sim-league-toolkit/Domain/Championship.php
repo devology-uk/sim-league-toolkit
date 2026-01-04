@@ -13,26 +13,6 @@
 
   class Championship extends DomainBase {
 
-    public final const string ALLOW_ENTRY_CHANGE_FIELD_NAME = 'sltk_allow_entry_change';
-    public final const string BANNER_IMAGE_FILE_FIELD_NAME = CommonFieldNames::BANNER_IMAGE_FILE;
-    public final const string BANNER_IMAGE_TAB = 'banner_image';
-    public final const string BANNER_IMAGE_URL_HIDDEN_FIELD_NAME = CommonFieldNames::BANNER_IMAGE_URL;
-    public final const string CHAMPIONSHIP_ID_FIELD_NAME = CommonFieldNames::CHAMPIONSHIP_ID;
-    public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
-    public final const string ENTRY_CHANGE_LIMIT_FIELD_NAME = 'sltk_entry_change_limit';
-    public final const string EVENT_CLASSES_TAB = 'sltk_event_classes';
-    public final const string GAME_ID_FIELD_NAME = CommonFieldNames::GAME_ID;
-    public final const string IS_ACTIVE_FIELD_NAME = CommonFieldNames::IS_ACTIVE;
-    public final const string NAME_FIELD_NAME = CommonFieldNames::NAME;
-    public final const string PLATFORM_ID_FIELD_NAME = CommonFieldNames::PLATFORM_ID;
-    public final const string RESULTS_TO_DISCARD_FIELD_NAME = 'sltk_results_to_discard';
-    public final const string RULE_SET_ID_FIELD_NAME = CommonFieldNames::RULE_SET_ID;
-    public final const string SCORING_SET_FIELD_NAME = CommonFieldNames::SCORING_SET_ID;
-    public final const string START_DATE_FIELD_NAME = CommonFieldNames::START_DATE;
-    public final const string TRACK_ID_FIELD_NAME = CommonFieldNames::TRACK_ID;
-    public final const string TRACK_LAYOUT_ID_FIELD_NAME = CommonFieldNames::TRACK_LAYOUT_ID;
-    public final const string TYPE_FIELD_NAME = 'sltk-championship-type';
-
     private bool $allowEntryChange = false;
     private string $bannerImageUrl = '';
     private string $description = '';
@@ -53,9 +33,10 @@
     private bool $trophiesAwarded = false;
 
     public function __construct(?stdClass $data = null) {
+      parent::__construct($data);
+
       $this->startDate = (new DateTime())->add(new DateInterval('P1D'));
       if ($data != null) {
-        $this->id = $data->id;
         $this->allowEntryChange = $data->allowEntryChange ?? false;
         $this->bannerImageUrl = $data->bannerImageUrl;
         $this->description = $data->description ?? '';
@@ -255,7 +236,7 @@
      * @throws Exception
      */
     public function listEventClasses(): array {
-      $queryResults = EventClassesRepository::listForChampionship($this->id);
+      $queryResults = EventClassesRepository::listForChampionship($this->getId());
 
       return self::mapChampionshipEventClasses($queryResults);
     }
@@ -272,10 +253,10 @@
     }
     public function save(): bool {
       try {
-        if ($this->id == Constants::DEFAULT_ID) {
-          $this->id = ChampionshipRepository::add($this->toArray(false));
+        if ($this->getId() == Constants::DEFAULT_ID) {
+          $this->setId(ChampionshipRepository::add($this->toArray()));
         } else {
-          ChampionshipRepository::update($this->id, $this->toArray(false));
+          ChampionshipRepository::update($this->getId(), $this->toArray());
         }
       } catch (Exception) {
         return false;
@@ -287,7 +268,7 @@
     /**
      * @return array{fieldName: string, value: mixed}
      */
-    public function toArray(bool $includeId = true): array {
+    public function toArray(): array {
       $result = [
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'description' => $this->getDescription(),
@@ -305,71 +286,8 @@
         'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
 
-      if ($includeId && $this->id != Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
-      }
-
-      return $result;
-    }
-
-    /**
-     * @return array{columnName: string, value: mixed}
-     */
-    public function toTableItem(): array {
-      return [
-        'id' => $this->id,
-        'name' => $this->getName(),
-        'game' => $this->getGame(),
-        'platform' => $this->getPlatform(),
-        'startDate' => $this->getFormattedStartDate(),
-        'isActive' => $this->getIsActive() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-      ];
-    }
-
-    public function validate(): ValidationResult {
-      $result = new ValidationResult();
-
-      if ($this->getGameId() < 1) {
-        $result->addValidationError(self::GAME_ID_FIELD_NAME, esc_html__('You must select the game for the championship', 'sim-league-toolkit'));
-      }
-
-      if ($this->getPlatformId() < 1) {
-        $result->addValidationError(self::PLATFORM_ID_FIELD_NAME, esc_html__('You must select the platform for the championship', 'sim-league-toolkit'));
-      }
-
-      if (!$this->getName()) {
-        $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('You must provide a name for the championship', 'sim-league-toolkit'));
-      }
-
-      if (!$this->getDescription()) {
-        $result->addValidationError(self::DESCRIPTION_FIELD_NAME, esc_html__('You must provide a description for the championship', 'sim-league-toolkit'));
-      }
-
-      if ($this->getScoringSetId() < 1) {
-        $result->addValidationError(self::SCORING_SET_FIELD_NAME, esc_html__('You must select a scoring set for the championship', 'sim-league-toolkit'));
-      }
-
-      if (!$this->getStartDate()) {
-        $result->addValidationError(self::START_DATE_FIELD_NAME, esc_html__('You must provide a start date for the championship', 'sim-league-toolkit'));
-      }
-
-      if ($this->getStartDate() <= (new DateTime())) {
-        $result->addValidationError(self::START_DATE_FIELD_NAME, esc_html__('Start Date must be in the future', 'sim-league-toolkit'));
-      }
-
-      if ($this->getAllowEntryChange() && $this->getEntryChangeLimit() < 1) {
-        $result->addValidationError(self::ENTRY_CHANGE_LIMIT_FIELD_NAME, esc_html__('When the championship allows entry changes Entry Change Limit must be at least 1', 'sim-league-toolkit'));
-      }
-
-      if ($this->getIsTrackMasterChampionship() && $this->getTrackMasterTrackId() < 1) {
-        $result->addValidationError(self::TRACK_ID_FIELD_NAME, esc_html__('When the championship type is track master you must select the track for the championship', 'sim-league-toolkit'));
-      }
-
-      if ($this->getIsTrackMasterChampionship() && $this->getTrackMasterTrackLayoutId() < 1) {
-        $game = Game::get($this->gameId);
-        if ($game->getSupportsLayouts()) {
-          $result->addValidationError(self::TRACK_LAYOUT_ID_FIELD_NAME, esc_html__('When the championship type is track master you must select the track layout for the championship', 'sim-league-toolkit'));
-        }
+      if ($this->getId() != Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;

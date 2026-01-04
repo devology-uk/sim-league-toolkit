@@ -12,15 +12,12 @@
     private string $plaque = '';
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
 
       if ($data !== null) {
         $this->name = $data->name;
         $this->plaque = $data->plaque;
         $this->participationRequirement = $data->participationRequirement;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
 
     }
@@ -39,7 +36,7 @@
     }
 
     public function getId(): int {
-      return $this->id;
+      return $this->getId();
     }
 
     public function getName(): string {
@@ -65,8 +62,8 @@
         'participationRequirement' => $this->participationRequirement,
       ];
 
-      if ($this->id !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($this->getId() !== Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
@@ -74,7 +71,7 @@
 
     public function toDto(): array {
       return [
-        'id' => $this->id,
+        'id' => $this->getId(),
         'name' => $this->name,
         'plaque' => $this->plaque,
         'participationRequirement' => $this->participationRequirement,

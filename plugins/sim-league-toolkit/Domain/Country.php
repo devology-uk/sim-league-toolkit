@@ -8,15 +8,15 @@
   class Country extends DomainBase {
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
+
       if ($data) {
-        $this->id = $data->id;
         $this->name = $data->name ?? '';
         $this->alpha2 = $data->alpha2 ?? '';
         $this->alpha3 = $data->alpha3 ?? '';
         $this->countryCode = $data->countryCode ?? '';
         $this->hide = $data->hide ?? false;
       }
-
     }
 
     public string $alpha2 = '';

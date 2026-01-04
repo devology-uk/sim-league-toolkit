@@ -5,7 +5,8 @@
   use SLTK\Core\UserMetaKeys;
   use WP_User;
 
-  class Member extends DomainBase {
+  class Member {
+    public int $id = 0;
     public string $displayName = '';
     public string $firsName = '';
     public string $lastName = '';
@@ -15,9 +16,6 @@
     public string $username = '';
     public string $xBoxId = '';
 
-    /**
-     * @inheritDoc
-     */
     public static function get(int $id): Member|null {
       $user = get_user_by('id', $id);
       if(isset($user->ID)) {
@@ -27,9 +25,6 @@
       return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function list(): array {
       $users = get_users(['fields' => 'all_with_meta']);
 
@@ -38,9 +33,6 @@
       }, $users);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function save(): bool {
       return false;
     }

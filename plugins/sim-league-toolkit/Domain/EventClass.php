@@ -3,19 +3,11 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
 
   class EventClass extends DomainBase {
-    public final const string CAR_CLASS_FIELD_NAME = 'sltk-car-class';
-    public final const string DRIVER_CATEGORY_FIELD_NAME = 'sltk-driver-category';
-    public final const string EVENT_CLASS_ID_FIELD_NAME = 'sltk-event-class-id';
-    public final const string GAME_ID_FIELD_NAME = CommonFieldNames::GAME_ID;
-    public final const string IS_SINGLE_CAR_CLASS_FIELD_NAME = 'sltk-is-single-car-class';
-    public final const string NAME_FIELD_NAME = CommonFieldNames::NAME;
-    public final const string SINGLE_CAR_ID_FIELD_NAME = 'sltk-single-car-id';
 
     private string $carClass = '';
     private string $driverCategory = '';
@@ -29,6 +21,8 @@
     private ?string $singleCarName = null;
 
     public function __construct(?stdClass $data = null) {
+      parent::__construct($data);
+
       if ($data != null) {
         $this->carClass = $data->carClass;
         $this->driverCategoryId = $data->driverCategoryId;
@@ -40,10 +34,6 @@
         $this->name = $data->name;
         $this->singleCarId = $data->singleCarId ?? null;
         $this->singleCarName = $data->singleCarName ?? null;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
     }
 
@@ -111,10 +101,6 @@
       $this->gameId = $value;
     }
 
-    public function getId(): int {
-      return $this->id ?? Constants::DEFAULT_ID;
-    }
-
     public function getIsBuiltIn(): bool {
       return $this->isBuiltIn;
     }
@@ -163,10 +149,10 @@
      */
     public function save(): bool {
       try {
-        if ($this->id == Constants::DEFAULT_ID) {
-          $this->id = EventClassesRepository::add($this->toArray());
+        if ($this->getId() == Constants::DEFAULT_ID) {
+          $this->setId(EventClassesRepository::add($this->toArray()));
         } else {
-          EventClassesRepository::update($this->id, $this->toArray());
+          EventClassesRepository::update($this->getId(), $this->toArray());
         }
 
         return true;
@@ -186,8 +172,8 @@
         'singleCarId' => $this->getSingleCarId(),
       ];
 
-      if ($this->id != Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($this->getId() != Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
@@ -198,7 +184,7 @@
      */
     public function toDto(): array {
       return [
-        'id' => $this->id,
+        'id' => $this->getId(),
         'carClass' => $this->getCarClass(),
         'driverCategory' => $this->getDriverCategory(),
         'driverCategoryId' => $this->getDriverCategoryId(),
@@ -213,50 +199,6 @@
       ];
     }
 
-    public function toTableItem(): array {
-      $result = [
-        'carClass' => $this->getCarClass(),
-        'driverCategory' => $this->getDriverCategory(),
-        'game' => $this->getGame(),
-        'isBuiltIn' => $this->getIsBuiltIn() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-        'isSingleCarClass' => $this->getIsSingleCarClass() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-        'name' => $this->getName(),
-        'singleCarName' => $this->getSingleCarName(),
-      ];
-
-      if (isset($this->id)) {
-        $result['id'] = $this->id;
-      }
-
-      return $result;
-    }
-
-    public function validate(): ValidationResult {
-      $result = new ValidationResult();
-
-      if ($this->getGameId() < 1) {
-        $result->addValidationError(self::GAME_ID_FIELD_NAME, esc_html__('You must select the game for the event class', 'sim-league-toolkit'));
-      }
-
-      if (!$this->getName()) {
-        $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('You must provide a name for the event class', 'sim-league-toolkit'));
-      }
-
-      if ($this->getDriverCategoryId() < 1) {
-        $result->addValidationError(self::DRIVER_CATEGORY_FIELD_NAME, esc_html__('You must select the driver category for the event class', 'sim-league-toolkit'));
-      }
-
-      if (!$this->getCarClass()) {
-        $result->addValidationError(self::CAR_CLASS_FIELD_NAME, esc_html__('You must select the car class for the event class', 'sim-league-toolkit'));
-      }
-
-      if ($this->getIsSingleCarClass() && $this->getSingleCarId() < 1) {
-        $result->addValidationError(self::SINGLE_CAR_ID_FIELD_NAME, esc_html__('When Is Single Car Class is selected you must select the single car for the event class', 'sim-league-toolkit'));
-      }
-
-      return $result;
-
-    }
 
     private static function mapEventClasses(array $queryResults): array {
       $results = array();

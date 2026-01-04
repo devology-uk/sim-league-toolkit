@@ -3,17 +3,11 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ScoringSetRepository;
   use stdClass;
 
-  class ScoringSet extends DomainBase implements Validator {
-    public final const string DESCRIPTION_FIELD_NAME = CommonFieldNames::DESCRIPTION;
-    public final const string NAME_FIELD_NAME = CommonFieldNames::NAME;
-    public final const string POINTS_FOR_FASTEST_LAP_FIELD_NAME = 'sltk_fastest_lap_points';
-    public final const string POINTS_FOR_FINISHING_FIELD_NAME = 'sltk_finish_points';
-    public final const string POINTS_FOR_POLE_FIELD_NAME = 'sltk_pole_points';
+  class ScoringSet extends DomainBase {
 
     private string $description = '';
     private bool $isBuiltIn = false;
@@ -23,9 +17,9 @@
     private int $pointsForFinishing = 0;
     private int $pointsForPole = 0;
 
-    public function __construct(stdClass $data = null) {
+    public function __construct(?stdClass $data = null) {
+      parent::__construct($data);
       if ($data != null) {
-        $this->id = $data->id;
         $this->description = $data->description ?? '';
         $this->isBuiltIn = $data->isBuiltIn ?? false;
         $this->isInUse = $data->isInUse ?? false;
@@ -144,7 +138,7 @@
 
     public function saveScore(ScoringSetScore $score): bool {
       try {
-        $existing = ScoringSetRepository::getScore($this->id, $score->getPosition());
+        $existing = ScoringSetRepository::getScore($this->getId(), $score->getPosition());
         if (isset($existing->id)) {
           ScoringSetRepository::updateScore($existing->id, $score->toArray(false));
         } else {
@@ -162,15 +156,15 @@
      */
     public function toArray(bool $includeId = true): array {
       $result = [
-        'name' => $this->name,
-        'description' => $this->description,
-        'pointsForFastestLap' => $this->pointsForFastestLap,
-        'pointsForFinishing' => $this->pointsForFinishing,
-        'pointsForPole' => $this->pointsForPole,
+        'name' => $this->getName(),
+        'description' => $this->getDescription(),
+        'pointsForFastestLap' => $this->getPointsForFastestLap(),
+        'pointsForFinishing' => $this->getPointsForFinishing(),
+        'pointsForPole' => $this->getPointsForPole(),
       ];
 
-      if ($includeId && $this->id != Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($includeId && $this->getId() != Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
@@ -181,43 +175,15 @@
      */
     public function toDto(): array {
       return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'description' => $this->description,
-        'isBuiltIn' => $this->isBuiltIn,
-        'isInUse' => $this->isInUse,
-        'pointsForFastestLap' => $this->pointsForFastestLap,
-        'pointsForFinishing' => $this->pointsForFinishing,
-        'pointsForPole' => $this->pointsForPole,
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'description' => $this->getDescription(),
+        'isBuiltIn' => $this->getIsBuiltIn(),
+        'isInUse' => $this->getIsInUse(),
+        'pointsForFastestLap' => $this->getPointsForFastestLap(),
+        'pointsForFinishing' => $this->getPointsForFinishing(),
+        'pointsForPole' => $this->getPointsForPole(),
       ];
-    }
-
-    /**
-     * @return array{columnName: string, value: mixed}
-     */
-    public function toTableItem(): array {
-      return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'pointsForFastestLap' => $this->pointsForFastestLap,
-        'pointsForFinishing' => $this->pointsForFinishing,
-        'pointsForPole' => $this->pointsForPole,
-      ];
-    }
-
-    public function validate(): ValidationResult {
-      $result = new ValidationResult();
-
-      if (empty($this->name)) {
-        $result->addValidationError(self::NAME_FIELD_NAME, esc_html__('Name is required.', 'sim-league-toolkit'));
-      }
-
-      if (empty($this->description)) {
-        $result->addValidationError(self::DESCRIPTION_FIELD_NAME,
-          esc_html__('Description is required.', 'sim-league-toolkit'));
-      }
-
-      return $result;
     }
 
     private static function mapScoringSetScores(array $queryResults): array {

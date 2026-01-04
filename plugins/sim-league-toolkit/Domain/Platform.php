@@ -14,8 +14,9 @@
     private string $shortName = '';
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
+
       if ($data) {
-        $this->id = $data->id ?? Constants::DEFAULT_ID;
         $this->name = $data->name;
         $this->shortName = $data->shortName;
         $this->playerIdPrefix = $data->playerIdPrefix;

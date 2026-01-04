@@ -12,8 +12,8 @@
     private int $ruleSetId = 0;
 
     public function __construct(?stdClass $data = null) {
+      parent::__construct($data);
       if ($data) {
-        $this->id = $data->id;
         $this->rule = $data->rule;
         $this->ruleSetId = $data->ruleSetId;
       }
@@ -40,12 +40,12 @@
      */
     public function toArray(bool $includeId = true): array {
       $result = [
-        'ruleSetId' => $this->ruleSetId,
-        'rule' => $this->rule,
+        'ruleSetId' => $this->getRuleSetId(),
+        'rule' => $this->getRule(),
       ];
 
-      if ($includeId && $this->id !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($includeId && $this->getId() !== Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
@@ -56,9 +56,9 @@
      */
     public function toDto(): array {
       return [
-        'id' => $this->id,
-        'ruleSetId' => $this->ruleSetId,
-        'rule' => $this->rule,
+        'id' => $this->getId(),
+        'ruleSetId' => $this->getRuleSetId(),
+        'rule' => $this->getRule(),
       ];
     }
   }

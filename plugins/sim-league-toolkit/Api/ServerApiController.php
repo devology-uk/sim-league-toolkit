@@ -7,39 +7,35 @@
   use WP_REST_Response;
   use WP_REST_Server;
 
-  class ServerApiController extends ApiController {
+  class ServerApiController extends BasicApiController {
 
     public function __construct() {
       parent::__construct(ResourceNames::SERVER);
     }
 
-    public function get(WP_REST_Request $request): WP_REST_Response {
-      $servers = Server::list();
+    public function onGet(WP_REST_Request $request): WP_REST_Response {
+      $data = Server::list();
 
-      $responseData = array_map(function ($server) {
-        return $server->toDto();
-      }, $servers);
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
 
       return rest_ensure_response($responseData);
     }
 
-    public function registerRoutes(): void {
-      $this->registerGetRoute();
+    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
+
     }
 
-    protected function canExecute(): bool {
-      return current_user_can('manage_options');
+    protected function onPost(WP_REST_Request $request): WP_REST_Response {
+
     }
 
-    private function registerGetRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        self::getResourceName(),
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'get'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]);
+    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
+
+    }
+
+    protected function onRegisterRoutes(): void {
+
     }
   }

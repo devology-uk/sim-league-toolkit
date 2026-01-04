@@ -7,12 +7,10 @@
 
   class CarClass {
     private string $displayName = '';
-    private int $gameId = Constants::DEFAULT_ID;
     private int $id = Constants::DEFAULT_ID;
     private string $name = '';
 
     public function __construct(stdClass $data = null) {
-
       if ($data !== null) {
         $this->name = $data->carClass;
       }
@@ -28,8 +26,7 @@
 
     public function toArray(): array {
       $result = [
-        'displayName' => $this->displayName,
-        'gameId' => $this->gameId,
+        'displayName' => $this->getDisplayName(),
         'name' => $this->name,
       ];
 
@@ -44,7 +41,6 @@
       return [
         'id' => $this->id,
         'displayName' => $this->displayName,
-        'gameId' => $this->gameId,
         'name' => $this->name,
       ];
     }

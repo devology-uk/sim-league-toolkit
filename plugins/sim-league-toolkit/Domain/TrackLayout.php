@@ -16,6 +16,7 @@
     private int $trackId;
 
     public function __construct(?stdClass $data = null) {
+      parent::__construct($data);
 
       if ($data) {
         $this->gameId = $data->gameId;
@@ -26,10 +27,6 @@
         $this->name = $data->name;
         $this->corners = $data->corners;
         $this->length = $data->length;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
     }
 

@@ -22,6 +22,8 @@
     private ?string $singleCarName = null;
 
     public function __construct(?stdClass $data = null) {
+
+      parent::__construct($data);
       if ($data != null) {
         $this->carClass = $data->carClass;
         $this->driverCategoryId = $data->driverCategoryId;
@@ -33,10 +35,6 @@
         $this->name = $data->name;
         $this->singleCarId = $data->singleCarId ?? null;
         $this->singleCarName = $data->singleCarName ?? null;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
     }
 

@@ -19,6 +19,7 @@
     private string $trackId = '';
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
       if ($data) {
         $this->gameId = $data->gameId;
         $this->trackId = $data->trackId;
@@ -28,10 +29,6 @@
         $this->countryCode = $data->countryCode;
         $this->latitude = $data->latitude;
         $this->longitude = $data->longitude;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
     }
 
@@ -87,10 +84,6 @@
       return $this->gameId;
     }
 
-    public function getId(): int {
-      return $this->id;
-    }
-
     public function getLatitude(): float {
       return $this->latitude;
     }
@@ -123,8 +116,8 @@
         'longitude' => $this->longitude,
       ];
 
-      if ($this->id !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($this->getId() !== Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;

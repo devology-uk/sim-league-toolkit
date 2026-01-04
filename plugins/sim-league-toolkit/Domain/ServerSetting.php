@@ -2,6 +2,7 @@
 
   namespace SLTK\Domain;
 
+  use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ServerRepository;
   use stdClass;
@@ -12,8 +13,8 @@
     public string $settingName = '';
     public string $settingValue;
 
-    public function __construct(stdClass $data = null) {
-      if($data != null) {
+    public function __construct(?stdClass $data = null) {
+      if($data) {
         $this->id = $data->id ?? null;
         $this->serverId = $data->serverId;
         $this->settingName = $data->settingName ?? '';
@@ -38,6 +39,9 @@
       return $result;
     }
 
+    /**
+     * @throws Exception
+     */
     public function save(): void {
       if(isset($this->id) && $this->id !== Constants::DEFAULT_ID) {
         ServerRepository::updateSetting($this);

@@ -17,6 +17,8 @@
     private int $year = 0;
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
+
       if ($data) {
         $this->gameId = $data->gameId;
         $this->carClass = $data->carClass;
@@ -24,12 +26,7 @@
         $this->name = $data->name;
         $this->year = $data->year;
         $this->manufacturer = $data->manufacturer;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
-
     }
 
     public static function get(int $id): Car|null {
@@ -90,10 +87,6 @@
       return $this->gameId;
     }
 
-    public function getId(): int {
-      return $this->id;
-    }
-
     public function getManufacturer(): string {
       return $this->manufacturer;
     }
@@ -116,23 +109,22 @@
         'year' => $this->year,
       ];
 
-      if ($this->id !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->id;
+      if ($this->getId() !== Constants::DEFAULT_ID) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
-
     }
 
     public function toDto(): array {
       return [
-        'id' => $this->id,
-        'carClass' => $this->carClass,
-        'carKey' => $this->carKey,
-        'gameId' => $this->gameId,
-        'manufacturer' => $this->manufacturer,
-        'name' => $this->name,
-        'year' => $this->year,
+        'id' => $this->getId(),
+        'carClass' => $this->getCarClass(),
+        'carKey' => $this->getCarKey(),
+        'gameId' => $this->getGameId(),
+        'manufacturer' => $this->getManufacturer(),
+        'name' => $this->getName(),
+        'year' => $this->getYear(),
       ];
 
     }

@@ -9,15 +9,6 @@
   use stdClass;
 
   class Game extends DomainBase {
-    public final const string CARS_TAB = 'cars';
-    public final const string CAR_CLASSES_TAB = 'car_classes';
-    public final const string DRIVER_CATEGORIES_TAB = 'driver_categories';
-    public final const string IS_PUBLISHED_FIELD_NAME = 'sltk_is_published';
-    public final const string NAME_FIELD_NAME = 'sltk_name';
-    public final const string PLATFORMS_FIELD_NAME = 'sltk_platforms[]';
-    public final const string SUPPORTS_RESULT_UPLOAD_FIELD_NAME = 'sltk_supportS_result_upload';
-    public final const string TRACKS_TAB = 'tracks';
-
     private string $latestVersion = '';
     private string $name = '';
     private bool $published = false;
@@ -25,16 +16,13 @@
     private bool $supportsResultUpload = false;
 
     public function __construct(stdClass $data = null) {
+      parent::__construct($data);
       if ($data) {
         $this->name = $data->name ?? '';
         $this->latestVersion = $data->latestVersion ?? '';
         $this->supportsResultUpload = $data->supportsResultUpload;
         $this->published = $data->published ?? false;
         $this->supportsLayouts = $data->supportsLayouts ?? false;
-
-        if (isset($data->id)) {
-          $this->id = $data->id;
-        }
       }
     }
 
@@ -68,11 +56,11 @@
     }
 
     /**
-     * @return CarClass[]
+     * @return string[]
      * @throws Exception
      */
     public function getCarClasses(): array {
-      $queryResult = CarRepository::listCarClassesForGame($this->id);
+      $queryResult = CarRepository::listCarClassesForGame($this->getId());
 
       return $this->mapCarClasses($queryResult);
     }
@@ -82,7 +70,7 @@
      * @throws Exception
      */
     public function getCars(): array {
-      $queryResults = CarRepository::listForGame($this->id);
+      $queryResults = CarRepository::listForGame($this->getId());
 
       return $this->mapCars($queryResults);
     }
@@ -104,7 +92,7 @@
      * @throws Exception
      */
     public function getPlatformIds(): array {
-      return Platform::listIdsForGame($this->id);
+      return Platform::listIdsForGame($this->getId());
     }
 
     public function getSupportsLayouts(): bool {
@@ -119,7 +107,7 @@
      * @throws Exception
      */
     public function getTracks(): array {
-      $queryResult = TrackRepository::listForGame($this->id);
+      $queryResult = TrackRepository::listForGame($this->getId());
 
       return $this->mapTracks($queryResult);
     }
@@ -133,26 +121,12 @@
      */
     public function toDto(): array {
       return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'latestVersion' => $this->latestVersion,
-        'supportsResultUpload' => $this->supportsResultUpload,
-        'published' => $this->published,
-        'supportsLayouts' => $this->supportsLayouts,
-      ];
-    }
-
-    /**
-     * @return array{columnName: string, value: mixed}
-     */
-    public function toTableItem(): array {
-      return [
-        'id' => $this->id,
-        'name' => $this->name,
-        'latestVersion' => $this->latestVersion,
-        'supportsResultUpload' => $this->supportsResultUpload,
-        'published' => $this->published,
-        'supportsLayouts' => $this->supportsLayouts,
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'latestVersion' => $this->getLatestVersion(),
+        'supportsResultUpload' => $this->getSupportsResultUpload(),
+        'published' => $this->getIsPublished(),
+        'supportsLayouts' => $this->getSupportsLayouts(),
       ];
     }
 
@@ -180,7 +154,7 @@
       $results = array();
 
       foreach ($queryResults as $item) {
-        $results[] = new CarClass($item);
+        $results[] = $item->carClass;
       }
 
       return $results;
