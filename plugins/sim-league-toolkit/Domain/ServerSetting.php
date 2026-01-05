@@ -7,18 +7,52 @@
   use SLTK\Database\Repositories\ServerRepository;
   use stdClass;
 
-  class ServerSetting {
-    public ?int $id;
-    public int $serverId = Constants::DEFAULT_ID;
-    public string $settingName = '';
-    public string $settingValue;
+  class ServerSetting extends EntityBase {
+    private int $serverId = Constants::DEFAULT_ID;
+    private string $settingName = '';
+    private string $settingValue;
 
     public function __construct(?stdClass $data = null) {
-      if($data) {
-        $this->id = $data->id ?? null;
+      parent::__construct($data);
+      if ($data) {
         $this->serverId = $data->serverId;
         $this->settingName = $data->settingName ?? '';
         $this->settingValue = $data->settingValue ?? '';
+      }
+    }
+
+    public function getServerId() {
+      return $this->serverId ?? Constants::DEFAULT_ID;
+    }
+
+    public function setServerId(int $value): void {
+      $this->serverId = $value;
+    }
+
+    public function getSettingName() {
+      return $this->settingName ?? '';
+    }
+
+    public function setSettingName(string $value): void {
+      $this->settingName = $value;
+    }
+
+    public function getSettingValue() {
+      return $this->settingValue ?? '';
+    }
+
+    public function setSettingValue(string $value): void {
+      $this->settingValue = $value;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function save(): void {
+      if ($this->getId() !== Constants::DEFAULT_ID) {
+        ServerRepository::updateSetting($this->getId(), $this->toArray());
+      } else {
+        $this->setId(ServerRepository::addSetting($this->toArray()));
       }
     }
 
@@ -27,26 +61,27 @@
      */
     public function toArray(bool $includeId = true): array {
       $result = [
-        'serverId'     => $this->serverId ?? Constants::DEFAULT_ID,
-        'settingName'  => $this->settingName ?? '',
-        'settingValue' => $this->settingValue ?? '',
+        'serverId' => $this->getServerId(),
+        'settingName' => $this->getSettingName(),
+        'settingValue' => $this->getSettingValue(),
       ];
 
-      if($includeId && isset($this->id)) {
-        $result['id'] = $this->id;
+      if ($includeId) {
+        $result['id'] = $this->getId();
       }
 
       return $result;
     }
 
     /**
-     * @throws Exception
+     * @return array{fieldName: string, value: mixed}
      */
-    public function save(): void {
-      if(isset($this->id) && $this->id !== Constants::DEFAULT_ID) {
-        ServerRepository::updateSetting($this);
-      } else {
-        $this->id = ServerRepository::addSetting($this);
-      }
+    public function toDto(): array {
+      return [
+        'id' => $this->getId(),
+        'serverId' => $this->getServerId(),
+        'settingName' => $this->getSettingName(),
+        'settingValue' => $this->getSettingValue(),
+      ];
     }
   }

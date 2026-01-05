@@ -93,6 +93,9 @@
             return $queryResult;
         }
 
+        /**
+         * @throws Exception
+         */
         protected static function getRowById(string $tableNameWithoutPrefix, int $id): stdClass|null {
             $tableName = self::prefixedTableName($tableNameWithoutPrefix);
 
@@ -101,6 +104,9 @@
             return self::getRow($query);
         }
 
+        /**
+         * @throws Exception
+         */
         protected static function getRowByName(string $tableNameWithoutPrefix, string $name): stdClass|null {
             $tableName = self::prefixedTableName($tableNameWithoutPrefix);
 
@@ -109,6 +115,9 @@
             return self::getRow($query);
         }
 
+        /**
+         * @throws Exception
+         */
         protected static function getRowFromTable(string $tableNameWithoutPrefix, string $filter): stdClass|null {
             $query = self::selectAllQuery($tableNameWithoutPrefix, $filter);
 

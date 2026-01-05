@@ -4,95 +4,109 @@
 
   use Exception;
   use SLTK\Database\TableNames;
-  use SLTK\Domain\Server;
   use SLTK\Domain\ServerSetting;
+  use stdClass;
 
   class ServerRepository extends RepositoryBase {
 
     /**
      * @throws Exception
      */
-    public static function add(Server $server): int {
-      return self::insert(TableNames::SERVERS, $server->toArray());
+    public static function add(array $server): int {
+      return self::insert(TableNames::SERVERS, $server);
     }
 
     /**
      * @throws Exception
      */
-    public static function addSetting(ServerSetting $setting): int {
-      return self::insert(TableNames::SERVER_SETTINGS, $setting->toArray(false));
-    }
-
-    public static function getById(int $id): Server {
-      $row = self::getRowById(TableNames::SERVERS, $id);
-
-      return new Server($row);
-    }
-
-    public static function getSettingById(int $id): ?ServerSetting {
-      $row = self::getRowById(TableNames::SERVER_SETTINGS, $id);
-
-      if (isset($row->id)) {
-        return new ServerSetting($row);
-      }
-
-      return null;
+    public static function addSetting(array $setting): int {
+      return self::insert(TableNames::SERVER_SETTINGS, $setting);
     }
 
     /**
-     * @return Server[] Collection of all servers in the database
+     * @throws Exception
+     */
+    public static function delete(int $id): void {
+      self::deleteById(TableNames::SERVERS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteSetting(int $id): void {
+      self::deleteById(TableNames::SERVER_SETTINGS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getById(int $id): ?stdClass {
+      $tableName = self::prefixedTableName(TableNames::SERVERS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+
+      $query = "SELECT s.*, g.name AS gameName, p.name AS platformName
+            FROM {$tableName} s
+            INNER JOIN $gamesTableName g
+            ON g.id = s.gameid
+            INNER JOIN $platformsTableName p
+            ON p.id = s.platformid
+            WHERE t.id = {$id};";
+
+      return self::getRow($query);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getSettingById(int $id): ?stdClass {
+      return self::getRowById(TableNames::SERVER_SETTINGS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getSettingByName(int $serverId, string $settingName): ?stdClass {
+      $filter = "serverId = {$serverId} and settingName = '{$settingName}'";
+
+      return self::getRowFromTable(TableNames::SERVER_SETTINGS, $filter);
+    }
+
+    /**
+     * @return stdClass[]
+     */
+    public static function getSettings(int $serverId): array {
+
+      $filter = "serverId = {$serverId}";
+
+      return self::getResultsFromTable(TableNames::SERVER_SETTINGS, $filter);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
      */
     public static function list(): array {
-      $queryResults = self::getResultsFromTable(TableNames::SERVERS);
+      $query = self::selectAllQuery(TableNames::SERVERS);
 
-      return self::mapServers($queryResults);
+      return self::getResults($query);
     }
 
     /**
-     * @return ServerSetting[] Collection of server settings for the target server or empty array
+     * @return stdClass[]
      */
     public static function listSettings(int $serverId): array {
       $filter = "serverId = {$serverId}";
 
-      $queryResults = self::getResultsFromTable(TableNames::SERVER_SETTINGS, $filter);
-      if (!count($queryResults)) {
-        return [];
-      }
-
-      return self::mapServerSettings($queryResults);
+      return self::getResultsFromTable(TableNames::SERVER_SETTINGS, $filter);
     }
 
-    public static function updateSetting(ServerSetting $setting): void {
-      $existingSetting = self::getSettingById($setting->id);
 
-      if (!isset($existingSetting->id) || $existingSetting->settingValue === $setting->settingValue) {
-        return;
-      }
-
-      $updates = [
-        'settingValue' => $setting->settingValue
-      ];
-
-      self::updateById(TableNames::SERVER_SETTINGS, $setting->id, $updates);
+    public static function update(int $id, array $updates): void {
+      self::updateById(TableNames::SERVER_SETTINGS, $id, $updates);
     }
 
-    private static function mapServerSettings(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new ServerSetting($item);
-      }
-
-      return $results;
-    }
-
-    private static function mapServers(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Server($item);
-      }
-
-      return $results;
+    public static function updateSetting(int $id, array $updates): void {
+      self::updateById(TableNames::SERVER_SETTINGS, $id, $updates);
     }
   }
