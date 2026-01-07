@@ -35,10 +35,6 @@
       return self::mapDriverCategories($queryResults);
     }
 
-    public function getId(): int {
-      return $this->getId();
-    }
-
     public function getName(): string {
       return $this->name;
     }

@@ -17,29 +17,6 @@
     }
 
     /**
-     * @throws JsonException
-     * @throws Exception
-     */
-    public function postSetting(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
-
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
-
-      $entity = new ServerSetting();
-      $entity->setServerId($data->serverId);
-      $entity->setSettingName($data->settingName);
-      $entity->setSettingValue($data->settingValue);
-
-      if (isset($data->id) && $data->id > 0) {
-        $entity->setId($data->id);
-      }
-
-      $owner = Server::get($entity->getServerId());
-      $owner->saveSetting($entity);
-
-      return rest_ensure_response($entity->toDto());
-    }
-    /**
      * @throws Exception
      */
     public function deleteSetting(WP_REST_Request $request): WP_REST_Response {
@@ -53,15 +30,12 @@
     /**
      * @throws Exception
      */
-    public function getScores(WP_REST_Request $request): WP_REST_Response {
+    public function getSettings(WP_REST_Request $request): WP_REST_Response {
       $id = $request->get_param('id');
 
       $server = Server::get($id);
 
       $data = $server->getSettings();
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
 
       $responseData = array_map(function ($item) {
         return $item->toDto();
@@ -92,6 +66,30 @@
       }, $data);
 
       return rest_ensure_response($responseData);
+    }
+
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function postSetting(WP_REST_Request $request): WP_REST_Response {
+      $body = $request->get_body();
+
+      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+
+      $entity = new ServerSetting();
+      $entity->setServerId($data->serverId);
+      $entity->setSettingName($data->settingName);
+      $entity->setSettingValue($data->settingValue);
+
+      if (isset($data->id) && $data->id > 0) {
+        $entity->setId($data->id);
+      }
+
+      $owner = Server::get($entity->getServerId());
+      $owner->saveSetting($entity);
+
+      return rest_ensure_response($entity->toDto());
     }
 
     /**

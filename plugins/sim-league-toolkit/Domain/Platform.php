@@ -3,7 +3,6 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Core\Constants;
   use SLTK\Database\Repositories\PlatformRepository;
   use stdClass;
 
@@ -23,8 +22,13 @@
       }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): Platform|null {
+      $queryResult = PlatformRepository::get($id);
 
+      return new Platform($queryResult);
     }
 
     /***
@@ -67,7 +71,16 @@
     }
 
     public function save(): bool {
+      return false;
+    }
 
+    public function toDto(): array {
+      return [
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'shortName' => $this->getShortName(),
+        'playerIdPrefix' => $this->getPlayerIdPrefix(),
+      ];
     }
 
     private static function mapPlatforms(array $queryResults): array {

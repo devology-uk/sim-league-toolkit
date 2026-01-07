@@ -4,7 +4,6 @@
 
   use Exception;
   use SLTK\Database\TableNames;
-  use SLTK\Domain\ServerSetting;
   use stdClass;
 
   class ServerRepository extends RepositoryBase {
@@ -45,13 +44,13 @@
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);
       $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
 
-      $query = "SELECT s.*, g.name AS gameName, p.name AS platformName
+      $query = "SELECT s.*, g.name AS gameName, g.gameKey, p.name AS platformName
             FROM {$tableName} s
             INNER JOIN $gamesTableName g
             ON g.id = s.gameid
             INNER JOIN $platformsTableName p
             ON p.id = s.platformid
-            WHERE t.id = {$id};";
+            WHERE s.id = {$id};";
 
       return self::getRow($query);
     }
@@ -87,7 +86,17 @@
      * @throws Exception
      */
     public static function list(): array {
-      $query = self::selectAllQuery(TableNames::SERVERS);
+      $tableName = self::prefixedTableName(TableNames::SERVERS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+
+      $query = "SELECT s.*, g.name AS gameName, g.gameKey, p.name AS platformName
+            FROM {$tableName} s
+            INNER JOIN $gamesTableName g
+            ON g.id = s.gameid
+            INNER JOIN $platformsTableName p
+            ON p.id = s.platformid;";
+
 
       return self::getResults($query);
     }

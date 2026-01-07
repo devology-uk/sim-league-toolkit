@@ -83,6 +83,14 @@
   .components-text-control__input {
     min-width: 300px;
   }
+
+  label, .p-checkbox {
+    margin-top: .75rem;
+  }
+
+  .p-button {
+    margin-top: .75rem !important;
+  }
 }
 
 .p-button {

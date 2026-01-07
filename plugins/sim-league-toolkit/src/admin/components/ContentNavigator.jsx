@@ -6,7 +6,6 @@ import {Events} from './events/Events';
 import {EventClasses} from './eventClasses/EventClasses';
 import {ScoringSets} from './scoringSets/ScoringSets';
 import {Servers} from './servers/Servers';
-import {Tools} from './tools/Tools';
 
 export const ContentNavigator = ({currentView}) => {
     switch (currentView) {
@@ -24,8 +23,6 @@ export const ContentNavigator = ({currentView}) => {
             return <ScoringSets/>;
         case 'servers':
             return <Servers/>;
-        case 'tools':
-            return <Tools/>;
         default:
             return <Dashboard/>
     }

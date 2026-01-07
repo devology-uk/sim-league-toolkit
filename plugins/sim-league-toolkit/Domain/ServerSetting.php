@@ -50,9 +50,9 @@
      */
     public function save(): void {
       if ($this->getId() !== Constants::DEFAULT_ID) {
-        ServerRepository::updateSetting($this->getId(), $this->toArray());
+        ServerRepository::updateSetting($this->getId(), $this->toArray(false));
       } else {
-        $this->setId(ServerRepository::addSetting($this->toArray()));
+        $this->setId(ServerRepository::addSetting($this->toArray(false)));
       }
     }
 
@@ -66,7 +66,7 @@
         'settingValue' => $this->getSettingValue(),
       ];
 
-      if ($includeId) {
+      if ($includeId  && $this->hasId()) {
         $result['id'] = $this->getId();
       }
 
@@ -77,11 +77,17 @@
      * @return array{fieldName: string, value: mixed}
      */
     public function toDto(): array {
-      return [
-        'id' => $this->getId(),
+
+      $result = [
         'serverId' => $this->getServerId(),
         'settingName' => $this->getSettingName(),
         'settingValue' => $this->getSettingValue(),
       ];
+
+      if($this->hasId()) {
+        $result['id'] = $this->getId();
+      }
+
+      return $result;
     }
   }

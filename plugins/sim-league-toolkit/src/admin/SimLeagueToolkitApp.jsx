@@ -53,11 +53,6 @@ export const SimLeagueToolkitApp = () => {
             label: __('Servers', 'sim-league-toolkit'),
             icon: 'fa-solid fa-server',
             command: () => setCurrentView('servers'),
-        },
-        {
-            label: __('Tools', 'sim-league-toolkit'),
-            icon: 'fa-solid fa-screwdriver-wrench',
-            command: () => setCurrentView('tools'),
         }
     ];
     return (

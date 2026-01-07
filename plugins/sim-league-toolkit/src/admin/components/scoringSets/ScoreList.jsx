@@ -1,16 +1,18 @@
+import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+
 import {Button} from 'primereact/button';
-import {Panel} from 'primereact/panel';
-import {InputNumber} from 'primereact/inputnumber';
-import {ValidationError} from '../shared/ValidationError';
-import {SaveButton} from '../shared/SaveButton';
-import {CancelButton} from '../shared/CancelButton';
-import {ConfirmDialog} from 'primereact/confirmdialog';
-import {BusySpinner} from '../shared/BusySpinner';
-import {__} from '@wordpress/i18n';
 import {Column} from 'primereact/column';
+import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataTable} from 'primereact/datatable';
+import {InputNumber} from 'primereact/inputnumber';
+import {Panel} from 'primereact/panel';
+
+import {BusySpinner} from '../shared/BusySpinner';
+import {CancelButton} from '../shared/CancelButton';
+import {SaveButton} from '../shared/SaveButton';
+import {ValidationError} from '../shared/ValidationError';
 
 export const ScoreList = ({scoringSetId}) => {
     const [isAdding, setIsAdding] = useState(false);
@@ -18,8 +20,8 @@ export const ScoreList = ({scoringSetId}) => {
     const [isBusy, setIsBusy] = useState(false);
     const [points, setPoints] = useState(25);
     const [position, setPosition] = useState(1);
-    const [scores, setScores] = useState([]);
-    const [selectedScore, setSelectedScore] = useState(null);
+    const [data, setData] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
 
@@ -34,21 +36,21 @@ export const ScoreList = ({scoringSetId}) => {
             path: `/sltk/v1/scoring-set/${scoringSetId}/scores`,
             method: 'GET',
         }).then((r) => {
-            setScores(r);
+            setData(r);
             setIsBusy(false);
             setIsAdding(false);
             setIsEditing(false);
-            setSelectedScore(null);
+            setSelectedItem(null);
         });
     }
 
     const onAdd = () => {
 
-        if(scores && scores.length > 0){
+        if (data && data.length > 0) {
             let lastPosition = 0;
             let lastPoints = 999;
 
-            scores.forEach(sc => {
+            data.forEach(sc => {
                 lastPosition = Math.max(lastPosition, sc.position);
                 lastPoints = Math.min(lastPoints, sc.points);
             })
@@ -60,41 +62,41 @@ export const ScoreList = ({scoringSetId}) => {
             setPosition(1)
         }
 
-        setSelectedScore(null);
+        setSelectedItem(null);
         setIsAdding(true);
     }
 
     const onCancelEdit = () => {
         setIsAdding(false);
         setIsEditing(false);
-        setSelectedScore(null);
+        setSelectedItem(null);
     }
 
     const onCancelDelete = () => {
         setShowDeleteConfirmation(false);
-        setSelectedScore(null);
+        setSelectedItem(null);
     }
 
     const onConfirmDelete = () => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: `sltk/v1/scoring-set/scores/${selectedScore.id}`,
+            path: `sltk/v1/scoring-set/scores/${selectedItem.id}`,
             method: 'DELETE'
         }).then(() => {
             loadData();
-            setSelectedScore(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
     }
 
     const onDelete = (score) => {
-        setSelectedScore(score);
+        setSelectedItem(score);
         setShowDeleteConfirmation(true);
     }
 
     const onEdit = (score) => {
-        setSelectedScore(score);
+        setSelectedItem(score);
         setPoints(score.points);
         setPosition(score.position);
         setIsEditing(true);
@@ -113,7 +115,7 @@ export const ScoreList = ({scoringSetId}) => {
         }
 
         if (isEditing) {
-            score.id = selectedScore.id;
+            score.id = selectedItem.id;
         }
 
         apiFetch({
@@ -145,6 +147,16 @@ export const ScoreList = ({scoringSetId}) => {
         return errors.length === 0;
     }
 
+    const actionTemplate = (item) => {
+        return (
+            <div className='flex flex-row'>
+                <Button severity='success' size='small' onClick={() => onEdit(item)} icon='pi pi-pencil'/>
+                <Button severity='danger' size='small' onClick={() => onDelete(item)} icon='pi pi-trash'
+                        className='ml-1'/>
+            </div>
+        )
+    }
+
     const headerTemplate = (options) => {
         const className = `${options.className} justify-content-space-between`;
 
@@ -162,33 +174,25 @@ export const ScoreList = ({scoringSetId}) => {
         );
     };
 
-    const actionTemplate = (item) => {
-        return (
-            <div className='flex flex-row'>
-                <Button severity='success' size='small' onClick={() => onEdit(item)} icon='pi pi-pencil'/>
-                <Button severity='danger' size='small' onClick={() => onDelete(item)} icon='pi pi-trash'
-                        className='ml-1'/>
-            </div>
-        )
-    }
 
     return (
         <>
-            {!isAdding && !isEditing && (<Panel headerTemplate={headerTemplate}>
-                <DataTable value={scores} size='small'
-                           emptyMessage={__('No scores found', 'sim-league-toolkit')}>
-                    <Column field='position' header='Position'/>
-                    <Column field='points' header='Points'/>
-                    <Column header='' body={actionTemplate}/>
-                </DataTable>
-            </Panel>)}
+            {!isAdding && !isEditing && (
+                <Panel headerTemplate={headerTemplate}>
+                    <DataTable value={data} size='small'
+                               emptyMessage={__('No scores found', 'sim-league-toolkit')}>
+                        <Column field='position' header='Position'/>
+                        <Column field='points' header='Points'/>
+                        <Column header='' body={actionTemplate}/>
+                    </DataTable>
+                </Panel>)}
             {(isAdding || isEditing) && (<Panel header={__('Score', 'sim-league-toolkit')}>
 
                 <div className='flex flex-column align-items-stretch gap-2'>
                     <label htmlFor='score-position'>{__('Position', 'sim-league-toolkit')}</label>
                     <InputNumber id='score-position' value={position} onChange={(e) => setPosition(e.value)}
                                  placeholder={__('Enter the position.', 'sim-league-toolkit')}
-                                 min='1' max='999' autoFocus />
+                                 min='1' max='999' autoFocus/>
                     <ValidationError
                         message={__('The position for the score is required.', 'sim-league-toolkit')}
                         show={validationErrors.includes('position')}/>
@@ -205,14 +209,14 @@ export const ScoreList = ({scoringSetId}) => {
                 <SaveButton onClick={onSave} disabled={isBusy}/>
                 <CancelButton onCancel={onCancelEdit} disabled={isBusy}/>
             </Panel>)}
-            {selectedScore && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Are you sure you want to delete the score: ', 'sim-league-toolkit') + ' "' + selectedScore.position + '=' + selectedScore.points + '"? '}
+                               message={__('Are you sure you want to delete the score: ', 'sim-league-toolkit') + ' "' + selectedItem.position + '=' + selectedItem.points + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
             <BusySpinner isActive={isBusy}/>

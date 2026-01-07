@@ -95,6 +95,14 @@
       return Platform::listIdsForGame($this->getId());
     }
 
+    /**
+   * @return int[]
+   * @throws Exception
+   */
+    public function getPlatforms(): array {
+      return Platform::listForGame($this->getId());
+    }
+
     public function getSupportsLayouts(): bool {
       return $this->supportsLayouts;
     }

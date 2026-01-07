@@ -6,6 +6,7 @@
   use SLTK\Core\Constants;
   use SLTK\Domain\Car;
   use SLTK\Domain\Game;
+  use SLTK\Domain\Platform;
   use WP_REST_Request;
   use WP_REST_Response;
   use WP_REST_Server;
@@ -49,6 +50,20 @@
       return rest_ensure_response($data);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function listPlatforms(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Platform::listForGame($id);
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
+
+      return rest_ensure_response($responseData);
+    }
+
     public function onGet(WP_REST_Request $request): WP_REST_Response {
       $data = Game::list();
 
@@ -56,11 +71,9 @@
         return rest_ensure_response($data);
       }
 
-      $responseData = [];
-
-      foreach ($data as $item) {
-        $responseData[] = $item->toDto();
-      }
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
 
       return rest_ensure_response($responseData);
     }
@@ -80,6 +93,7 @@
     protected function onRegisterRoutes(): void {
       $this->registerCarsRoute();
       $this->registerCarClassesRoute();
+      $this->registerPlatformsRoute();
     }
 
     private function registerCarClassesRoute(): void {
@@ -102,6 +116,19 @@
           [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'listCars'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
+    }
+
+    private function registerPlatformsRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/(?P<id>\d+)/platforms',
+        [
+          [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'listPlatforms'],
             'permission_callback' => [$this, 'checkPermission'],
           ]
         ]

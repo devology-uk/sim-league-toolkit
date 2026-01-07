@@ -10,6 +10,7 @@
   class Server extends DomainBase {
     private string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
+    private string $gameKey = '';
     private bool $isHostedServer = false;
     private string $name = '';
     private string $platform = '';
@@ -19,6 +20,7 @@
       parent::__construct($data);
       if ($data) {
         $this->game = $data->gameName ?? '';
+        $this->gameKey = $data->gameKey;
         $this->name = $data->name ?? '';
         $this->isHostedServer = $data->isHostedServer ?? false;
         $this->gameId = $data->gameId ?? Constants::DEFAULT_ID;
@@ -31,7 +33,7 @@
      * @throws Exception
      */
     public static function addSetting(ServerSetting $serverSetting): int {
-      return ServerRepository::addSetting($serverSetting->toArray());
+      return ServerRepository::addSetting($serverSetting->toArray(false));
     }
 
     /**
@@ -96,6 +98,10 @@
       $this->gameId = $value;
     }
 
+    public function getGameKey(): string {
+      return $this->gameKey;
+    }
+
     public function getIsHostedServer() {
       return $this->isHostedServer ?? false;
     }
@@ -150,23 +156,13 @@
      * @throws Exception
      */
     public function saveSetting(ServerSetting $entity): ServerSetting {
-      if($entity->getId() === Constants::DEFAULT_ID) {
-        $entity->setId(ServerRepository::addSetting($entity->toArray()));
+      if (!$entity->hasId()) {
+        $entity->setId(ServerRepository::addSetting($entity->toArray(false)));
       } else {
-        ServerRepository::update($entity->getId(), $entity->toArray());
+        ServerRepository::update($entity->getId(), $entity->toArray(false));
       }
 
       return $entity;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function saveSettings(): void {
-      $serverSettings = $this->getSettings();
-      foreach ($serverSettings as $setting) {
-        $setting->save();
-      }
     }
 
     /**
@@ -174,10 +170,10 @@
      */
     public function toArray(): array {
       return [
-        'name' => $this->name,
-        'isHostedServer' => $this->isHostedServer,
-        'gameId' => $this->gameId,
-        'platformId' => $this->platformId,
+        'name' => $this->getName(),
+        'isHostedServer' => $this->getIsHostedServer(),
+        'gameId' => $this->getGameId(),
+        'platformId' => $this->getPlatformId(),
       ];
     }
 
@@ -185,12 +181,21 @@
      * @return array{fieldName: string, value: mixed}
      */
     public function toDto(): array {
-      return [
-        'name' => $this->name,
-        'isHostedServer' => $this->isHostedServer,
-        'gameId' => $this->gameId,
-        'platformId' => $this->platformId,
+      $result = [
+        'name' => $this->getName(),
+        'isHostedServer' => $this->getIsHostedServer(),
+        'game' => $this->getGame(),
+        'gameId' => $this->getGameId(),
+        'gameKey' => $this->getGameKey(),
+        'platform' => $this->getPlatform(),
+        'platformId' => $this->getPlatformId(),
       ];
+
+      if ($this->hasId()) {
+        $result['id'] = $this->getId();
+      }
+      return $result;
+
     }
 
 
