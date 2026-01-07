@@ -8,6 +8,17 @@
 
   class PlatformRepository extends RepositoryBase {
 
+    /**
+     * @throws Exception
+     */
+    public static function get(int $id) {
+
+      return self::getRowById(TableNames::PLATFORMS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getName(int $id): string {
       $row = self::getRowById(TableNames::PLATFORMS, $id);
 
@@ -55,6 +66,7 @@
       foreach ($queryResults as $row) {
         $results[] = (int)$row->platformId;
       }
+
       return $results;
     }
   }
