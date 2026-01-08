@@ -123,6 +123,25 @@
       return $result;
     }
 
+    public function toDto(): array {
+      $result = [
+        'gameId' => $this->gameId,
+        'trackId' => $this->trackId,
+        'shortName' => $this->shortName,
+        'fullName' => $this->fullName,
+        'country' => $this->country,
+        'countryCode' => $this->countryCode,
+        'latitude' => $this->latitude,
+        'longitude' => $this->longitude,
+      ];
+
+      if ($this->hasId()) {
+        $result['id'] = $this->getId();
+      }
+
+      return $result;
+    }
+
     private static function mapTracks(array $queryResults): array {
       $results = array();
 

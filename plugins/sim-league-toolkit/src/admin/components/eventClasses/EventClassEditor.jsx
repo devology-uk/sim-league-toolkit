@@ -178,7 +178,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
 
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
+                        <SaveSubmitButton disable={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
                     <BusySpinner isActive={isBusy}/>

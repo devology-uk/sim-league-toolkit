@@ -7,6 +7,7 @@
   use SLTK\Domain\Car;
   use SLTK\Domain\Game;
   use SLTK\Domain\Platform;
+  use SLTK\Domain\Track;
   use WP_REST_Request;
   use WP_REST_Response;
   use WP_REST_Server;
@@ -64,6 +65,35 @@
       return rest_ensure_response($responseData);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function listTracks(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Track::listForGame($id);
+
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
+
+      return rest_ensure_response($responseData);
+    }
+    /**
+   * @throws Exception
+   */
+    public function listTrackLayouts(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Track::listLayoutsForTrack($id);
+
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
+
+      return rest_ensure_response($responseData);
+    }
+
     public function onGet(WP_REST_Request $request): WP_REST_Response {
       $data = Game::list();
 
@@ -94,6 +124,8 @@
       $this->registerCarsRoute();
       $this->registerCarClassesRoute();
       $this->registerPlatformsRoute();
+      $this->registerTracksRoute();
+      $this->registerTrackLayoutsRoute();
     }
 
     private function registerCarClassesRoute(): void {
@@ -129,6 +161,32 @@
           [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'listPlatforms'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
+    }
+
+    private function registerTracksRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/(?P<id>\d+)/tracks',
+        [
+          [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'listTracks'],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
+    }
+
+    private function registerTrackLayoutsRoute(): void {
+      register_rest_route(self::NAMESPACE,
+        $this->getResourceName() . '/tracks/(?P<id>\d+)/layouts',
+        [
+          [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'listTrackLayouts'],
             'permission_callback' => [$this, 'checkPermission'],
           ]
         ]

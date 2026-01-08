@@ -78,8 +78,8 @@
         $eventClass->setSingleCarId($data->singleCarId);
       }
 
-      if (isset($data->id) && $data->id > 0) {
-        $eventClass->id = $data->id;
+      if ($data->id > 0) {
+        $eventClass->setId($data->id);
       }
 
       $eventClass->save();

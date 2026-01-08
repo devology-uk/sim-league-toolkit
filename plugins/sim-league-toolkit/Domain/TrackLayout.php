@@ -61,4 +61,17 @@
     public function getTrackId(): int {
       return $this->trackId ?? Constants::DEFAULT_ID;
     }
+
+    public function toDto(): array {
+      return [
+        'corners' => $this->corners,
+        'game' => $this->game,
+        'gameId' => $this->gameId,
+        'layoutId' => $this->layoutId,
+        'length' => $this->length,
+        'name' => $this->name,
+        'track' => $this->track,
+        'trackId' => $this->trackId,
+      ];
+    }
   }

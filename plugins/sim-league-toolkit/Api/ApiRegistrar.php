@@ -19,6 +19,11 @@
 
       $apiController = null;
 
+
+      if (str_contains($wp->request, ResourceNames::CHAMPIONSHIP)) {
+        $apiController = new ChampionshipApiController();
+      }
+
       if (str_contains($wp->request, ResourceNames::DRIVER_CATEGORY)) {
         $apiController = new DriverCategoryApiController();
       }

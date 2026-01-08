@@ -2,8 +2,7 @@
 #sltk-admin-root {
   background-color: var(--surface-ground);
   padding: 0;
-  margin: 0;
-  margin-left: -20px;
+  margin: 0 0 0 -20px;
 
   h3 {
     color: var(--primary-color);
@@ -59,6 +58,12 @@
 
     .content-container {
       padding: 2rem;
+
+      label {
+        color: var(--surface-900);
+        font-size: 1rem;
+        margin-top: .75rem;
+      }
     }
   }
 
@@ -89,12 +94,12 @@
   }
 
   .p-button {
-    margin-top: .75rem !important;
+    margin-top: 1rem !important;
   }
 }
 
 .p-button {
-  margin-top: .5rem !important;
+  margin-top: 1rem !important;
 }
 
 .p-panel {

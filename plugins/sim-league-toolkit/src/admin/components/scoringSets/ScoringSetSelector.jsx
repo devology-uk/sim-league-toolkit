@@ -5,15 +5,14 @@ import apiFetch from '@wordpress/api-fetch';
 import {Dropdown} from 'primereact/dropdown';
 import {ValidationError} from '../shared/ValidationError';
 
-
-export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const ScoringSetSelector = ({onSelectedItemChanged, scoringSetId = 0, disabled = false, isInvalid = false, validationMessage = ''}) => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(gameId);
+    const [selectedItem, setSelectedItem] = useState(scoringSetId);
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/game',
-            method: 'GET'
+            path: '/sltk/v1/scoring-set',
+            method: 'GET',
         }).then((r) => {
             setItems(r);
         });
@@ -30,10 +29,9 @@ export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = fals
     })));
 
     return (
-        <div className='flex flex-column align-items-stretch gap-2'  style={{maxWidth: '350px'}}>
-            <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
-            <Dropdown id='game-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
-                      optionLabel='label'
+        <div className='flex flex-column align-items-stretch gap-2'>
+            <label htmlFor='scoring-set-selector'>{__('Scoring Set', 'sim-league-toolkit')}</label>
+            <Dropdown id='scoring-set-selector' value={selectedItem} options={itemOptions} onChange={onSelect} optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError
                 message={validationMessage}
