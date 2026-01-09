@@ -5,6 +5,6 @@ module.exports = {
   ...defaultConfig,
   entry: {
     ...defaultConfig.entry(),
-    "admin/index": resolve(process.cwd(), "./src/admin", 'index.js'),
+    "admin/index": resolve(process.cwd(), "./src/admin", 'index.tsx'),
   }
 }

@@ -10,7 +10,7 @@ import './index.scss';
 import domReady from '@wordpress/dom-ready';
 import {createRoot} from '@wordpress/element';
 
-import {SimLeagueToolkitApp} from './simLeagueToolkitApp';
+import {SimLeagueToolkitApp} from './SimLeagueToolkitApp';
 
 domReady(() => {
     const root = createRoot(
