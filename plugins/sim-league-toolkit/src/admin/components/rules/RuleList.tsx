@@ -8,7 +8,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {ListBox} from 'primereact/listbox';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {RuleSet} from "./RuleSet";
 import {RuleSetRule} from "./RuleSetRule";
@@ -161,6 +161,7 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             {!isAdding && !isEditing && (<Panel headerTemplate={headerTemplate}>
                 <ListBox value={selectedRule} onChange={(e) => setSelectedRule(e.value)} options={rules}
                          optionLabel='rule'
@@ -188,7 +189,6 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
                                message={__('Are you sure you want to delete the rule: ', 'sim-league-toolkit') + ' "' + selectedRule.rule + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

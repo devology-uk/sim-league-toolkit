@@ -11,6 +11,7 @@ import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
+import {BusyIndicator} from "../shared/BusyIndicator";
 
 export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId = 0}) => {
     const [description, setDescription] = useState('');
@@ -99,6 +100,7 @@ export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId =
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Championship', 'sim-league-toolkit')}>
+                    <BusyIndicator isBusy={isBusy} />
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -143,7 +145,6 @@ export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId =
                         <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
-                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

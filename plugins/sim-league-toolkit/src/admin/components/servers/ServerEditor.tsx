@@ -1,12 +1,13 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {FormEvent} from "react";
 
 import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
 import {PlatformSelector} from '../shared/PlatformSelector';
@@ -14,7 +15,6 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {Server} from "./Server";
 import {ServerSettingList} from './ServerSettingList';
 import {ValidationError} from '../shared/ValidationError';
-import {FormEvent} from "react";
 
 interface ServerEditorProps {
     show: boolean;
@@ -123,6 +123,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Server', 'sim-league-toolkit')}>
+                    <BusyIndicator isBusy={isBusy}/>
                     <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                         <form onSubmit={onSave} noValidate>
                             <div className='flex flex-column align-items-stretch gap-2'>
@@ -144,7 +145,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                                           platformId={platformId}
                                                           isInvalid={validationErrors.includes('platform')}
                                                           validationMessage={__('You must select the platform that this server will be used with.')}
-                                                          onSelectedItemChanged={onSelectedPlatformChanged}/>
+                                                          onSelectedItemChanged={(p) => onSelectedPlatformChanged(p.id)}/>
 
                                         <label htmlFor='server-name'>{__('Name', 'sim-league-toolkit')}</label>
                                         <InputText id='server-name' value={name}
@@ -168,7 +169,6 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                         </form>
                         {serverId > 0 && (<ServerSettingList serverId={serverId} gameKey={gameKey}/>)}
                     </div>
-                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

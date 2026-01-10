@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {Server} from "./Server";
 import {ServerEditor} from './ServerEditor';
 import {ServerCard} from './ServerCard';
@@ -95,6 +95,7 @@ export const Servers = () => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             <h3>{__('Servers', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you create re-usable Servers with settings configured that can be applied to championship events or individual events, saving you time and effort avoiding the need to enter the same settings multiple times.', 'sim-league-toolkit')}
@@ -123,7 +124,6 @@ export const Servers = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

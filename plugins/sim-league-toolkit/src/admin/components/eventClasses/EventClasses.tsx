@@ -9,6 +9,7 @@ import {BusySpinner} from '../shared/BusySpinner';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
 import {EventClass} from "./EventClass";
+import {BusyIndicator} from "../shared/BusyIndicator";
 
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);
@@ -95,6 +96,7 @@ export const EventClasses = () => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             <h3>{__('Event Classes', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
@@ -123,7 +125,6 @@ export const EventClasses = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it from all championships or individual events and any driver registrations for the class in those events will be removed!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

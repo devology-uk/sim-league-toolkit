@@ -7,7 +7,7 @@ import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 import {InputNumber} from 'primereact/inputnumber';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
@@ -120,6 +120,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Scoring Set', 'sim-league-toolkit')}>
+                    <BusyIndicator isBusy={isBusy} />
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -177,7 +178,6 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
                     {scoringSetId > 0 && (<ScoreList scoringSetId={scoringSetId}/>)}
-                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

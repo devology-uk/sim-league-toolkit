@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
 import {ScoringSet} from "./ScoringSet";
@@ -95,6 +95,7 @@ export const ScoringSets = () => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             <h3>{__('Scoring Sets', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you create re-usable Scoring Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
@@ -123,7 +124,6 @@ export const ScoringSets = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

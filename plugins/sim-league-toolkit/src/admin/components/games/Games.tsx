@@ -5,10 +5,9 @@ import {__} from '@wordpress/i18n';
 import {DataView} from 'primereact/dataview';
 import {Panel} from 'primereact/panel';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {Game} from "./Game";
 import {GameCard} from './GameCard';
-
 
 export const Games = () => {
 
@@ -33,10 +32,10 @@ export const Games = () => {
     }
 
     return <>
+        <BusyIndicator isBusy={isBusy}/>
         <Panel header={__('Games', 'sim-league-toolkit')}>
             <DataView value={games} itemTemplate={itemTemplate} layout='grid'
                       emptyMessage={__('No games found', 'sim-league-toolkit')}/>
         </Panel>
-        <BusySpinner isBusy={isBusy}/>
     </>
 }

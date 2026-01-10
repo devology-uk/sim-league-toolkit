@@ -133,6 +133,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Event Class', 'sim-league-toolkit')}>
+                    <BusySpinner isBusy={isBusy}/>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -190,7 +191,6 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
                         <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
-                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

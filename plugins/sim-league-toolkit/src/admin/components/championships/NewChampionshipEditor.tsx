@@ -8,7 +8,7 @@ import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
 import {GameSelector} from '../games/GameSelector';
@@ -152,6 +152,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             <h3>{__('New Championship', 'sim-league-toolkit')}</h3>
             <form onSubmit={onSave} noValidate>
                 <GameSelector gameId={gameId}
@@ -238,7 +239,6 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                     </>
                 }
             </form>
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

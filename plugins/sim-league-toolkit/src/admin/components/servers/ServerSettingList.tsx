@@ -7,9 +7,8 @@ import {DataTable} from 'primereact/datatable';
 import {InputText} from 'primereact/inputtext';
 import {Panel} from 'primereact/panel';
 
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {getServerSettings} from './ServerSettingProvider';
-
-import {BusySpinner} from '../shared/BusySpinner';
 import {ServerSetting} from "./ServerSetting";
 
 interface ServerSettingProps {
@@ -84,24 +83,26 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
     }
 
     return (
-        <div className='flex flex-column align-items-start gap-2'>
-            <p style={{maxWidth: '400px'}}>
-                {__('The game supports settings that can be configured through files or via an admin console provided by the hosting provider.', 'sim-league-toolkit') + ' '}
-                {__('To edit a setting double click in the Value column, after making the change press Enter to save it and update the server.', 'sim-league-toolkit') + ' '}
-            </p>
-            <Panel header={__('Settings', 'sim-league-toolkit')}>
-                <DataTable value={data} size='small'
-                           emptyMessage={__('No servers found', 'sim-league-toolkit')}
-                           paginator rows={10}
-                           style={{minWidth: '400px'}}
-                           editMode='cell'>
-                    <Column field='settingName' header='Setting'/>
-                    <Column field='settingValue' header='Value' key='settingValue'
-                            editor={valueEditor}
-                            onCellEditComplete={onCellEditComplete}/>
-                </DataTable>
-            </Panel>
-            <BusySpinner isBusy={isBusy}/>
-        </div>
+        <>
+            <BusyIndicator isBusy={isBusy}/>
+            <div className='flex flex-column align-items-start gap-2'>
+                <p style={{maxWidth: '400px'}}>
+                    {__('The game supports settings that can be configured through files or via an admin console provided by the hosting provider.', 'sim-league-toolkit') + ' '}
+                    {__('To edit a setting double click in the Value column, after making the change press Enter to save it and update the server.', 'sim-league-toolkit') + ' '}
+                </p>
+                <Panel header={__('Settings', 'sim-league-toolkit')}>
+                    <DataTable value={data} size='small'
+                               emptyMessage={__('No servers found', 'sim-league-toolkit')}
+                               paginator rows={10}
+                               style={{minWidth: '400px'}}
+                               editMode='cell'>
+                        <Column field='settingName' header='Setting'/>
+                        <Column field='settingValue' header='Value' key='settingValue'
+                                editor={valueEditor}
+                                onCellEditComplete={onCellEditComplete}/>
+                    </DataTable>
+                </Panel>
+            </div>
+        </>
     )
 }

@@ -9,7 +9,7 @@ import {DataTable} from 'primereact/datatable';
 import {InputNumber} from 'primereact/inputnumber';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {SaveButton} from '../shared/SaveButton';
 import {ScoringSetScore} from "./ScoringSetScore";
@@ -182,6 +182,7 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
 
     return (
         <>
+            <BusyIndicator isBusy={isBusy} />
             {!isAdding && !isEditing && (
                 <Panel headerTemplate={headerTemplate}>
                     <DataTable value={data} size='small'
@@ -224,7 +225,6 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
                                message={__('Are you sure you want to delete the score: ', 'sim-league-toolkit') + ' "' + selectedItem.position + '=' + selectedItem.points + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

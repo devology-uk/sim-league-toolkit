@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {ChampionshipEditor} from './ChampionshipEditor';
 import {ChampionshipCard} from './ChampionshipCard';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
@@ -101,6 +101,7 @@ export const Championships = () => {
     return (
         <>
             {!isAdding && !isEditing && <>
+                <BusyIndicator isBusy={isBusy} />
                 <h3>{__('Championships', 'sim-league-toolkit')}</h3>
                 <p>
                     {__('The championships you have created are displayed below.', 'sim-league-toolkit')}
@@ -123,7 +124,6 @@ export const Championships = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it including all of the events, results, standings and related data!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

@@ -78,6 +78,19 @@
   .mt-4 {
     margin-top: .4rem;
   }
+
+  .busy-spinner-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .progress-bar-container {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
 .p-dialog {

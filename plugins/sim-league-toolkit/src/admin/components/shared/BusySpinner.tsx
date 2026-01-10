@@ -8,8 +8,10 @@ export const BusySpinner = ({isBusy}: BusySpinnerProps) => {
     return (
         <>
             {isBusy &&
-                <ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth='8' fill='var(--surface-ground)'
-                                 animationDuration='.5s'/>
+                <div className='busy-spinner-container'>
+                    <ProgressSpinner style={{width: '50px', height: '50px', margin: "auto"}} strokeWidth='8' fill='var(--surface-ground)'
+                                     animationDuration='.5s'/>
+                </div>
             }
         </>);
 }

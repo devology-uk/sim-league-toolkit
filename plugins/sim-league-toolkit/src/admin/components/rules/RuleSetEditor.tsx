@@ -7,13 +7,13 @@ import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
 
-import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
 import {RuleList} from './RuleList';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
 import {RuleSet} from "./RuleSet";
 import {FormEvent} from "react";
+import {BusyIndicator} from "../shared/BusyIndicator";
 
 interface RuleSetEditorProps {
     show: boolean;
@@ -98,6 +98,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Rule Set', 'sim-league-toolkit')}>
+                    <BusyIndicator isBusy={isBusy} />
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                             <div className='flex flex-column align-items-stretch gap-2'>
@@ -123,7 +124,6 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
                     {ruleSetId && (<RuleList ruleSetId={ruleSetId}/>)}
-                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>
