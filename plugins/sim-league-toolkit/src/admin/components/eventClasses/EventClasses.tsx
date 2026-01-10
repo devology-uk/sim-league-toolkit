@@ -5,11 +5,10 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
 import {EventClass} from "./EventClass";
-import {BusyIndicator} from "../shared/BusyIndicator";
 
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);

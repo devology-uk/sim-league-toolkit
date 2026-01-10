@@ -6,12 +6,11 @@ import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusySpinner} from '../shared/BusySpinner';
+import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
-import {BusyIndicator} from "../shared/BusyIndicator";
 
 export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId = 0}) => {
     const [description, setDescription] = useState('');
