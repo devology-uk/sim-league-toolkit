@@ -2,18 +2,24 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
-import {Column} from 'primereact/column';
+import {Column, ColumnEditorOptions, ColumnEvent} from 'primereact/column';
 import {DataTable} from 'primereact/datatable';
 import {InputText} from 'primereact/inputtext';
 import {Panel} from 'primereact/panel';
 
-import {getServerSettings} from '../../services/ServerSettingProvider';
+import {getServerSettings} from './ServerSettingProvider';
 
 import {BusySpinner} from '../shared/BusySpinner';
+import {ServerSetting} from "./ServerSetting";
 
-export const ServerSettingList = ({serverId, gameKey}) => {
+interface ServerSettingProps {
+    serverId: number;
+    gameKey: string;
+}
+
+export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
     const [isBusy, setIsBusy] = useState(false);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<ServerSetting[]>([]);
 
 
     useEffect(() => {
@@ -25,20 +31,20 @@ export const ServerSettingList = ({serverId, gameKey}) => {
         const settings = [];
         const serverSettings = getServerSettings(gameKey);
         serverSettings.forEach((s) => {
-            settings.push( {
+            settings.push({
                 serverId: serverId,
                 settingName: s.name,
                 settingValue: s.default,
-                isEditEnabled: s.editbleIfHosted
+                isEditEnabled: s.editableIfHosted
             });
         })
         apiFetch({
             path: `/sltk/v1/server/${serverId}/settings`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: ServerSetting[]) => {
             settings.forEach(s => {
                 const savedSetting = r.find(i => i.settingName === s.settingName);
-                if(savedSetting) {
+                if (savedSetting) {
                     s.settingValue = savedSetting.settingValue;
                     s.id = savedSetting.id;
                 }
@@ -48,12 +54,11 @@ export const ServerSettingList = ({serverId, gameKey}) => {
         });
     }
 
-    const valueEditor = (options) => {
-        console.log(options);
-        return <InputText type='text' value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+    const valueEditor = (options: ColumnEditorOptions) => {
+        return <InputText type='text' value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>;
     };
 
-    const onCellEditComplete = (e) => {
+    const onCellEditComplete = (e: ColumnEvent) => {
         let {rowData, newValue, field, originalEvent: event} = e;
         event.stopPropagation();
 
@@ -67,7 +72,7 @@ export const ServerSettingList = ({serverId, gameKey}) => {
         saveSetting(rowData);
     };
 
-    const saveSetting = (setting) => {
+    const saveSetting = (setting: ServerSetting) => {
         setIsBusy(true);
         apiFetch({
             path: `sltk/v1/server/settings`,
@@ -96,7 +101,7 @@ export const ServerSettingList = ({serverId, gameKey}) => {
                             onCellEditComplete={onCellEditComplete}/>
                 </DataTable>
             </Panel>
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </div>
     )
 }

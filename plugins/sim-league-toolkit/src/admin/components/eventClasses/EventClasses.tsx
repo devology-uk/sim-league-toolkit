@@ -8,12 +8,13 @@ import {DataView} from 'primereact/dataview';
 import {BusySpinner} from '../shared/BusySpinner';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
+import {EventClass} from "./EventClass";
 
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [tableData, setTableData] = useState([]);
-    const [selectedItem, setSelectedItem] = useState();
+    const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
 
@@ -24,7 +25,7 @@ export const EventClasses = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/event-class'}).then((r) => {
+        apiFetch({path: '/sltk/v1/event-class'}).then((r: EventClass[]) => {
             setTableData(r ?? [])
             setIsBusy(false);
         });
@@ -87,7 +88,7 @@ export const EventClasses = () => {
         )
     }
 
-    const itemTemplate = (item) => {
+    const itemTemplate = (item: EventClass) => {
         return <EventClassCard eventClass={item} key={item.id} onRequestEdit={onEdit}
                                onRequestDelete={onDelete}/>
     }
@@ -122,7 +123,7 @@ export const EventClasses = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it from all championships or individual events and any driver registrations for the class in those events will be removed!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

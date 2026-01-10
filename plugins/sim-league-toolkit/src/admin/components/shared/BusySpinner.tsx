@@ -1,6 +1,10 @@
 import {ProgressSpinner} from 'primereact/progressspinner';
 
-export const BusySpinner = ({isBusy}) => {
+interface BusySpinnerProps {
+    isBusy: boolean;
+}
+
+export const BusySpinner = ({isBusy}: BusySpinnerProps) => {
     return (
         <>
             {isBusy &&

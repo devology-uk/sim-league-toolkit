@@ -8,13 +8,22 @@ import {InputText} from 'primereact/inputtext';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {ValidationError} from '../shared/ValidationError';
 import {GameSelector} from '../games/GameSelector';
 import {PlatformSelector} from '../shared/PlatformSelector';
+import {SaveSubmitButton} from '../shared/SaveSubmitButton';
+import {Server} from "./Server";
 import {ServerSettingList} from './ServerSettingList';
+import {ValidationError} from '../shared/ValidationError';
+import {FormEvent} from "react";
 
-export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
+interface ServerEditorProps {
+    show: boolean;
+    onSaved: () => void;
+    onCancelled: () => void;
+    serverId?: number;
+}
+
+export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerEditorProps) => {
     const [gameId, setGameId] = useState(0);
     const [gameKey, setGameKey] = useState('');
     const [gameName, setGameName] = useState('');
@@ -22,7 +31,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
     const [isHostedServer, setIsHostedServer] = useState(false);
     const [name, setName] = useState('');
     const [platformId, setPlatformId] = useState(0);
-    const [validationErrors, setValidationErrors] = useState([]);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
         if (serverId === 0) {
@@ -32,7 +41,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
         apiFetch({
             path: `/sltk/v1/server/${serverId}`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: Server) => {
             setGameId(r.gameId);
             setGameKey(r.gameKey);
             setGameName(r.game);
@@ -51,15 +60,15 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
         setPlatformId(0);
     }
 
-    const onSave = (evt) => {
-        evt.preventDefault();
+    const onSave = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
         setIsBusy(true);
-        const server = {
+        const entity: Server = {
             gameId: gameId,
             isHostedServer: isHostedServer,
             name: name,
@@ -67,14 +76,14 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
         }
 
         if (serverId && serverId > 0) {
-            server.id = serverId;
+            entity.id = serverId;
         }
 
 
         apiFetch({
             path: '/sltk/v1/server',
             method: 'POST',
-            data: server,
+            data: entity,
         }).then(() => {
             onSaved();
 
@@ -83,11 +92,11 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
         });
     }
 
-    const onSelectedGameChanged = (gameId) => {
+    const onSelectedGameChanged = (gameId: number) => {
         setGameId(gameId);
     }
 
-    const onSelectedPlatformChanged = (platformId) => {
+    const onSelectedPlatformChanged = (platformId: number) => {
         setPlatformId(platformId);
     }
 
@@ -121,7 +130,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
                                     <GameSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('game')}
                                                   validationMessage={__('You must select the game that this server will be used with.')}
-                                                  onSelectedItemChanged={onSelectedGameChanged}/>
+                                                  onSelectedItemChanged={(g) => onSelectedGameChanged(g.id)}/>
                                 }
                                 {serverId >= 1 &&
                                     <>
@@ -154,12 +163,12 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}) => {
                                     </>
                                 }
                             </div>
-                            <SaveSubmitButton disable={isBusy} name='submitServer'/>
+                            <SaveSubmitButton disabled={isBusy} name='submitServer'/>
                             <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                         </form>
-                        {serverId > 0 && (<ServerSettingList serverId={serverId} gameKey={gameKey} />)}
+                        {serverId > 0 && (<ServerSettingList serverId={serverId} gameKey={gameKey}/>)}
                     </div>
-                    <BusySpinner isActive={isBusy}/>
+                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

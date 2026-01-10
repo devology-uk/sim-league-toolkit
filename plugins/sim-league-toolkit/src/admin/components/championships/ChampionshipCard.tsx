@@ -6,7 +6,7 @@ import {Card} from 'primereact/card';
 export const ChampionshipCard = ({championship, onRequestEdit, onRequestDelete}) => {
     const footer = (
         <>
-            <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil' severity='primary'
+            <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil' 
                     onClick={() => onRequestEdit(championship)}/>
             <Button label={__('Delete', 'sim-league-toolkit')} icon='pi pi-times' severity='danger'
                     onClick={() => onRequestDelete(championship)} style={{marginLeft: '1rem'}}/>

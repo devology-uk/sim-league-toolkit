@@ -6,15 +6,16 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusySpinner} from '../shared/BusySpinner';
-import {RuleSetEditor} from './RuleSetEditor';
 import {RuleSetCard} from './RuleSetCard';
+import {RuleSetEditor} from './RuleSetEditor';
+import {RuleSet} from "./RuleSet";
 
 export const RuleSets = () => {
 
     const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState(null);
-    const [data, setData] = useState([]);
-    const [selectedItem, setSelectedItem] = useState();
+    const [itemToDelete, setItemToDelete] = useState<RuleSet>(null);
+    const [data, setData] = useState<RuleSet[]>([]);
+    const [selectedItem, setSelectedItem] = useState<RuleSet>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
 
@@ -25,7 +26,7 @@ export const RuleSets = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/rule-set'}).then((r) => {
+        apiFetch({path: '/sltk/v1/rule-set'}).then((r: RuleSet[]) => {
             setData(r ?? [])
             setIsBusy(false);
         });
@@ -35,12 +36,12 @@ export const RuleSets = () => {
         setShowEditor(true);
     }
 
-    const onDelete = (item) => {
+    const onDelete = (item: RuleSet) => {
         setItemToDelete(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (item) => {
+    const onEdit = (item: RuleSet) => {
         setSelectedItem(item);
         setShowEditor(true);
     }
@@ -88,7 +89,7 @@ export const RuleSets = () => {
         )
     }
 
-    const itemTemplate = (item) => {
+    const itemTemplate = (item: RuleSet) => {
         return <RuleSetCard ruleSet={item} key={item.id}  onRequestEdit={onEdit} onRequestDelete={onDelete} />
     }
 
@@ -120,7 +121,7 @@ export const RuleSets = () => {
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                 style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

@@ -2,9 +2,15 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 
-export const CancelButton = ({onCancel, disabled}) => {
+interface CancelButtonProps {
+    onCancel?: () => void;
+    disabled?: boolean;
+}
+
+export const CancelButton = ({onCancel, disabled = false}: CancelButtonProps) => {
     return (
-        <Button severity='secondary' onClick={onCancel} disabled={disabled} style={{marginLeft: '.5rem', marginRight: '.5rem'}}>
+        <Button severity='secondary' onClick={onCancel} disabled={disabled}
+                style={{marginLeft: '.5rem', marginRight: '.5rem'}}>
             {__('Cancel', 'sim-league-toolkit')}
         </Button>
     );

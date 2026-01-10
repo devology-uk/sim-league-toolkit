@@ -3,16 +3,25 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 import {Dialog} from 'primereact/dialog';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {CancelButton} from '../shared/CancelButton';
-import {BusySpinner} from '../shared/BusySpinner';
 import {InputText} from 'primereact/inputtext';
-import {ValidationError} from '../shared/ValidationError';
 import {InputTextarea} from 'primereact/inputtextarea';
 import {InputNumber} from 'primereact/inputnumber';
-import {ScoreList} from './ScoreList';
 
-export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}) => {
+import {BusySpinner} from '../shared/BusySpinner';
+import {CancelButton} from '../shared/CancelButton';
+import {SaveSubmitButton} from '../shared/SaveSubmitButton';
+import {ScoreList} from './ScoreList';
+import {ValidationError} from '../shared/ValidationError';
+import {ScoringSet} from "./ScoringSet";
+
+interface ScoringSetEditorProps {
+    show: boolean;
+    onSaved: () => void;
+    onCancelled: () => void;
+    scoringSetId?: number;
+}
+
+export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}: ScoringSetEditorProps) => {
 
     const [description, setDescription] = useState('');
     const [isBusy, setIsBusy] = useState(false);
@@ -20,7 +29,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
     const [pointsForFastestLap, setPointsForFastestLap] = useState(0);
     const [pointsForFinishing, setPointsForFinishing] = useState(0);
     const [pointsForPole, setPointsForPole] = useState(0);
-    const [validationErrors, setValidationErrors] = useState([]);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
         if (scoringSetId === 0) {
@@ -30,7 +39,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
         apiFetch({
             path: `/sltk/v1/scoring-set/${scoringSetId}`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: ScoringSet ) => {
             setDescription(r.description);
             setName(r.name);
             setPointsForFastestLap(r.pointsForFastestLap);
@@ -56,7 +65,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
         }
 
         setIsBusy(true);
-        const scoringSet = {
+        const entity: ScoringSet = {
             name: name,
             description: description,
             pointsForFastestLap: pointsForFastestLap,
@@ -65,13 +74,13 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
         };
 
         if (scoringSetId && scoringSetId > 0) {
-            scoringSet.id = scoringSetId;
+            entity.id = scoringSetId;
         }
 
         apiFetch({
             path: '/sltk/v1/scoring-set',
             method: 'POST',
-            data: scoringSet,
+            data: entity,
         }).then(() => {
             onSaved();
 
@@ -164,11 +173,11 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0})
 
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
+                        <SaveSubmitButton disabled={isBusy} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
                     {scoringSetId > 0 && (<ScoreList scoringSetId={scoringSetId}/>)}
-                    <BusySpinner isActive={isBusy}/>
+                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

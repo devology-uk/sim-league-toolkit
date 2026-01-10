@@ -5,6 +5,22 @@ import {__} from '@wordpress/i18n';
 import {Dropdown} from 'primereact/dropdown';
 
 import {ValidationError} from './ValidationError';
+import {Track} from "./Track";
+import {TrackLayout} from "./TrackLayout";
+import {ListItem} from "./ListItem";
+
+interface TrackSelectorProps {
+    onSelectedTrackChanged: (itemId: number) => void;
+    onSelectedTrackLayoutChanged: (itemId: number) => void;
+    gameId: number;
+    gameSupportsLayouts: boolean;
+    trackId?: number;
+    trackLayoutId?: number;
+    disabled?: boolean;
+    isInvalid?: boolean;
+    trackValidationMessage?: string
+    trackLayoutValidationMessage?: string
+}
 
 export const TrackSelector = ({
                                   onSelectedTrackChanged,
@@ -17,17 +33,17 @@ export const TrackSelector = ({
                                   isInvalid = false,
                                   trackValidationMessage = '',
                                   trackLayoutValidationMessage = ''
-                              }) => {
-    const [selectedTrack, setSelectedTrack] = useState(trackId);
-    const [selectedTrackLayout, setSelectedTrackLayout] = useState(trackLayoutId);
-    const [tracks, setTracks] = useState([]);
-    const [trackLayouts, setTrackLayouts] = useState([]);
+                              }: TrackSelectorProps) => {
+    const [selectedTrackId, setSelectedTrackId] = useState(trackId);
+    const [selectedTrackLayoutId, setSelectedTrackLayoutId] = useState(trackLayoutId);
+    const [tracks, setTracks] = useState<Track[]>([]);
+    const [trackLayouts, setTrackLayouts] = useState<TrackLayout[]>([]);
 
     useEffect(() => {
         apiFetch({
             path: `/sltk/v1/game/${gameId}/tracks`,
             method: 'GET'
-        }).then((r) => {
+        }).then((r: Track[]) => {
             setTracks(r);
         });
     }, [gameId]);
@@ -36,30 +52,31 @@ export const TrackSelector = ({
         apiFetch({
             path: `/sltk/v1/game/tracks/${trackId}/layouts`,
             method: 'GET'
-        }).then((r) => {
+        }).then((r: TrackLayout[]) => {
             setTrackLayouts(r);
         });
     }, [trackId]);
 
     const onSelectTrack = (evt) => {
-        setSelectedTrack(evt.target.value);
+        setSelectedTrackId(evt.target.value);
         onSelectedTrackChanged(evt.target.value);
     }
 
     const onSelectTrackLayout = (evt) => {
-        setSelectedTrackLayout(evt.target.value);
+        setSelectedTrackLayoutId(evt.target.value);
         onSelectedTrackLayoutChanged(evt.target.value);
     }
 
-    const trackOptions = [{value: 0, label: __('Please select...', 'sim-league-toolkit')}].concat(tracks.map(i => ({
-        value: i.id,
-        label: i.shortName
-    })));
+    const trackListItems: ListItem[] = ([{value: 0, label: __('Please select...', 'sim-league-toolkit')}] as ListItem[])
+        .concat(tracks.map(i => ({
+            value: i.id,
+            label: i.shortName
+        })));
 
-    const trackLayoutOptions = [{
+    const trackLayoutItems: ListItem[] = ([{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    }].concat(trackLayouts.map(i => ({
+    }] as ListItem[]).concat(trackLayouts.map(i => ({
         value: i.id,
         label: i.name
     })));
@@ -67,7 +84,7 @@ export const TrackSelector = ({
     return (
         <div className='flex flex-column align-items-stretch gap-2' style={{maxWidth: '350px'}}>
             <label htmlFor='track-selector'>{__('Track', 'sim-league-toolkit')}</label>
-            <Dropdown id='track-selector' value={selectedTrack} options={trackOptions} onChange={onSelectTrack}
+            <Dropdown id='track-selector' value={selectedTrackId} options={trackListItems} onChange={onSelectTrack}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError
@@ -76,7 +93,7 @@ export const TrackSelector = ({
             {gameSupportsLayouts && trackId !== 0 &&
                 <>
                     <label htmlFor='track-layout-selector'>{__('Track Layout', 'sim-league-toolkit')}</label>
-                    <Dropdown id='track-layout-selector' value={selectedTrackLayout} options={trackLayoutOptions}
+                    <Dropdown id='track-layout-selector' value={selectedTrackLayoutId} options={trackLayoutItems}
                               onChange={onSelectTrackLayout}
                               optionLabel='label'
                               optionValue='value' disabled={disabled}/>

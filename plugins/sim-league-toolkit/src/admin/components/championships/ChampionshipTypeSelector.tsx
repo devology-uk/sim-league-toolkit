@@ -1,6 +1,7 @@
 import {useState} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
 import {Dropdown} from 'primereact/dropdown';
+import {ListItem} from "../shared/ListItem";
 
 export const ChampionshipTypeSelector = ({onSelectedItemChanged, championshipTye = 'std', disabled = false}) => {
 
@@ -11,7 +12,7 @@ export const ChampionshipTypeSelector = ({onSelectedItemChanged, championshipTye
         onSelectedItemChanged(evt.target.value);
     }
 
-    const itemOptions = [
+    const listItems: ListItem[] = [
         {
             value: 'std',
             label: __('Standard', 'sim-league-toolkit')
@@ -25,7 +26,7 @@ export const ChampionshipTypeSelector = ({onSelectedItemChanged, championshipTye
     return (
         <>
             <label htmlFor='rule-set-selector'>{__('Championship Type', 'sim-league-toolkit')}</label>
-            <Dropdown id='rule-set-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
+            <Dropdown id='rule-set-selector' value={selectedItem} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
         </>

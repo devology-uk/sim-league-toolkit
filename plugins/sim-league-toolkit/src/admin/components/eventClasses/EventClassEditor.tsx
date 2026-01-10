@@ -14,8 +14,17 @@ import {DriverCategorySelector} from './DriverCategorySelector';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
+import {FormEvent} from "react";
+import {EventClass} from "./EventClass";
 
-export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}) => {
+interface EventClassEditorProps {
+    show: boolean;
+    onSaved: () => void;
+    onCancelled: () => void;
+    eventClassId?: number;
+}
+
+export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}: EventClassEditorProps) => {
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
     const [driverCategoryId, setDriverCategoryId] = useState(0);
     const [gameId, setGameId] = useState(0);
@@ -34,7 +43,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
         apiFetch({
             path: `/sltk/v1/event-class/${eventClassId}`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: EventClass) => {
             setGameId(r.gameId);
             setGameName(r.game);
             setDriverCategoryId(r.driverCategoryId);
@@ -57,15 +66,15 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
         setSingleCarId(0);
     }
 
-    const onSave = (evt) => {
-        evt.preventDefault();
+    const onSave = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
         setIsBusy(true);
-        const eventClass = {
+        const entity: EventClass = {
             carClass: carClass,
             driverCategoryId: driverCategoryId,
             gameId: gameId,
@@ -75,13 +84,13 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
         };
 
         if (eventClassId && eventClassId > 0) {
-            eventClass.id = eventClassId;
+            entity.id = eventClassId;
         }
 
         apiFetch({
             path: '/sltk/v1/event-class',
             method: 'POST',
-            data: eventClass,
+            data: entity,
         }).then(() => {
             onSaved();
 
@@ -152,7 +161,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
 
                                         <DriverCategorySelector driverCategoryId={driverCategoryId}
                                                                 isInvalid={validationErrors.includes('driverCategoryId')}
-                                                                onSelectedItemChanged={setDriverCategoryId}
+                                                                onSelectedItemChanged={(dc) => setDriverCategoryId(dc.id)}
                                                                 validationMessage={__('You must select a driver category.', 'sim-league-toolkit')}/>
                                         <CarClassSelector gameId={gameId}
                                                           carClass={carClass}
@@ -170,7 +179,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
                                                          carClass={carClass}
                                                          carId={singleCarId}
                                                          isInvalid={validationErrors.includes('singleCarId')}
-                                                         onSelectedItemChanged={setSingleCarId}
+                                                         onSelectedItemChanged={(c) => setSingleCarId(c.id)}
                                                          validationMessage={__('When Is Fixed Car is enabled you must select a car.', 'sim-league-toolkit')}/>}
                                     </>
 
@@ -178,10 +187,10 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0})
 
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitForm'/>
+                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
-                    <BusySpinner isActive={isBusy}/>
+                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

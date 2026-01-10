@@ -1,11 +1,12 @@
-import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
+import {__} from '@wordpress/i18n';
 
 import {DataView} from 'primereact/dataview';
 import {Panel} from 'primereact/panel';
 
 import {BusySpinner} from '../shared/BusySpinner';
+import {Game} from "./Game";
 import {GameCard} from './GameCard';
 
 
@@ -21,13 +22,13 @@ export const Games = () => {
 
     const loadTableData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/game'}).then((r) => {
+        apiFetch({path: '/sltk/v1/game'}).then((r: Game[]) => {
             setGames(r ?? []);
             setIsBusy(false);
         });
     };
 
-    const itemTemplate = (item) => {
+    const itemTemplate = (item: Game) => {
         return <GameCard game={item} key={item.id}/>
     }
 
@@ -36,6 +37,6 @@ export const Games = () => {
             <DataView value={games} itemTemplate={itemTemplate} layout='grid'
                       emptyMessage={__('No games found', 'sim-league-toolkit')}/>
         </Panel>
-        <BusySpinner isActive={isBusy}/>
+        <BusySpinner isBusy={isBusy}/>
     </>
 }

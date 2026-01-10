@@ -5,34 +5,48 @@ import apiFetch from '@wordpress/api-fetch';
 import {Dropdown} from 'primereact/dropdown';
 
 import {ValidationError} from './ValidationError';
+import {Platform} from "./Platform";
+import {ListItem} from "./ListItem";
+
+interface PlatformSelectorProps {
+    gameId: number;
+    onSelectedItemChanged: (item: Platform) => void;
+    platformId?: number;
+    disabled?: boolean;
+    isInvalid?: boolean;
+    validationMessage?: string;
+}
 
 
 export const PlatformSelector = ({
-                                gameId,
-                                onSelectedItemChanged,
-                                platformId = 0,
-                                disabled = false,
-                                isInvalid = false,
-                                validationMessage = ''
-                            }) => {
-    const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(platformId);
+                                     gameId,
+                                     onSelectedItemChanged,
+                                     platformId = 0,
+                                     disabled = false,
+                                     isInvalid = false,
+                                     validationMessage = ''
+                                 }: PlatformSelectorProps) => {
+    const [items, setItems] = useState<Platform[]>([]);
+    const [selectedItemId, setSelectedItemId] = useState(platformId);
 
     useEffect(() => {
         apiFetch({
             path: `/sltk/v1/game/${gameId}/platforms`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: Platform[]) => {
             setItems(r);
         });
     }, [gameId]);
 
     const onSelect = (evt) => {
-        setSelectedItem(evt.target.value);
+        setSelectedItemId(evt.target.value);
         onSelectedItemChanged(evt.target.value);
     }
 
-    const itemOptions = [{value: 0, label: __('Please select...', 'sim-league-toolkit')}].concat(items.map(i => ({
+    const listItems: ListItem[] = ([{
+        value: 0,
+        label: __('Please select...', 'sim-league-toolkit')
+    }] as ListItem[]).concat(items.map(i => ({
         value: i.id,
         label: `${i.name}`
     })));
@@ -40,7 +54,7 @@ export const PlatformSelector = ({
     return (
         <>
             <label htmlFor='platform-selector'>{__('Platform', 'sim-league-toolkit')}</label>
-            <Dropdown id='platform-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
+            <Dropdown id='platform-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError

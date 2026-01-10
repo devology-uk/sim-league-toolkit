@@ -4,14 +4,13 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
-import {Checkbox} from 'primereact/checkbox';
+import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
-import {InputTextarea} from 'primereact/inputtextarea';
 
 export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId = 0}) => {
     const [description, setDescription] = useState('');
@@ -30,10 +29,10 @@ export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId =
             path: `/sltk/v1/championship/${championshipId}`,
             method: 'GET',
         }).then((r) => {
-            setDescription(r.description);
-            setGameId(r.gameId);
-            setGameName(r.game);
-            setName(r.name);
+            // setDescription(r.description);
+            // setGameId(r.gameId);
+            // setGameName(r.game);
+            // setName(r.name);
             setIsBusy(false);
         });
     }, [championshipId]);
@@ -59,7 +58,7 @@ export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId =
         };
 
         if (championshipId && championshipId > 0) {
-            entity.id = championshipId;
+            // entity.id = championshipId;
         }
 
         apiFetch({
@@ -141,10 +140,10 @@ export const ChampionshipEditor = ({show, onSaved, onCancelled, championshipId =
 
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitForm'/>
+                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
-                    <BusySpinner isActive={isBusy}/>
+                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

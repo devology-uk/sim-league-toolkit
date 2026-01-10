@@ -2,9 +2,14 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 
-export const SaveSubmitButton = ({disabled, name = 'submitForm'}) => {
+interface SaveSubmitButtonProps {
+    disabled?: boolean;
+    name?: string;
+}
+
+export const SaveSubmitButton = ({disabled, name = 'submitForm'}: SaveSubmitButtonProps) => {
     return (
-        <Button severity='primary' type='submit' disabled={disabled} name={name}>
+        <Button type='submit' disabled={disabled} name={name}>
             {__('Save', 'sim-league-toolkit')}
         </Button>
     );

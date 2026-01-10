@@ -129,7 +129,7 @@
         if (isset($existing->id)) {
           RuleSetRepository::updateRule($existing->id, $rule->toArray(false));
         } else {
-          $rule->id = RuleSetRepository::addRule($rule->toArray(false));
+          $rule->setId(RuleSetRepository::addRule($rule->toArray(false)));
         }
 
         return true;

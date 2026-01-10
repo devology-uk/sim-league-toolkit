@@ -2,9 +2,14 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 
-export const SaveButton = ({disabled, onClick}) => {
+interface SaveButtonProps {
+    disabled?: boolean;
+    onClick: () => void;
+}
+
+export const SaveButton = ({disabled = false, onClick}: SaveButtonProps) => {
     return (
-        <Button severity='primary' disabled={disabled} onClick={onClick}>
+        <Button disabled={disabled} onClick={onClick}>
             {__('Save', 'sim-league-toolkit')}
         </Button>
     );

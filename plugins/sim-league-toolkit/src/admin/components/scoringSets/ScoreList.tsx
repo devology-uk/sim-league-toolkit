@@ -7,23 +7,28 @@ import {Column} from 'primereact/column';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataTable} from 'primereact/datatable';
 import {InputNumber} from 'primereact/inputnumber';
-import {Panel} from 'primereact/panel';
+import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
 import {SaveButton} from '../shared/SaveButton';
+import {ScoringSetScore} from "./ScoringSetScore";
 import {ValidationError} from '../shared/ValidationError';
 
-export const ScoreList = ({scoringSetId}) => {
+interface ScoreListProps {
+    scoringSetId: number;
+}
+
+export const ScoreList = ({scoringSetId}: ScoreListProps) => {
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isBusy, setIsBusy] = useState(false);
     const [points, setPoints] = useState(25);
     const [position, setPosition] = useState(1);
-    const [data, setData] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [data, setData] = useState<ScoringSetScore[]>([]);
+    const [selectedItem, setSelectedItem] = useState<ScoringSetScore>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-    const [validationErrors, setValidationErrors] = useState([]);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
         loadData();
@@ -35,7 +40,7 @@ export const ScoreList = ({scoringSetId}) => {
         apiFetch({
             path: `/sltk/v1/scoring-set/${scoringSetId}/scores`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: ScoringSetScore[]) => {
             setData(r);
             setIsBusy(false);
             setIsAdding(false);
@@ -90,15 +95,15 @@ export const ScoreList = ({scoringSetId}) => {
         });
     }
 
-    const onDelete = (score) => {
-        setSelectedItem(score);
+    const onDelete = (item: ScoringSetScore) => {
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (score) => {
-        setSelectedItem(score);
-        setPoints(score.points);
-        setPosition(score.position);
+    const onEdit = (item: ScoringSetScore) => {
+        setSelectedItem(item);
+        setPoints(item.points);
+        setPosition(item.position);
         setIsEditing(true);
     }
 
@@ -108,20 +113,20 @@ export const ScoreList = ({scoringSetId}) => {
         }
         setIsBusy(true);
 
-        const score = {
+        const entity: ScoringSetScore = {
             scoringSetId: scoringSetId,
             points: points,
             position: position,
         }
 
         if (isEditing) {
-            score.id = selectedItem.id;
+            entity.id = selectedItem.id;
         }
 
         apiFetch({
             path: `sltk/v1/scoring-set/scores`,
             method: 'POST',
-            data: score,
+            data: entity,
         }).then(() => {
             loadData();
             setPoints(0);
@@ -133,7 +138,7 @@ export const ScoreList = ({scoringSetId}) => {
     }
 
     const validate = () => {
-        const errors = [];
+        const errors: string[] = [];
 
         if (points < 1) {
             errors.push('points');
@@ -147,7 +152,7 @@ export const ScoreList = ({scoringSetId}) => {
         return errors.length === 0;
     }
 
-    const actionTemplate = (item) => {
+    const actionTemplate = (item: ScoringSetScore) => {
         return (
             <div className='flex flex-row'>
                 <Button severity='success' size='small' onClick={() => onEdit(item)} icon='pi pi-pencil'/>
@@ -157,7 +162,7 @@ export const ScoreList = ({scoringSetId}) => {
         )
     }
 
-    const headerTemplate = (options) => {
+    const headerTemplate = (options: PanelHeaderTemplateOptions) => {
         const className = `${options.className} justify-content-space-between`;
 
         return (
@@ -192,7 +197,7 @@ export const ScoreList = ({scoringSetId}) => {
                     <label htmlFor='score-position'>{__('Position', 'sim-league-toolkit')}</label>
                     <InputNumber id='score-position' value={position} onChange={(e) => setPosition(e.value)}
                                  placeholder={__('Enter the position.', 'sim-league-toolkit')}
-                                 min='1' max='999' autoFocus/>
+                                 min={1} max={999} autoFocus/>
                     <ValidationError
                         message={__('The position for the score is required.', 'sim-league-toolkit')}
                         show={validationErrors.includes('position')}/>
@@ -200,7 +205,7 @@ export const ScoreList = ({scoringSetId}) => {
                     <label htmlFor='score-points'>{__('Points', 'sim-league-toolkit')}</label>
                     <InputNumber id='score-points' value={points} onChange={(e) => setPoints(e.value)}
                                  placeholder={__('Enter the points.', 'sim-league-toolkit')}
-                                 min='1' max='999'/>
+                                 min={1} max={999} />
                     <ValidationError
                         message={__('The points for the score is required.', 'sim-league-toolkit')}
                         show={validationErrors.includes('points')}/>
@@ -219,7 +224,7 @@ export const ScoreList = ({scoringSetId}) => {
                                message={__('Are you sure you want to delete the score: ', 'sim-league-toolkit') + ' "' + selectedItem.position + '=' + selectedItem.points + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

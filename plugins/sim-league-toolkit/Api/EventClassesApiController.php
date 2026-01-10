@@ -19,7 +19,7 @@
       $result = true;
       try {
         EventClass::delete($id);
-      } catch (Exception $e) {
+      } catch (Exception) {
         $result = false;
       }
 
@@ -30,19 +30,11 @@
      * @throws Exception
      */
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      $data = EventClass::list();
 
-      $data = EventClass::list($id);
-
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
-
-      $responseData = [];
-
-      foreach ($data as $item) {
-        $responseData[] = $item->toDto();
-      }
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
 
       return rest_ensure_response($responseData);
     }

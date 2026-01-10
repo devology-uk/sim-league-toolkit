@@ -5,7 +5,6 @@
   use DateInterval;
   use DateTime;
   use Exception;
-  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
@@ -241,16 +240,6 @@
       return self::mapChampionshipEventClasses($queryResults);
     }
 
-
-    private static function mapChampionshipEventClasses(array $queryResults): array {
-      $results = array();
-
-      foreach($queryResults as $item) {
-        $results[] = new ChampionshipEventClass($item);
-      }
-
-      return $results;
-    }
     public function save(): bool {
       try {
         if ($this->getId() == Constants::DEFAULT_ID) {
@@ -286,11 +275,46 @@
         'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
 
-      if ($this->getId() != Constants::DEFAULT_ID) {
+      if ($this->hasId()) {
         $result['id'] = $this->getId();
       }
 
       return $result;
+    }
+
+    public function toDto(): array {
+      $result = [
+        'bannerImageUrl' => $this->getBannerImageUrl(),
+        'description' => $this->getDescription(),
+        'gameId' => $this->getGameId(),
+        'isActive' => $this->getIsActive(),
+        'isTrackMasterChampionship' => $this->getIsTrackMasterChampionship(),
+        'name' => $this->getName(),
+        'platformId' => $this->getPlatformId(),
+        'resultsToDiscard' => $this->getResultsToDiscard(),
+        'ruleSetId' => $this->getRuleSetId(),
+        'scoringSetId' => $this->getScoringSetId(),
+        'startDate' => $this->getFormattedStartDate(),
+        'trackMasterTrackId' => $this->getTrackMasterTrackId(),
+        'trackMasterTrackLayoutId' => $this->getTrackMasterTrackLayoutId(),
+        'trophiesAwarded' => $this->getTrophiesAwarded(),
+      ];
+
+      if ($this->hasId()) {
+        $result['id'] = $this->getId();
+      }
+
+      return $result;
+    }
+
+    private static function mapChampionshipEventClasses(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new ChampionshipEventClass($item);
+      }
+
+      return $results;
     }
 
     private static function mapChampionships(array $queryResults): array {

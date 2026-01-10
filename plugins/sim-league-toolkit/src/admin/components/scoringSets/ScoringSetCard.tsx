@@ -1,13 +1,20 @@
 import {Button} from 'primereact/button';
 import {__} from '@wordpress/i18n';
 import {Card} from 'primereact/card';
+import {ScoringSet} from "./ScoringSet";
 
-export const ScoringSetCard = ({scoringSet, onRequestEdit, onRequestDelete}) => {
+interface ScoringSetCardProps {
+    scoringSet: ScoringSet;
+    onRequestEdit: (item: ScoringSet) => void;
+    onRequestDelete: (item: ScoringSet) => void;
+}
+
+export const ScoringSetCard = ({scoringSet, onRequestEdit, onRequestDelete}: ScoringSetCardProps) => {
 
     const footer = (
         <>
             {!scoringSet.isBuiltIn && (
-                <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil' severity='primary'
+                <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil'
                         onClick={() => onRequestEdit(scoringSet)}/>
             )}
             {!scoringSet.isBuiltIn && !scoringSet.isInUse && (

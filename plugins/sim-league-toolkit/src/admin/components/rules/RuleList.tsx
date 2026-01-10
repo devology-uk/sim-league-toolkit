@@ -1,19 +1,25 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
+import {Button} from 'primereact/button';
+import {ConfirmDialog} from 'primereact/confirmdialog';
 import {InputTextarea} from 'primereact/inputtextarea';
 import {ListBox} from 'primereact/listbox';
-import {Panel} from 'primereact/panel';
+import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
+import {BusySpinner} from '../shared/BusySpinner';
+import {CancelButton} from '../shared/CancelButton';
+import {RuleSet} from "./RuleSet";
+import {RuleSetRule} from "./RuleSetRule";
 import {SaveButton} from '../shared/SaveButton';
 import {ValidationError} from '../shared/ValidationError';
-import {Button} from 'primereact/button';
-import {BusySpinner} from '../shared/BusySpinner';
-import {ConfirmDialog} from 'primereact/confirmdialog';
-import {CancelButton} from '../shared/CancelButton';
 
-export const RuleList = ({ruleSetId}) => {
+interface RuleListProps {
+    ruleSetId: number;
+}
+
+export const RuleList = ({ruleSetId}: RuleListProps) => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +40,7 @@ export const RuleList = ({ruleSetId}) => {
         apiFetch({
             path: `/sltk/v1/rule-set/${ruleSetId}/rules`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: RuleSet[]) => {
             setRules(r);
             setIsBusy(false);
             setIsAdding(false);
@@ -73,14 +79,14 @@ export const RuleList = ({ruleSetId}) => {
         });
     }
 
-    const onDelete = (rule) => {
-        setSelectedRule(rule);
+    const onDelete = (item: RuleSetRule) => {
+        setSelectedRule(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (rule) => {
-        setSelectedRule(rule);
-        setRuleText(rule.rule);
+    const onEdit = (item: RuleSetRule) => {
+        setSelectedRule(item);
+        setRuleText(item.rule);
         setIsEditing(true);
     }
 
@@ -90,19 +96,19 @@ export const RuleList = ({ruleSetId}) => {
         }
         setIsBusy(true);
 
-        const rule = {
+        const entity: RuleSetRule = {
             ruleSetId: ruleSetId,
             rule: ruleText,
         }
 
         if (isEditing) {
-            rule.id = selectedRule.id;
+            entity.id = selectedRule.id;
         }
 
         apiFetch({
             path: `sltk/v1/rule-set/rules`,
             method: 'POST',
-            data: rule,
+            data: entity,
         }).then(() => {
             loadData();
             setRuleText('');
@@ -123,7 +129,7 @@ export const RuleList = ({ruleSetId}) => {
         return errors.length === 0;
     }
 
-    const headerTemplate = (options) => {
+    const headerTemplate = (options: PanelHeaderTemplateOptions) => {
         const className = `${options.className} justify-content-space-between`;
 
         return (
@@ -140,7 +146,7 @@ export const RuleList = ({ruleSetId}) => {
         );
     };
 
-    const itemTemplate = (item) => {
+    const itemTemplate = (item: RuleSetRule) => {
         return (
             <div key={item.id} className='flex flex-row'>
                 <div className='flex-grow-1'>{item.rule}</div>
@@ -182,7 +188,7 @@ export const RuleList = ({ruleSetId}) => {
                                message={__('Are you sure you want to delete the rule: ', 'sim-league-toolkit') + ' "' + selectedRule.rule + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

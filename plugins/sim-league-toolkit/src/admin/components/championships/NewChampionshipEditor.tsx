@@ -233,12 +233,12 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                     /> }
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitForm'/>
+                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </>
                 }
             </form>
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

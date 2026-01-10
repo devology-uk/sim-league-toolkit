@@ -2,27 +2,39 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled = false}) => {
-    const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(ruleSetId);
+import {RuleSet} from "./RuleSet";
+import {ListItem} from "../shared/ListItem";
+
+interface RuleSetSelectorProps {
+    onSelectedItemChanged: (ruleSetId: number) => void;
+    ruleSetId?: number;
+    disabled?: boolean;
+}
+
+export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled = false}: RuleSetSelectorProps) => {
+    const [items, setItems] = useState<RuleSet[]>([]);
+    const [selectedItemId, setSelectedItemId] = useState(ruleSetId);
 
     useEffect(() => {
         apiFetch({
             path: '/sltk/v1/rule-set',
             method: 'GET',
-        }).then((r) => {
+        }).then((r: RuleSet[]) => {
             setItems(r);
         });
     }, []);
 
-    const onSelect = (evt) => {
-        setSelectedItem(evt.target.value);
-        onSelectedItemChanged(evt.target.value);
+    const onSelect = (e: DropdownChangeEvent) => {
+        setSelectedItemId(e.target.value);
+        onSelectedItemChanged(e.target.value);
     }
 
-    const itemOptions = [{value: 0, label: __('None', 'sim-league-toolkit')}].concat(items.map(i => ({
+    const listItems: ListItem[] = ([{
+        value: 0,
+        label: __('None', 'sim-league-toolkit')
+    }] as ListItem[]).concat(items.map(i => ({
         value: i.id,
         label: i.name
     })));
@@ -30,7 +42,8 @@ export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled 
     return (
         <>
             <label htmlFor='rule-set-selector'>{__('Rule Set', 'sim-league-toolkit')}</label>
-            <Dropdown id='rule-set-selector' value={selectedItem} options={itemOptions} onChange={onSelect} optionLabel='label'
+            <Dropdown id='rule-set-selector' value={selectedItemId} options={listItems} onChange={onSelect}
+                      optionLabel='label'
                       optionValue='value' disabled={disabled}/>
         </>
     )

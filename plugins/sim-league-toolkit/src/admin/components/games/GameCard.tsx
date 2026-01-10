@@ -1,8 +1,13 @@
 import {__} from '@wordpress/i18n';
 
 import {Card} from 'primereact/card';
+import {Game} from "./Game";
 
-export const GameCard = ({game}) => {
+interface GameCardProps {
+    game: Game;
+}
+
+export const GameCard = ({game}: GameCardProps) => {
     return (
         <Card title={game.name}
               style={{margin: '1rem', maxWidth: '400px'}}>

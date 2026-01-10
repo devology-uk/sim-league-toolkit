@@ -12,8 +12,17 @@ import {CancelButton} from '../shared/CancelButton';
 import {RuleList} from './RuleList';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
+import {RuleSet} from "./RuleSet";
+import {FormEvent} from "react";
 
-export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
+interface RuleSetEditorProps {
+    show: boolean;
+    onSaved: () => void;
+    onCancelled: () => void;
+    ruleSetId: number | null;
+}
+
+export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleSetEditorProps) => {
 
     const [isBusy, setIsBusy] = useState(false);
     const [name, setName] = useState('');
@@ -28,7 +37,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
         apiFetch({
             path: `/sltk/v1/rule-set/${ruleSetId}`,
             method: 'GET',
-        }).then((r) => {
+        }).then((r: RuleSet) => {
             setName(r.name);
             setDescription(r.description);
             setIsBusy(false);
@@ -40,15 +49,15 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
         setDescription('');
     }
 
-    const onSave = (evt) => {
-        evt.preventDefault();
+    const onSave = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
         setIsBusy(true);
-        const ruleSet = {
+        const ruleSet: RuleSet = {
             name: name,
             description: description
         }
@@ -110,11 +119,11 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}) => {
 
                             </div>
                         </div>
-                        <SaveSubmitButton disable={isBusy} name='submitRuleSet'/>
+                        <SaveSubmitButton disabled={isBusy} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                     </form>
                     {ruleSetId && (<RuleList ruleSetId={ruleSetId}/>)}
-                    <BusySpinner isActive={isBusy}/>
+                    <BusySpinner isBusy={isBusy}/>
                 </Dialog>
             )}
         </>

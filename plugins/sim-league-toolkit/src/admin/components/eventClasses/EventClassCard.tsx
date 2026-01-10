@@ -2,13 +2,20 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
+import {EventClass} from "./EventClass";
 
-export const EventClassCard = ({eventClass, onRequestEdit, onRequestDelete}) => {
+interface EventClassCardProps {
+    eventClass: EventClass;
+    onRequestEdit: (item: EventClass) => void;
+    onRequestDelete: (item: EventClass) => void;
+}
+
+export const EventClassCard = ({eventClass, onRequestEdit, onRequestDelete}: EventClassCardProps) => {
 
     const footer = (
         <>
             {!eventClass.isBuiltIn && (
-                <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil' severity='primary'
+                <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil'
                         onClick={() => onRequestEdit(eventClass)}/>)}
             {!eventClass.isBuiltIn && !eventClass.isInUse && (
                 <Button label={__('Delete', 'sim-league-toolkit')} icon='pi pi-times' severity='danger'

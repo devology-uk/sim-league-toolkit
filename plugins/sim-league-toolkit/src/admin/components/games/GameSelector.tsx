@@ -1,12 +1,27 @@
-import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
+import {__} from '@wordpress/i18n';
 
 import {Dropdown} from 'primereact/dropdown';
+import {ListItem} from "../shared/ListItem";
 import {ValidationError} from '../shared/ValidationError';
+import {Game} from "./Game";
 
+interface GameSelectorProps {
+    onSelectedItemChanged: (item: Game) => void;
+    gameId: number;
+    disabled?: boolean;
+    isInvalid?: boolean;
+    validationMessage?: string;
+}
 
-export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = false, isInvalid = false, validationMessage = ''}) => {
+export const GameSelector = ({
+                                 onSelectedItemChanged,
+                                 gameId = 0,
+                                 disabled = false,
+                                 isInvalid = false,
+                                 validationMessage = ''
+                             }: GameSelectorProps) => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(gameId);
 
@@ -14,7 +29,7 @@ export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = fals
         apiFetch({
             path: '/sltk/v1/game',
             method: 'GET'
-        }).then((r) => {
+        }).then((r: Game[]) => {
             setItems(r);
         });
     }, []);
@@ -24,15 +39,18 @@ export const GameSelector = ({onSelectedItemChanged, gameId = 0, disabled = fals
         onSelectedItemChanged(evt.target.value);
     }
 
-    const itemOptions = [{value: 0, label: __('Please select...', 'sim-league-toolkit')}].concat(items.map(i => ({
+    const listItems: ListItem[] = [{
+        value: 0,
+        label: __('Please select...', 'sim-league-toolkit')
+    }].concat(items.map(i => ({
         value: i.id,
         label: i.name
     })));
 
     return (
-        <div className='flex flex-column align-items-stretch gap-2'  style={{maxWidth: '350px'}}>
+        <div className='flex flex-column align-items-stretch gap-2' style={{maxWidth: '350px'}}>
             <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
-            <Dropdown id='game-selector' value={selectedItem} options={itemOptions} onChange={onSelect}
+            <Dropdown id='game-selector' value={selectedItem} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError

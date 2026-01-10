@@ -6,14 +6,15 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusySpinner} from '../shared/BusySpinner';
+import {Server} from "./Server";
 import {ServerEditor} from './ServerEditor';
 import {ServerCard} from './ServerCard';
 
 export const Servers = () => {
     const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState(null);
-    const [data, setData] = useState([]);
-    const [selectedItem, setSelectedItem] = useState();
+    const [itemToDelete, setItemToDelete] = useState<Server>(null);
+    const [data, setData] = useState<Server[]>([]);
+    const [selectedItem, setSelectedItem] = useState<Server>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
 
@@ -24,7 +25,7 @@ export const Servers = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/server'}).then((r) => {
+        apiFetch({path: '/sltk/v1/server'}).then((r: Server[]) => {
             setData(r ?? [])
             setIsBusy(false);
         });
@@ -34,12 +35,12 @@ export const Servers = () => {
         setShowEditor(true);
     }
 
-    const onDelete = (item) => {
+    const onDelete = (item: Server) => {
         setItemToDelete(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (item) => {
+    const onEdit = (item: Server) => {
         console.log(item);
         setSelectedItem(item);
         setShowEditor(true);
@@ -88,8 +89,8 @@ export const Servers = () => {
         )
     }
 
-    const itemTemplate = (item) => {
-        return <ServerCard server={item} key={item.id}  onRequestEdit={onEdit} onRequestDelete={onDelete} />
+    const itemTemplate = (item: Server) => {
+        return <ServerCard server={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>
     }
 
     return (
@@ -106,21 +107,23 @@ export const Servers = () => {
             </p>
 
             <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
-                      emptyMessage={__('No Servers have been defined.', 'sim-league-toolkit')} style={{marginRight:'1rem'}}/>
+                      emptyMessage={__('No Servers have been defined.', 'sim-league-toolkit')}
+                      style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <ServerEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                               serverId={selectedItem?.id}/>
+                              serverId={selectedItem?.id}/>
             }
             {itemToDelete && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
-                               acceptLabel={__('Yes', 'sim-league-toolkit)')} rejectLabel={__('No', 'sim-league-toolkit')}
+                               acceptLabel={__('Yes', 'sim-league-toolkit)')}
+                               rejectLabel={__('No', 'sim-league-toolkit')}
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
-            <BusySpinner isActive={isBusy}/>
+            <BusySpinner isBusy={isBusy}/>
         </>
     )
 }

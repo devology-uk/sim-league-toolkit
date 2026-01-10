@@ -1,11 +1,18 @@
 import {Button} from 'primereact/button';
 import {__} from '@wordpress/i18n';
 import {Card} from 'primereact/card';
+import {Server} from "./Server";
 
-export const ServerCard = ({server, onRequestEdit, onRequestDelete}) => {
+interface ServerCardProps {
+    server: Server;
+    onRequestEdit: (item: Server) => void;
+    onRequestDelete: (item: Server) => void;
+}
+
+export const ServerCard = ({server, onRequestEdit, onRequestDelete}: ServerCardProps) => {
     const footer = (
         <>
-            <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil' severity='primary'
+            <Button label={__('Edit', 'sim-league-toolkit')} icon='pi pi-pencil'
                     onClick={() => onRequestEdit(server)}/>
             <Button label={__('Delete', 'sim-league-toolkit')} icon='pi pi-times' severity='danger'
                     onClick={() => onRequestDelete(server)} style={{marginLeft: '1rem'}}/>
