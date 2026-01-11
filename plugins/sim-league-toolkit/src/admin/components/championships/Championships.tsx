@@ -6,6 +6,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
+import {Championship} from "./Championship";
 import {ChampionshipEditor} from './ChampionshipEditor';
 import {ChampionshipCard} from './ChampionshipCard';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
@@ -15,8 +16,8 @@ export const Championships = () => {
     const [isBusy, setIsBusy] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
-    const [data, setData] = useState([]);
-    const [selectedItem, setSelectedItem] = useState();
+    const [data, setData] = useState<Championship[]>([]);
+    const [selectedItem, setSelectedItem] = useState<Championship>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     useEffect(() => {
@@ -26,7 +27,7 @@ export const Championships = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/championship'}).then((r) => {
+        apiFetch({path: '/sltk/v1/championship'}).then((r: Championship[]) => {
             setData(r ?? [])
             setIsBusy(false);
         });
@@ -37,12 +38,12 @@ export const Championships = () => {
         setIsEditing(false);
     }
 
-    const onDelete = (item) => {
+    const onDelete = (item: Championship) => {
         setItemToDelete(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (item) => {
+    const onEdit = (item: Championship) => {
         setIsEditing(true);
         setIsAdding(false);
         setSelectedItem(item);
@@ -93,7 +94,7 @@ export const Championships = () => {
         )
     }
 
-    const itemTemplate = (item) => {
+    const itemTemplate = (item: Championship) => {
         return <ChampionshipCard championship={item} key={item.id} onRequestEdit={onEdit}
                                  onRequestDelete={onDelete}/>
     }

@@ -1,6 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {FormEvent} from "react";
 
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';
@@ -10,7 +11,10 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
+import {Championship} from "./Championship";
+import {ChampionshipTypes} from "../shared/ChampionshipTypes";
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
+import {Game} from "../games/Game";
 import {GameSelector} from '../games/GameSelector';
 import {PlatformSelector} from '../shared/PlatformSelector';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
@@ -19,11 +23,16 @@ import {ValidationError} from '../shared/ValidationError';
 import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
 import {TrackSelector} from '../shared/TrackSelector';
 
+interface NewChampionshipEditorProps {
+    onSaved: () => void;
+    onCancelled: () => void;
+}
+
 const minDate = new Date();
 
-export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
+export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEditorProps) => {
     const [allowEntryChange, setAllowEntryChange] = useState(true);
-    const [championshipType, setChampionshipType] = useState('std');
+    const [championshipType, setChampionshipType] = useState(ChampionshipTypes.Standard);
     const [description, setDescription] = useState('');
     const [entryChangeLimit, setEntryChangeLimit] = useState(1);
     const [gameId, setGameId] = useState(0);
@@ -37,13 +46,13 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
     const [startDate, setStartDate] = useState(minDate);
     const [trackMasterTrackId, setTrackMasterTrackId] = useState(0);
     const [trackMasterTrackLayoutId, setTrackMasterTrackLayoutId] = useState(0);
-    const [validationErrors, setValidationErrors] = useState([]);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
         apiFetch({
             path: `/sltk/v1/game/${gameId}`,
             method: 'GET'
-        }).then((r) => {
+        }).then((r: Game) => {
             setGameSupportsLayouts(r.supportsLayouts);
         });
     }, [gameId]);
@@ -52,7 +61,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
         setGameId(0);
         setPlatformId(0);
         setAllowEntryChange(false);
-        setChampionshipType('std');
+        setChampionshipType(ChampionshipTypes.Standard);
         setEntryChangeLimit(0);
         setDescription('');
         setName('');
@@ -65,33 +74,35 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
         setValidationErrors([]);
     }
 
-    const onSave = (evt) => {
-        evt.preventDefault();
+    const onSave = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
         setIsBusy(true);
-        const entity = {
+        const entity: Championship = {
             allowEntryChange: allowEntryChange,
             bannerImageUrl: '',
             description: description,
             entryChangeLimit: entryChangeLimit,
             gameId: gameId,
-            isTrackMasterChampionship: championshipType !== 'std',
+            isActive: false,
+            isTrackMasterChampionship: championshipType === ChampionshipTypes.Trackmaster,
             name: name,
             platformId: platformId,
             resultsToDiscard: resultsToDiscard,
             ruleSetId: ruleSetId,
             scoringSetId: scoringSetId,
-            startDate: startDate
+            startDate: startDate,
+            trophiesAwarded: false
         };
 
-        if(entity.isTrackMasterChampionship) {
+        if (entity.isTrackMasterChampionship) {
             entity.trackMasterTrackId = trackMasterTrackId;
 
-            if(gameSupportsLayouts) {
+            if (gameSupportsLayouts) {
                 entity.trackMasterTrackLayoutId = trackMasterTrackLayoutId;
             }
         }
@@ -107,7 +118,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
         });
     }
 
-    const onSelectedGameChanged = (gameId) => {
+    const onSelectedGameChanged = (gameId: number) => {
         setTrackMasterTrackId(0);
         setTrackMasterTrackLayoutId(0);
         setGameId(gameId);
@@ -132,16 +143,16 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
             errors.push('description');
         }
 
-        if(scoringSetId < 1){
+        if (scoringSetId < 1) {
             errors.push('scoringSet');
         }
 
-        if(championshipType !== 'std') {
-            if(trackMasterTrackId < 1) {
+        if (championshipType === ChampionshipTypes.Trackmaster) {
+            if (trackMasterTrackId < 1) {
                 errors.push('trackMasterTrack');
             }
 
-            if(gameSupportsLayouts && trackMasterTrackLayoutId < 1) {
+            if (gameSupportsLayouts && trackMasterTrackLayoutId < 1) {
                 errors.push('trackMasterTrackLayout');
             }
         }
@@ -152,13 +163,13 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             <h3>{__('New Championship', 'sim-league-toolkit')}</h3>
             <form onSubmit={onSave} noValidate>
                 <GameSelector gameId={gameId}
                               isInvalid={validationErrors.includes('game')}
                               validationMessage={__('You must select the game that this championship will use.')}
-                              onSelectedItemChanged={onSelectedGameChanged}/>
+                              onSelectedItemChanged={(g) => onSelectedGameChanged(g.id)}/>
                 {gameId !== 0 &&
                     <>
                         <div className='flex flex-row flex-wrap justify-content-between gap-4'>
@@ -166,7 +177,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                 <PlatformSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('platform')}
                                                   validationMessage={__('You must select the platform the championship will use.', 'sim-league-toolkit')}
-                                                  onSelectedItemChanged={(id) => setPlatformId(id)}
+                                                  onSelectedItemChanged={(p) => setPlatformId(p.id)}
                                                   platformId={platformId}/>
                                 <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
                                 <InputText id='championship-name' value={name}
@@ -190,8 +201,8 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                 <Calendar value={startDate} onChange={(e) => setStartDate(e.value)}
                                           minDate={minDate} readOnlyInput dateFormat='D, M d yy'/>
 
-                                <ChampionshipTypeSelector championshipTye={championshipType}
-                                                          onSelectedItemChanged={(t) => setChampionshipType(t)}
+                                <ChampionshipTypeSelector championshipType={championshipType}
+                                                          onSelectedItemChanged={setChampionshipType}
                                                           disabled={isBusy}/>
                             </div>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
@@ -201,7 +212,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                 <ScoringSetSelector scoringSetId={scoringSetId}
                                                     isInvalid={validationErrors.includes('scoringSet')}
                                                     validationMessage={__('You must select the scoring set the championship will use.')}
-                                                    onSelectedItemChanged={(s) => setScoringSetId(s)} />
+                                                    onSelectedItemChanged={setScoringSetId}/>
                                 <label
                                     htmlFor='results-to-discard'>{__('Worst Results to Discard', 'sim-league-toolkit')}</label>
                                 <InputNumber id='results-to-discard' value={resultsToDiscard}
@@ -211,7 +222,8 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                     <label
                                         htmlFor='allow-entry-change'>{__('Allow Entry Changes', 'sim-league-toolkit')}</label>
                                     <Checkbox id='allow-entry-change' checked={allowEntryChange}
-                                              onChange={(e) => setAllowEntryChange(e.checked)} style={{marginTop: '.75rem'}}/>
+                                              onChange={(e) => setAllowEntryChange(e.checked)}
+                                              style={{marginTop: '.75rem'}}/>
                                 </div>
                                 {allowEntryChange && <>
                                     <label
@@ -220,18 +232,18 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}) => {
                                                  onChange={(e) => setEntryChangeLimit(e.value)}
                                                  min={1}/>
                                 </>}
-                                {championshipType !== 'std' &&
+                                {championshipType === ChampionshipTypes.Trackmaster &&
                                     <TrackSelector gameId={gameId}
                                                    gameSupportsLayouts={gameSupportsLayouts}
                                                    trackId={trackMasterTrackId}
                                                    trackLayoutId={trackMasterTrackLayoutId}
                                                    isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes('trackMasterTrackLayout')}
                                                    disabled={isBusy}
-                                                   onSelectedTrackChanged={(t) => setTrackMasterTrackId(t)}
-                                                   onSelectedTrackLayoutChanged={(l) => setTrackMasterTrackLayoutId(l)}
+                                                   onSelectedTrackChanged={setTrackMasterTrackId}
+                                                   onSelectedTrackLayoutChanged={setTrackMasterTrackLayoutId}
                                                    trackValidationMessage={__('When the championship type is track master you must select the track that will be used for all events.', 'sim-league-toolkit')}
-                                                   trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit' )}
-                                    /> }
+                                                   trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit')}
+                                    />}
                             </div>
                         </div>
                         <SaveSubmitButton disabled={isBusy} name='submitForm'/>

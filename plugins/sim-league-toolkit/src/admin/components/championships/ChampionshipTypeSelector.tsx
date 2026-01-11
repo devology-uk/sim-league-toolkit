@@ -1,17 +1,20 @@
-import {useState, useEffect} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
+import {useState, useEffect} from '@wordpress/element';
+
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
+
+import {ChampionshipTypes, translateChampionshipType} from "../shared/ChampionshipTypes";
 import {ListItem} from "../shared/ListItem";
 
 interface ChampionshipTypeSelectorProps {
-    onSelectedItemChanged: (type: string) => void;
-    championshipType: string;
+    onSelectedItemChanged: (type: ChampionshipTypes) => void;
+    championshipType: number;
     disabled?: boolean;
 }
 
 export const ChampionshipTypeSelector = ({
                                              onSelectedItemChanged,
-                                             championshipType = 'std',
+                                             championshipType = ChampionshipTypes.Standard,
                                              disabled = false
                                          }: ChampionshipTypeSelectorProps) => {
 
@@ -28,12 +31,12 @@ export const ChampionshipTypeSelector = ({
 
     const listItems: ListItem[] = [
         {
-            value: 'std',
-            label: __('Standard', 'sim-league-toolkit')
+            value: ChampionshipTypes.Standard,
+            label: translateChampionshipType(ChampionshipTypes.Standard)
         },
         {
-            value: 'tm',
-            label: __('Track Master', 'sim-league-toolkit')
+            value: ChampionshipTypes.Trackmaster,
+            label: translateChampionshipType(ChampionshipTypes.Trackmaster)
         }
     ];
 
