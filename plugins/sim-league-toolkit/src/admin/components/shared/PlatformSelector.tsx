@@ -2,7 +2,7 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ValidationError} from './ValidationError';
 import {Platform} from "./Platform";
@@ -38,9 +38,13 @@ export const PlatformSelector = ({
         });
     }, [gameId]);
 
-    const onSelect = (evt) => {
-        setSelectedItemId(evt.target.value);
-        onSelectedItemChanged(evt.target.value);
+    useEffect(() => {
+        setSelectedItemId(platformId);
+    }, [platformId]);
+
+    const onSelect = (e: DropdownChangeEvent) => {
+        setSelectedItemId(e.target.value);
+        onSelectedItemChanged(e.target.value);
     }
 
     const listItems: ListItem[] = ([{

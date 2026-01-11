@@ -9,7 +9,7 @@ import {ScoringSet} from "./ScoringSet";
 import {ValidationError} from '../shared/ValidationError';
 
 interface ScoringSetSelectorProps {
-    onSelectedItemChanged: (item: ScoringSet) => void;
+    onSelectedItemChanged: (item: number) => void;
     scoringSetId?: number;
     disabled?: boolean;
     isInvalid?: boolean;
@@ -24,7 +24,7 @@ export const ScoringSetSelector = ({
                                        validationMessage = ''
                                    }: ScoringSetSelectorProps) => {
     const [items, setItems] = useState<ScoringSet[]>([]);
-    const [selectedItem, setSelectedItem] = useState(scoringSetId);
+    const [selectedItemId, setSelectedItemId] = useState(scoringSetId);
 
     useEffect(() => {
         apiFetch({
@@ -35,8 +35,12 @@ export const ScoringSetSelector = ({
         });
     }, []);
 
+    useEffect(() => {
+        setSelectedItemId(scoringSetId);
+    }, [scoringSetId])
+
     const onSelect = (e: DropdownChangeEvent) => {
-        setSelectedItem(e.target.value);
+        setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);
     }
 
@@ -51,7 +55,7 @@ export const ScoringSetSelector = ({
     return (
         <div className='flex flex-column align-items-stretch gap-2'>
             <label htmlFor='scoring-set-selector'>{__('Scoring Set', 'sim-league-toolkit')}</label>
-            <Dropdown id='scoring-set-selector' value={selectedItem} options={listItems} onChange={onSelect}
+            <Dropdown id='scoring-set-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError

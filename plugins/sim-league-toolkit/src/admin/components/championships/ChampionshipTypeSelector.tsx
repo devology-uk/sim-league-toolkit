@@ -1,15 +1,29 @@
-import {useState} from '@wordpress/element';
+import {useState, useEffect} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {ListItem} from "../shared/ListItem";
 
-export const ChampionshipTypeSelector = ({onSelectedItemChanged, championshipTye = 'std', disabled = false}) => {
+interface ChampionshipTypeSelectorProps {
+    onSelectedItemChanged: (type: string) => void;
+    championshipType: string;
+    disabled?: boolean;
+}
 
-    const [selectedItem, setSelectedItem] = useState(championshipTye);
+export const ChampionshipTypeSelector = ({
+                                             onSelectedItemChanged,
+                                             championshipType = 'std',
+                                             disabled = false
+                                         }: ChampionshipTypeSelectorProps) => {
 
-    const onSelect = (evt) => {
-        setSelectedItem(evt.target.value);
-        onSelectedItemChanged(evt.target.value);
+    const [selectedItem, setSelectedItem] = useState(championshipType);
+
+    useEffect(() => {
+        setSelectedItem(championshipType);
+    }, [championshipType])
+
+    const onSelect = (e: DropdownChangeEvent) => {
+        setSelectedItem(e.target.value);
+        onSelectedItemChanged(e.target.value);
     }
 
     const listItems: ListItem[] = [

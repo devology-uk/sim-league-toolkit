@@ -35,6 +35,10 @@ export const DriverCategorySelector = ({
         });
     }, []);
 
+    useEffect(() => {
+        setSelectedItemId(driverCategoryId);
+    }, [driverCategoryId]);
+
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);

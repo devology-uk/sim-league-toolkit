@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
 
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {ListItem} from "../shared/ListItem";
 import {ValidationError} from '../shared/ValidationError';
 import {Game} from "./Game";
@@ -23,7 +23,7 @@ export const GameSelector = ({
                                  validationMessage = ''
                              }: GameSelectorProps) => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(gameId);
+    const [selectedItemId, setSelectedItemId] = useState(gameId);
 
     useEffect(() => {
         apiFetch({
@@ -34,9 +34,13 @@ export const GameSelector = ({
         });
     }, []);
 
-    const onSelect = (evt) => {
-        setSelectedItem(evt.target.value);
-        onSelectedItemChanged(evt.target.value);
+    useEffect(() => {
+        setSelectedItemId(gameId);
+    }, [gameId]);
+
+    const onSelect = (e: DropdownChangeEvent) => {
+        setSelectedItemId(e.target.value);
+        onSelectedItemChanged(e.target.value);
     }
 
     const listItems: ListItem[] = [{
@@ -50,7 +54,7 @@ export const GameSelector = ({
     return (
         <div className='flex flex-column align-items-stretch gap-2' style={{maxWidth: '350px'}}>
             <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
-            <Dropdown id='game-selector' value={selectedItem} options={listItems} onChange={onSelect}
+            <Dropdown id='game-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled}/>
             <ValidationError

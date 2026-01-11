@@ -39,6 +39,10 @@ export const CarClassSelector = ({
         });
     }, [gameId]);
 
+    useEffect(() => {
+        setSelectedItem(carClass);
+    }, [carClass])
+
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItem(e.target.value);
         onSelectedItemChanged(e.target.value);

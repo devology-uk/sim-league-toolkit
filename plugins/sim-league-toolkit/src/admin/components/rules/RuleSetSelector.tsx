@@ -26,6 +26,15 @@ export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled 
         });
     }, []);
 
+    useEffect(() => {
+        if(!ruleSetId) {
+            setSelectedItemId(0);
+            return;
+        }
+
+        setSelectedItemId(ruleSetId);
+    }, [ruleSetId])
+
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);

@@ -2,7 +2,7 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import {__} from '@wordpress/i18n';
 
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ValidationError} from './ValidationError';
 import {Track} from "./Track";
@@ -49,22 +49,33 @@ export const TrackSelector = ({
     }, [gameId]);
 
     useEffect(() => {
+        setSelectedTrackId(trackId);
+
+        if(!gameSupportsLayouts) {
+            setTrackLayouts([]);
+            return;
+        }
+
         apiFetch({
             path: `/sltk/v1/game/tracks/${trackId}/layouts`,
             method: 'GET'
         }).then((r: TrackLayout[]) => {
             setTrackLayouts(r);
         });
-    }, [trackId]);
+    }, [trackId, gameSupportsLayouts]);
 
-    const onSelectTrack = (evt) => {
-        setSelectedTrackId(evt.target.value);
-        onSelectedTrackChanged(evt.target.value);
+    useEffect(() => {
+        setSelectedTrackLayoutId(trackLayoutId);
+    }, [trackLayoutId]);
+
+    const onSelectTrack = (e: DropdownChangeEvent) => {
+        setSelectedTrackId(e.target.value);
+        onSelectedTrackChanged(e.target.value);
     }
 
-    const onSelectTrackLayout = (evt) => {
-        setSelectedTrackLayoutId(evt.target.value);
-        onSelectedTrackLayoutChanged(evt.target.value);
+    const onSelectTrackLayout = (e:DropdownChangeEvent) => {
+        setSelectedTrackLayoutId(e.target.value);
+        onSelectedTrackLayoutChanged(e.target.value);
     }
 
     const trackListItems: ListItem[] = ([{value: 0, label: __('Please select...', 'sim-league-toolkit')}] as ListItem[])
