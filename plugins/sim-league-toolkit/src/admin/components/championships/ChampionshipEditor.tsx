@@ -3,6 +3,7 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import {FormEvent} from "react";
 
+import {Accordion, AccordionTab} from "primereact/accordion";
 import {Calendar} from "primereact/calendar";
 import {Checkbox} from "primereact/checkbox";
 import {InputText} from 'primereact/inputtext';
@@ -30,6 +31,7 @@ interface ChampionshipEditorProps {
 const minDate = new Date();
 
 export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: ChampionshipEditorProps) => {
+    const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
     const [allowEntryChange, setAllowEntryChange] = useState(true);
     const [bannerImageUrl, setBannerImageUrl] = useState('');
     const [championshipType, setChampionshipType] = useState(ChampionshipTypes.Standard);
@@ -91,7 +93,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
     }, [championshipId]);
 
     useEffect(() => {
-        if(gameId < 1){
+        if (gameId < 1) {
             return;
         }
 
@@ -190,81 +192,95 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             <h3>{__('Championship', 'sim-league-toolkit')} - {name}</h3>
             <h4>{__('Game', 'sim-league-toolkit')} - {gameName}</h4>
             <h4>{__('Type', 'sim-league-toolkit')} - {translateChampionshipType(championshipType)}</h4>
-            <form onSubmit={onSave} noValidate>
-                <div className='flex flex-row flex-wrap justify-content-between gap-4'>
-                    <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
-                        <PlatformSelector gameId={gameId}
-                                          isInvalid={validationErrors.includes('platform')}
-                                          validationMessage={__('You must select the platform the championship will use.', 'sim-league-toolkit')}
-                                          onSelectedItemChanged={(p) => setPlatformId(p.id)}
-                                          platformId={platformId}/>
-                        <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
-                        <InputText id='championship-name' value={name}
-                                   onChange={(e) => setName(e.target.value)}
-                                   placeholder={__('Enter Name', 'sim-league-toolkit')}/>
-                        <ValidationError
-                            message={__('A name with at least 5 characters is required', 'sim-league-toolkit')}
-                            show={validationErrors.includes('name')}/>
-                        <label
-                            htmlFor='championship-description'>{__('Description', 'sim-league-toolkit')}</label>
-                        <InputTextarea id='championship-description' value={description}
-                                       onChange={(e) => setDescription(e.target.value)}
-                                       placeholder={__('Enter a Description', 'sim-league-toolkit')}
-                                       rows={5} cols={40}/>
-                        <ValidationError
-                            message={__('A brief description of the championship with at least 15 characters is required.', 'sim-league-toolkit')}
-                            show={validationErrors.includes('description')}/>
+            <Accordion activeIndex={activeTabIndex}>
+                <AccordionTab header={__('General Settings', 'sim-league-toolkit')}>
+                    <form onSubmit={onSave} noValidate>
+                        <div className='flex flex-row flex-wrap justify-content-between gap-4'>
+                            <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
+                                <PlatformSelector gameId={gameId}
+                                                  isInvalid={validationErrors.includes('platform')}
+                                                  validationMessage={__('You must select the platform the championship will use.', 'sim-league-toolkit')}
+                                                  onSelectedItemChanged={(p) => setPlatformId(p.id)}
+                                                  platformId={platformId}/>
+                                <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
+                                <InputText id='championship-name' value={name}
+                                           onChange={(e) => setName(e.target.value)}
+                                           placeholder={__('Enter Name', 'sim-league-toolkit')}/>
+                                <ValidationError
+                                    message={__('A name with at least 5 characters is required', 'sim-league-toolkit')}
+                                    show={validationErrors.includes('name')}/>
+                                <label
+                                    htmlFor='championship-description'>{__('Description', 'sim-league-toolkit')}</label>
+                                <InputTextarea id='championship-description' value={description}
+                                               onChange={(e) => setDescription(e.target.value)}
+                                               placeholder={__('Enter a Description', 'sim-league-toolkit')}
+                                               rows={5} cols={40}/>
+                                <ValidationError
+                                    message={__('A brief description of the championship with at least 15 characters is required.', 'sim-league-toolkit')}
+                                    show={validationErrors.includes('description')}/>
 
-                        <label
-                            htmlFor='championship-start-date'>{__('Start Date', 'sim-league-toolkit')}</label>
-                        <Calendar value={startDate} onChange={(e) => setStartDate(e.value)}
-                                  minDate={minDate} readOnlyInput dateFormat='D, M d yy'/>
+                                <label
+                                    htmlFor='championship-start-date'>{__('Start Date', 'sim-league-toolkit')}</label>
+                                <Calendar value={startDate} onChange={(e) => setStartDate(e.value)}
+                                          minDate={minDate} readOnlyInput dateFormat='D, M d yy'/>
 
-                    </div>
-                    <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
-                        <RuleSetSelector ruleSetId={ruleSetId}
-                                         onSelectedItemChanged={(rs) => setRuleSetId(rs)}
-                                         disabled={isBusy}/>
-                        <ScoringSetSelector scoringSetId={scoringSetId}
-                                            isInvalid={validationErrors.includes('scoringSet')}
-                                            validationMessage={__('You must select the scoring set the championship will use.')}
-                                            onSelectedItemChanged={setScoringSetId}/>
-                        <label
-                            htmlFor='results-to-discard'>{__('Worst Results to Discard', 'sim-league-toolkit')}</label>
-                        <InputNumber id='results-to-discard' value={resultsToDiscard}
-                                     onChange={(e) => setResultsToDiscard(e.value)}
-                                     min={0}/>
-                        <div className='flex flex-row justify-content-between'>
-                            <label
-                                htmlFor='allow-entry-change'>{__('Allow Entry Changes', 'sim-league-toolkit')}</label>
-                            <Checkbox id='allow-entry-change' checked={allowEntryChange}
-                                      onChange={(e) => setAllowEntryChange(e.checked)}
-                                      style={{marginTop: '.75rem'}}/>
+                            </div>
+                            <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
+                                <RuleSetSelector ruleSetId={ruleSetId}
+                                                 onSelectedItemChanged={(rs) => setRuleSetId(rs)}
+                                                 disabled={isBusy}/>
+                                <ScoringSetSelector scoringSetId={scoringSetId}
+                                                    isInvalid={validationErrors.includes('scoringSet')}
+                                                    validationMessage={__('You must select the scoring set the championship will use.')}
+                                                    onSelectedItemChanged={setScoringSetId}/>
+                                <label
+                                    htmlFor='results-to-discard'>{__('Worst Results to Discard', 'sim-league-toolkit')}</label>
+                                <InputNumber id='results-to-discard' value={resultsToDiscard}
+                                             onChange={(e) => setResultsToDiscard(e.value)}
+                                             min={0}/>
+                                <div className='flex flex-row justify-content-between'>
+                                    <label
+                                        htmlFor='allow-entry-change'>{__('Allow Entry Changes', 'sim-league-toolkit')}</label>
+                                    <Checkbox id='allow-entry-change' checked={allowEntryChange}
+                                              onChange={(e) => setAllowEntryChange(e.checked)}
+                                              style={{marginTop: '.75rem'}}/>
+                                </div>
+                                {allowEntryChange && <>
+                                    <label
+                                        htmlFor='entry-change-limit'>{__('Entry Change Limit', 'sim-league-toolkit')}</label>
+                                    <InputNumber id='entry-change-limit' value={entryChangeLimit}
+                                                 onChange={(e) => setEntryChangeLimit(e.value)}
+                                                 min={1}/>
+                                </>}
+                                {isTrackMasterChampionship &&
+                                    <TrackSelector gameId={gameId}
+                                                   gameSupportsLayouts={gameSupportsLayouts}
+                                                   trackId={trackMasterTrackId}
+                                                   trackLayoutId={trackMasterTrackLayoutId}
+                                                   isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes('trackMasterTrackLayout')}
+                                                   disabled={isBusy}
+                                                   onSelectedTrackChanged={setTrackMasterTrackId}
+                                                   onSelectedTrackLayoutChanged={setTrackMasterTrackLayoutId}
+                                                   trackValidationMessage={__('When the championship type is track master you must select the track that will be used for all events.', 'sim-league-toolkit')}
+                                                   trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit')}
+                                    />}
+                            </div>
                         </div>
-                        {allowEntryChange && <>
-                            <label
-                                htmlFor='entry-change-limit'>{__('Entry Change Limit', 'sim-league-toolkit')}</label>
-                            <InputNumber id='entry-change-limit' value={entryChangeLimit}
-                                         onChange={(e) => setEntryChangeLimit(e.value)}
-                                         min={1}/>
-                        </>}
-                        {isTrackMasterChampionship &&
-                            <TrackSelector gameId={gameId}
-                                           gameSupportsLayouts={gameSupportsLayouts}
-                                           trackId={trackMasterTrackId}
-                                           trackLayoutId={trackMasterTrackLayoutId}
-                                           isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes('trackMasterTrackLayout')}
-                                           disabled={isBusy}
-                                           onSelectedTrackChanged={setTrackMasterTrackId}
-                                           onSelectedTrackLayoutChanged={setTrackMasterTrackLayoutId}
-                                           trackValidationMessage={__('When the championship type is track master you must select the track that will be used for all events.', 'sim-league-toolkit')}
-                                           trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit')}
-                            />}
-                    </div>
-                </div>
-                <SaveSubmitButton disabled={isBusy} name='submitForm'/>
-                <CancelButton onCancel={onCancelled} disabled={isBusy}/>
-            </form>
+                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
+                        <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                    </form>
+                </AccordionTab>
+                <AccordionTab header={__('Classes', 'sim-league-toolkit')}>
+                </AccordionTab>
+                <AccordionTab header={__('Events', 'sim-league-toolkit')}>
+                </AccordionTab>
+                <AccordionTab header={__('Server', 'sim-league-toolkit')}>
+                </AccordionTab>
+                <AccordionTab header={__('Entrants', 'sim-league-toolkit')}>
+                </AccordionTab>
+                <AccordionTab header={__('Standings', 'sim-league-toolkit')}>
+                </AccordionTab>
+            </Accordion>
         </>
     )
 }
