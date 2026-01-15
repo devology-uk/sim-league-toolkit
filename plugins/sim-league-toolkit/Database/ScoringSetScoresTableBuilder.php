@@ -7,22 +7,7 @@
   class ScoringSetScoresTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      global $wpdb;
-      $tableName = $this->tableName($tablePrefix);
-      $parentTableName = $tablePrefix . TableNames::SCORING_SETS;
-
-      $constraintName = 'fk_scoringset_id';
-      $existsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$constraintName}';";
-
-      $exists = (int)$wpdb->get_var($existsCheckSql);
-      if (!$exists) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$constraintName} 
-                        FOREIGN KEY (scoringSetId) REFERENCES {$parentTableName}(id);";
-        $wpdb->query($fkSql);
-      }
+      $this->addSimpleForeignKey($tablePrefix, TableNames::SCORING_SETS, 'scoringSetId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

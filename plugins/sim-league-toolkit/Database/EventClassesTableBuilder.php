@@ -7,9 +7,9 @@
   class EventClassesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_event_classes_gameId', 'gameId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::CARS, 'fk_event_classes_singleCarId', 'singleCarId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::DRIVER_CATEGORIES, 'fk_event_classes_driverCategoryId', 'driverCategoryId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::CARS, 'singleCarId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::DRIVER_CATEGORIES, 'driverCategoryId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

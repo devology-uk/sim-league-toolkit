@@ -9,8 +9,8 @@
     public function addConstraints(string $tablePrefix): void {
       global $wpdb;
 
-      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_track_layouts_gameId', 'gameId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACKS, 'fk_track_layouts_trackId', 'trackId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACKS, 'trackId');
 
       $tableName = $this->tableName($tablePrefix);
       $uniqueConstraintName = 'uq_track_layouts';

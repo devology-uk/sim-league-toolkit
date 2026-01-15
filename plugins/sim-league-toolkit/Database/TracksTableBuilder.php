@@ -5,14 +5,13 @@
 
   use SLTK\Core\Constants;
 
-  class TracksTableBuilder extends TableBuilder{
-
-    public function applyAdjustments(string $tablePrefix): void {
-
-    }
+  class TracksTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'gameId');
+    }
 
+    public function applyAdjustments(string $tablePrefix): void {
     }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {
@@ -67,7 +66,7 @@
               'fullName' => $data[2],
               'country' => $data[3],
               'countryCode' => $data[4],
-              'latitude'  => $data[5],
+              'latitude' => $data[5],
               'longitude' => $data[6],
             );
 

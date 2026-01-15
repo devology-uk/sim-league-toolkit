@@ -5,11 +5,10 @@
   class ChampionshipEntriesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      $this->addSimpleForeignKey($tablePrefix, TableNames::CHAMPIONSHIPS, 'fk_championship_entries_championshipId', 'championshipId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::EVENT_CLASSES, 'fk_championship_entries_eventClassId', 'eventClassId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::CARS, 'fk_championship_entries_carId', 'carId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::USERS, 'fk_championship_entries_userId', 'userId');
-
+      $this->addSimpleForeignKey($tablePrefix, TableNames::CHAMPIONSHIPS, 'championshipId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::EVENT_CLASSES, 'eventClassId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::CARS, 'carId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::USERS, 'userId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

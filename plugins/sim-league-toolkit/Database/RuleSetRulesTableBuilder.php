@@ -5,22 +5,7 @@
   class RuleSetRulesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      global $wpdb;
-      $tableName = $this->tableName($tablePrefix);
-      $parentTableName = $tablePrefix . TableNames::RULE_SETS;
-
-      $constraintName = 'fk_ruleset_id';
-      $existCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-                        WHERE TABLE_NAME = '{$tableName}'
-                        AND CONSTRAINT_NAME = '{$constraintName}';";
-
-      $exists = $wpdb->get_var($existCheckSql);
-      if ($exists === 0) {
-        $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT {$constraintName} 
-                        FOREIGN KEY (ruleSetId) REFERENCES {$parentTableName}(id);";
-        $wpdb->query($fkSql);
-      }
+      $this->addSimpleForeignKey($tablePrefix, TableNames::RULE_SETS, 'ruleSetId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

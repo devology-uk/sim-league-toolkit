@@ -8,8 +8,8 @@
 
   class GamePlatformsTableBuilder extends TableBuilder {
     public function addConstraints(string $tablePrefix): void {
-      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_game_gameId', 'gameId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::PLATFORMS, 'fk_platform_platformId', 'platformId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::PLATFORMS, 'platformId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

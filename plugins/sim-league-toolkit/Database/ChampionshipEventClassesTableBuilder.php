@@ -2,13 +2,11 @@
 
   namespace SLTK\Database;
 
-  use SLTK\Database\TableBuilder;
-
   class ChampionshipEventClassesTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      $this->addSimpleForeignKey($tablePrefix, TableNames::CHAMPIONSHIPS, 'fk_championship_event_classes_championshipId', 'championshipId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::EVENT_CLASSES, 'fk_championship_event_classes_eventClassId', 'eventClassId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::CHAMPIONSHIPS, 'championshipId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::EVENT_CLASSES, 'eventClassId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {

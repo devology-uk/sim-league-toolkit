@@ -5,12 +5,12 @@
   class ChampionshipsTableBuilder extends TableBuilder {
 
     public function addConstraints(string $tablePrefix): void {
-      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'fk_championships_games', 'gameId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::PLATFORMS, 'fk_championships_platforms', 'platformId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::RULE_SETS, 'fk_championships_rule_sets', 'ruleSetId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::SCORING_SETS, 'fk_championships_scoring_sets', 'scoringSetId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACKS, 'fk_championships_tracks', 'trackMasterTrackId');
-      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACK_LAYOUTS, 'fk_championships_track_layouts', 'trackMasterTrackLayoutId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::GAMES, 'gameId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::PLATFORMS, 'platformId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::RULE_SETS, 'ruleSetId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::SCORING_SETS, 'scoringSetId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACKS, 'trackMasterTrackId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::TRACK_LAYOUTS, 'trackMasterTrackLayoutId');
     }
 
     public function applyAdjustments(string $tablePrefix): void {
