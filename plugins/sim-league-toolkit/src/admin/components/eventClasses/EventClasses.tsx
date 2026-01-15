@@ -13,7 +13,7 @@ import {EventClass} from "./EventClass";
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
-    const [tableData, setTableData] = useState([]);
+    const [data, setData] = useState<EventClass[]>([]);
     const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
@@ -26,7 +26,7 @@ export const EventClasses = () => {
     const loadData = () => {
         setIsBusy(true);
         apiFetch({path: '/sltk/v1/event-class'}).then((r: EventClass[]) => {
-            setTableData(r ?? [])
+            setData(r ?? [])
             setIsBusy(false);
         });
     }
@@ -35,12 +35,12 @@ export const EventClasses = () => {
         setShowEditor(true);
     }
 
-    const onDelete = (item) => {
+    const onDelete = (item: EventClass) => {
         setItemToDelete(item);
         setShowDeleteConfirmation(true);
     }
 
-    const onEdit = (item) => {
+    const onEdit = (item: EventClass) => {
         setSelectedItem(item);
         setShowEditor(true);
     }
@@ -107,7 +107,7 @@ export const EventClasses = () => {
                 {__('Sim League Toolkit provides a set of built-in event classes for each game, these cannot be deleted or changed.', 'sim-league-toolkit')}
             </p>
 
-            <DataView value={tableData} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Event Classes have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&

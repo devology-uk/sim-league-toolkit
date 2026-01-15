@@ -3,34 +3,37 @@
   namespace SLTK\Domain;
 
   use Exception;
-  use SLTK\Core\CommonFieldNames;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
 
-  class ChampionshipEventClass extends EntityBase {
+  class ChampionshipEventClass {
 
     private string $carClass = '';
+    private int $championshipId = 0;
     private string $driverCategory = '';
     private int $driverCategoryId = Constants::DEFAULT_ID;
+    private int $eventClassId;
     private string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
     private bool $isBuiltIn = false;
+    private bool $isInUse = false;
     private bool $isSingleCarClass = false;
     private string $name = '';
     private ?int $singleCarId = null;
     private ?string $singleCarName = null;
 
     public function __construct(?stdClass $data = null) {
-
-      parent::__construct($data);
       if ($data != null) {
         $this->carClass = $data->carClass;
+        $this->championshipId = $data->championshipId;
         $this->driverCategoryId = $data->driverCategoryId;
         $this->driverCategory = $data->driverCategory;
+        $this->eventClassId = $data->eventClassId;
         $this->gameId = $data->gameId;
         $this->game = $data->game;
         $this->isBuiltIn = $data->isBuiltIn;
+        $this->isInUse = $data->isInUse > 0;
         $this->isSingleCarClass = $data->isSingleCarClass;
         $this->name = $data->name;
         $this->singleCarId = $data->singleCarId ?? null;
@@ -42,12 +45,20 @@
       return $this->carClass ?? '';
     }
 
+    public function getChampionshipId(): int {
+      return $this->championshipId;
+    }
+
     public function getDriverCategory(): string {
       return $this->driverCategory ?? '';
     }
 
     public function getDriverCategoryId(): int {
       return $this->driverCategoryId ?? Constants::DEFAULT_ID;
+    }
+
+    public function getEventClassId(): int {
+      return $this->eventClassId;
     }
 
     public function getGame(): string {
@@ -58,12 +69,23 @@
       return $this->gameId ?? Constants::DEFAULT_ID;
     }
 
-    public function getId(): int {
-      return $this->id ?? Constants::DEFAULT_ID;
-    }
-
     public function getIsBuiltIn(): bool {
       return $this->isBuiltIn;
+    }
+
+    public function getIsInUse(): bool {
+      return $this->isInUse ?? false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function isInUse(): bool {
+      return EventClassesRepository::isInUse($this->getId());
+    }
+
+    public function setIsInUse(string $value): void {
+      $this->isInUse = $value;
     }
 
     public function getIsSingleCarClass(): bool {
@@ -82,33 +104,22 @@
       return $this->singleCarId ?? null;
     }
 
-
     public function getSingleCarName(): string {
       return $this->singleCarName ?? '';
     }
 
-    /**
-     * @throws Exception
-     */
-    public function isInUse(): bool {
-      return EventClassesRepository::isInUse($this->getId());
-    }
-
-    public function toTableItem(): array {
-      $result = [
+    public function toDto(): array {
+      return [
         'carClass' => $this->getCarClass(),
+        'championshipId' => $this->getChampionshipId(),
         'driverCategory' => $this->getDriverCategory(),
+        'eventClassId' => $this->getEventClassId(),
         'game' => $this->getGame(),
-        'isBuiltIn' => $this->getIsBuiltIn() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
-        'isSingleCarClass' => $this->getIsSingleCarClass() ? esc_html__('Yes', 'sim-league-toolkit') : esc_html__('No', 'sim-league-toolkit'),
+        'isBuiltIn' => $this->getIsBuiltIn(),
+        'isInUse' => $this->getIsInUse(),
+        'isSingleCarClass' => $this->getIsSingleCarClass(),
         'name' => $this->getName(),
         'singleCarName' => $this->getSingleCarName(),
       ];
-
-      if (isset($this->id)) {
-        $result['id'] = $this->id;
-      }
-
-      return $result;
     }
   }

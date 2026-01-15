@@ -7,10 +7,52 @@
   use SLTK\Domain\Championship;
   use WP_REST_Request;
   use WP_REST_Response;
+  use WP_REST_Server;
 
   class ChampionshipApiController extends BasicApiController {
     public function __construct() {
       parent::__construct(ResourceNames::CHAMPIONSHIP);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function deleteChampionshipClass(WP_REST_Request $request): WP_REST_Response {
+      $championshipId = $request->get_param('championshipId');
+      $eventClassId = $request->get_param('eventClassId');
+
+      Championship::deleteChampionshipClass($championshipId, $eventClassId);
+
+      return rest_ensure_response(true);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getClasses(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Championship::listClasses($id);
+
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
+
+      return rest_ensure_response($responseData);
+    }
+
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function postChampionshipClass(WP_REST_Request $request): WP_REST_Response {
+      $body = $request->get_body();
+
+      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+
+      Championship::addChampionshipClass($data->championshipId, $data->eventClassId);
+
+      return rest_ensure_response(true);
     }
 
     protected function onDelete(WP_REST_Request $request): WP_REST_Response {
@@ -19,7 +61,7 @@
       $result = true;
       try {
         Championship::delete($id);
-      } catch (Exception $e) {
+      } catch (Exception) {
         $result = false;
       }
 
@@ -86,6 +128,24 @@
     }
 
     protected function onRegisterRoutes(): void {
+      $this->registerGetClassesRoute();
+      $this->registerPostClassRoute();
+      $this->registerDeleteClassRoute();
+    }
 
+    private function registerDeleteClassRoute(): void {
+      $route = $this->getResourceName() . '/(?P<championshipId>\d+)/classes/(?P<eventClassId>\d+)';
+      $this->registerRoute($route, WP_REST_Server::DELETABLE, 'deleteChampionshipClass');
+    }
+
+    private function registerGetClassesRoute(): void {
+      $route = $this->getResourceName() . '/(?P<id>\d+)/classes';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'getClasses');
+    }
+
+    private function registerPostClassRoute(): void {
+
+      $route = $this->getResourceName() . '/classes';
+      $this->registerRoute($route, WP_REST_Server::CREATABLE, 'postChampionshipClass');
     }
   }

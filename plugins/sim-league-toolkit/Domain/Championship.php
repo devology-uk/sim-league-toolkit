@@ -60,8 +60,27 @@
     /**
      * @throws Exception
      */
+    public static function addChampionshipClass(int $championshipId, int $eventClassId): void {
+      $data = [
+        'championshipId' => $championshipId,
+        'eventClassId' => $eventClassId,
+      ];
+
+      ChampionshipRepository::addChampionshipClass($data);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function delete(int $id): void {
       ChampionshipRepository::delete($id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteChampionshipClass(int $championshipId, int $eventClassId): void {
+      ChampionshipRepository::deleteClass($championshipId, $eventClassId);
     }
 
     /**
@@ -74,12 +93,23 @@
     }
 
     /**
+     * @return Championship[]
      * @throws Exception
      */
     public static function list(): array {
       $queryResults = ChampionshipRepository::listAll();
 
       return self::mapChampionships($queryResults);
+    }
+
+    /**
+     * @return ChampionshipEventClass[]
+     * @throws Exception
+     */
+    public static function listClasses($id): array {
+      $queryResults = EventClassesRepository::listForChampionship($id);
+
+      return self::mapChampionshipEventClasses($queryResults);
     }
 
     public function getAllowEntryChange(): bool {
@@ -228,16 +258,6 @@
 
     public function setTrophiesAwarded(bool $value): void {
       $this->trophiesAwarded = $value;
-    }
-
-    /**
-     * @return ChampionshipEventClass[]
-     * @throws Exception
-     */
-    public function listEventClasses(): array {
-      $queryResults = EventClassesRepository::listForChampionship($this->getId());
-
-      return self::mapChampionshipEventClasses($queryResults);
     }
 
     public function save(): bool {

@@ -69,7 +69,7 @@
                 ON ec.driverCategoryId = dc.id
                 LEFT OUTER JOIN $carsTableName c
                 ON ec.singleCarId = c.id
-                ORDER BY isBuiltIn, ec.name;";
+                ORDER BY ec.isBuiltIn, ec.name;";
 
       return self::getResults($query);
     }
@@ -84,8 +84,21 @@
       $driverCategoriesTableName = self::prefixedTableName(TableNames::DRIVER_CATEGORIES);
       $carsTableName = self::prefixedTableName(TableNames::CARS);
       $championshipEventClassesTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+      $championshipEntriesTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_ENTRIES);
 
-      $query = "SELECT ec.*, g.name as game, dc.name as driverCategory, c.name as singleCarName
+      $query = "SELECT $id as championshipId,
+                        cec.eventClassId,
+                        ec.carClass,
+                        ec.driverCategoryId,
+                        ec.gameId,
+                        ec.isSingleCarClass,                    
+                        ec.name,
+                        ec.singleCarId,
+                        ec.isBuiltIn,
+                        g.name as game,
+                        dc.name as driverCategory,
+                        c.name as singleCarName,
+                        (SELECT COUNT(*) FROM $championshipEntriesTableName WHERE championshipId = $id AND eventClassId = cec.eventClassId) as isInUse
                 FROM $tableName ec
                 INNER JOIN $championshipEventClassesTableName cec
                 ON ec.Id = cec.eventClassId                
@@ -94,7 +107,7 @@
                 INNER JOIN $driverCategoriesTableName dc
                 ON ec.driverCategoryId = dc.id
                 LEFT OUTER JOIN $carsTableName c
-                ON ec.singleCarId = c.id
+                ON ec.singleCarId = c.id                
                 WHERE cec.championshipId = $id;";
 
       return self::getResults($query);
@@ -110,7 +123,7 @@
       $driverCategoriesTableName = self::prefixedTableName(TableNames::DRIVER_CATEGORIES);
       $carsTableName = self::prefixedTableName(TableNames::CARS);
 
-      $query = "SELECT ec.*, g.name as game dc.name as driverCategory, c.name as singleCarName
+      $query = "SELECT ec.*, g.name as game, dc.name as driverCategory, c.name as singleCarName
                 FROM $tableName ec
                 INNER JOIN $gamesTableName g
                 ON ec.gameId = g.id
@@ -118,7 +131,7 @@
                 ON ec.driverCategoryId = dc.id
                 INNER JOIN $carsTableName c
                 ON ec.singleCarId = c.id
-                WHERE gameId = $gameId;";
+                WHERE ec.gameId = $gameId;";
 
       return self::getResults($query);
     }

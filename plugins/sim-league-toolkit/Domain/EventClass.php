@@ -63,6 +63,16 @@
     }
 
     /**
+     * @return EventClass[]
+     * @throws Exception
+     */
+    public static function listForGame(int $gameId): array {
+      $queryResult = EventClassesRepository::listForGame($gameId);
+
+      return self::mapEventClasses($queryResult);
+    }
+
+    /**
      * @throws Exception
      */
     public function canDelete(): bool {

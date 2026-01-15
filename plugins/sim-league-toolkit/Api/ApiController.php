@@ -39,4 +39,17 @@
     protected function getResourceName(): string {
       return '/' . $this->resourceName;
     }
+
+    protected function registerRoute(string $route, string|array $methods, string $callbackName): void {
+      register_rest_route(self::NAMESPACE,
+        $route,
+        [
+          [
+            'methods' => $methods,
+            'callback' => [$this, $callbackName],
+            'permission_callback' => [$this, 'checkPermission'],
+          ]
+        ]
+      );
+    }
   }

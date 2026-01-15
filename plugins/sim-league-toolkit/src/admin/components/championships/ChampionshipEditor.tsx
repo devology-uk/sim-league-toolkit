@@ -21,6 +21,7 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoringSetSelector} from "../scoringSets/ScoringSetSelector";
 import {TrackSelector} from "../shared/TrackSelector";
 import {ValidationError} from '../shared/ValidationError';
+import {ChampionshipClasses} from "./ChampionshipClasses";
 
 interface ChampionshipEditorProps {
     onSaved: () => void;
@@ -271,6 +272,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                     </form>
                 </AccordionTab>
                 <AccordionTab header={__('Classes', 'sim-league-toolkit')}>
+                    <ChampionshipClasses championshipId={championshipId} gameId={gameId} />
                 </AccordionTab>
                 <AccordionTab header={__('Events', 'sim-league-toolkit')}>
                 </AccordionTab>

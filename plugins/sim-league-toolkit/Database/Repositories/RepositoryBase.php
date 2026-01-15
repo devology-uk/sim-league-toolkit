@@ -153,6 +153,18 @@
             return $wpdb->insert_id;
         }
 
+        /**
+         * @throws Exception
+         */
+        protected static function insertWithoutReturn(string $tableNameWithoutPrefix, array $data): void {
+            global $wpdb;
+            $tableNameWithPrefix = self::prefixedTableName($tableNameWithoutPrefix);
+
+            $wpdb->insert($tableNameWithPrefix, $data);
+
+            self::throwIfError(esc_html__('Unexpected error inserting data into database.', 'sim-league-toolkit'));
+        }
+
         protected static function prefixedTableName(string $tableName): string {
             global $wpdb;
 

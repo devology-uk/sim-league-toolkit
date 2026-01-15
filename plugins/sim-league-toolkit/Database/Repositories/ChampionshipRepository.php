@@ -17,8 +17,28 @@
     /**
      * @throws Exception
      */
+    public static function addChampionshipClass(array $mapping): void {
+      self::insertWithoutReturn(TableNames::CHAMPIONSHIP_EVENT_CLASSES, $mapping);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function delete(int $id): void {
       self::deleteById(TableNames::CHAMPIONSHIPS, $id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteClass(int $championshipId, int $eventClassId): void {
+      $championshipEventClassesTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+
+      $query = "DELETE FROM $championshipEventClassesTableName
+                WHERE championshipId = $championshipId
+                AND eventClassId = $eventClassId";
+
+      self::execute($query);
     }
 
     /**

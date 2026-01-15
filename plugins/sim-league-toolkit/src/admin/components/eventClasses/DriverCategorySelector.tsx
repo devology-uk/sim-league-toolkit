@@ -12,7 +12,7 @@ interface DriverCategorySelectorProps {
     disabled?: boolean;
     driverCategoryId?: number;
     isInvalid?: boolean;
-    onSelectedItemChanged: (item: DriverCategory) => void;
+    onSelectedItemChanged: (itemId: number) => void;
     validationMessage?: string;
 }
 

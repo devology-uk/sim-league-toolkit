@@ -27,6 +27,7 @@
       self::$builders[] = new EventClassesTableBuilder();
       self::$builders[] = new ChampionshipsTableBuilder();
       self::$builders[] = new ChampionshipEventClassesTableBuilder();
+      self::$builders[] = new ChampionshipEntriesTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {
