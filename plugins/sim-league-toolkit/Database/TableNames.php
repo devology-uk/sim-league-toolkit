@@ -7,6 +7,7 @@
     public final const string CAR_CLASSES = 'sltk_car_classes';
     public final const string CHAMPIONSHIPS = 'sltk_championships';
     public final const string CHAMPIONSHIP_ENTRIES = 'sltk_championship_entries';
+    public final const string CHAMPIONSHIP_EVENTS = 'sltk_championship_events';
     public final const string CHAMPIONSHIP_EVENT_CLASSES = 'sltk_championship_event_classes';
     public final const string COUNTRIES = 'sltk_countries';
     public final const string DRIVER_CATEGORIES = 'sltk_driver_categories';
