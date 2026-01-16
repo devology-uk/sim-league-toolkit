@@ -262,7 +262,7 @@
 
     public function save(): bool {
       try {
-        if ($this->getId() == Constants::DEFAULT_ID) {
+        if ($this->hasId()) {
           $this->setId(ChampionshipRepository::add($this->toArray()));
         } else {
           ChampionshipRepository::update($this->getId(), $this->toArray());
