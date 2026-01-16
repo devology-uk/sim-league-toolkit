@@ -2,6 +2,8 @@ import {__} from "@wordpress/i18n";
 import {useState, useEffect} from "@wordpress/element";
 import apiFetch from "@wordpress/api-fetch";
 
+
+import {Button} from "primereact/button";
 import {DataView} from "primereact/dataview";
 
 import {
@@ -13,7 +15,6 @@ import {ChampionshipClass} from "./ChampionshipClass";
 import {ChampionshipClassCard} from "./ChampionshipClassCard";
 import {HttpMethod} from "../shared/HttpMethod";
 import {EventClassSelector} from "../eventClasses/EventClassSelector";
-import {Button} from "primereact/button";
 
 interface ChampionshipClassesProps {
     championshipId: number,
