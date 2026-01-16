@@ -6,6 +6,7 @@
   use DateTime;
   use Exception;
   use SLTK\Core\Constants;
+  use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
@@ -110,6 +111,14 @@
       $queryResults = EventClassesRepository::listForChampionship($id);
 
       return self::mapChampionshipEventClasses($queryResults);
+    }
+
+    /**
+     * @return ChampionshipEvent[]
+     * @throws Exception
+     */
+    public static function listEvents(int $id): array {
+      return ChampionshipEvent::list($id);
     }
 
     public function getAllowEntryChange(): bool {

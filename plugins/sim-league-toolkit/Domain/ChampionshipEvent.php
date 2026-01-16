@@ -5,7 +5,7 @@
   use DateTime;
   use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\ChampionshipEventRepository;
+  use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use stdClass;
 
   class ChampionshipEvent extends EntityBase {
@@ -50,14 +50,14 @@
      * @throws Exception
      */
     public static function delete(int $id): void {
-      ChampionshipEventRepository::delete($id);
+      ChampionshipEventsRepository::delete($id);
     }
 
     /**
      * @throws Exception
      */
     public static function get(int $id): ChampionshipEvent|null {
-      $queryResult = ChampionshipEventRepository::getById($id);
+      $queryResult = ChampionshipEventsRepository::getById($id);
 
       return new ChampionshipEvent($queryResult);
     }
@@ -66,8 +66,8 @@
      * @return ChampionshipEvent[]
      * @throws Exception
      */
-    public static function list(): array {
-      $queryResults = ChampionshipEventRepository::listAll();
+    public static function list(int $championshipId): array {
+      $queryResults = ChampionshipEventsRepository::list($championshipId);
 
       return self::mapChampionshipEvents($queryResults);
     }
@@ -252,9 +252,9 @@
     public function save(): bool {
       try {
         if ($this->hasId()) {
-          $this->setId(ChampionshipEventRepository::add($this->toArray()));
+          $this->setId(ChampionshipEventsRepository::add($this->toArray()));
         } else {
-          ChampionshipEventRepository::update($this->getId(), $this->toArray());
+          ChampionshipEventsRepository::update($this->getId(), $this->toArray());
         }
       } catch (Exception) {
         return false;

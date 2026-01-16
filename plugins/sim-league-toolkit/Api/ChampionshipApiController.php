@@ -41,6 +41,18 @@
       return rest_ensure_response($responseData);
     }
 
+    public function getEvents(WP_REST_Request $request): WP_REST_Response {
+      $id = $request->get_param('id');
+
+      $data = Championship::listEvents($id);
+
+      $responseData = array_map(function ($item) {
+        return $item->toDto();
+      }, $data);
+
+      return rest_ensure_response($responseData);
+    }
+
     /**
      * @throws JsonException
      * @throws Exception
@@ -129,6 +141,7 @@
 
     protected function onRegisterRoutes(): void {
       $this->registerGetClassesRoute();
+      $this->registerGetEventsRoute();
       $this->registerPostClassRoute();
       $this->registerDeleteClassRoute();
     }
@@ -141,6 +154,11 @@
     private function registerGetClassesRoute(): void {
       $route = $this->getResourceName() . '/(?P<id>\d+)/classes';
       $this->registerRoute($route, WP_REST_Server::READABLE, 'getClasses');
+    }
+
+    private function registerGetEventsRoute(): void {
+      $route = $this->getResourceName() . '/(?P<id>\d+)/events';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'getEvents');
     }
 
     private function registerPostClassRoute(): void {

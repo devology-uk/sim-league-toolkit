@@ -6,7 +6,7 @@
   use SLTK\Database\TableNames;
   use stdClass;
 
-  class ChampionshipEventRepository extends RepositoryBase {
+  class ChampionshipEventsRepository extends RepositoryBase {
 
     /**
      * @throws Exception
@@ -51,7 +51,7 @@
     /**
      * @throws Exception
      */
-    public static function list(): array {
+    public static function list(int $championshipId): array {
       $championshipEventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
       $tracksTableName = self::prefixedTableName(TableNames::GAMES);
@@ -68,6 +68,7 @@
                 ON ce.trackLayoutId = tl.id
                 LEFT OUTER JOIN $ruleSetsTableName rs
                 ON ce.ruleSetId = rs.id
+                WHERE ce.championshipId = $championshipId
                 ORDER BY ce.isActive DESC, ce.startDate;";
 
       return self::getResults($query);
