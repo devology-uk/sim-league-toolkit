@@ -13,15 +13,17 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {Championship} from "./Championship";
+import {ChampionshipClasses} from "./ChampionshipClasses";
+import {ChampionshipEvents} from './ChampionshipEvents';
 import {ChampionshipTypes, translateChampionshipType} from "../shared/ChampionshipTypes";
 import {Game} from "../games/Game";
+import {gameGetRoute} from '../shared/ApiRoutes';
 import {PlatformSelector} from "../shared/PlatformSelector";
 import {RuleSetSelector} from "../rules/RuleSetSelector";
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoringSetSelector} from "../scoringSets/ScoringSetSelector";
 import {TrackSelector} from "../shared/TrackSelector";
 import {ValidationError} from '../shared/ValidationError';
-import {ChampionshipClasses} from "./ChampionshipClasses";
 
 interface ChampionshipEditorProps {
     onSaved: () => void;
@@ -99,7 +101,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
         }
 
         apiFetch({
-            path: `/sltk/v1/game/${gameId}`,
+            path: gameGetRoute(gameId),
             method: 'GET'
         }).then((r: Game) => {
             setGameName(r.name);
@@ -275,6 +277,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                     <ChampionshipClasses championshipId={championshipId} gameId={gameId} />
                 </AccordionTab>
                 <AccordionTab header={__('Events', 'sim-league-toolkit')}>
+                    <ChampionshipEvents championshipId={championshipId} gameId={gameId} />
                 </AccordionTab>
                 <AccordionTab header={__('Server', 'sim-league-toolkit')}>
                 </AccordionTab>

@@ -2,7 +2,9 @@
 
   namespace SLTK\Domain;
 
+  use DateMalformedStringException;
   use DateTime;
+  use DateTimeZone;
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ChampionshipEventsRepository;
@@ -18,12 +20,11 @@
     private string $name;
     private string $ruleSet;
     private int $ruleSetId;
-    private DateTime $startDate;
-    private DateTime $startTime;
+    private DateTime $startDateTime;
     private string $track;
     private int $trackId;
-    private string $trackLayout;
-    private string $trackLayoutId;
+    private ?string $trackLayout;
+    private ?int $trackLayoutId;
 
     public function __construct(?stdClass $data = null) {
       parent::__construct($data);
@@ -37,8 +38,7 @@
         $this->name = $data->name ?? '';
         $this->ruleSet = $data->ruleSet ?? '';
         $this->ruleSetId = $data->ruleSetId;
-        $this->startDate = $data->startDate;
-        $this->startTime = $data->startTime;
+        $this->startDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $data->startDateTime);
         $this->track = $data->track ?? '';
         $this->trackId = $data->trackId;
         $this->trackLayout = $data->trackLayout ?? null;
@@ -128,20 +128,12 @@
       $this->ruleSetId = $value;
     }
 
-    public function getStartDate(): DateTime {
-      return $this->startDate ?? new DateTime();
+    public function getStartDateTime(): DateTime {
+      return $this->startDateTime ?? new DateTime();
     }
 
-    public function setStartDate(DateTime $value): void {
-      $this->startDate = $value;
-    }
-
-    public function getStartTime(): DateTime {
-      return $this->startTime ?? new DateTime();
-    }
-
-    public function setStartTime(DateTime $value): void {
-      $this->startTime = $value;
+    public function setStartDateTime(DateTime $value): void {
+      $this->startDateTime = $value;
     }
 
     public function getTrack(): string {
@@ -200,8 +192,7 @@
         'isActive' => $this->isActive(),
         'name' => $this->getName(),
         'ruleSetId' => $this->getRuleSetId(),
-        'startDate' => $this->getStartDate(),
-        'startTime' => $this->getStartTime(),
+        'startDateTime' => $this->getStartDateTime()->format('Y-m-d H:i:s'),
         'trackId' => $this->getTrackId(),
       ];
 
@@ -217,7 +208,7 @@
     }
 
     public function toDto(): array {
-      return [
+      $result = [
         'id' => $this->getId(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'championship' => $this->getChampionship(),
@@ -228,13 +219,17 @@
         'name' => $this->getName(),
         'ruleSet' => $this->getRuleSet(),
         'ruleSetId' => $this->getRuleSetId(),
-        'startDate' => $this->getStartDate(),
-        'startTime' => $this->getStartTime(),
+        'startDateTime' => $this->getStartDateTime()->format('Y-m-d H:i'),
         'track' => $this->getTrack(),
         'trackId' => $this->getTrackId(),
         'trackLayout' => $this->getTrackLayout(),
-        'trackLayoutId' => $this->getTrackLayoutId(),
       ];
+
+      if($this->getTrackLayoutId() !== null) {
+        $result['trackLayoutId'] = $this->getTrackLayoutId();
+      }
+
+      return $result;
     }
 
     private static function mapChampionshipEvents(array $queryResults): array {
@@ -251,7 +246,7 @@
 
     public function save(): bool {
       try {
-        if ($this->hasId()) {
+        if (!$this->hasId()) {
           $this->setId(ChampionshipEventsRepository::add($this->toArray()));
         } else {
           ChampionshipEventsRepository::update($this->getId(), $this->toArray());

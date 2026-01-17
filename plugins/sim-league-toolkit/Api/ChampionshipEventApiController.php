@@ -2,12 +2,15 @@
 
   namespace SLTK\Api;
 
+  use DateTime;
+  use DateTimeInterface;
+  use DateTimeZone;
   use Exception;
   use JsonException;
+  use SLTK\Core\BannerImageProvider;
   use SLTK\Domain\ChampionshipEvent;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   class ChampionshipEventApiController extends BasicApiController {
     public function __construct() {
@@ -31,7 +34,9 @@
      * @throws Exception
      */
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = ChampionshipEvent::list();
+      $id = $request->get_param('id');
+
+      $data = ChampionshipEvent::list($id);
 
       $responseData = array_map(function ($item) {
         return $item->toDto();
@@ -60,17 +65,24 @@
       $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
 
       $entity = new ChampionshipEvent();
+      if(empty($data->bannerImageUrl)) {
+        $data->bannerImageUrl = BannerImageProvider::getRandomBannerImageUrl();
+      }
+
       $entity->setBannerImageUrl($data->bannerImageUrl);
       $entity->setChampionshipId($data->championshipId);
       $entity->setDescription($data->description);
       $entity->setName($data->name);
       $entity->setRuleSetId($data->ruleSetId);
-      $entity->setStartDate($data->startDate);
-      $entity->setStartTime($data->startTime);
-      $entity->setTrackId($data->trackTrackId);
-      $entity->setTrackLayoutId($data->trackTrackLayoutId ?? null);
+      $startDateTime = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $data->startDateTime, new DateTimeZone('UTC'));
+      $entity->setStartDateTime($startDateTime);
+      $entity->setTrackId($data->trackId);
 
-      if ($data->id > 0) {
+      if (isset($data->trackLayoutId)) {
+        $entity->setTrackLayoutId($data->trackLayoutId);
+      }
+
+      if (isset($data->id) && $data->id > 0) {
         $entity->setId($data->id);
       }
 

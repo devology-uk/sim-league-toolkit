@@ -41,6 +41,9 @@
       return rest_ensure_response($responseData);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getEvents(WP_REST_Request $request): WP_REST_Response {
       $id = $request->get_param('id');
 

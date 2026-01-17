@@ -28,11 +28,11 @@
     public static function getById(int $id): stdClass {
       $championshipEventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
-      $tracksTableName = self::prefixedTableName(TableNames::GAMES);
-      $trackLayoutsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $trackLayoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
       $ruleSetsTableName = self::prefixedTableName(TableNames::RULE_SETS);
 
-      $query = "SELECT ce.*, c.name as championShip, rs.name as ruleSet, t.name as track, tl.name as trackLayout 
+      $query = "SELECT ce.*, c.name as championShip, rs.name as ruleSet, t.shortName as track, tl.name as trackLayout 
                 FROM $championshipEventsTableName ce
                 INNER JOIN $championshipsTableName c
                 ON ce.championshipId = c.id            
@@ -43,7 +43,7 @@
                 LEFT OUTER JOIN $ruleSetsTableName rs
                 ON ce.ruleSetId = rs.id
                 WHERE ce.id = $id
-                ORDER BY ce.isActive DESC, ce.startDate;";
+                ORDER BY ce.isActive DESC, ce.startDateTime;";
 
       return self::getRow($query);
     }
@@ -54,11 +54,11 @@
     public static function list(int $championshipId): array {
       $championshipEventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
-      $tracksTableName = self::prefixedTableName(TableNames::GAMES);
-      $trackLayoutsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $trackLayoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
       $ruleSetsTableName = self::prefixedTableName(TableNames::RULE_SETS);
 
-      $query = "SELECT ce.*, c.name as championShip, rs.name as ruleSet, t.name as track, tl.name as trackLayout 
+      $query = "SELECT ce.*, c.name as championShip, rs.name as ruleSet, t.shortName as track, tl.name as trackLayout 
                 FROM $championshipEventsTableName ce
                 INNER JOIN $championshipsTableName c
                 ON ce.championshipId = c.id            
@@ -69,7 +69,7 @@
                 LEFT OUTER JOIN $ruleSetsTableName rs
                 ON ce.ruleSetId = rs.id
                 WHERE ce.championshipId = $championshipId
-                ORDER BY ce.isActive DESC, ce.startDate;";
+                ORDER BY ce.isActive DESC, ce.startDateTime;";
 
       return self::getResults($query);
     }

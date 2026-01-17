@@ -162,7 +162,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
 
                                         <DriverCategorySelector driverCategoryId={driverCategoryId}
                                                                 isInvalid={validationErrors.includes('driverCategoryId')}
-                                                                onSelectedItemChanged={(dc) => setDriverCategoryId(dc.id)}
+                                                                onSelectedItemChanged={setDriverCategoryId}
                                                                 validationMessage={__('You must select a driver category.', 'sim-league-toolkit')}/>
                                         <CarClassSelector gameId={gameId}
                                                           carClass={carClass}

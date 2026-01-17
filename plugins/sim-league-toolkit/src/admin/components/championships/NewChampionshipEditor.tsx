@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import {FormEvent} from "react";
+import {FormEvent} from 'react';
 
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';
@@ -9,12 +9,13 @@ import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {Championship} from "./Championship";
-import {ChampionshipTypes} from "../shared/ChampionshipTypes";
+import {Championship} from './Championship';
+import {ChampionshipTypes} from '../shared/ChampionshipTypes';
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
-import {Game} from "../games/Game";
+import {Game} from '../games/Game';
+import {gameGetRoute, championshipPostRoute} from '../shared/ApiRoutes';
 import {GameSelector} from '../games/GameSelector';
 import {PlatformSelector} from '../shared/PlatformSelector';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
@@ -22,6 +23,7 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
 import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
 import {TrackSelector} from '../shared/TrackSelector';
+import {HttpMethod} from '../shared/HttpMethod';
 
 interface NewChampionshipEditorProps {
     onSaved: () => void;
@@ -50,9 +52,9 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
 
     useEffect(() => {
         apiFetch({
-            path: `/sltk/v1/game/${gameId}`,
-            method: 'GET'
-        }).then((r: Game) => {
+                     path: gameGetRoute(gameId),
+                     method: 'GET'
+                 }).then((r: Game) => {
             setGameSupportsLayouts(r.supportsLayouts);
         });
     }, [gameId]);
@@ -72,7 +74,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
         setTrackMasterTrackId(0);
         setTrackMasterTrackLayoutId(0);
         setValidationErrors([]);
-    }
+    };
 
     const onSave = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -108,21 +110,21 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
         }
 
         apiFetch({
-            path: '/sltk/v1/championship',
-            method: 'POST',
-            data: entity,
-        }).then(() => {
+                     path: championshipPostRoute(),
+                     method: HttpMethod.POST,
+                     data: entity,
+                 }).then(() => {
             onSaved();
             resetForm();
             setIsBusy(false);
         });
-    }
+    };
 
     const onSelectedGameChanged = (gameId: number) => {
         setTrackMasterTrackId(0);
         setTrackMasterTrackLayoutId(0);
         setGameId(gameId);
-    }
+    };
 
     const validate = () => {
         const errors = [];
@@ -159,7 +161,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     return (
         <>
@@ -176,7 +178,9 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <PlatformSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('platform')}
-                                                  validationMessage={__('You must select the platform the championship will use.', 'sim-league-toolkit')}
+                                                  validationMessage={__(
+                                                      'You must select the platform the championship will use.',
+                                                      'sim-league-toolkit')}
                                                   onSelectedItemChanged={(p) => setPlatformId(p.id)}
                                                   platformId={platformId}/>
                                 <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
@@ -193,7 +197,9 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                                                placeholder={__('Enter a Description', 'sim-league-toolkit')}
                                                rows={7} cols={45}/>
                                 <ValidationError
-                                    message={__('A brief description of the championship with at least 15 characters is required.', 'sim-league-toolkit')}
+                                    message={__(
+                                        'A brief description of the championship with at least 15 characters is required.',
+                                        'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
 
                                 <label
@@ -207,27 +213,31 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                             </div>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <RuleSetSelector ruleSetId={ruleSetId}
-                                                 onSelectedItemChanged={(rs) => setRuleSetId(rs)}
+                                                 onSelectedItemChanged={setRuleSetId}
                                                  disabled={isBusy}/>
                                 <ScoringSetSelector scoringSetId={scoringSetId}
                                                     isInvalid={validationErrors.includes('scoringSet')}
-                                                    validationMessage={__('You must select the scoring set the championship will use.')}
+                                                    validationMessage={__(
+                                                        'You must select the scoring set the championship will use.')}
                                                     onSelectedItemChanged={setScoringSetId}/>
                                 <label
-                                    htmlFor='results-to-discard'>{__('Worst Results to Discard', 'sim-league-toolkit')}</label>
+                                    htmlFor='results-to-discard'>{__('Worst Results to Discard',
+                                                                     'sim-league-toolkit')}</label>
                                 <InputNumber id='results-to-discard' value={resultsToDiscard}
                                              onChange={(e) => setResultsToDiscard(e.value)}
                                              min={0}/>
                                 <div className='flex flex-row justify-content-between'>
                                     <label
-                                        htmlFor='allow-entry-change'>{__('Allow Entry Changes', 'sim-league-toolkit')}</label>
+                                        htmlFor='allow-entry-change'>{__('Allow Entry Changes',
+                                                                         'sim-league-toolkit')}</label>
                                     <Checkbox id='allow-entry-change' checked={allowEntryChange}
                                               onChange={(e) => setAllowEntryChange(e.checked)}
                                               style={{marginTop: '.75rem'}}/>
                                 </div>
                                 {allowEntryChange && <>
                                     <label
-                                        htmlFor='entry-change-limit'>{__('Entry Change Limit', 'sim-league-toolkit')}</label>
+                                        htmlFor='entry-change-limit'>{__('Entry Change Limit',
+                                                                         'sim-league-toolkit')}</label>
                                     <InputNumber id='entry-change-limit' value={entryChangeLimit}
                                                  onChange={(e) => setEntryChangeLimit(e.value)}
                                                  min={1}/>
@@ -237,12 +247,17 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                                                    gameSupportsLayouts={gameSupportsLayouts}
                                                    trackId={trackMasterTrackId}
                                                    trackLayoutId={trackMasterTrackLayoutId}
-                                                   isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes('trackMasterTrackLayout')}
+                                                   isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes(
+                                                       'trackMasterTrackLayout')}
                                                    disabled={isBusy}
                                                    onSelectedTrackChanged={setTrackMasterTrackId}
                                                    onSelectedTrackLayoutChanged={setTrackMasterTrackLayoutId}
-                                                   trackValidationMessage={__('When the championship type is track master you must select the track that will be used for all events.', 'sim-league-toolkit')}
-                                                   trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit')}
+                                                   trackValidationMessage={__(
+                                                       'When the championship type is track master you must select the track that will be used for all events.',
+                                                       'sim-league-toolkit')}
+                                                   trackLayoutValidationMessage={__(
+                                                       'The game supports track layouts, you must select a track layout that will be used for all events.',
+                                                       'sim-league-toolkit')}
                                     />}
                             </div>
                         </div>
@@ -252,5 +267,5 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                 }
             </form>
         </>
-    )
-}
+    );
+};
