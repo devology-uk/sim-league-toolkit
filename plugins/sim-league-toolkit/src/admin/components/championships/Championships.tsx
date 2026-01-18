@@ -7,8 +7,10 @@ import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {Championship} from "./Championship";
-import {ChampionshipEditor} from './ChampionshipEditor';
 import {ChampionshipCard} from './ChampionshipCard';
+import {ChampionshipEditor} from './ChampionshipEditor';
+import {championshipsGetRoute, championshipDeleteRoute} from '../shared/ApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
 
 export const Championships = () => {
@@ -27,7 +29,10 @@ export const Championships = () => {
 
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/championship'}).then((r: Championship[]) => {
+        apiFetch({
+                     path: championshipsGetRoute(),
+            method: HttpMethod.GET,
+        }).then((r: Championship[]) => {
             setData(r ?? [])
             setIsBusy(false);
         });
@@ -36,17 +41,6 @@ export const Championships = () => {
     const onAdd = () => {
         setIsAdding(true);
         setIsEditing(false);
-    }
-
-    const onDelete = (item: Championship) => {
-        setItemToDelete(item);
-        setShowDeleteConfirmation(true);
-    }
-
-    const onEdit = (item: Championship) => {
-        setIsEditing(true);
-        setIsAdding(false);
-        setSelectedItem(item);
     }
 
     const onCancelDelete = () => {
@@ -58,13 +52,24 @@ export const Championships = () => {
         setShowDeleteConfirmation(false)
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/championship/' + itemToDelete.id,
-            method: 'DELETE'
-        }).then(() => {
+                     path: championshipDeleteRoute(itemToDelete.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
             setItemToDelete(null);
             setIsBusy(false);
         });
+    }
+
+    const onDelete = (item: Championship) => {
+        setItemToDelete(item);
+        setShowDeleteConfirmation(true);
+    }
+
+    const onEdit = (item: Championship) => {
+        setIsEditing(true);
+        setIsAdding(false);
+        setSelectedItem(item);
     }
 
     const onEditorCancelled = () => {

@@ -6,6 +6,14 @@ export const championshipClassesPostRoute = () => {
     return getApiPath('championship/classes');
 };
 
+export const championshipDeleteRoute = (championshipId: number): string => {
+    return getApiPath(`championship/${championshipId}}`);
+}
+
+export const championshipEventDeleteRoute = (championshipEventId: number) => {
+    return getApiPath(`championship-event/${championshipEventId}`);
+}
+
 export const championshipEventsGetRoute = (championshipId: number): string => {
     return getApiPath(`championship/${championshipId}/events`);
 };
@@ -14,6 +22,9 @@ export const championshipEventPostRoute = (): string => {
     return getApiPath(`championship-event`);
 };
 
+export const championshipsGetRoute = (): string => {
+    return getApiPath(`championship`);
+}
 
 export const championshipPostRoute = (): string => {
     return getApiPath(`championship`);

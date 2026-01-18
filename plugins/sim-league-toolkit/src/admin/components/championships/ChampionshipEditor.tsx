@@ -14,7 +14,7 @@ import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
 import {Championship} from "./Championship";
 import {ChampionshipClasses} from "./ChampionshipClasses";
-import {ChampionshipEvents} from './ChampionshipEvents';
+import {ChampionshipEvents} from '../championshipEvents/ChampionshipEvents';
 import {ChampionshipTypes, translateChampionshipType} from "../shared/ChampionshipTypes";
 import {Game} from "../games/Game";
 import {gameGetRoute} from '../shared/ApiRoutes';
