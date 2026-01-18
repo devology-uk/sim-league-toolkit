@@ -36,7 +36,7 @@ interface ChampionshipEditorProps {
 const minDate = new Date();
 
 export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: ChampionshipEditorProps) => {
-    const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
+    const [activeTabIndex, setActiveTabIndex] = useState<number|number[]>(0);
     const [allowEntryChange, setAllowEntryChange] = useState(true);
     const [bannerImageUrl, setBannerImageUrl] = useState('');
     const [championshipType, setChampionshipType] = useState(ChampionshipTypes.Standard);
@@ -197,7 +197,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             <h3>{__('Championship', 'sim-league-toolkit')} - {name}</h3>
             <h4>{__('Game', 'sim-league-toolkit')} - {gameName}</h4>
             <h4>{__('Type', 'sim-league-toolkit')} - {translateChampionshipType(championshipType)}</h4>
-            <Accordion activeIndex={activeTabIndex}>
+            <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
                 <AccordionTab header={__('General Settings', 'sim-league-toolkit')}>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row flex-wrap justify-content-between gap-4'>
