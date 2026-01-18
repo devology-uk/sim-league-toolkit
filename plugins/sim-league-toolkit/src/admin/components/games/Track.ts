@@ -1,4 +1,4 @@
-import {Entity} from "./Entity";
+import {Entity} from "../shared/Entity";
 import {TrackLayout} from "./TrackLayout";
 
 export interface Track extends Entity {

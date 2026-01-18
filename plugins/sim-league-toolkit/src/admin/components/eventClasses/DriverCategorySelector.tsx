@@ -4,9 +4,11 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ValidationError} from '../shared/ValidationError';
+import {driverCategoriesGetRoute} from './eventClassesApiRoutes';
 import {DriverCategory} from "./DriverCategory";
+import {HttpMethod} from '../shared/HttpMethod';
 import {ListItem} from "../shared/ListItem";
+import {ValidationError} from '../shared/ValidationError';
 
 interface DriverCategorySelectorProps {
     disabled?: boolean;
@@ -28,8 +30,8 @@ export const DriverCategorySelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/driver-category',
-            method: 'GET',
+            path: driverCategoriesGetRoute(),
+            method: HttpMethod.GET,
         }).then((r: DriverCategory[]) => {
             setItems(r);
         });

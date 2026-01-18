@@ -1,6 +1,6 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Button} from 'primereact/button';
 import {Column} from 'primereact/column';
@@ -9,10 +9,12 @@ import {DataTable} from 'primereact/datatable';
 import {InputNumber} from 'primereact/inputnumber';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
+import {HttpMethod} from '../shared/HttpMethod';
 import {SaveButton} from '../shared/SaveButton';
-import {ScoringSetScore} from "./ScoringSetScore";
+import {scoresGetRoute, scoreDeleteRoute, scorePostRoute} from './scoringSetsApiRoutes';
+import {ScoringSetScore} from './ScoringSetScore';
 import {ValidationError} from '../shared/ValidationError';
 
 interface ScoreListProps {
@@ -32,22 +34,21 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
 
     useEffect(() => {
         loadData();
-    }, [])
-
+    }, []);
 
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
-            path: `/sltk/v1/scoring-set/${scoringSetId}/scores`,
-            method: 'GET',
-        }).then((r: ScoringSetScore[]) => {
+                     path: scoresGetRoute(scoringSetId),
+                     method: HttpMethod.GET,
+                 }).then((r: ScoringSetScore[]) => {
             setData(r);
             setIsBusy(false);
             setIsAdding(false);
             setIsEditing(false);
             setSelectedItem(null);
         });
-    }
+    };
 
     const onAdd = () => {
 
@@ -58,54 +59,54 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
             data.forEach(sc => {
                 lastPosition = Math.max(lastPosition, sc.position);
                 lastPoints = Math.min(lastPoints, sc.points);
-            })
+            });
 
             setPosition(lastPosition + 1);
             setPoints(Math.max(0, lastPoints - 1));
         } else {
-            setPoints(25)
-            setPosition(1)
+            setPoints(25);
+            setPosition(1);
         }
 
         setSelectedItem(null);
         setIsAdding(true);
-    }
+    };
 
     const onCancelEdit = () => {
         setIsAdding(false);
         setIsEditing(false);
         setSelectedItem(null);
-    }
+    };
 
     const onCancelDelete = () => {
         setShowDeleteConfirmation(false);
         setSelectedItem(null);
-    }
+    };
 
     const onConfirmDelete = () => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: `sltk/v1/scoring-set/scores/${selectedItem.id}`,
-            method: 'DELETE'
-        }).then(() => {
+                     path: scoreDeleteRoute(selectedItem.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
             setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onDelete = (item: ScoringSetScore) => {
         setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: ScoringSetScore) => {
         setSelectedItem(item);
         setPoints(item.points);
         setPosition(item.position);
         setIsEditing(true);
-    }
+    };
 
     const onSave = () => {
         if (!validate()) {
@@ -117,25 +118,25 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
             scoringSetId: scoringSetId,
             points: points,
             position: position,
-        }
+        };
 
         if (isEditing) {
             entity.id = selectedItem.id;
         }
 
         apiFetch({
-            path: `sltk/v1/scoring-set/scores`,
-            method: 'POST',
-            data: entity,
-        }).then(() => {
+                     path: scorePostRoute(),
+                     method: HttpMethod.POST,
+                     data: entity,
+                 }).then(() => {
             loadData();
             setPoints(0);
-            setPosition(0)
+            setPosition(0);
             setIsBusy(false);
             setIsAdding(false);
             setIsEditing(false);
         });
-    }
+    };
 
     const validate = () => {
         const errors: string[] = [];
@@ -150,7 +151,7 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     const actionTemplate = (item: ScoringSetScore) => {
         return (
@@ -159,8 +160,8 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
                 <Button severity='danger' size='small' onClick={() => onDelete(item)} icon='pi pi-trash'
                         className='ml-1'/>
             </div>
-        )
-    }
+        );
+    };
 
     const headerTemplate = (options: PanelHeaderTemplateOptions) => {
         const className = `${options.className} justify-content-space-between`;
@@ -179,10 +180,9 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
         );
     };
 
-
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             {!isAdding && !isEditing && (
                 <Panel headerTemplate={headerTemplate}>
                     <DataTable value={data} size='small'
@@ -206,7 +206,7 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
                     <label htmlFor='score-points'>{__('Points', 'sim-league-toolkit')}</label>
                     <InputNumber id='score-points' value={points} onChange={(e) => setPoints(e.value)}
                                  placeholder={__('Enter the points.', 'sim-league-toolkit')}
-                                 min={1} max={999} />
+                                 min={1} max={999}/>
                     <ValidationError
                         message={__('The points for the score is required.', 'sim-league-toolkit')}
                         show={validationErrors.includes('points')}/>
@@ -222,9 +222,10 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Are you sure you want to delete the score: ', 'sim-league-toolkit') + ' "' + selectedItem.position + '=' + selectedItem.points + '"? '}
+                               message={__('Are you sure you want to delete the score: ',
+                                           'sim-league-toolkit') + ' "' + selectedItem.position + '=' + selectedItem.points + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};

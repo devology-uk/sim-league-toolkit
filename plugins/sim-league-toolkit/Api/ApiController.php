@@ -5,7 +5,7 @@
   use WP_Error;
 
   abstract class ApiController {
-    protected const string NAMESPACE = 'sltk/v1';
+    protected const string NAMESPACE = ApiRegistrar::API_NAMESPACE;
 
     private string $resourceName;
 

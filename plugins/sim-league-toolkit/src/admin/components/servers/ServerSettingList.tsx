@@ -1,15 +1,17 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Column, ColumnEditorOptions, ColumnEvent} from 'primereact/column';
 import {DataTable} from 'primereact/datatable';
 import {InputText} from 'primereact/inputtext';
 import {Panel} from 'primereact/panel';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
-import {getServerSettings} from './ServerSettingProvider';
-import {ServerSetting} from "./ServerSetting";
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {getServerSettings} from './serverSettingProvider';
+import {HttpMethod} from '../shared/HttpMethod';
+import {ServerSetting} from './ServerSetting';
+import {serverSettingsGetRoute, serverSettingsPostRoute} from './serverApiRoutes';
 
 interface ServerSettingProps {
     serverId: number;
@@ -19,7 +21,6 @@ interface ServerSettingProps {
 export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
     const [isBusy, setIsBusy] = useState(false);
     const [data, setData] = useState<ServerSetting[]>([]);
-
 
     useEffect(() => {
         loadData();
@@ -31,27 +32,27 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
         const serverSettings = getServerSettings(gameKey);
         serverSettings.forEach((s) => {
             settings.push({
-                serverId: serverId,
-                settingName: s.name,
-                settingValue: s.default,
-                isEditEnabled: s.editableIfHosted
-            });
-        })
+                              serverId: serverId,
+                              settingName: s.name,
+                              settingValue: s.default,
+                              isEditEnabled: s.editableIfHosted
+                          });
+        });
         apiFetch({
-            path: `/sltk/v1/server/${serverId}/settings`,
-            method: 'GET',
-        }).then((r: ServerSetting[]) => {
+                     path: serverSettingsGetRoute(serverId),
+                     method: HttpMethod.GET,
+                 }).then((r: ServerSetting[]) => {
             settings.forEach(s => {
                 const savedSetting = r.find(i => i.settingName === s.settingName);
                 if (savedSetting) {
                     s.settingValue = savedSetting.settingValue;
                     s.id = savedSetting.id;
                 }
-            })
+            });
             setData(settings);
             setIsBusy(false);
         });
-    }
+    };
 
     const valueEditor = (options: ColumnEditorOptions) => {
         return <InputText type='text' value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>;
@@ -74,21 +75,23 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
     const saveSetting = (setting: ServerSetting) => {
         setIsBusy(true);
         apiFetch({
-            path: `sltk/v1/server/settings`,
-            method: 'POST',
-            data: setting,
-        }).then(() => {
+                     path: serverSettingsPostRoute(),
+                     method: HttpMethod.POST,
+                     data: setting,
+                 }).then(() => {
             loadData();
         });
-    }
+    };
 
     return (
         <>
             <BusyIndicator isBusy={isBusy}/>
             <div className='flex flex-column align-items-start gap-2'>
                 <p style={{maxWidth: '400px'}}>
-                    {__('The game supports settings that can be configured through files or via an admin console provided by the hosting provider.', 'sim-league-toolkit') + ' '}
-                    {__('To edit a setting double click in the Value column, after making the change press Enter to save it and update the server.', 'sim-league-toolkit') + ' '}
+                    {__('The game supports settings that can be configured through files or via an admin console provided by the hosting provider.',
+                        'sim-league-toolkit') + ' '}
+                    {__('To edit a setting double click in the Value column, after making the change press Enter to save it and update the server.',
+                        'sim-league-toolkit') + ' '}
                 </p>
                 <Panel header={__('Settings', 'sim-league-toolkit')}>
                     <DataTable value={data} size='small'
@@ -104,5 +107,5 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
                 </Panel>
             </div>
         </>
-    )
-}
+    );
+};

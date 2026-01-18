@@ -1,11 +1,13 @@
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
+import {useEffect, useState} from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-import {ListItem} from "../shared/ListItem";
+import {Game} from './Game';
+import {gamesGetRoute} from './gameApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
+import {ListItem} from '../shared/ListItem';
 import {ValidationError} from '../shared/ValidationError';
-import {Game} from "./Game";
 
 interface GameSelectorProps {
     onSelectedItemChanged: (item: Game) => void;
@@ -27,9 +29,9 @@ export const GameSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/game',
-            method: 'GET'
-        }).then((r: Game[]) => {
+                     path: gamesGetRoute(),
+                     method: HttpMethod.GET
+                 }).then((r: Game[]) => {
             setItems(r);
         });
     }, []);
@@ -41,7 +43,7 @@ export const GameSelector = ({
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);
-    }
+    };
 
     const listItems: ListItem[] = [{
         value: 0,
@@ -61,5 +63,5 @@ export const GameSelector = ({
                 message={validationMessage}
                 show={isInvalid}/>
         </div>
-    )
-}
+    );
+};

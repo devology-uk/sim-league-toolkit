@@ -1,18 +1,20 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import {FormEvent} from "react";
+import {useEffect, useState} from '@wordpress/element';
+import {FormEvent} from 'react';
 
 import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
-import {PlatformSelector} from '../shared/PlatformSelector';
+import {HttpMethod} from '../shared/HttpMethod';
+import {PlatformSelector} from '../games/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {Server} from "./Server";
+import {Server} from './Server';
+import {serverGetRoute, serverPostRoute} from './serverApiRoutes';
 import {ServerSettingList} from './ServerSettingList';
 import {ValidationError} from '../shared/ValidationError';
 
@@ -39,9 +41,9 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
         }
 
         apiFetch({
-            path: `/sltk/v1/server/${serverId}`,
-            method: 'GET',
-        }).then((r: Server) => {
+                     path: serverGetRoute(serverId),
+                     method: HttpMethod.GET,
+                 }).then((r: Server) => {
             setGameId(r.gameId);
             setGameKey(r.gameKey);
             setGameName(r.game);
@@ -51,14 +53,14 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
 
             setIsBusy(false);
         });
-    }, [serverId])
+    }, [serverId]);
 
     const resetForm = () => {
         setGameId(0);
         setIsHostedServer(false);
         setName('');
         setPlatformId(0);
-    }
+    };
 
     const onSave = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -73,38 +75,37 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
             isHostedServer: isHostedServer,
             name: name,
             platformId: platformId,
-        }
+        };
 
         if (serverId && serverId > 0) {
             entity.id = serverId;
         }
 
-
         apiFetch({
-            path: '/sltk/v1/server',
-            method: 'POST',
-            data: entity,
-        }).then(() => {
+                     path: serverPostRoute(),
+                     method: HttpMethod.POST,
+                     data: entity,
+                 }).then(() => {
             onSaved();
 
             resetForm();
             setIsBusy(false);
         });
-    }
+    };
 
     const onSelectedGameChanged = (gameId: number) => {
         setGameId(gameId);
-    }
+    };
 
     const onSelectedPlatformChanged = (platformId: number) => {
         setPlatformId(platformId);
-    }
+    };
 
     const validate = () => {
         const errors = [];
 
         if (gameId < 1) {
-            errors.push('game')
+            errors.push('game');
         }
 
         if (!name || name.length < 5) {
@@ -117,7 +118,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     return (
         <>
@@ -130,7 +131,8 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                 {serverId < 1 &&
                                     <GameSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('game')}
-                                                  validationMessage={__('You must select the game that this server will be used with.')}
+                                                  validationMessage={__(
+                                                      'You must select the game that this server will be used with.')}
                                                   onSelectedItemChanged={(g) => onSelectedGameChanged(g.id)}/>
                                 }
                                 {serverId >= 1 &&
@@ -144,7 +146,8 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                         <PlatformSelector gameId={gameId}
                                                           platformId={platformId}
                                                           isInvalid={validationErrors.includes('platform')}
-                                                          validationMessage={__('You must select the platform that this server will be used with.')}
+                                                          validationMessage={__(
+                                                              'You must select the platform that this server will be used with.')}
                                                           onSelectedItemChanged={(p) => onSelectedPlatformChanged(p.id)}/>
 
                                         <label htmlFor='server-name'>{__('Name', 'sim-league-toolkit')}</label>
@@ -152,12 +155,14 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                                    onChange={(e) => setName(e.target.value)}
                                                    placeholder={__('Enter Name', 'sim-league-toolkit')}/>
                                         <ValidationError
-                                            message={__('A name with at least 5 characters is required', 'sim-league-toolkit')}
+                                            message={__('A name with at least 5 characters is required',
+                                                        'sim-league-toolkit')}
                                             show={validationErrors.includes('name')}/>
 
                                         <div className='flex flex-row justify-content-between'>
                                             <label
-                                                htmlFor='is-hosted-server'>{__('Is Hosted', 'sim-league-toolkit')}</label>
+                                                htmlFor='is-hosted-server'>{__('Is Hosted',
+                                                                               'sim-league-toolkit')}</label>
                                             <Checkbox id='is-hosted-server' checked={isHostedServer}
                                                       onChange={(e) => setIsHostedServer(e.checked)}/>
                                         </div>
@@ -172,5 +177,5 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                 </Dialog>
             )}
         </>
-    )
-}
+    );
+};

@@ -15,14 +15,16 @@ import {CancelButton} from '../shared/CancelButton';
 import {Championship} from "./Championship";
 import {ChampionshipClasses} from "./ChampionshipClasses";
 import {ChampionshipEvents} from '../championshipEvents/ChampionshipEvents';
-import {ChampionshipTypes, translateChampionshipType} from "../shared/ChampionshipTypes";
+import {championshipGetRoute, championshipPostRoute} from './championshipApiRoutes';
+import {ChampionshipTypes, translateChampionshipType} from "./ChampionshipTypes";
 import {Game} from "../games/Game";
-import {gameGetRoute} from '../shared/ApiRoutes';
-import {PlatformSelector} from "../shared/PlatformSelector";
+import {gameGetRoute} from '../games/gameApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
+import {PlatformSelector} from "../games/PlatformSelector";
 import {RuleSetSelector} from "../rules/RuleSetSelector";
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoringSetSelector} from "../scoringSets/ScoringSetSelector";
-import {TrackSelector} from "../shared/TrackSelector";
+import {TrackSelector} from "../games/TrackSelector";
 import {ValidationError} from '../shared/ValidationError';
 
 interface ChampionshipEditorProps {
@@ -63,8 +65,8 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
         }
 
         apiFetch({
-            path: `/sltk/v1/championship/${championshipId}`,
-            method: 'GET',
+            path: championshipGetRoute(championshipId),
+            method: HttpMethod.GET,
         }).then((r: Championship) => {
             setAllowEntryChange(r.allowEntryChange);
             setBannerImageUrl(r.bannerImageUrl);
@@ -147,8 +149,8 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
         }
 
         apiFetch({
-            path: '/sltk/v1/championship',
-            method: 'POST',
+            path: championshipPostRoute(),
+            method: HttpMethod.POST,
             data: entity,
         }).then(() => {
             onSaved();

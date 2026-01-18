@@ -1,19 +1,20 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {FormEvent} from 'react';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
+import {HttpMethod} from '../shared/HttpMethod';
 import {RuleList} from './RuleList';
+import {RuleSet} from './RuleSet';
+import {ruleSetGetRoute, ruleSetPostRoute} from './rulesApiRoutes';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
-import {RuleSet} from "./RuleSet";
-import {FormEvent} from "react";
-import {BusyIndicator} from "../shared/BusyIndicator";
 
 interface RuleSetEditorProps {
     show: boolean;
@@ -35,19 +36,19 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
         }
 
         apiFetch({
-            path: `/sltk/v1/rule-set/${ruleSetId}`,
-            method: 'GET',
-        }).then((r: RuleSet) => {
+                     path: ruleSetGetRoute(ruleSetId),
+                     method: HttpMethod.GET,
+                 }).then((r: RuleSet) => {
             setName(r.name);
             setDescription(r.description);
             setIsBusy(false);
         });
-    }, [])
+    }, []);
 
     const resetForm = () => {
         setName('');
         setDescription('');
-    }
+    };
 
     const onSave = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -60,24 +61,23 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
         const ruleSet: RuleSet = {
             name: name,
             description: description
-        }
+        };
 
         if (ruleSetId && ruleSetId > 0) {
             ruleSet.id = ruleSetId;
         }
 
-
         apiFetch({
-            path: '/sltk/v1/rule-set',
-            method: 'POST',
-            data: ruleSet,
-        }).then(() => {
+                     path: ruleSetPostRoute(),
+                     method: HttpMethod.POST,
+                     data: ruleSet,
+                 }).then(() => {
             onSaved();
 
             resetForm();
             setIsBusy(false);
         });
-    }
+    };
 
     const validate = () => {
         const errors = [];
@@ -92,13 +92,13 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     return (
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Rule Set', 'sim-league-toolkit')}>
-                    <BusyIndicator isBusy={isBusy} />
+                    <BusyIndicator isBusy={isBusy}/>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                             <div className='flex flex-column align-items-stretch gap-2'>
@@ -115,7 +115,9 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
                                                placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
                                                rows={5} cols={40}/>
                                 <ValidationError
-                                    message={__('A brief description of the rule set with at least 15 characters is required.', 'sim-league-toolkit')}
+                                    message={__(
+                                        'A brief description of the rule set with at least 15 characters is required.',
+                                        'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
 
                             </div>
@@ -127,5 +129,5 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
                 </Dialog>
             )}
         </>
-    )
-}
+    );
+};

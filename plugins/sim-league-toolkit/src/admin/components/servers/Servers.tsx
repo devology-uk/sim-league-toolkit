@@ -1,18 +1,19 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
-import {Server} from "./Server";
-import {ServerEditor} from './ServerEditor';
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {HttpMethod} from '../shared/HttpMethod';
+import {Server} from './Server';
 import {ServerCard} from './ServerCard';
+import {ServerEditor} from './ServerEditor';
+import {serversGetRoute, serverDeleteRoute} from './serverApiRoutes';
 
 export const Servers = () => {
     const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<Server>(null);
     const [data, setData] = useState<Server[]>([]);
     const [selectedItem, setSelectedItem] = useState<Server>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -22,58 +23,61 @@ export const Servers = () => {
         loadData();
     }, []);
 
-
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/server'}).then((r: Server[]) => {
-            setData(r ?? [])
+        apiFetch({
+                     path: serversGetRoute(),
+                     method: HttpMethod.GET,
+                 }
+        ).then((r: Server[]) => {
+            setData(r ?? []);
             setIsBusy(false);
         });
-    }
+    };
 
     const onAdd = () => {
         setShowEditor(true);
-    }
+    };
 
     const onDelete = (item: Server) => {
-        setItemToDelete(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: Server) => {
         console.log(item);
         setSelectedItem(item);
         setShowEditor(true);
-    }
+    };
 
     const onCancelDelete = () => {
-        setShowDeleteConfirmation(false)
-        setItemToDelete(null);
-    }
+        setShowDeleteConfirmation(false);
+        setSelectedItem(null);
+    };
 
     const onConfirmDelete = () => {
-        setShowDeleteConfirmation(false)
+        setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/server/' + itemToDelete.id,
-            method: 'DELETE'
-        }).then(() => {
+                     path: serverDeleteRoute(selectedItem.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
-            setItemToDelete(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onEditorCancelled = () => {
         setShowEditor(false);
         setSelectedItem(null);
-    }
+    };
 
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
         loadData();
-    }
+    };
 
     const headerTemplate = () => {
         return (
@@ -86,25 +90,28 @@ export const Servers = () => {
                     </button>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const itemTemplate = (item: Server) => {
-        return <ServerCard server={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>
-    }
+        return <ServerCard server={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>;
+    };
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             <h3>{__('Servers', 'sim-league-toolkit')}</h3>
             <p>
-                {__('Sim League Toolkit allows you create re-usable Servers with settings configured that can be applied to championship events or individual events, saving you time and effort avoiding the need to enter the same settings multiple times.', 'sim-league-toolkit')}
+                {__('Sim League Toolkit allows you create re-usable Servers with settings configured that can be applied to championship events or individual events, saving you time and effort avoiding the need to enter the same settings multiple times.',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('A Server represents a game server where you host the events for your league, when you create a championship event or individual event you have the option to select the server that will host the event.', 'sim-league-toolkit')}
+                {__('A Server represents a game server where you host the events for your league, when you create a championship event or individual event you have the option to select the server that will host the event.',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('Information to help members access the server for an event can be displayed in your web site using appropriate Gutenburg Blocks.', 'sim-league-toolkit')}
+                {__('Information to help members access the server for an event can be displayed in your web site using appropriate Gutenburg Blocks.',
+                    'sim-league-toolkit')}
             </p>
 
             <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
@@ -114,16 +121,18 @@ export const Servers = () => {
                 <ServerEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
                               serverId={selectedItem?.id}/>
             }
-            {itemToDelete && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
+                                   'will remove any links to events!!.  Do you wish to delete ',
+                                   'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};

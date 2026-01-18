@@ -4,10 +4,12 @@ import {__} from '@wordpress/i18n';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ValidationError} from './ValidationError';
+import {HttpMethod} from '../shared/HttpMethod';
+import {ListItem} from "../shared/ListItem";
 import {Track} from "./Track";
+import {tracksGetRoute, trackGetRoute} from './gameApiRoutes';
 import {TrackLayout} from "./TrackLayout";
-import {ListItem} from "./ListItem";
+import {ValidationError} from '../shared/ValidationError';
 
 interface TrackSelectorProps {
     onSelectedTrackChanged: (itemId: number) => void;
@@ -41,8 +43,8 @@ export const TrackSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: `/sltk/v1/game/${gameId}/tracks`,
-            method: 'GET'
+            path: tracksGetRoute(gameId),
+            method: HttpMethod.GET,
         }).then((r: Track[]) => {
             setTracks(r);
         });
@@ -57,8 +59,8 @@ export const TrackSelector = ({
         }
 
         apiFetch({
-            path: `/sltk/v1/game/tracks/${trackId}/layouts`,
-            method: 'GET'
+            path: trackGetRoute(trackId),
+            method: HttpMethod.GET,
         }).then((r: TrackLayout[]) => {
             setTrackLayouts(r);
         });

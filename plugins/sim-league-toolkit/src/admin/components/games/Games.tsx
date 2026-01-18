@@ -1,13 +1,15 @@
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
+import {useEffect, useState} from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 import {DataView} from 'primereact/dataview';
 import {Panel} from 'primereact/panel';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
-import {Game} from "./Game";
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {Game} from './Game';
 import {GameCard} from './GameCard';
+import {gamesGetRoute} from './gameApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
 
 export const Games = () => {
 
@@ -18,18 +20,20 @@ export const Games = () => {
         loadTableData();
     }, []);
 
-
     const loadTableData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/game'}).then((r: Game[]) => {
+        apiFetch({
+                     path: gamesGetRoute(),
+                     method: HttpMethod.GET,
+                 }).then((r: Game[]) => {
             setGames(r ?? []);
             setIsBusy(false);
         });
     };
 
     const itemTemplate = (item: Game) => {
-        return <GameCard game={item} key={item.id}/>
-    }
+        return <GameCard game={item} key={item.id}/>;
+    };
 
     return <>
         <BusyIndicator isBusy={isBusy}/>
@@ -37,5 +41,5 @@ export const Games = () => {
             <DataView value={games} itemTemplate={itemTemplate} layout='grid'
                       emptyMessage={__('No games found', 'sim-league-toolkit')}/>
         </Panel>
-    </>
-}
+    </>;
+};

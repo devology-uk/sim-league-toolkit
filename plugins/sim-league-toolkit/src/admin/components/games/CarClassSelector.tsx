@@ -1,11 +1,13 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ListItem} from "./ListItem";
-import {ValidationError} from './ValidationError';
+import {carClassesGetRoute} from './gameApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
+import {ListItem} from '../shared/ListItem';
+import {ValidationError} from '../shared/ValidationError';
 
 export const CAR_CLASS_SELECTOR_DEFAULT_VALUE: string = 'any';
 
@@ -32,21 +34,21 @@ export const CarClassSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: `/sltk/v1/game/${gameId}/car-classes`,
-            method: 'GET',
-        }).then((r: string[]) => {
+                     path: carClassesGetRoute(gameId),
+                     method: HttpMethod.GET,
+                 }).then((r: string[]) => {
             setItems(r);
         });
     }, [gameId]);
 
     useEffect(() => {
         setSelectedItem(carClass);
-    }, [carClass])
+    }, [carClass]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItem(e.target.value);
         onSelectedItemChanged(e.target.value);
-    }
+    };
 
     const listItems: ListItem[] = [{
         value: CAR_CLASS_SELECTOR_DEFAULT_VALUE,
@@ -64,5 +66,5 @@ export const CarClassSelector = ({
                 message={validationMessage}
                 show={isInvalid}/>
         </>
-    )
-}
+    );
+};

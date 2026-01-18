@@ -1,4 +1,4 @@
-import {Entity} from "./Entity";
+import {Entity} from "../shared/Entity";
 
 export interface Platform extends Entity {
     name: string;

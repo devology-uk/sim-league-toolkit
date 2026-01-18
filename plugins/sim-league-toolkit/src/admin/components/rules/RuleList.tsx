@@ -8,10 +8,12 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {ListBox} from 'primereact/listbox';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {RuleSet} from "./RuleSet";
-import {RuleSetRule} from "./RuleSetRule";
+import {HttpMethod} from '../shared/HttpMethod';
+import {RuleSet} from './RuleSet';
+import {RuleSetRule} from './RuleSetRule';
+import {rulesGetRoute, ruleDeleteRoute, rulePostRoute} from './rulesApiRoutes';
 import {SaveButton} from '../shared/SaveButton';
 import {ValidationError} from '../shared/ValidationError';
 
@@ -26,69 +28,68 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
     const [isBusy, setIsBusy] = useState(false);
     const [rules, setRules] = useState([]);
     const [ruleText, setRuleText] = useState('');
-    const [selectedRule, setSelectedRule] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
         loadData();
-    }, [])
-
+    }, []);
 
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
-            path: `/sltk/v1/rule-set/${ruleSetId}/rules`,
-            method: 'GET',
-        }).then((r: RuleSet[]) => {
+                     path: rulesGetRoute(ruleSetId),
+                     method: HttpMethod.GET,
+                 }).then((r: RuleSet[]) => {
             setRules(r);
             setIsBusy(false);
             setIsAdding(false);
             setIsEditing(false);
-            setSelectedRule(null);
+            setSelectedItem(null);
         });
-    }
+    };
 
     const onAdd = () => {
-        setSelectedRule(null);
+        setSelectedItem(null);
         setIsAdding(true);
-    }
+    };
 
     const onCancelEdit = () => {
         setIsAdding(false);
         setIsEditing(false);
         setRuleText('');
-        setSelectedRule(null);
-    }
+        setSelectedItem(null);
+    };
 
     const onCancelDelete = () => {
         setShowDeleteConfirmation(false);
-        setSelectedRule(null);
-    }
+        setSelectedItem(null);
+    };
 
     const onConfirmDelete = () => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: `sltk/v1/rule-set/rules/${selectedRule.id}`,
-            method: 'DELETE'
-        }).then(() => {
+                     path: ruleDeleteRoute(selectedItem.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
-            setSelectedRule(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onDelete = (item: RuleSetRule) => {
-        setSelectedRule(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: RuleSetRule) => {
-        setSelectedRule(item);
+        setSelectedItem(item);
         setRuleText(item.rule);
         setIsEditing(true);
-    }
+    };
 
     const onSave = () => {
         if (!validate()) {
@@ -99,24 +100,24 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
         const entity: RuleSetRule = {
             ruleSetId: ruleSetId,
             rule: ruleText,
-        }
+        };
 
         if (isEditing) {
-            entity.id = selectedRule.id;
+            entity.id = selectedItem.id;
         }
 
         apiFetch({
-            path: `sltk/v1/rule-set/rules`,
-            method: 'POST',
-            data: entity,
-        }).then(() => {
+                     path: rulePostRoute(),
+                     method: HttpMethod.POST,
+                     data: entity,
+                 }).then(() => {
             loadData();
             setRuleText('');
             setIsBusy(false);
             setIsAdding(false);
             setIsEditing(false);
         });
-    }
+    };
 
     const validate = () => {
         const errors = [];
@@ -127,7 +128,7 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     const headerTemplate = (options: PanelHeaderTemplateOptions) => {
         const className = `${options.className} justify-content-space-between`;
@@ -156,14 +157,14 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
                             className='ml-1'/>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             {!isAdding && !isEditing && (<Panel headerTemplate={headerTemplate}>
-                <ListBox value={selectedRule} onChange={(e) => setSelectedRule(e.value)} options={rules}
+                <ListBox value={selectedItem} onChange={(e) => setSelectedItem(e.value)} options={rules}
                          optionLabel='rule'
                          itemTemplate={itemTemplate} className='w-full'
                          listStyle={{maxHeight: '250px', maxWidth: '550px'}}/>
@@ -179,16 +180,17 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
                 <SaveButton onClick={onSave} disabled={isBusy}/>
                 <CancelButton onCancel={onCancelEdit} disabled={isBusy}/>
             </Panel>)}
-            {selectedRule && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Are you sure you want to delete the rule: ', 'sim-league-toolkit') + ' "' + selectedRule.rule + '"? '}
+                               message={__('Are you sure you want to delete the rule: ',
+                                           'sim-league-toolkit') + ' "' + selectedItem.rule + '"? '}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};

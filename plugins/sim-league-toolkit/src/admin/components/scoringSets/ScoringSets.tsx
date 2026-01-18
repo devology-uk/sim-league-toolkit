@@ -1,18 +1,19 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {HttpMethod} from '../shared/HttpMethod';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
-import {ScoringSet} from "./ScoringSet";
+import {ScoringSet} from './ScoringSet';
+import {scoringSetsGetRoute, scoringSetDeleteRoute} from './scoringSetsApiRoutes';
 
 export const ScoringSets = () => {
     const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<ScoringSet>(null);
     const [data, setData] = useState<ScoringSet[]>([]);
     const [selectedItem, setSelectedItem] = useState<ScoringSet>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -22,58 +23,61 @@ export const ScoringSets = () => {
         loadData();
     }, []);
 
-
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/scoring-set'})
+        apiFetch({
+                     path: scoringSetsGetRoute(),
+                     method: HttpMethod.GET,
+                 }
+        )
             .then((r: ScoringSet[]) => {
-            setData(r ?? [])
-            setIsBusy(false);
-        });
-    }
+                setData(r ?? []);
+                setIsBusy(false);
+            });
+    };
 
     const onAdd = () => {
         setShowEditor(true);
-    }
+    };
 
     const onDelete = (item: ScoringSet) => {
-        setItemToDelete(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: ScoringSet) => {
         setSelectedItem(item);
         setShowEditor(true);
-    }
+    };
 
     const onCancelDelete = () => {
-        setShowDeleteConfirmation(false)
-        setItemToDelete(null);
-    }
+        setShowDeleteConfirmation(false);
+        setSelectedItem(null);
+    };
 
     const onConfirmDelete = () => {
-        setShowDeleteConfirmation(false)
+        setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/scoring-set/' + itemToDelete.id,
-            method: 'DELETE'
-        }).then(() => {
+                     path: scoringSetDeleteRoute(selectedItem.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
-            setItemToDelete(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onEditorCancelled = () => {
         setShowEditor(false);
         setSelectedItem(null);
-    }
+    };
 
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
         loadData();
-    }
+    };
 
     const headerTemplate = () => {
         return (
@@ -86,25 +90,28 @@ export const ScoringSets = () => {
                     </button>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const itemTemplate = (item: ScoringSet) => {
-        return <ScoringSetCard scoringSet={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>
-    }
+        return <ScoringSetCard scoringSet={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>;
+    };
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             <h3>{__('Scoring Sets', 'sim-league-toolkit')}</h3>
             <p>
-                {__('Sim League Toolkit allows you create re-usable Scoring Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
+                {__('Sim League Toolkit allows you create re-usable Scoring Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to create them multiple times.',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('A Scoring Set defines the points awarded to drivers based on the final position in a race. Optionally points can be awarded for setting the fastest lap, qualifying on pole or simply finishing the race', 'sim-league-toolkit')}
+                {__('A Scoring Set defines the points awarded to drivers based on the final position in a race. Optionally points can be awarded for setting the fastest lap, qualifying on pole or simply finishing the race',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('Sim League Toolkit provides a set of built-in scoring sets used in real world racing series, these cannot be deleted or changed', 'sim-league-toolkit')}
+                {__('Sim League Toolkit provides a set of built-in scoring sets used in real world racing series, these cannot be deleted or changed',
+                    'sim-league-toolkit')}
             </p>
 
             <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
@@ -114,16 +121,18 @@ export const ScoringSets = () => {
                 <ScoringSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
                                   scoringSetId={selectedItem?.id}/>
             }
-            {itemToDelete && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove any links to championships or individual events!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
+                                   'will remove any links to championships or individual events!!.  Do you wish to delete ',
+                                   'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};

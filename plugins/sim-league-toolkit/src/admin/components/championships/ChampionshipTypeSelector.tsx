@@ -3,7 +3,7 @@ import {useState, useEffect} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ChampionshipTypes, translateChampionshipType} from "../shared/ChampionshipTypes";
+import {ChampionshipTypes, translateChampionshipType} from "./ChampionshipTypes";
 import {ListItem} from "../shared/ListItem";
 
 interface ChampionshipTypeSelectorProps {

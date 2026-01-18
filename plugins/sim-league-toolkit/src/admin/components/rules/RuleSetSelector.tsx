@@ -6,6 +6,8 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {RuleSet} from "./RuleSet";
 import {ListItem} from "../shared/ListItem";
+import {ruleSetsGetRoute} from './rulesApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
 
 interface RuleSetSelectorProps {
     onSelectedItemChanged: (ruleSetId: number) => void;
@@ -19,8 +21,8 @@ export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled 
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/rule-set',
-            method: 'GET',
+            path: ruleSetsGetRoute(),
+            method: HttpMethod.GET,
         }).then((r: RuleSet[]) => {
             setItems(r);
         });

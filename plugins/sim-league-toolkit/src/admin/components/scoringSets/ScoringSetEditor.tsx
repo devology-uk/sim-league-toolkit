@@ -1,18 +1,20 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Dialog} from 'primereact/dialog';
+import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
-import {InputNumber} from 'primereact/inputnumber';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
+import {HttpMethod} from '../shared/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
-import {ValidationError} from '../shared/ValidationError';
 import {ScoringSet} from "./ScoringSet";
+import {scoringSetGetRoute, scoringSetPostRoute} from './scoringSetsApiRoutes';
+import {ValidationError} from '../shared/ValidationError';
 
 interface ScoringSetEditorProps {
     show: boolean;
@@ -37,8 +39,8 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
         }
 
         apiFetch({
-            path: `/sltk/v1/scoring-set/${scoringSetId}`,
-            method: 'GET',
+            path: scoringSetGetRoute(scoringSetId),
+            method: HttpMethod.GET,
         }).then((r: ScoringSet ) => {
             setDescription(r.description);
             setName(r.name);
@@ -78,8 +80,8 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
         }
 
         apiFetch({
-            path: '/sltk/v1/scoring-set',
-            method: 'POST',
+            path: scoringSetPostRoute(),
+            method: HttpMethod.POST,
             data: entity,
         }).then(() => {
             onSaved();

@@ -1,12 +1,14 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {Car} from "./Car";
-import {ListItem} from "./ListItem";
-import {ValidationError} from './ValidationError';
+import {Car} from './Car';
+import {carsByClassGetRoute} from './gameApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
+import {ListItem} from '../shared/ListItem';
+import {ValidationError} from '../shared/ValidationError';
 
 interface CarSelectorProps {
     gameId: number;
@@ -32,21 +34,21 @@ export const CarSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: `/sltk/v1/game/${gameId}/cars/${carClass}`,
-            method: 'GET',
-        }).then((r: Car[]) => {
+                     path: carsByClassGetRoute(gameId, carClass),
+                     method: HttpMethod.GET,
+                 }).then((r: Car[]) => {
             setItems(r);
         });
     }, [gameId, carClass]);
 
     useEffect(() => {
         setSelectedItemId(carId);
-    }, [carId])
+    }, [carId]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);
-    }
+    };
 
     const listItems: ListItem[] = ([{
         value: 0,
@@ -66,5 +68,5 @@ export const CarSelector = ({
                 message={validationMessage}
                 show={isInvalid}/>
         </>
-    )
-}
+    );
+};

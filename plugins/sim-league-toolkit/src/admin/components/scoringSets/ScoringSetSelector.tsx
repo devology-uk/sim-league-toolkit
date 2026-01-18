@@ -7,6 +7,8 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {ListItem} from "../shared/ListItem";
 import {ScoringSet} from "./ScoringSet";
 import {ValidationError} from '../shared/ValidationError';
+import {scoringSetsGetRoute} from './scoringSetsApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
 
 interface ScoringSetSelectorProps {
     onSelectedItemChanged: (item: number) => void;
@@ -28,8 +30,8 @@ export const ScoringSetSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: '/sltk/v1/scoring-set',
-            method: 'GET',
+            path: scoringSetsGetRoute(),
+            method: HttpMethod.GET,
         }).then((r: ScoringSet[]) => {
             setItems(r);
         });

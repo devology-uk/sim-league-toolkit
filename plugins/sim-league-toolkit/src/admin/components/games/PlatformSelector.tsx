@@ -1,12 +1,14 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ValidationError} from './ValidationError';
-import {Platform} from "./Platform";
-import {ListItem} from "./ListItem";
+import {HttpMethod} from '../shared/HttpMethod';
+import {ListItem} from '../shared/ListItem';
+import {Platform} from './Platform';
+import {platformsGetRoute} from './gameApiRoutes';
+import {ValidationError} from '../shared/ValidationError';
 
 interface PlatformSelectorProps {
     gameId: number;
@@ -16,7 +18,6 @@ interface PlatformSelectorProps {
     isInvalid?: boolean;
     validationMessage?: string;
 }
-
 
 export const PlatformSelector = ({
                                      gameId,
@@ -31,9 +32,9 @@ export const PlatformSelector = ({
 
     useEffect(() => {
         apiFetch({
-            path: `/sltk/v1/game/${gameId}/platforms`,
-            method: 'GET',
-        }).then((r: Platform[]) => {
+                     path: platformsGetRoute(gameId),
+                     method: HttpMethod.GET,
+                 }).then((r: Platform[]) => {
             setItems(r);
         });
     }, [gameId]);
@@ -45,7 +46,7 @@ export const PlatformSelector = ({
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);
-    }
+    };
 
     const listItems: ListItem[] = ([{
         value: 0,
@@ -65,5 +66,5 @@ export const PlatformSelector = ({
                 message={validationMessage}
                 show={isInvalid}/>
         </>
-    )
-}
+    );
+};

@@ -6,15 +6,15 @@ import apiFetch from "@wordpress/api-fetch";
 import {Button} from "primereact/button";
 import {DataView} from "primereact/dataview";
 
-import {
-    championshipClassesGetRoute,
-    championshipClassesPostRoute,
-    championshipClassDeleteRoute
-} from "../shared/ApiRoutes";
 import {ChampionshipClass} from "./ChampionshipClass";
 import {ChampionshipClassCard} from "./ChampionshipClassCard";
 import {HttpMethod} from "../shared/HttpMethod";
 import {EventClassSelector} from "../eventClasses/EventClassSelector";
+import {
+    championshipClassDeleteRoute,
+    championshipClassesPostRoute,
+    championshipClassesGetRoute
+} from './championshipApiRoutes';
 
 interface ChampionshipClassesProps {
     championshipId: number,

@@ -12,18 +12,19 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {Championship} from './Championship';
-import {ChampionshipTypes} from '../shared/ChampionshipTypes';
+import {championshipPostRoute} from './championshipApiRoutes';
+import {ChampionshipTypes} from './ChampionshipTypes';
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
 import {Game} from '../games/Game';
-import {gameGetRoute, championshipPostRoute} from '../shared/ApiRoutes';
+import {gameGetRoute} from '../games/gameApiRoutes';
 import {GameSelector} from '../games/GameSelector';
-import {PlatformSelector} from '../shared/PlatformSelector';
+import {HttpMethod} from '../shared/HttpMethod';
+import {PlatformSelector} from '../games/PlatformSelector';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {ValidationError} from '../shared/ValidationError';
 import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
-import {TrackSelector} from '../shared/TrackSelector';
-import {HttpMethod} from '../shared/HttpMethod';
+import {TrackSelector} from '../games/TrackSelector';
+import {ValidationError} from '../shared/ValidationError';
 
 interface NewChampionshipEditorProps {
     onSaved: () => void;

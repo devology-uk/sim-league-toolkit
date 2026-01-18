@@ -8,8 +8,8 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {EventClass} from "./EventClass";
 import {HttpMethod} from "../shared/HttpMethod";
 import {ListItem} from "../shared/ListItem";
-import {eventClassesForGameGetRoute} from "../shared/ApiRoutes";
 import {ValidationError} from "../shared/ValidationError";
+import {eventClassesForGameGetRoute} from "./eventClassesApiRoutes";
 
 
 interface EventClassSelectorProps {

@@ -12,12 +12,13 @@ import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEvent} from './ChampionshipEvent';
 import {Dialog} from 'primereact/dialog';
 import {Game} from '../games/Game';
-import {gameGetRoute, championshipEventPostRoute} from '../shared/ApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {TrackSelector} from '../shared/TrackSelector';
+import {TrackSelector} from '../games/TrackSelector';
 import {ValidationError} from '../shared/ValidationError';
+import {gameGetRoute} from '../games/gameApiRoutes';
+import {championshipEventPostRoute} from './championshipEventsApiRoutes';
 
 interface NewChampionshipEventEditorProps {
     championshipId: number;

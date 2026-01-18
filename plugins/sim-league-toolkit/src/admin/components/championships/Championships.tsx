@@ -5,19 +5,18 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
-import {Championship} from "./Championship";
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {Championship} from './Championship';
 import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
-import {championshipsGetRoute, championshipDeleteRoute} from '../shared/ApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
+import {championshipDeleteRoute, championshipsGetRoute} from './championshipApiRoutes';
 
 export const Championships = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [isBusy, setIsBusy] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState(null);
     const [data, setData] = useState<Championship[]>([]);
     const [selectedItem, setSelectedItem] = useState<Championship>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -26,64 +25,63 @@ export const Championships = () => {
         loadData();
     }, []);
 
-
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
                      path: championshipsGetRoute(),
-            method: HttpMethod.GET,
-        }).then((r: Championship[]) => {
-            setData(r ?? [])
+                     method: HttpMethod.GET,
+                 }).then((r: Championship[]) => {
+            setData(r ?? []);
             setIsBusy(false);
         });
-    }
+    };
 
     const onAdd = () => {
         setIsAdding(true);
         setIsEditing(false);
-    }
+    };
 
     const onCancelDelete = () => {
-        setShowDeleteConfirmation(false)
-        setItemToDelete(null);
-    }
+        setShowDeleteConfirmation(false);
+        setSelectedItem(null);
+    };
 
     const onConfirmDelete = () => {
-        setShowDeleteConfirmation(false)
+        setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-                     path: championshipDeleteRoute(itemToDelete.id),
+                     path: championshipDeleteRoute(selectedItem.id),
                      method: HttpMethod.DELETE,
                  }).then(() => {
             loadData();
-            setItemToDelete(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onDelete = (item: Championship) => {
-        setItemToDelete(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: Championship) => {
         setIsEditing(true);
         setIsAdding(false);
         setSelectedItem(item);
-    }
+    };
 
     const onEditorCancelled = () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
-    }
+    };
 
     const onEditorSaved = () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
         loadData();
-    }
+    };
 
     const headerTemplate = () => {
         return (
@@ -96,18 +94,18 @@ export const Championships = () => {
                     </button>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const itemTemplate = (item: Championship) => {
         return <ChampionshipCard championship={item} key={item.id} onRequestEdit={onEdit}
-                                 onRequestDelete={onDelete}/>
-    }
+                                 onRequestDelete={onDelete}/>;
+    };
 
     return (
         <>
             {!isAdding && !isEditing && <>
-                <BusyIndicator isBusy={isBusy} />
+                <BusyIndicator isBusy={isBusy}/>
                 <h3>{__('Championships', 'sim-league-toolkit')}</h3>
                 <p>
                     {__('The championships you have created are displayed below.', 'sim-league-toolkit')}
@@ -119,17 +117,21 @@ export const Championships = () => {
             </>
             }
             {isAdding && <NewChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}/>}
-            {isEditing && <ChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled} championshipId={selectedItem?.id}/>}
-            {itemToDelete && showDeleteConfirmation &&
+            {isEditing && <ChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}
+                                              championshipId={selectedItem?.id}/>}
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it including all of the events, results, standings and related data!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
+                                   'will remove' +
+                                   ' it including all of the events, results, standings and related data!!.  Do you wish to delete ',
+                                   'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};

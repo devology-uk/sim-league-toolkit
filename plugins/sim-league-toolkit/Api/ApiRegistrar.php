@@ -4,7 +4,7 @@
 
   class ApiRegistrar {
 
-    private const string API_NAMESPACE = 'sltk/v1';
+    public const string API_NAMESPACE = 'sltk/v1';
 
     public static function init(): void {
       add_action('rest_api_init', [self::class, 'registerRoutes']);

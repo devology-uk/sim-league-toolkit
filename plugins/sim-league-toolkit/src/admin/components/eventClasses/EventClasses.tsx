@@ -5,14 +5,15 @@ import apiFetch from '@wordpress/api-fetch';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
+import {EventClass} from './EventClass';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
-import {EventClass} from "./EventClass";
+import {eventClassesGetRoute, eventClassDeleteRoute} from './eventClassesApiRoutes';
+import {HttpMethod} from '../shared/HttpMethod';
 
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState(null);
     const [data, setData] = useState<EventClass[]>([]);
     const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -22,57 +23,59 @@ export const EventClasses = () => {
         loadData();
     }, []);
 
-
     const loadData = () => {
         setIsBusy(true);
-        apiFetch({path: '/sltk/v1/event-class'}).then((r: EventClass[]) => {
-            setData(r ?? [])
+        apiFetch({
+                     path: eventClassesGetRoute(),
+                     method: HttpMethod.GET,
+                 }).then((r: EventClass[]) => {
+            setData(r ?? []);
             setIsBusy(false);
         });
-    }
+    };
 
     const onAdd = () => {
         setShowEditor(true);
-    }
+    };
 
     const onDelete = (item: EventClass) => {
-        setItemToDelete(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
-    }
+    };
 
     const onEdit = (item: EventClass) => {
         setSelectedItem(item);
         setShowEditor(true);
-    }
+    };
 
     const onCancelDelete = () => {
-        setShowDeleteConfirmation(false)
-        setItemToDelete(null);
-    }
+        setShowDeleteConfirmation(false);
+        setSelectedItem(null);
+    };
 
     const onConfirmDelete = () => {
-        setShowDeleteConfirmation(false)
+        setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-            path: 'sltk/v1/event-class/' + itemToDelete.id,
-            method: 'DELETE'
-        }).then(() => {
+                     path: eventClassDeleteRoute(selectedItem.id),
+                     method: HttpMethod.DELETE,
+                 }).then(() => {
             loadData();
-            setItemToDelete(null);
+            setSelectedItem(null);
             setIsBusy(false);
         });
-    }
+    };
 
     const onEditorCancelled = () => {
         setShowEditor(false);
         setSelectedItem(null);
-    }
+    };
 
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
         loadData();
-    }
+    };
 
     const headerTemplate = () => {
         return (
@@ -85,26 +88,29 @@ export const EventClasses = () => {
                     </button>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const itemTemplate = (item: EventClass) => {
         return <EventClassCard eventClass={item} key={item.id} onRequestEdit={onEdit}
-                               onRequestDelete={onDelete}/>
-    }
+                               onRequestDelete={onDelete}/>;
+    };
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy} />
+            <BusyIndicator isBusy={isBusy}/>
             <h3>{__('Event Classes', 'sim-league-toolkit')}</h3>
             <p>
-                {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.', 'sim-league-toolkit')}
+                {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('An Event Class is a combination of a Car Class, Driver Category and optionally the single car that can be used in the class.', 'sim-league-toolkit')}
+                {__('An Event Class is a combination of a Car Class, Driver Category and optionally the single car that can be used in the class.',
+                    'sim-league-toolkit')}
             </p>
             <p>
-                {__('Sim League Toolkit provides a set of built-in event classes for each game, these cannot be deleted or changed.', 'sim-league-toolkit')}
+                {__('Sim League Toolkit provides a set of built-in event classes for each game, these cannot be deleted or changed.',
+                    'sim-league-toolkit')}
             </p>
 
             <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
@@ -114,16 +120,18 @@ export const EventClasses = () => {
                 <EventClassEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
                                   eventClassId={selectedItem?.id}/>
             }
-            {itemToDelete && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __('will remove it from all championships or individual events and any driver registrations for the class in those events will be removed!!.  Do you wish to delete ', 'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
+                                   'will remove it from all championships or individual events and any driver registrations for the class in those events will be removed!!.  Do you wish to delete ',
+                                   'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
         </>
-    )
-}
+    );
+};
