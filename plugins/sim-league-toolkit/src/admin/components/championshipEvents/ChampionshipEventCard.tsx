@@ -1,8 +1,9 @@
-import {ChampionshipEvent} from './ChampionshipEvent';
-import {Button} from 'primereact/button';
 import {__} from '@wordpress/i18n';
+
+import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
-import {useState} from '@wordpress/element';
+
+import {ChampionshipEvent} from './ChampionshipEvent';
 
 interface ChampionshipEventCardProps {
     championshipEvent: ChampionshipEvent,
