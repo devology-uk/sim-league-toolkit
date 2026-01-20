@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import {FormEvent} from 'react';
+import {FormEvent} from '@wordpress/block-editor';
 
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';

@@ -1,8 +1,8 @@
 import {__} from '@wordpress/i18n';
-import {useState, useEffect} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {useState, useEffect} from '@wordpress/element';
 
-import {FormEvent} from 'react';
+import {FormEvent} from '@wordpress/block-editor';
 import {Calendar} from 'primereact/calendar';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
@@ -10,15 +10,15 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEvent} from './ChampionshipEvent';
+import {championshipEventPostRoute} from './championshipEventsApiRoutes';
 import {Dialog} from 'primereact/dialog';
 import {Game} from '../games/Game';
+import {gameGetRoute} from '../games/gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../games/TrackSelector';
 import {ValidationError} from '../shared/ValidationError';
-import {gameGetRoute} from '../games/gameApiRoutes';
-import {championshipEventPostRoute} from './championshipEventsApiRoutes';
 
 interface NewChampionshipEventEditorProps {
     championshipId: number;

@@ -310,7 +310,7 @@
 
     public function save(): bool {
       try {
-        if ($this->hasId()) {
+        if (!$this->hasId()) {
           $this->setId(ChampionshipRepository::add($this->toArray()));
         } else {
           ChampionshipRepository::update($this->getId(), $this->toArray());
@@ -327,8 +327,10 @@
      */
     public function toArray(): array {
       $result = [
+        'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'description' => $this->getDescription(),
+        'entryChangeLimit' => $this->getEntryChangeLimit(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
         'isTrackMasterChampionship' => $this->getIsTrackMasterChampionship(),
@@ -352,8 +354,10 @@
 
     public function toDto(): array {
       $result = [
+        'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'description' => $this->getDescription(),
+        'entryChangeLimit' => $this->getEntryChangeLimit(),
         'game' => $this->getGame(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),

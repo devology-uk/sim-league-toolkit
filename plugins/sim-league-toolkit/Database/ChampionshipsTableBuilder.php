@@ -24,7 +24,7 @@
         allowEntryChange boolean NOT NULL DEFAULT 0,
         bannerImageUrl tinytext NULL,
         description text NOT NULL,
-        entryChamgeLimit tinyint NOT NULL DEFAULT 0,
+        entryChangeLimit tinyint NOT NULL DEFAULT 0,
         gameId bigint NOT NULL,
         isActive bit NOT NULL DEFAULT 0,
         isTrackMasterChampionship bit NOT NULL DEFAULT 0,

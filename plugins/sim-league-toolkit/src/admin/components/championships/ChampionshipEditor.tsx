@@ -177,6 +177,10 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             errors.push('scoringSet');
         }
 
+        if(allowEntryChange && entryChangeLimit < 1) {
+            errors.push('entryChangeLimit');
+        }
+
         if (championshipType === ChampionshipTypes.Trackmaster) {
             if (trackMasterTrackId < 1) {
                 errors.push('trackMasterTrack');
@@ -198,7 +202,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             <h4>{__('Game', 'sim-league-toolkit')} - {gameName}</h4>
             <h4>{__('Type', 'sim-league-toolkit')} - {translateChampionshipType(championshipType)}</h4>
             <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
-                <AccordionTab header={__('General Settings', 'sim-league-toolkit')}>
+                <AccordionTab header={__('Details', 'sim-league-toolkit')}>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row flex-wrap justify-content-between gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
@@ -256,6 +260,10 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                                     <InputNumber id='entry-change-limit' value={entryChangeLimit}
                                                  onChange={(e) => setEntryChangeLimit(e.value)}
                                                  min={1}/>
+                                    <ValidationError
+                                        message={__('Entry change limit must be at least 1 when entry changes are' +
+                                                        ' allowed.', 'sim-league-toolkit')}
+                                        show={validationErrors.includes('entryChangeLimit')}/>
                                 </>}
                                 {isTrackMasterChampionship &&
                                     <TrackSelector gameId={gameId}
@@ -269,6 +277,13 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                                                    trackValidationMessage={__('When the championship type is track master you must select the track that will be used for all events.', 'sim-league-toolkit')}
                                                    trackLayoutValidationMessage={__('The game supports track layouts, you must select a track layout that will be used for all events.', 'sim-league-toolkit')}
                                     />}
+                                <div className='flex flex-row justify-content-between'>
+                                    <label
+                                        htmlFor='is-active'>{__('Active', 'sim-league-toolkit')}</label>
+                                    <Checkbox id='is-active' checked={isActive}
+                                              onChange={(e) => setIsActive(e.checked)}
+                                              style={{marginTop: '.75rem'}}/>
+                                </div>
                             </div>
                         </div>
                         <SaveSubmitButton disabled={isBusy} name='submitForm'/>

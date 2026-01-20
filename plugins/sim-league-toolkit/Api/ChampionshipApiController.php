@@ -2,6 +2,9 @@
 
   namespace SLTK\Api;
 
+  use DateTime;
+  use DateTimeInterface;
+  use DateTimeZone;
   use Exception;
   use JsonException;
   use SLTK\Domain\Championship;
@@ -128,7 +131,8 @@
       $entity->setResultsToDiscard($data->resultsToDiscard);
       $entity->setRuleSetId($data->ruleSetId);
       $entity->setScoringSetId($data->scoringSetId);
-      $entity->setStartDate($data->startDate);
+      $startDate = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $data->startDate, new DateTimeZone('UTC'));
+      $entity->setStartDate($startDate);
       $entity->setTrackMasterTrackId($data->trackMasterTrackId ?? null);
       $entity->setTrackMasterTrackLayoutId($data->trackMasterTrackLayoutId ?? null);
       $entity->setTrophiesAwarded($data->trophiesAwarded ?? false);

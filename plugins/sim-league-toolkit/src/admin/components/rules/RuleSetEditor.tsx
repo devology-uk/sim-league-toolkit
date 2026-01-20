@@ -1,6 +1,6 @@
 import {__} from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import {FormEvent} from 'react';
+import {FormEvent} from '@wordpress/block-editor';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dialog} from 'primereact/dialog';

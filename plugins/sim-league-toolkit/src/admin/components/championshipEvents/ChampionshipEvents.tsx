@@ -11,6 +11,7 @@ import {ChampionshipEventCard} from './ChampionshipEventCard';
 import {HttpMethod} from '../shared/HttpMethod';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
 import {championshipEventsGetRoute, championshipEventDeleteRoute} from './championshipEventsApiRoutes';
+import {ChampionshipEventEditor} from './ChampionshipEventEditor';
 
 interface ChampionshipEventsProps {
     championshipId: number,
@@ -20,6 +21,7 @@ interface ChampionshipEventsProps {
 export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsProps) => {
     const [data, setData] = useState<ChampionshipEvent[]>([]);
     const [isAdding, setIsAdding] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [isBusy, setIsBusy] = useState(false);
     const [selectedItem, setSelectedItem] = useState<ChampionshipEvent>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -52,6 +54,11 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
         setSelectedItem(null);
     };
 
+    const onCancelEdit = () => {
+        setIsEditing(false);
+        setSelectedItem(null);
+    };
+
     const onConfirmDelete = () => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
@@ -72,6 +79,13 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
 
     const onEdit = (item: ChampionshipEvent) => {
         setSelectedItem(item);
+        setIsEditing(true);
+    };
+
+    const onEditSaved = () => {
+        setIsEditing(false);
+        setSelectedItem(null);
+        loadData();
     };
 
     const onNewSaved = () => {
@@ -110,6 +124,10 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
             {isAdding &&
                 <NewChampionshipEventEditor championshipId={championshipId} gameId={gameId} onSaved={onNewSaved}
                                             onCancelled={onCancelAdd}/>
+            }
+            {selectedItem && isEditing &&
+                <ChampionshipEventEditor championshipEvent={selectedItem} gameId={gameId} onSaved={onEditSaved}
+                                         onCancelled={onCancelEdit}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

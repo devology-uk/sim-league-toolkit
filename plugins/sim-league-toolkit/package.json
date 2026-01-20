@@ -4,17 +4,19 @@
     "start": "wp-scripts start"
   },
   "devDependencies": {
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
     "@wordpress/api-fetch": "^7.32.0",
-    "@wordpress/block-editor": "^15.6.0",
-    "@wordpress/components": "^30.5.0",
+    "@wordpress/block-editor": "^15.11.0",
+    "@wordpress/components": "^32.0.0",
     "@wordpress/data": "^10.33.0",
     "@wordpress/dom-ready": "^4.32.0",
     "@wordpress/element": "^6.32.0",
     "@wordpress/i18n": "^6.5.0",
     "@wordpress/interactivity": "^6.33.0",
     "@wordpress/notices": "^5.33.0",
-    "@wordpress/router": "^1.37.0",
-    "@wordpress/scripts": "^31.1.0",
+    "@wordpress/router": "^1.38.0",
+    "@wordpress/scripts": "^31.3.0",
     "date-fns": "^4.1.0",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
@@ -22,9 +24,5 @@
     "react-use": "^17.6.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3"
   }
 }
