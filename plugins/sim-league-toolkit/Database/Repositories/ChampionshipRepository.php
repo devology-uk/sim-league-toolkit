@@ -48,15 +48,20 @@
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);
       $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $trackLayoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
-      $query = "SELECT c.*, p.name as platform, g.name as game 
+      $query = "SELECT c.*, p.name as platform, g.name as game, t.shortName as trackMasterTrack, tl.name as trackMasterTrackLayout 
                 FROM $championshipsTableName c
                 INNER JOIN $platformsTableName p
                 ON c.platformId = p.id
                 INNER JOIN $gamesTableName g
                 ON c.gameId = g.id
-                WHERE c.id = $id
-                ORDER BY c.isActive DESC, startDate;";
+                LEFT OUTER JOIN $tracksTableName t
+                ON c.trackMasterTrackId = t.id
+                LEFT OUTER JOIN $trackLayoutsTableName tl
+                ON c.trackMasterTrackLayoutId = tl.id
+                WHERE c.id = $id";
 
       return self::getRow($query);
     }
@@ -68,13 +73,19 @@
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);
       $platformsTableName = self::prefixedTableName(TableNames::PLATFORMS);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $trackLayoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
-      $query = "SELECT c.*, p.name as platform, g.name as game 
+      $query = "SELECT c.*, p.name as platform, g.name as game, t.shortName as trackMasterTrack, tl.name as trackMasterTrackLayout 
                 FROM $championshipsTableName c
                 INNER JOIN $platformsTableName p
                 ON c.platformId = p.id
                 INNER JOIN $gamesTableName g
                 ON c.gameId = g.id
+                LEFT OUTER JOIN $tracksTableName t
+                ON c.trackMasterTrackId = t.id
+                LEFT OUTER JOIN $trackLayoutsTableName tl
+                ON c.trackMasterTrackLayoutId = tl.id
                 ORDER BY c.isActive DESC, startDate;";
 
       return self::getResults($query);

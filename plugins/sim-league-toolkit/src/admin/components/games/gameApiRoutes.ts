@@ -1,11 +1,11 @@
 import {getApiPath} from '../shared/apiRoutes';
 
 export const carClassesGetRoute = (gameId: number): string => {
-    return getApiPath(`games/${gameId}/car-classes`);
+    return getApiPath(`game/${gameId}/car-classes`);
 }
 
 export const carsByClassGetRoute = (gameId: number, carClas: string): string => {
-    return getApiPath(`games/${gameId}/cars/${carClas}`);
+    return getApiPath(`game/${gameId}/cars/${carClas}`);
 }
 
 export const gameGetRoute = (gameId: number): string => {
@@ -13,11 +13,11 @@ export const gameGetRoute = (gameId: number): string => {
 };
 
 export const gamesGetRoute = (): string => {
-    return getApiPath('games');
+    return getApiPath('game');
 }
 
 export const platformsGetRoute = (gameId: number) => {
-    return getApiPath(`games/${gameId}/platforms`);
+    return getApiPath(`game/${gameId}/platforms`);
 }
 
 export const trackGetRoute = (trackId: number): string => {
@@ -25,5 +25,5 @@ export const trackGetRoute = (trackId: number): string => {
 };
 
 export const tracksGetRoute = (gameId: number) => {
-    return getApiPath(`games/${gameId}/tracks`);
+    return getApiPath(`game/${gameId}/tracks`);
 }

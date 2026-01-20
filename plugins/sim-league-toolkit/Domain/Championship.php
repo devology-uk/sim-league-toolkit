@@ -6,7 +6,6 @@
   use DateTime;
   use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
@@ -25,10 +24,14 @@
     private string $platform = '';
     private int $platformId = Constants::DEFAULT_ID;
     private int $resultsToDiscard = 0;
+    private string $ruleSet;
     private ?int $ruleSetId = null;
+    private ?string $scoringSet;
     private int $scoringSetId = Constants::DEFAULT_ID;
     private DateTime $startDate;
+    private ?string $trackMasterTrack = null;
     private ?int $trackMasterTrackId = null;
+    private ?string $trackMasterTrackLayout = null;
     private ?int $trackMasterTrackLayoutId = null;
     private bool $trophiesAwarded = false;
 
@@ -49,10 +52,14 @@
         $this->platform = $data->platform ?? '';
         $this->platformId = $data->platformId ?? Constants::DEFAULT_ID;
         $this->resultsToDiscard = $data->resultsToDiscard ?? 0;
+        $this->ruleSet = $data->ruleSet ?? '';
         $this->ruleSetId = $data->ruleSetId ?? null;
+        $this->scoringSet = $data->scoringSet ?? null;
         $this->scoringSetId = $data->scoringSetId ?? Constants::DEFAULT_ID;
         $this->startDate = DateTime::createFromFormat(Constants::STANDARD_DATE_FORMAT, $data->startDate);
+        $this->trackMasterTrack = $data->trackMasterTrack;
         $this->trackMasterTrackId = $data->trackMasterTrackId ?? Constants::DEFAULT_ID;
+        $this->trackMasterTrackLayout = $data->trackMasterTrackLayout;
         $this->trackMasterTrackLayoutId = $data->trackMasterTrackLayoutId ?? null;
         $this->trophiesAwarded = $data->trophiesAwarded ?? false;
       }
@@ -221,12 +228,28 @@
       $this->resultsToDiscard = $value;
     }
 
+    public function getRuleSet(): string {
+      return $this->ruleSet ?? '';
+    }
+
+    public function setRuleSet(string $value): void {
+      $this->ruleSet = $value;
+    }
+
     public function getRuleSetId(): ?int {
       return $this->ruleSetId > 0 ? (int)$this->ruleSetId : null;
     }
 
     public function setRuleSetId(?int $value): void {
       $this->ruleSetId = $value;
+    }
+
+    public function getScoringSet(): string {
+      return $this->scoringSet ?? '';
+    }
+
+    public function setScoringSet(string $value): void {
+      $this->scoringSet = $value;
     }
 
     public function getScoringSetId(): int {
@@ -245,12 +268,28 @@
       $this->startDate = $value;
     }
 
+    public function getTrackMasterTrack(): ?string {
+      return $this->trackMasterTrack ?? null;
+    }
+
+    public function setTrackMasterTrack(string $value): void {
+      $this->trackMasterTrack = $value;
+    }
+
     public function getTrackMasterTrackId(): ?int {
       return $this->trackMasterTrackId > 0 ? (int)$this->trackMasterTrackId : null;
     }
 
     public function setTrackMasterTrackId(?int $value): void {
       $this->trackMasterTrackId = $value;
+    }
+
+    public function getTrackMasterTrackLayout(): ?string {
+      return $this->trackMasterTrackLayout ?? null;
+    }
+
+    public function setTrackMasterTrackLayout(string $value): void {
+      $this->trackMasterTrackLayout = $value;
     }
 
     public function getTrackMasterTrackLayoutId(): ?int {
@@ -315,15 +354,20 @@
       $result = [
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'description' => $this->getDescription(),
+        'game' => $this->getGame(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
         'isTrackMasterChampionship' => $this->getIsTrackMasterChampionship(),
         'name' => $this->getName(),
+        'platform' => $this->getPlatform(),
         'platformId' => $this->getPlatformId(),
         'resultsToDiscard' => $this->getResultsToDiscard(),
+        'ruleSet' => $this->getRuleSet(),
         'ruleSetId' => $this->getRuleSetId(),
+        'scoringSet' => $this->getScoringSet(),
         'scoringSetId' => $this->getScoringSetId(),
         'startDate' => $this->getFormattedStartDate(),
+        'trackMasterTrack' => $this->getTrackMasterTrack(),
         'trackMasterTrackId' => $this->getTrackMasterTrackId(),
         'trackMasterTrackLayoutId' => $this->getTrackMasterTrackLayoutId(),
         'trophiesAwarded' => $this->getTrophiesAwarded(),
