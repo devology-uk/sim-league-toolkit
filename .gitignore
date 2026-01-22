@@ -10,5 +10,7 @@ upgrade-temp-backup
 uploads
 /index.php
 node_modules
+generated
 
 /plugins/sim-league-toolkit/build
+/plugins/sim-league-toolkit/src/admin/generated/enums.ts
