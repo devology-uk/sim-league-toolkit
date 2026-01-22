@@ -2,7 +2,7 @@ import {__} from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import {useState, useEffect} from '@wordpress/element';
 
-import {FormEvent} from '@wordpress/block-editor';
+import {FormEvent} from 'react';
 import {Calendar} from 'primereact/calendar';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
