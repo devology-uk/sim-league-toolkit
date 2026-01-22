@@ -25,6 +25,9 @@
       self::$builders[] = new TracksTableBuilder();
       self::$builders[] = new TrackLayoutsTableBuilder();
       self::$builders[] = new EventClassesTableBuilder();
+      self::$builders[] = new EventRefsTableBuilder();
+      self::$builders[] = new EventSessionsTableBuilder();
+      self::$builders[] = new EventSessionAttributesTableBuilder();
       self::$builders[] = new ChampionshipsTableBuilder();
       self::$builders[] = new ChampionshipEventClassesTableBuilder();
       self::$builders[] = new ChampionshipEntriesTableBuilder();
