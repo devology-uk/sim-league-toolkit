@@ -13,6 +13,9 @@
     public final const string DRIVER_CATEGORIES = 'sltk_driver_categories';
     public final const string EVENTS = 'sltk_events';
     public final const string EVENT_CLASSES = 'sltk_event_classes';
+    public final const string EVENT_REFS = 'sltk_event_refs';
+    public final const string EVENT_SESSIONS = 'sltk_event_sessions';
+    public final const string EVENT_SESSION_ATTRIBUTES = 'sltk_event_session_attributes';
     public final const string GAMES = 'sltk_games';
     public final const string GAME_PLATFORMS = 'sltk_game_platforms';
     public final const string PLATFORMS = 'sltk_platforms';
@@ -23,8 +26,15 @@
     public final const string SCORING_SET_SCORES = 'sltk_scoring_set_scores';
     public final const string SERVERS = 'sltk_servers';
     public final const string SERVER_SETTINGS = 'sltk_server_settings';
+    public final const string STANDALONE_EVENTS = 'sltk_standalone_events';
     public final const string TRACKS = 'sltk_tracks';
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
     public final const string USERS = 'users';
     public final const string USER_PROFILES = 'sltk_user_profile';
+
+    public static function prefixed(string $tableName): string {
+      global $wpdb;
+
+      return $wpdb->prefix . $tableName;
+    }
   }

@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import {useState, useEffect} from '@wordpress/element';
-import {FormEvent} from '@wordpress/block-editor';
+import {FormEvent} from 'react';
 
 import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Calendar} from 'primereact/calendar';
@@ -182,6 +182,9 @@ export const ChampionshipEventEditor = ({
                             <SaveSubmitButton disabled={isBusy} name='submitForm'/>
                             <CancelButton onCancel={onCancelled} disabled={isBusy}/>
                         </form>
+                    </AccordionTab>
+                    <AccordionTab header={__('Sessions', 'sim-league-toolkit')}>
+
                     </AccordionTab>
                 </Accordion>
 
