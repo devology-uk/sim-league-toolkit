@@ -1,0 +1,46 @@
+{
+  "gameId": "iracing",
+  "gameName": "iRacing",
+  "sessionTypes": {
+    "practice": {
+      "fields": [
+        {
+          "key": "trackState",
+          "label": "Track State",
+          "type": "select",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Auto"
+            },
+            {
+              "value": "clean",
+              "label": "Clean"
+            },
+            {
+              "value": "rubbered",
+              "label": "Rubbered In"
+            }
+          ],
+          "default": "auto"
+        },
+        {
+          "key": "weatherType",
+          "label": "Weather",
+          "type": "select",
+          "options": [
+            {
+              "value": "static",
+              "label": "Static"
+            },
+            {
+              "value": "dynamic",
+              "label": "Dynamic"
+            }
+          ],
+          "default": "static"
+        }
+      ]
+    }
+  }
+}

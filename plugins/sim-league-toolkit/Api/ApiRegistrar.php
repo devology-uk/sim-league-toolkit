@@ -40,6 +40,10 @@
         $apiController = new GameApiController();
       }
 
+      if (str_contains($wp->request, ResourceNames::GAME_CONFIG)) {
+        $apiController = new GameApiController();
+      }
+
       if (str_contains($wp->request, ResourceNames::RACE_NUMBER)) {
         $apiController = new RaceNumberApiController();
       }
