@@ -1,19 +1,10 @@
+import {__} from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { dispatch } from '@wordpress/data';
-import { store as noticesStore } from '@wordpress/notices';
-import { __ } from '@wordpress/i18n';
+import {dispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
-export interface ApiError {
-    code: string;
-    message: string;
-    errors?: Record<string, string[]>;
-}
-
-export interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    error?: ApiError;
-}
+import {ApiError} from '../types/ApiError';
+import {ApiResponse} from '../types/ApiResponse';
 
 const API_NAMESPACE = '/sltk/v1';
 
@@ -42,7 +33,7 @@ const handleApiError = (error: unknown): ApiError => {
     };
 };
 
-export const apiClient = {
+export const ApiClient = {
     async get<T>(endpoint: string): Promise<ApiResponse<T>> {
         try {
             const data = await apiFetch<T>({
