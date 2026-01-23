@@ -9,7 +9,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {Game} from '../../types/Game';
 import {GameCard} from './GameCard';
 import {gamesGetRoute} from '../../api/routes/gameApiRoutes';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 
 export const Games = () => {
 

@@ -4,7 +4,7 @@ import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {Platform} from '../../types/Platform';
 import {platformsGetRoute} from '../../api/routes/gameApiRoutes';

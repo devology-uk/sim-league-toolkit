@@ -10,7 +10,7 @@ import {EventClass} from '../../types/EventClass';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
 import {eventClassesGetRoute, eventClassDeleteRoute} from '../../api/routes/eventClassesApiRoutes';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 
 export const EventClasses = () => {
     const [isBusy, setIsBusy] = useState(false);

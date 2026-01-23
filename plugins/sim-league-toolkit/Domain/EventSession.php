@@ -2,7 +2,7 @@
 
   namespace SLTK\Domain;
 
-  use SLTK\Config\GameConfigLoader;
+  use SLTK\Config\GameConfigProvider;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\EventSessionAttributesRepository;
   use SLTK\Database\Repositories\EventSessionRepository;
@@ -169,7 +169,7 @@
 
       try
       {
-        $config = GameConfigLoader::load($this->gameId);
+        $config = GameConfigProvider::load($this->gameId);
       }
       catch (\Exception)
       {

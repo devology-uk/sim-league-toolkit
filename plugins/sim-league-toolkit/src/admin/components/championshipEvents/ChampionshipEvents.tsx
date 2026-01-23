@@ -8,7 +8,7 @@ import {DataView} from 'primereact/dataview';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 import {ChampionshipEventCard} from './ChampionshipEventCard';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
 import {championshipEventsGetRoute, championshipEventDeleteRoute} from '../../api/routes/championshipEventsApiRoutes';
 import {ChampionshipEventEditor} from './ChampionshipEventEditor';

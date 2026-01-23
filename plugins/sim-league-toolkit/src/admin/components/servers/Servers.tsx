@@ -6,7 +6,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {Server} from '../../types/Server';
 import {ServerCard} from './ServerCard';
 import {ServerEditor} from './ServerEditor';

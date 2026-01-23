@@ -10,7 +10,7 @@ import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSet} from '../../types/RuleSet';
 import {RuleSetRule} from '../../types/RuleSetRule';
 import {rulesGetRoute, ruleDeleteRoute, rulePostRoute} from '../../api/routes/rulesApiRoutes';

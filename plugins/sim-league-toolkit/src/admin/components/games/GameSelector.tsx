@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {Game} from '../../types/Game';
 import {gamesGetRoute} from '../../api/routes/gameApiRoutes';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
 

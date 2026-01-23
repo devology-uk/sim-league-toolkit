@@ -9,7 +9,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleList} from './RuleList';
 import {RuleSet} from '../../types/RuleSet';
 import {ruleSetGetRoute, ruleSetPostRoute} from '../../api/routes/rulesApiRoutes';

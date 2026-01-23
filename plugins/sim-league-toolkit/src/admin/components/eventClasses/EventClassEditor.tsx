@@ -15,7 +15,7 @@ import {DriverCategorySelector} from './DriverCategorySelector';
 import {EventClass} from '../../types/EventClass';
 import {eventClassGetRoute, eventClassPostRoute} from '../../api/routes/eventClassesApiRoutes';
 import {GameSelector} from '../games/GameSelector';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
 

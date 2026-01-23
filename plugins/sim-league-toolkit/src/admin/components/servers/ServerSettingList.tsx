@@ -9,7 +9,7 @@ import {Panel} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {getServerSettings} from './serverSettingProvider';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {ServerSetting} from '../../types/ServerSetting';
 import {serverSettingsGetRoute, serverSettingsPostRoute} from '../../api/routes/serverApiRoutes';
 

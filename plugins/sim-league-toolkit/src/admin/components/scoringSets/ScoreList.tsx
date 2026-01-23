@@ -11,7 +11,7 @@ import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveButton} from '../shared/SaveButton';
 import {scoresGetRoute, scoreDeleteRoute, scorePostRoute} from '../../api/routes/scoringSetsApiRoutes';
 import {ScoringSetScore} from '../../types/ScoringSetScore';

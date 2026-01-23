@@ -14,7 +14,7 @@ import {championshipEventPostRoute} from '../../api/routes/championshipEventsApi
 import {Dialog} from 'primereact/dialog';
 import {Game} from '../../types/Game';
 import {gameGetRoute} from '../../api/routes/gameApiRoutes';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../games/TrackSelector';

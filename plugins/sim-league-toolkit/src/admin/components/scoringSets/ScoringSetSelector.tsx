@@ -8,7 +8,7 @@ import {ListItem} from "../../types/ListItem";
 import {ScoringSet} from "../../types/ScoringSet";
 import {ValidationError} from '../shared/ValidationError';
 import {scoringSetsGetRoute} from '../../api/routes/scoringSetsApiRoutes';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 
 interface ScoringSetSelectorProps {
     onSelectedItemChanged: (item: number) => void;

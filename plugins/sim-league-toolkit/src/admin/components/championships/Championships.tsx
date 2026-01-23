@@ -9,7 +9,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {Championship} from '../../types/Championship';
 import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
 import {championshipDeleteRoute, championshipsGetRoute} from '../../api/routes/championshipApiRoutes';
 

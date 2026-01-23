@@ -6,7 +6,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {driverCategoriesGetRoute} from '../../api/routes/eventClassesApiRoutes';
 import {DriverCategory} from "../../types/DriverCategory";
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from "../../types/ListItem";
 import {ValidationError} from '../shared/ValidationError';
 

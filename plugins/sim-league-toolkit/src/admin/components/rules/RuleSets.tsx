@@ -6,7 +6,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSet} from '../../types/RuleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';

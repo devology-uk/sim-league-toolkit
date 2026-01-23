@@ -8,7 +8,7 @@ import {DataView} from "primereact/dataview";
 
 import {ChampionshipClass} from "../../types/ChampionshipClass";
 import {ChampionshipClassCard} from "./ChampionshipClassCard";
-import {HttpMethod} from "../shared/HttpMethod";
+import {HttpMethod} from "../../enums/HttpMethod";
 import {EventClassSelector} from "../eventClasses/EventClassSelector";
 import {
     championshipClassDeleteRoute,

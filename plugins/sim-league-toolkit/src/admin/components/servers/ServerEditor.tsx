@@ -10,7 +10,7 @@ import {InputText} from 'primereact/inputtext';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {PlatformSelector} from '../games/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {Server} from '../../types/Server';

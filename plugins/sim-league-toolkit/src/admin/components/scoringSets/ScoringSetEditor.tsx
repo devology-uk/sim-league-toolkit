@@ -9,7 +9,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../shared/HttpMethod';
+import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
 import {ScoringSet} from "../../types/ScoringSet";
