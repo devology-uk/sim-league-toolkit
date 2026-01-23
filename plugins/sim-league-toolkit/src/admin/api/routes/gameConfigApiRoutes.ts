@@ -1,4 +1,4 @@
-import {getApiPath} from '../../components/shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const gameConfigsGetRoute = (): string => {
     return getApiPath('game-config');

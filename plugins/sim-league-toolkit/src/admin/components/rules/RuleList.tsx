@@ -13,7 +13,7 @@ import {CancelButton} from '../shared/CancelButton';
 import {HttpMethod} from '../shared/HttpMethod';
 import {RuleSet} from '../../types/RuleSet';
 import {RuleSetRule} from '../../types/RuleSetRule';
-import {rulesGetRoute, ruleDeleteRoute, rulePostRoute} from './rulesApiRoutes';
+import {rulesGetRoute, ruleDeleteRoute, rulePostRoute} from '../../api/routes/rulesApiRoutes';
 import {SaveButton} from '../shared/SaveButton';
 import {ValidationError} from '../shared/ValidationError';
 

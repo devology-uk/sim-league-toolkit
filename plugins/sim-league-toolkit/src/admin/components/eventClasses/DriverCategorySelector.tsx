@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {driverCategoriesGetRoute} from './eventClassesApiRoutes';
+import {driverCategoriesGetRoute} from '../../api/routes/eventClassesApiRoutes';
 import {DriverCategory} from "../../types/DriverCategory";
 import {HttpMethod} from '../shared/HttpMethod';
 import {ListItem} from "../../types/ListItem";

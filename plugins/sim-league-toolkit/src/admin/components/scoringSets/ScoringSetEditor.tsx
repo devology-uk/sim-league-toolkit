@@ -13,7 +13,7 @@ import {HttpMethod} from '../shared/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
 import {ScoringSet} from "../../types/ScoringSet";
-import {scoringSetGetRoute, scoringSetPostRoute} from './scoringSetsApiRoutes';
+import {scoringSetGetRoute, scoringSetPostRoute} from '../../api/routes/scoringSetsApiRoutes';
 import {ValidationError} from '../shared/ValidationError';
 
 interface ScoringSetEditorProps {

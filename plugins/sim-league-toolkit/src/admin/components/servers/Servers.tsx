@@ -10,7 +10,7 @@ import {HttpMethod} from '../shared/HttpMethod';
 import {Server} from '../../types/Server';
 import {ServerCard} from './ServerCard';
 import {ServerEditor} from './ServerEditor';
-import {serversGetRoute, serverDeleteRoute} from './serverApiRoutes';
+import {serversGetRoute, serverDeleteRoute} from '../../api/routes/serverApiRoutes';
 
 export const Servers = () => {
     const [isBusy, setIsBusy] = useState(false);

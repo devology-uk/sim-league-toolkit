@@ -1,4 +1,4 @@
-import {getApiPath} from '../shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const scoresGetRoute = (scoringSetId: number): any => {
     return getApiPath(`scoring-set/${scoringSetId}/scores`);

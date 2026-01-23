@@ -13,7 +13,7 @@ import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../games/CarCl
 import {CarSelector} from '../games/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
 import {EventClass} from '../../types/EventClass';
-import {eventClassGetRoute, eventClassPostRoute} from './eventClassesApiRoutes';
+import {eventClassGetRoute, eventClassPostRoute} from '../../api/routes/eventClassesApiRoutes';
 import {GameSelector} from '../games/GameSelector';
 import {HttpMethod} from '../shared/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';

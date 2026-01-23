@@ -1,4 +1,4 @@
-import {getApiPath} from '../shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const ruleDeleteRoute = (ruleId: number): any => {
     return getApiPath(`rule-set/rules/${ruleId}`);

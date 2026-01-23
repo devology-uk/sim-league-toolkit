@@ -9,7 +9,7 @@ import {EventClass} from "../../types/EventClass";
 import {HttpMethod} from "../shared/HttpMethod";
 import {ListItem} from "../../types/ListItem";
 import {ValidationError} from "../shared/ValidationError";
-import {eventClassesForGameGetRoute} from "./eventClassesApiRoutes";
+import {eventClassesForGameGetRoute} from "../../api/routes/eventClassesApiRoutes";
 
 
 interface EventClassSelectorProps {

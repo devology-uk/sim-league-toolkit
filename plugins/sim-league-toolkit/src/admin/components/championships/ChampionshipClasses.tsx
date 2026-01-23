@@ -14,7 +14,7 @@ import {
     championshipClassDeleteRoute,
     championshipClassesPostRoute,
     championshipClassesGetRoute
-} from './championshipApiRoutes';
+} from '../../api/routes/championshipApiRoutes';
 
 interface ChampionshipClassesProps {
     championshipId: number,

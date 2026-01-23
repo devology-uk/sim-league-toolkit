@@ -1,4 +1,4 @@
-import {getApiPath} from '../shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const championshipDeleteRoute = (championshipId: number): string => {
     return getApiPath(`championship/${championshipId}}`);

@@ -1,4 +1,4 @@
-import {getApiPath} from '../shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const serverDeleteRoute = (serverId: number): any => {
     return getApiPath(`server/${serverId}`);

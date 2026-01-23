@@ -1,4 +1,4 @@
-import {getApiPath} from '../shared/apiRoutes';
+import {getApiPath} from './apiRoutes';
 
 export const carClassesGetRoute = (gameId: number): string => {
     return getApiPath(`game/${gameId}/car-classes`);

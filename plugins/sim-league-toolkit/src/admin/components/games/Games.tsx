@@ -8,7 +8,7 @@ import {Panel} from 'primereact/panel';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {Game} from '../../types/Game';
 import {GameCard} from './GameCard';
-import {gamesGetRoute} from './gameApiRoutes';
+import {gamesGetRoute} from '../../api/routes/gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 
 export const Games = () => {
