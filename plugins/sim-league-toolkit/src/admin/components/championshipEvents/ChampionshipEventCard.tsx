@@ -30,10 +30,12 @@ export const ChampionshipEventCard = ({
             }
         </>
     );
+
     const header = (
         <img alt={__('Banner image', 'sim-league-toolkit')}
-             src={championshipEvent.bannerImageUrl} />
+             src={championshipEvent.bannerImageUrl}/>
     );
+    
     return (
         <Card title={championshipEvent.name}
               footer={footer} header={header}

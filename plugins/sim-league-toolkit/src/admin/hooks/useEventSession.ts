@@ -1,47 +1,29 @@
-import { useState, useEffect, useCallback } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
-import { dispatch } from '@wordpress/data';
-import { store as noticesStore } from '@wordpress/notices';
-import { __ } from '@wordpress/i18n';
+import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import { EventSession } from '../types/EventSession';
-import { CreateResponse } from '../types/CreateResponse';
+import {ApiClient} from '../api/ApiClient';
+import {CreateResponse} from '../types/CreateResponse';
+import {EventSession} from '../types/EventSession';
 import {
-    eventSessionsByEventRefGetRoute,
-    eventSessionPostRoute,
-    eventSessionPutRoute,
-    eventSessionDeleteRoute,
-    eventSessionsReorderPutRoute,
-} from '../api/routes/eventSessionApiRoutes';
+    eventSessionEndpoint,
+    eventSessionsReorderEndpoint,
+    eventSessionsByEventRefEndpoint,
+    eventSessionRootEndpoint,
+} from '../api/routes/eventSessionApiEndpoints';
 import {EventSessionFormData} from '../types/EventSessionFormData';
 
 interface UseEventSessionsResult {
-    sessions: EventSession[];
-    loading: boolean;
-    refresh: () => Promise<void>;
     createSession: (data: EventSessionFormData) => Promise<number | null>;
-    updateSession: (id: number, data: EventSessionFormData) => Promise<boolean>;
     deleteSession: (id: number) => Promise<boolean>;
+    isLoading: boolean;
+    refresh: () => Promise<void>;
     reorderSessions: (sessionIds: number[]) => Promise<boolean>;
+    sessions: EventSession[];
+    updateSession: (id: number, data: EventSessionFormData) => Promise<boolean>;
 }
 
 export const useEventSessions = (eventRefId: number | null): UseEventSessionsResult => {
     const [sessions, setSessions] = useState<EventSession[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    const showError = (message: string) => {
-        dispatch(noticesStore).createErrorNotice(message, {
-            isDismissible: true,
-            type: 'snackbar',
-        });
-    };
-
-    const showSuccess = (message: string) => {
-        dispatch(noticesStore).createSuccessNotice(message, {
-            isDismissible: true,
-            type: 'snackbar',
-        });
-    };
+    const [isLoading, setIsLoading] = useState(false);
 
     const refresh = useCallback(async () => {
         if (!eventRefId) {
@@ -49,96 +31,51 @@ export const useEventSessions = (eventRefId: number | null): UseEventSessionsRes
             return;
         }
 
-        setLoading(true);
+        setIsLoading(true);
 
-        try {
-            const data = await apiFetch<EventSession[]>({
-                                                            path: eventSessionsByEventRefGetRoute(eventRefId),
-                                                            method: 'GET',
-                                                        });
-            setSessions(data);
-        } catch (e) {
-            showError(__('Failed to load sessions', 'sim-league-toolkit'));
-        } finally {
-            setLoading(false);
+        const response = await ApiClient.get<EventSession[]>(eventSessionsByEventRefEndpoint(eventRefId));
+        if (response.success) {
+            setSessions(response.data);
         }
+        setIsLoading(false);
+
     }, [eventRefId]);
+
+    const createSession = useCallback(async (data: EventSessionFormData): Promise<number | null> => {
+        const response = await ApiClient.post<CreateResponse>(eventSessionRootEndpoint(), data);
+        await refresh();
+        return response.data.id;
+    }, [refresh]);
+
+    const updateSession = useCallback(async (id: number, data: EventSessionFormData): Promise<boolean> => {
+        const response = await ApiClient.put(eventSessionEndpoint(id), data);
+        await refresh();
+        return response.success;
+    }, [refresh]);
+
+    const deleteSession = useCallback(async (id: number): Promise<boolean> => {
+        const response = await ApiClient.delete(eventSessionEndpoint(id));
+        await refresh();
+        return response.success;
+    }, [refresh]);
+
+    const reorderSessions = useCallback(async (sessionIds: number[]): Promise<boolean> => {
+        if (!eventRefId) {
+            return false;
+        }
+
+        const response = await ApiClient.put(eventSessionsReorderEndpoint(eventRefId), sessionIds);
+        await refresh();
+        return response.success;
+    }, [eventRefId, refresh]);
 
     useEffect(() => {
         refresh();
     }, [refresh]);
 
-    const createSession = useCallback(async (data: EventSessionFormData): Promise<number | null> => {
-        try {
-            const response = await apiFetch<CreateResponse>({
-                                                                path: eventSessionPostRoute(),
-                                                                method: 'POST',
-                                                                data,
-                                                            });
-
-            showSuccess(__('Session created successfully', 'sim-league-toolkit'));
-            await refresh();
-            return response.id;
-        } catch (e) {
-            showError(__('Failed to create session', 'sim-league-toolkit'));
-            return null;
-        }
-    }, [refresh]);
-
-    const updateSession = useCallback(async (id: number, data: EventSessionFormData): Promise<boolean> => {
-        try {
-            await apiFetch({
-                               path: eventSessionPutRoute(id),
-                               method: 'PUT',
-                               data,
-                           });
-
-            showSuccess(__('Session updated successfully', 'sim-league-toolkit'));
-            await refresh();
-            return true;
-        } catch (e) {
-            showError(__('Failed to update session', 'sim-league-toolkit'));
-            return false;
-        }
-    }, [refresh]);
-
-    const deleteSession = useCallback(async (id: number): Promise<boolean> => {
-        try {
-            await apiFetch({
-                               path: eventSessionDeleteRoute(id),
-                               method: 'DELETE',
-                           });
-
-            showSuccess(__('Session deleted successfully', 'sim-league-toolkit'));
-            await refresh();
-            return true;
-        } catch (e) {
-            showError(__('Failed to delete session', 'sim-league-toolkit'));
-            return false;
-        }
-    }, [refresh]);
-
-    const reorderSessions = useCallback(async (sessionIds: number[]): Promise<boolean> => {
-        if (!eventRefId) return false;
-
-        try {
-            await apiFetch({
-                               path: eventSessionsReorderPutRoute(eventRefId),
-                               method: 'PUT',
-                               data: { sessionIds },
-                           });
-
-            await refresh();
-            return true;
-        } catch (e) {
-            showError(__('Failed to reorder sessions', 'sim-league-toolkit'));
-            return false;
-        }
-    }, [eventRefId, refresh]);
-
     return {
         sessions,
-        loading,
+        isLoading: isLoading,
         refresh,
         createSession,
         updateSession,

@@ -1,42 +1,38 @@
-import { useState, useEffect } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
+import {useState, useEffect} from '@wordpress/element';
 
-import { GameConfig } from '../types/GameConfig';
-import { gameConfigGetRoute } from '../api/routes/gameConfigApiRoutes';
+import {ApiClient} from '../api/ApiClient';
+import {GameConfig} from '../types/GameConfig';
+import {gameConfigGetEndPoint} from '../api/routes/gameConfigApiEndpoints';
 
 interface UseGameConfigResult {
     config: GameConfig | null;
-    loading: boolean;
+    isLoading: boolean;
 }
 
-export const useGameConfig = (gameId: string | null): UseGameConfigResult => {
+export const useGameConfig = (gameKey: string | null): UseGameConfigResult => {
     const [config, setConfig] = useState<GameConfig | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!gameId) {
+        if (!gameKey) {
             setConfig(null);
             return;
         }
 
         const loadConfig = async () => {
-            setLoading(true);
+            setIsLoading(true);
 
-            try {
-                const data = await apiFetch<GameConfig>({
-                                                            path: gameConfigGetRoute(gameId),
-                                                            method: 'GET',
-                                                        });
-                setConfig(data);
-            } catch (e) {
+            const response = await ApiClient.get<GameConfig>(gameConfigGetEndPoint(gameKey));
+            if (response.success) {
+                setConfig(response.data);
+            } else {
                 setConfig(null);
-            } finally {
-                setLoading(false);
             }
+            setIsLoading(false);
         };
 
         loadConfig();
-    }, [gameId]);
+    }, [gameKey]);
 
-    return { config, loading };
+    return {config, isLoading: isLoading};
 };
