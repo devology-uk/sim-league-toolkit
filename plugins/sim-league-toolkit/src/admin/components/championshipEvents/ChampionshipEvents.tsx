@@ -10,7 +10,7 @@ import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 import {ChampionshipEventCard} from './ChampionshipEventCard';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
-import {championshipEventsGetRoute, championshipEventDeleteRoute} from '../../api/routes/championshipEventsApiRoutes';
+import {championshipEventsEndpoint, championshipEventEndpoint} from '../../api/routes/championshipEventsApiRoutes';
 import {ChampionshipEventEditor} from './ChampionshipEventEditor';
 
 interface ChampionshipEventsProps {
@@ -33,7 +33,7 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
-                     path: championshipEventsGetRoute(championshipId),
+                     path: championshipEventsEndpoint(championshipId),
                      method: HttpMethod.GET,
                  }).then((r: ChampionshipEvent[]) => {
             setData(r ?? []);
@@ -63,7 +63,7 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-                     path: championshipEventDeleteRoute(selectedItem.id),
+                     path: championshipEventEndpoint(selectedItem.id),
                      method: HttpMethod.DELETE,
                  }).then(() => {
             loadData();

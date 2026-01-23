@@ -1,13 +1,13 @@
-import {getApiPath} from './apiRoutes';
+import {championshipRootEndpoint} from './championshipApiEndpoints';
 
-export const championshipEventDeleteRoute = (championshipEventId: number) => {
-    return getApiPath(`championship-event/${championshipEventId}`);
+export const championshipEventEndpoint = (championshipEventId: number) => {
+    return `${championshipEventRootEndpoint()}/${championshipEventId}`;
 };
 
-export const championshipEventsGetRoute = (championshipId: number): string => {
-    return getApiPath(`championship/${championshipId}/events`);
+export const championshipEventsEndpoint = (championshipId: number): string => {
+    return `${championshipRootEndpoint()}/${championshipId}/events`;
 };
 
-export const championshipEventPostRoute = (): string => {
-    return getApiPath(`championship-event`);
+export const championshipEventRootEndpoint = (): string => {
+    return `championship-event`;
 };

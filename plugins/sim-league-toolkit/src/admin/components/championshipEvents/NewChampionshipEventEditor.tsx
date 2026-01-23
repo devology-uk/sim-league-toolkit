@@ -10,7 +10,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEvent} from '../../types/ChampionshipEvent';
-import {championshipEventPostRoute} from '../../api/routes/championshipEventsApiRoutes';
+import {championshipEventRootEndpoint} from '../../api/routes/championshipEventsApiRoutes';
 import {Dialog} from 'primereact/dialog';
 import {Game} from '../../types/Game';
 import {gameGetRoute} from '../../api/routes/gameApiRoutes';
@@ -91,7 +91,7 @@ export const NewChampionshipEventEditor = ({
         }
 
         apiFetch({
-                     path: championshipEventPostRoute(),
+                     path: championshipEventRootEndpoint(),
                      method: HttpMethod.POST,
                      data: entity,
                  }).then(() => {

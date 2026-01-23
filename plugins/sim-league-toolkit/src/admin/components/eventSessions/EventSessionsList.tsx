@@ -1,34 +1,35 @@
-import { useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import {__} from '@wordpress/i18n';
+import {useState} from '@wordpress/element';
 
-import { DataTable, DataTableRowReorderEvent } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import {Column} from 'primereact/column';
+import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
+import {Button} from 'primereact/button';
+import {DataTable, DataTableRowReorderEvent} from 'primereact/datatable';
+import {Dialog} from 'primereact/dialog';
 
-import { useGameConfig } from '../../hooks/useGameConfig';
-import { DynamicSessionForm } from './DynamicSessionForm';
-import {useEventSessions} from '../../hooks/useEventSession';
+import {useGameConfig} from '../../hooks/useGameConfig';
+import {DynamicSessionForm} from './DynamicSessionForm';
 import {EventSession} from '../../types/EventSession';
 import {EventSessionFormData} from '../../types/EventSessionFormData';
+import {SessionTypeLabels} from '../../generated/enums';
+import {useEventSessions} from '../../hooks/useEventSession';
 
-interface Props {
+interface EventSessionListProps {
     eventRefId: number;
     gameId: string;
 }
 
-export const EventSessionList = ({ eventRefId, gameId }: Props) => {
+export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) => {
     const {
         sessions,
-        loading,
+        isLoading,
         createSession,
         updateSession,
         deleteSession,
         reorderSessions,
     } = useEventSessions(eventRefId);
 
-    const { config: gameConfig } = useGameConfig(gameId);
+    const {config: gameConfig} = useGameConfig(gameId);
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [editingSession, setEditingSession] = useState<EventSession | null>(null);
@@ -96,20 +97,20 @@ export const EventSessionList = ({ eventRefId, gameId }: Props) => {
 
     const actionsTemplate = (rowData: EventSession) => {
         return (
-            <div className="flex gap-2">
+            <div className='flex gap-2'>
                 <Button
-                    icon="pi pi-pencil"
+                    icon='pi pi-pencil'
                     rounded
                     text
-                    severity="info"
+                    severity='info'
                     onClick={() => openEditDialog(rowData)}
                     tooltip={__('Edit', 'sim-league-toolkit')}
                 />
                 <Button
-                    icon="pi pi-trash"
+                    icon='pi pi-trash'
                     rounded
                     text
-                    severity="danger"
+                    severity='danger'
                     onClick={() => handleDelete(rowData)}
                     tooltip={__('Delete', 'sim-league-toolkit')}
                 />
@@ -118,39 +119,39 @@ export const EventSessionList = ({ eventRefId, gameId }: Props) => {
     };
 
     return (
-        <div className="event-session-list">
-            <ConfirmDialog />
+        <div className='event-session-list'>
+            <ConfirmDialog/>
 
-            <div className="flex justify-content-between align-items-center mb-3">
+            <div className='flex justify-content-between align-items-center mb-3'>
                 <h3>{__('Sessions', 'sim-league-toolkit')}</h3>
                 <Button
                     label={__('Add Session', 'sim-league-toolkit')}
-                    icon="pi pi-plus"
+                    icon='pi pi-plus'
                     onClick={openCreateDialog}
                 />
             </div>
 
             <DataTable
                 value={sessions}
-                loading={loading}
+                loading={isLoading}
                 reorderableRows
                 onRowReorder={handleReorder}
                 emptyMessage={__('No sessions defined', 'sim-league-toolkit')}
             >
-                <Column rowReorder style={{ width: '3rem' }} />
-                <Column field="name" header={__('Name', 'sim-league-toolkit')} />
+                <Column rowReorder style={{width: '3rem'}}/>
+                <Column field='name' header={__('Name', 'sim-league-toolkit')}/>
                 <Column
-                    field="sessionType"
+                    field='sessionType'
                     header={__('Type', 'sim-league-toolkit')}
                     body={sessionTypeTemplate}
                 />
-                <Column field="startTime" header={__('Start Time', 'sim-league-toolkit')} />
+                <Column field='startTime' header={__('Start Time', 'sim-league-toolkit')}/>
                 <Column
-                    field="duration"
+                    field='duration'
                     header={__('Duration', 'sim-league-toolkit')}
                     body={durationTemplate}
                 />
-                <Column body={actionsTemplate} style={{ width: '8rem' }} />
+                <Column body={actionsTemplate} style={{width: '8rem'}}/>
             </DataTable>
 
             <Dialog
@@ -161,7 +162,7 @@ export const EventSessionList = ({ eventRefId, gameId }: Props) => {
                         ? __('Edit Session', 'sim-league-toolkit')
                         : __('Add Session', 'sim-league-toolkit')
                 }
-                style={{ width: '500px' }}
+                style={{width: '500px'}}
                 modal
             >
                 <DynamicSessionForm

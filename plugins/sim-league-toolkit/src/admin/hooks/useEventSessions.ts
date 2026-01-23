@@ -33,30 +33,30 @@ export const useEventSessions = (eventRefId: number | null): UseEventSessionsRes
 
         setIsLoading(true);
 
-        const response = await ApiClient.get<EventSession[]>(eventSessionsByEventRefEndpoint(eventRefId));
-        if (response.success) {
-            setSessions(response.data);
+        const apiResponse = await ApiClient.get<EventSession[]>(eventSessionsByEventRefEndpoint(eventRefId));
+        if (apiResponse.success) {
+            setSessions(apiResponse.data);
         }
         setIsLoading(false);
 
     }, [eventRefId]);
 
     const createSession = useCallback(async (data: EventSessionFormData): Promise<number | null> => {
-        const response = await ApiClient.post<CreateResponse>(eventSessionRootEndpoint(), data);
+        const apiResponse = await ApiClient.post<CreateResponse>(eventSessionRootEndpoint(), data);
         await refresh();
-        return response.data.id;
+        return apiResponse.data.id;
     }, [refresh]);
 
     const updateSession = useCallback(async (id: number, data: EventSessionFormData): Promise<boolean> => {
-        const response = await ApiClient.put(eventSessionEndpoint(id), data);
+        const apiResponse = await ApiClient.put(eventSessionEndpoint(id), data);
         await refresh();
-        return response.success;
+        return apiResponse.success;
     }, [refresh]);
 
     const deleteSession = useCallback(async (id: number): Promise<boolean> => {
-        const response = await ApiClient.delete(eventSessionEndpoint(id));
+        const apiResponse = await ApiClient.delete(eventSessionEndpoint(id));
         await refresh();
-        return response.success;
+        return apiResponse.success;
     }, [refresh]);
 
     const reorderSessions = useCallback(async (sessionIds: number[]): Promise<boolean> => {
@@ -64,9 +64,9 @@ export const useEventSessions = (eventRefId: number | null): UseEventSessionsRes
             return false;
         }
 
-        const response = await ApiClient.put(eventSessionsReorderEndpoint(eventRefId), sessionIds);
+        const apiResponse = await ApiClient.put(eventSessionsReorderEndpoint(eventRefId), sessionIds);
         await refresh();
-        return response.success;
+        return apiResponse.success;
     }, [eventRefId, refresh]);
 
     useEffect(() => {

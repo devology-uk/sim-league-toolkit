@@ -1,20 +1,12 @@
 import {Entity} from './Entity';
 
-export interface ChampionshipEvent extends Entity{
-    bannerImageUrl: string;
-    championship?: string;
+export interface ChampionshipEventFormData extends Entity {
     championshipId: number;
     description: string;
     isActive: boolean;
-    isCompleted: boolean;
     name: string;
-    ruleSet?: string;
     ruleSetId: number;
     startDateTime: string;
-    track?: string;
     trackId: number;
-    trackLayout?: string;
     trackLayoutId?: number;
 }
-
-
