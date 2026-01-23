@@ -2,7 +2,7 @@
 
   namespace SLTK\Api;
 
-  use SLTK\Config\GameConfigLoader;
+  use SLTK\Config\GameConfigProvider;
   use WP_REST_Request;
   use WP_REST_Response;
 
@@ -30,7 +30,7 @@
     {
       return $this->execute(function()
       {
-        $games = GameConfigLoader::getAvailableGames();
+        $games = GameConfigProvider::getAvailableGames();
         return ApiResponse::success($games);
       });
     }
@@ -43,7 +43,7 @@
 
         try
         {
-          $config = GameConfigLoader::load($gameId);
+          $config = GameConfigProvider::load($gameId);
           return ApiResponse::success($config);
         }
         catch (\InvalidArgumentException $e)

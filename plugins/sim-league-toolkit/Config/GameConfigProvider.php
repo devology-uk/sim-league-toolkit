@@ -2,25 +2,27 @@
 
   namespace SLTK\Config;
 
-  class GameConfigLoader
+  use InvalidArgumentException;
+
+  class GameConfigProvider
   {
     private static array $cache = [];
 
-    public static function load(string $gameId): object
+    public static function load(string $gameKey): object
     {
-      if (!isset(self::$cache[$gameId]))
+      if (!isset(self::$cache[$gameKey]))
       {
-        $path = SLTK_PLUGIN_DIR . "/config/games/{$gameId}.json";
+        $path = SLTK_PLUGIN_DIR . "/config/games/{$gameKey}.json";
 
         if (!file_exists($path))
         {
-          throw new \InvalidArgumentException("Unknown game: {$gameId}");
+          throw new InvalidArgumentException("Unknown game: {$gameKey}");
         }
 
-        self::$cache[$gameId] = json_decode(file_get_contents($path));
+        self::$cache[$gameKey] = json_decode(file_get_contents($path));
       }
 
-      return self::$cache[$gameId];
+      return self::$cache[$gameKey];
     }
 
     public static function getAvailableGames(): array
