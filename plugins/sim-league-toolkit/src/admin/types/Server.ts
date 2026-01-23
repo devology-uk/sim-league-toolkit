@@ -1,4 +1,4 @@
-import {Entity} from "../shared/Entity";
+import {Entity} from "./Entity";
 
 export interface Server extends Entity {
     game?: string;

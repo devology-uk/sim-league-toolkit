@@ -2,7 +2,7 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
-import {Championship} from './Championship';
+import {Championship} from '../../types/Championship';
 
 interface ChampionshipCardProps {
     championship: Championship;

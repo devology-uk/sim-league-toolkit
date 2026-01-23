@@ -7,7 +7,7 @@ import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {HttpMethod} from '../shared/HttpMethod';
-import {Server} from './Server';
+import {Server} from '../../types/Server';
 import {ServerCard} from './ServerCard';
 import {ServerEditor} from './ServerEditor';
 import {serversGetRoute, serverDeleteRoute} from './serverApiRoutes';

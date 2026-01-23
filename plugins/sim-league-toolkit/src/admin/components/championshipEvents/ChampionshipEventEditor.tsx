@@ -11,10 +11,10 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {ChampionshipEvent} from './ChampionshipEvent';
-import {championshipEventPostRoute} from './championshipEventsApiRoutes';
+import {ChampionshipEvent} from '../../types/ChampionshipEvent';
+import {championshipEventPostRoute} from '../../api/routes/championshipEventsApiRoutes';
 import {Dialog} from 'primereact/dialog';
-import {Game} from '../games/Game';
+import {Game} from '../../types/Game';
 import {gameGetRoute} from '../games/gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 import {RuleSetSelector} from '../rules/RuleSetSelector';

@@ -6,7 +6,7 @@ import {DataView} from 'primereact/dataview';
 import {Panel} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {Game} from './Game';
+import {Game} from '../../types/Game';
 import {GameCard} from './GameCard';
 import {gamesGetRoute} from './gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';

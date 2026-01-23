@@ -6,7 +6,7 @@ import apiFetch from "@wordpress/api-fetch";
 import {Button} from "primereact/button";
 import {DataView} from "primereact/dataview";
 
-import {ChampionshipClass} from "./ChampionshipClass";
+import {ChampionshipClass} from "../../types/ChampionshipClass";
 import {ChampionshipClassCard} from "./ChampionshipClassCard";
 import {HttpMethod} from "../shared/HttpMethod";
 import {EventClassSelector} from "../eventClasses/EventClassSelector";

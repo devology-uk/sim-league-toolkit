@@ -4,8 +4,8 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {RuleSet} from "./RuleSet";
-import {ListItem} from "../shared/ListItem";
+import {RuleSet} from "../../types/RuleSet";
+import {ListItem} from "../../types/ListItem";
 import {ruleSetsGetRoute} from './rulesApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 

@@ -12,12 +12,12 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from "../shared/BusyIndicator";
 import {CancelButton} from '../shared/CancelButton';
-import {Championship} from "./Championship";
+import {Championship} from "../../types/Championship";
 import {ChampionshipClasses} from "./ChampionshipClasses";
 import {ChampionshipEvents} from '../championshipEvents/ChampionshipEvents';
 import {championshipGetRoute, championshipPostRoute} from './championshipApiRoutes';
 import {ChampionshipTypes, translateChampionshipType} from "./ChampionshipTypes";
-import {Game} from "../games/Game";
+import {Game} from "../../types/Game";
 import {gameGetRoute} from '../games/gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
 import {PlatformSelector} from "../games/PlatformSelector";

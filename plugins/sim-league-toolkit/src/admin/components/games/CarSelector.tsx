@@ -4,10 +4,10 @@ import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {Car} from './Car';
+import {Car} from '../../types/Car';
 import {carsByClassGetRoute} from './gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
-import {ListItem} from '../shared/ListItem';
+import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
 
 interface CarSelectorProps {

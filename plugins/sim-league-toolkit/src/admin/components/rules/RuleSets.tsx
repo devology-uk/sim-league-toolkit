@@ -7,7 +7,7 @@ import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {HttpMethod} from '../shared/HttpMethod';
-import {RuleSet} from './RuleSet';
+import {RuleSet} from '../../types/RuleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';
 import {ruleSetsGetRoute, ruleSetDeleteRoute} from './rulesApiRoutes';

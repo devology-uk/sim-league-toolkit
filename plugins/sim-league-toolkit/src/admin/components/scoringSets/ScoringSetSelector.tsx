@@ -4,8 +4,8 @@ import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ListItem} from "../shared/ListItem";
-import {ScoringSet} from "./ScoringSet";
+import {ListItem} from "../../types/ListItem";
+import {ScoringSet} from "../../types/ScoringSet";
 import {ValidationError} from '../shared/ValidationError';
 import {scoringSetsGetRoute} from './scoringSetsApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';

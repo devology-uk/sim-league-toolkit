@@ -5,10 +5,10 @@ import {__} from '@wordpress/i18n';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {HttpMethod} from '../shared/HttpMethod';
-import {ListItem} from "../shared/ListItem";
-import {Track} from "./Track";
+import {ListItem} from "../../types/ListItem";
+import {Track} from "../../types/Track";
 import {tracksGetRoute, trackGetRoute} from './gameApiRoutes';
-import {TrackLayout} from "./TrackLayout";
+import {TrackLayout} from "../../types/TrackLayout";
 import {ValidationError} from '../shared/ValidationError';
 
 interface TrackSelectorProps {

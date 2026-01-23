@@ -1,4 +1,4 @@
-import {ServerSettingDefinition} from "./ServerSettingDefinition";
+import {ServerSettingDefinition} from "../../types/ServerSettingDefinition";
 
 const accSettings: ServerSettingDefinition[] = [
     {name: "tcpPort", default: '9201', editableIfHosted: false},

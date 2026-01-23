@@ -6,7 +6,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {EventClass} from './EventClass';
+import {EventClass} from '../../types/EventClass';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
 import {eventClassesGetRoute, eventClassDeleteRoute} from './eventClassesApiRoutes';

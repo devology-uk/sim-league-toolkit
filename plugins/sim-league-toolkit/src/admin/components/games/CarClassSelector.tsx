@@ -6,7 +6,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {carClassesGetRoute} from './gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
-import {ListItem} from '../shared/ListItem';
+import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
 
 export const CAR_CLASS_SELECTOR_DEFAULT_VALUE: string = 'any';

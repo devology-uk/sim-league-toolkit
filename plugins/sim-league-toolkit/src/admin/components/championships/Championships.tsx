@@ -6,7 +6,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {Championship} from './Championship';
+import {Championship} from '../../types/Championship';
 import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
 import {HttpMethod} from '../shared/HttpMethod';

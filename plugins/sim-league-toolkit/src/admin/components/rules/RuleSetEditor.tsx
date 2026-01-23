@@ -11,7 +11,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {HttpMethod} from '../shared/HttpMethod';
 import {RuleList} from './RuleList';
-import {RuleSet} from './RuleSet';
+import {RuleSet} from '../../types/RuleSet';
 import {ruleSetGetRoute, ruleSetPostRoute} from './rulesApiRoutes';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';

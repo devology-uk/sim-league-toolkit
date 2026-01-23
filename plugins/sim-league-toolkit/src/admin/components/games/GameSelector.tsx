@@ -3,10 +3,10 @@ import {useEffect, useState} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-import {Game} from './Game';
+import {Game} from '../../types/Game';
 import {gamesGetRoute} from './gameApiRoutes';
 import {HttpMethod} from '../shared/HttpMethod';
-import {ListItem} from '../shared/ListItem';
+import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
 
 interface GameSelectorProps {

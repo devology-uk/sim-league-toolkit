@@ -4,7 +4,7 @@ import {useState, useEffect} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ChampionshipTypes, translateChampionshipType} from "./ChampionshipTypes";
-import {ListItem} from "../shared/ListItem";
+import {ListItem} from "../../types/ListItem";
 
 interface ChampionshipTypeSelectorProps {
     onSelectedItemChanged: (type: ChampionshipTypes) => void;

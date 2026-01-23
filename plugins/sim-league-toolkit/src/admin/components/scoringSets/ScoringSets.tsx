@@ -9,7 +9,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {HttpMethod} from '../shared/HttpMethod';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
-import {ScoringSet} from './ScoringSet';
+import {ScoringSet} from '../../types/ScoringSet';
 import {scoringSetsGetRoute, scoringSetDeleteRoute} from './scoringSetsApiRoutes';
 
 export const ScoringSets = () => {

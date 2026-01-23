@@ -13,7 +13,7 @@ import {GameSelector} from '../games/GameSelector';
 import {HttpMethod} from '../shared/HttpMethod';
 import {PlatformSelector} from '../games/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {Server} from './Server';
+import {Server} from '../../types/Server';
 import {serverGetRoute, serverPostRoute} from './serverApiRoutes';
 import {ServerSettingList} from './ServerSettingList';
 import {ValidationError} from '../shared/ValidationError';

@@ -3,7 +3,7 @@ import {__} from '@wordpress/i18n';
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
 
-import {ChampionshipEvent} from './ChampionshipEvent';
+import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 
 interface ChampionshipEventCardProps {
     championshipEvent: ChampionshipEvent,
