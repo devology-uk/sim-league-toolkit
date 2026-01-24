@@ -1,13 +1,15 @@
+import {__} from '@wordpress/i18n';
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
 import {ApiClient} from '../api/ApiClient';
 import {CreateResponse} from '../types/CreateResponse';
 import {Server} from '../types/Server';
-import {
-    serverEndpoint,
-    serversEndpoint
-} from '../api/endpoints/serverApiEndpoints';
 import {ServerFormData} from '../types/ServerFormData';
+import {
+    serversGetEndpoint,
+    serverPostEndpoint,
+    serverDeleteEndpoint, serverPutEndpoint
+} from '../api/endpoints/serverApiEndpoints';
 
 interface UseServersResult {
     createServer: (data: ServerFormData) => Promise<number | null>;
@@ -25,7 +27,7 @@ export const useServers = (): UseServersResult => {
     const refresh = useCallback(async () => {
         setIsLoading(true);
 
-        const apiResponse = await ApiClient.get<Server[]>(serversEndpoint());
+        const apiResponse = await ApiClient.get<Server[]>(serversGetEndpoint());
         if (apiResponse.success) {
             setServers(apiResponse.data ?? []);
         }
@@ -34,20 +36,33 @@ export const useServers = (): UseServersResult => {
     }, []);
 
     const createServer = useCallback(async (data: ServerFormData): Promise<number | null> => {
-        const apiResponse = await ApiClient.post<CreateResponse>(serversEndpoint(), data);
-        await refresh();
-        return apiResponse.data.id;
+        const apiResponse = await ApiClient.post<CreateResponse>(serverPostEndpoint(), data);
+        if (apiResponse.success && apiResponse.data) {
+
+            ApiClient.showSuccess(__('Server created successfully', 'sim-league-toolkit'));
+            await refresh();
+            return apiResponse.data.id;
+        }
+
+        return null;
+
     }, [refresh]);
 
     const deleteServer = useCallback(async (id: number): Promise<boolean> => {
-        const apiResponse = await ApiClient.delete(serverEndpoint(id));
-        await refresh();
+        const apiResponse = await ApiClient.delete(serverDeleteEndpoint(id));
+        if (apiResponse.success) {
+            ApiClient.showSuccess(__('Server deleted successfully', 'sim-league-toolkit'));
+            await refresh();
+        }
         return apiResponse.success;
     }, [refresh]);
 
     const updateServer = useCallback(async (id: number, data: ServerFormData): Promise<boolean> => {
-        const apiResponse = await ApiClient.put(serverEndpoint(id), data);
-        await refresh();
+        const apiResponse = await ApiClient.put(serverPutEndpoint(id), data);
+        if (apiResponse.success) {
+            ApiClient.showSuccess(__('Server updated successfully', 'sim-league-toolkit'));
+            await refresh();
+        }
         return apiResponse.success;
     }, [refresh]);
 
@@ -64,6 +79,6 @@ export const useServers = (): UseServersResult => {
         refresh,
         updateServer,
     };
-    
-}
+
+};
 

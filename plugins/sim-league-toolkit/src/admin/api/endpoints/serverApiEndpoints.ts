@@ -1,17 +1,43 @@
-import {getApiPath} from './apiRoutes';
-
-const serverRootEndpoint =() => {
+const serverRootEndpoint = () => {
     return 'server';
 };
 
-export const serverEndpoint = (serverId: number): any => {
+const serversRootEndpoint = () => {
+    return 'servers';
+};
+
+const serverSettingRootEndpoint = () => {
+    return 'server-setting';
+};
+
+export const serverDeleteEndpoint = (serverId: number): string => {
     return `${serverRootEndpoint()}/${serverId}`;
-}
+};
 
-export const serversEndpoint = () => {
-    return serverRootEndpoint();
-}
+export const serversGetEndpoint = () => {
+    return serversRootEndpoint();
+};
 
-export const serverSettingsEndpoint = (serverId: number): any => {
+export const serverPostEndpoint = () => {
+    return serversRootEndpoint();
+};
+
+export const serverPutEndpoint = (serverId: number): string => {
+    return `${serverRootEndpoint()}/${serverId}`;
+};
+
+export const serverSettingDeleteEndpoint = (serverSettingId: number): string => {
+    return `${serverSettingRootEndpoint()}/${serverSettingId}`;
+};
+
+export const serverSettingsGetEndpoint = (serverId: number): string => {
     return `${serverRootEndpoint()}/${serverId}/settings`;
-}
+};
+
+export const serverSettingPostEndpoint = (serverId: number): string => {
+    return `${serverRootEndpoint()}/${serverId}/settings`;
+};
+
+export const serverSettingPutEndpoint = (serverSettingId: number): string => {
+    return `${serverSettingRootEndpoint()}/${serverSettingId}`;
+};
