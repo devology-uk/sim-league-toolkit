@@ -9,7 +9,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {EventClass} from '../../types/EventClass';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
-import {eventClassesGetRoute, eventClassDeleteRoute} from '../../api/routes/eventClassesApiRoutes';
+import {eventClassesGetRoute, eventClassDeleteRoute} from '../../api/endpoints/eventClassesApiRoutes';
 import {HttpMethod} from '../../enums/HttpMethod';
 
 export const EventClasses = () => {

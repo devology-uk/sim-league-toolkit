@@ -14,7 +14,7 @@ import {HttpMethod} from '../../enums/HttpMethod';
 import {PlatformSelector} from '../games/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {Server} from '../../types/Server';
-import {serverGetRoute, serverPostRoute} from '../../api/routes/serverApiRoutes';
+import {serverGetRoute, serverPostRoute} from '../../api/endpoints/serverApiRoutes';
 import {ServerSettingList} from './ServerSettingList';
 import {ValidationError} from '../shared/ValidationError';
 

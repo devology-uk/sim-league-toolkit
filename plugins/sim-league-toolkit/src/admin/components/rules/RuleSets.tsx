@@ -10,7 +10,7 @@ import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSet} from '../../types/RuleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';
-import {ruleSetsGetRoute, ruleSetDeleteRoute} from '../../api/routes/rulesApiRoutes';
+import {ruleSetsGetRoute, ruleSetDeleteRoute} from '../../api/endpoints/rulesApiRoutes';
 
 export const RuleSets = () => {
 

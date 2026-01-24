@@ -7,7 +7,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {Platform} from '../../types/Platform';
-import {platformsGetRoute} from '../../api/routes/gameApiRoutes';
+import {platformsGetRoute} from '../../api/endpoints/gameApiRoutes';
 import {ValidationError} from '../shared/ValidationError';
 
 interface PlatformSelectorProps {

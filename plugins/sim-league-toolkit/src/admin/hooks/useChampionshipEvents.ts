@@ -3,7 +3,7 @@ import {useState, useEffect, useCallback} from '@wordpress/element';
 import {ApiClient} from '../api/ApiClient';
 import {ChampionshipEvent} from '../types/ChampionshipEvent';
 import {ChampionshipEventFormData} from '../types/ChampionshipEventFormData';
-import {championshipEventsEndpoint, championshipEventEndpoint} from '../api/routes/championshipEventsApiRoutes';
+import {championshipEventsEndpoint, championshipEventEndpoint} from '../api/endpoints/championshipEventsApiRoutes';
 import {CreateResponse} from '../types/CreateResponse';
 
 interface UseChampionshipEventsResult {

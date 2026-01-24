@@ -10,7 +10,7 @@ import {HttpMethod} from '../../enums/HttpMethod';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
 import {ScoringSet} from '../../types/ScoringSet';
-import {scoringSetsGetRoute, scoringSetDeleteRoute} from '../../api/routes/scoringSetsApiRoutes';
+import {scoringSetsGetRoute, scoringSetDeleteRoute} from '../../api/endpoints/scoringSetsApiRoutes';
 
 export const ScoringSets = () => {
     const [isBusy, setIsBusy] = useState(false);

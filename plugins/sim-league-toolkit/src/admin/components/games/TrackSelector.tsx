@@ -7,7 +7,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from "../../types/ListItem";
 import {Track} from "../../types/Track";
-import {tracksGetRoute, trackGetRoute} from '../../api/routes/gameApiRoutes';
+import {tracksGetRoute, trackGetRoute} from '../../api/endpoints/gameApiRoutes';
 import {TrackLayout} from "../../types/TrackLayout";
 import {ValidationError} from '../shared/ValidationError';
 

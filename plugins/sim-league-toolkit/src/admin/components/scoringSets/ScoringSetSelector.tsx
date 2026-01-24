@@ -7,7 +7,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {ListItem} from "../../types/ListItem";
 import {ScoringSet} from "../../types/ScoringSet";
 import {ValidationError} from '../shared/ValidationError';
-import {scoringSetsGetRoute} from '../../api/routes/scoringSetsApiRoutes';
+import {scoringSetsGetRoute} from '../../api/endpoints/scoringSetsApiRoutes';
 import {HttpMethod} from '../../enums/HttpMethod';
 
 interface ScoringSetSelectorProps {

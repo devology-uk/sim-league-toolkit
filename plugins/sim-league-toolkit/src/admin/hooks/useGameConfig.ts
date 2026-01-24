@@ -2,7 +2,7 @@ import {useState, useEffect} from '@wordpress/element';
 
 import {ApiClient} from '../api/ApiClient';
 import {GameConfig} from '../types/GameConfig';
-import {gameConfigGetEndPoint} from '../api/routes/gameConfigApiEndpoints';
+import {gameConfigGetEndPoint} from '../api/endpoints/gameConfigApiEndpoints';
 
 interface UseGameConfigResult {
     config: GameConfig | null;

@@ -11,7 +11,7 @@ import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
-import {championshipDeleteRoute, championshipsGetRoute} from '../../api/routes/championshipApiRoutes';
+import {championshipDeleteRoute, championshipsGetRoute} from '../../api/endpoints/championshipApiRoutes';
 
 export const Championships = () => {
     const [isAdding, setIsAdding] = useState(false);

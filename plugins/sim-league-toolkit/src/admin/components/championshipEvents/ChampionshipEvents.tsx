@@ -10,7 +10,7 @@ import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 import {ChampionshipEventCard} from './ChampionshipEventCard';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
-import {championshipEventsEndpoint, championshipEventEndpoint} from '../../api/routes/championshipEventsApiRoutes';
+import {championshipEventsEndpoint, championshipEventEndpoint} from '../../api/endpoints/championshipEventsApiRoutes';
 import {ChampionshipEventEditor} from './ChampionshipEventEditor';
 
 interface ChampionshipEventsProps {

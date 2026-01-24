@@ -13,7 +13,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveButton} from '../shared/SaveButton';
-import {scoresGetRoute, scoreDeleteRoute, scorePostRoute} from '../../api/routes/scoringSetsApiRoutes';
+import {scoresGetRoute, scoreDeleteRoute, scorePostRoute} from '../../api/endpoints/scoringSetsApiRoutes';
 import {ScoringSetScore} from '../../types/ScoringSetScore';
 import {ValidationError} from '../shared/ValidationError';
 

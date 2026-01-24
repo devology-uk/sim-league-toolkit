@@ -11,7 +11,7 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {getServerSettings} from './serverSettingProvider';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {ServerSetting} from '../../types/ServerSetting';
-import {serverSettingsGetRoute, serverSettingsPostRoute} from '../../api/routes/serverApiRoutes';
+import {serverSettingsGetRoute, serverSettingsPostRoute} from '../../api/endpoints/serverApiRoutes';
 
 interface ServerSettingProps {
     serverId: number;

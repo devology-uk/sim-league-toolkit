@@ -12,14 +12,14 @@ const showErrorNotice = (message: string): void => {
     dispatch(noticesStore).createErrorNotice(message, {
         isDismissible: true,
         type: 'snackbar',
-    });
+    }).then(_ => {});
 };
 
 const showSuccessNotice = (message: string): void => {
     dispatch(noticesStore).createSuccessNotice(message, {
         isDismissible: true,
         type: 'snackbar',
-    });
+    }).then(_ => {});
 };
 
 const handleApiError = (error: unknown): ApiError => {

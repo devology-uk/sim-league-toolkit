@@ -6,7 +6,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {RuleSet} from "../../types/RuleSet";
 import {ListItem} from "../../types/ListItem";
-import {ruleSetsGetRoute} from '../../api/routes/rulesApiRoutes';
+import {ruleSetsGetRoute} from '../../api/endpoints/rulesApiRoutes';
 import {HttpMethod} from '../../enums/HttpMethod';
 
 interface RuleSetSelectorProps {

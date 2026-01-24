@@ -8,7 +8,7 @@ import {
     eventSessionsReorderEndpoint,
     eventSessionsByEventRefEndpoint,
     eventSessionRootEndpoint,
-} from '../api/routes/eventSessionApiEndpoints';
+} from '../api/endpoints/eventSessionApiEndpoints';
 import {EventSessionFormData} from '../types/EventSessionFormData';
 
 interface UseEventSessionsResult {

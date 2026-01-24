@@ -1,12 +1,9 @@
 import {Entity} from './Entity';
 
-export interface Server extends Entity {
-    game?: string;
+export interface ServerFormData extends Entity {
     gameId: number;
     gameKey?: string;
     name: string;
     isHostedServer: boolean;
-    platform?: string;
     platformId: number;
 }
-

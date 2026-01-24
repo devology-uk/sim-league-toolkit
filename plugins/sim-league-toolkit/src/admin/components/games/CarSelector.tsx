@@ -5,7 +5,7 @@ import {useEffect, useState} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {Car} from '../../types/Car';
-import {carsByClassGetRoute} from '../../api/routes/gameApiRoutes';
+import {carsByClassGetRoute} from '../../api/endpoints/gameApiRoutes';
 import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
