@@ -12,22 +12,22 @@ import {
 import {EventSessionFormData} from '../types/EventSessionFormData';
 
 interface UseEventSessionsResult {
-    createSession: (data: EventSessionFormData) => Promise<number | null>;
-    deleteSession: (id: number) => Promise<boolean>;
+    createEventSession: (data: EventSessionFormData) => Promise<number | null>;
+    deleteEventSession: (id: number) => Promise<boolean>;
+    eventSessions: EventSession[];
     isLoading: boolean;
     refresh: () => Promise<void>;
-    reorderSessions: (sessionIds: number[]) => Promise<boolean>;
-    sessions: EventSession[];
-    updateSession: (id: number, data: EventSessionFormData) => Promise<boolean>;
+    reorderEventSessions: (sessionIds: number[]) => Promise<boolean>;
+    updateEventSession: (id: number, data: EventSessionFormData) => Promise<boolean>;
 }
 
 export const useEventSessions = (eventRefId: number | null): UseEventSessionsResult => {
-    const [sessions, setSessions] = useState<EventSession[]>([]);
+    const [eventSessions, setEventSessions] = useState<EventSession[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const refresh = useCallback(async () => {
         if (!eventRefId) {
-            setSessions([]);
+            setEventSessions([]);
             return;
         }
 
@@ -35,31 +35,25 @@ export const useEventSessions = (eventRefId: number | null): UseEventSessionsRes
 
         const apiResponse = await ApiClient.get<EventSession[]>(eventSessionsByEventRefEndpoint(eventRefId));
         if (apiResponse.success) {
-            setSessions(apiResponse.data);
+            setEventSessions(apiResponse.data);
         }
         setIsLoading(false);
 
     }, [eventRefId]);
 
-    const createSession = useCallback(async (data: EventSessionFormData): Promise<number | null> => {
+    const createEventSession = useCallback(async (data: EventSessionFormData): Promise<number | null> => {
         const apiResponse = await ApiClient.post<CreateResponse>(eventSessionRootEndpoint(), data);
         await refresh();
         return apiResponse.data.id;
     }, [refresh]);
 
-    const updateSession = useCallback(async (id: number, data: EventSessionFormData): Promise<boolean> => {
-        const apiResponse = await ApiClient.put(eventSessionEndpoint(id), data);
-        await refresh();
-        return apiResponse.success;
-    }, [refresh]);
-
-    const deleteSession = useCallback(async (id: number): Promise<boolean> => {
+    const deleteEventSession = useCallback(async (id: number): Promise<boolean> => {
         const apiResponse = await ApiClient.delete(eventSessionEndpoint(id));
         await refresh();
         return apiResponse.success;
     }, [refresh]);
 
-    const reorderSessions = useCallback(async (sessionIds: number[]): Promise<boolean> => {
+    const reorderEventSessions = useCallback(async (sessionIds: number[]): Promise<boolean> => {
         if (!eventRefId) {
             return false;
         }
@@ -69,17 +63,24 @@ export const useEventSessions = (eventRefId: number | null): UseEventSessionsRes
         return apiResponse.success;
     }, [eventRefId, refresh]);
 
+    const updateEventSession = useCallback(async (id: number, data: EventSessionFormData): Promise<boolean> => {
+        const apiResponse = await ApiClient.put(eventSessionEndpoint(id), data);
+        await refresh();
+        return apiResponse.success;
+    }, [refresh]);
+
     useEffect(() => {
-        refresh();
+        refresh().then(_ => {
+        });
     }, [refresh]);
 
     return {
-        sessions,
-        isLoading: isLoading,
+        createEventSession,
+        deleteEventSession,
+        eventSessions,
+        isLoading,
         refresh,
-        createSession,
-        updateSession,
-        deleteSession,
-        reorderSessions,
+        reorderEventSessions,
+        updateEventSession,
     };
 };
