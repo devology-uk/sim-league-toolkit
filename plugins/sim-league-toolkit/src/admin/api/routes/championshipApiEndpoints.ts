@@ -4,20 +4,12 @@ export const championshipRootEndpoint = (): string => {
     return 'championship';
 };
 
-export const championshipDeleteRoute = (championshipId: number): string => {
-    return getApiPath(`${championshipRootEndpoint()}/${championshipId}}`);
-};
+export const championshipsEndPoint = () => {
+    return 'championships';
+}
 
-export const championshipGetRoute = (championshipId: number): string => {
-    return getApiPath(`${championshipRootEndpoint()}/${championshipId}`);
-};
-
-export const championshipPostRoute = (): string => {
-    return getApiPath(`${championshipRootEndpoint()}`);
-};
-
-export const championshipsGetRoute = (): string => {
-    return getApiPath(`${championshipRootEndpoint()}`);
+export const championshipEndPoint = (championshipId: number): string => {
+    return `${championshipRootEndpoint()}/${championshipId}}`;
 };
 
 export const championshipClassesGetRoute = (championshipId: number): string => {
