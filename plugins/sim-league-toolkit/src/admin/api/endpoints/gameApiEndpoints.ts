@@ -10,6 +10,10 @@ export const carsByClassGetEndpoint = (gameId: number, carClass: string): string
     return `${gameRootEndpoint}/${gameId}/cars/${carClass}`;
 }
 
+export const gameGetApiEndpoint = (gameId: number): any => {
+    return `${gameRootEndpoint}/${gameId}`;
+}
+
 export const gamesGetEndpoint = (): string => {
     return gamesRootEndpoint;
 }

@@ -1,4 +1,4 @@
-import {Entity} from "./Entity";
+import {Entity} from './Entity';
 
 export interface EventClass extends Entity {
     carClass: string;
@@ -13,3 +13,4 @@ export interface EventClass extends Entity {
     singleCarId?: number;
     singleCarName?: string;
 }
+

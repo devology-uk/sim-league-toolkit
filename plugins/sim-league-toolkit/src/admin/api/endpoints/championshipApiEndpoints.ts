@@ -1,31 +1,21 @@
-const championshipRootEndpoint = (): string => {
-    return 'championship';
-};
+const championshipRootEndpoint = 'championship';
 
-const championshipsEndPoint = () => {
-    return 'championships';
-}
+const championshipsRootEndpoint = 'championships';
 
-const championshipClassRootEndpoint = (): string => {
-    return 'championship-class';
-};
+const championshipClassRootEndpoint = 'championship-class';
 
-const championshipEventRootEndpoint = (): string => {
-    return 'championship-event';
-};
+const championshipEventRootEndpoint = 'championship-event';
 
-export const championshipGetEndPoint = (championshipId: number): string => {
-    return `${championshipRootEndpoint()}/${championshipId}}`;
-};
+export const championshipGetEndPoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}}`;
 
-export const championshipClassesGetEndpoint = (championshipId: number): string => {
-    return `${championshipRootEndpoint()}/${championshipId}/classes`;
-};
+export const championshipClassesGetEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/classes`;
 
-export const championshipClassesPostEndpoint = (championshipId: number): string => {
-    return `${championshipRootEndpoint()}/${championshipId}/classes`;
-};
+export const championshipClassesPostEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/classes`;
 
-export const championshipClassDeleteEndpoint = (eventClassId: number) => {
-    return `${championshipClassRootEndpoint()}/${eventClassId}`;
-};
+export const championshipClassDeleteEndpoint = (eventClassId: number) => `${championshipClassRootEndpoint}/${eventClassId}`;
+
+export const championshipEventEndpoint = (championshipEventId: number) => `${championshipEventRootEndpoint}/${championshipEventId}`;
+
+export const championshipEventsEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/events`;
+
+export const championshipsGetEndpoint = () => championshipsRootEndpoint;
