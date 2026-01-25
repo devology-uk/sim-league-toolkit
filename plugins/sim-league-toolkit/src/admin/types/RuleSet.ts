@@ -1,4 +1,4 @@
-import {RuleSetRule} from "./RuleSetRule";
+import {RuleSetRule} from './RuleSetRule';
 
 export interface RuleSet {
     id?: number;
@@ -6,3 +6,4 @@ export interface RuleSet {
     description: string;
     rules?: RuleSetRule[];
 }
+

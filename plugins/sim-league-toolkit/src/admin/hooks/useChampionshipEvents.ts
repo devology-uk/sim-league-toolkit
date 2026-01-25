@@ -3,8 +3,9 @@ import {useState, useEffect, useCallback} from '@wordpress/element';
 import {ApiClient} from '../api/ApiClient';
 import {ChampionshipEvent} from '../types/ChampionshipEvent';
 import {ChampionshipEventFormData} from '../types/ChampionshipEventFormData';
-import {championshipEventsEndpoint, championshipEventEndpoint} from '../api/endpoints/championshipEventsApiRoutes';
+import {championshipEventsEndpoint, championshipEventEndpoint} from '../api/endpoints/championshipEventApiEndpoints';
 import {CreateResponse} from '../types/CreateResponse';
+import {__} from '@wordpress/i18n';
 
 interface UseChampionshipEventsResult {
     championshipEvents: ChampionshipEvent[];
@@ -36,20 +37,30 @@ export const useChampionshipEvents = (championshipId: number): UseChampionshipEv
     }, [championshipId]);
 
     const createChampionshipEvent = useCallback(async (data: ChampionshipEventFormData): Promise<number | null> => {
-        const apiResponse = await ApiClient.post<CreateResponse>(championshipEventsEndpoint(championshipId), data);
-        await refresh();
-        return apiResponse.data.id;
+        const apiResponse = await ApiClient.post<CreateResponse>(championshipEventsEndpoint(championshipId), data); if (apiResponse.success && apiResponse.data) {
+
+            ApiClient.showSuccess(__('Championship Event created successfully', 'sim-league-toolkit'));
+            await refresh();
+            return apiResponse.data.id;
+        }
+
+        return null;
     }, [refresh]);
 
     const deleteChampionshipEvent = useCallback(async (id: number): Promise<boolean> => {
-        const apiResponse = await ApiClient.delete(championshipEventEndpoint(id));
-        await refresh();
+        const apiResponse = await ApiClient.delete(championshipEventEndpoint(id)); if (apiResponse.success) {
+            ApiClient.showSuccess(__('Championship Event deleted successfully', 'sim-league-toolkit'));
+            await refresh();
+        }
         return apiResponse.success;
     }, [refresh]);
 
     const updateChampionshipEvent = useCallback(async (id: number, data: ChampionshipEventFormData): Promise<boolean> => {
         const apiResponse = await ApiClient.put(championshipEventsEndpoint(id), data);
-        await refresh();
+        if (apiResponse.success) {
+            ApiClient.showSuccess(__('Championship Event updated successfully', 'sim-league-toolkit'));
+            await refresh();
+        }
         return apiResponse.success;
     }, [refresh]);
 

@@ -3,3 +3,4 @@ export interface RuleSetRule {
     ruleSetId: number;
     rule: string;
 }
+

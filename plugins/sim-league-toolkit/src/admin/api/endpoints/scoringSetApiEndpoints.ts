@@ -10,8 +10,8 @@ const scoringSetScoreRootEndpoint = () => {
     return 'scoring-set-score';
 };
 
-export const scoringSetDeleteEndpoint = (serverId: number): string => {
-    return `${scoringSetRootEndpoint()}/${serverId}`;
+export const scoringSetDeleteEndpoint = (scoringSetId: number): string => {
+    return `${scoringSetRootEndpoint()}/${scoringSetId}`;
 };
 
 export const scoringSetsGetEndpoint = () => {
@@ -22,20 +22,20 @@ export const scoringSetPostEndpoint = () => {
     return scoringSetsRootEndpoint();
 };
 
-export const scoringSetPutEndpoint = (serverId: number): string => {
-    return `${scoringSetRootEndpoint()}/${serverId}`;
+export const scoringSetPutEndpoint = (scoringSetId: number): string => {
+    return `${scoringSetRootEndpoint()}/${scoringSetId}`;
 };
 
 export const scoringSetScoreDeleteEndpoint = (scoringSetScoreId: number): string => {
     return `${scoringSetScoreRootEndpoint()}/${scoringSetScoreId}`;
 };
 
-export const scoringSetScoresGetEndpoint = (serverId: number): string => {
-    return `${scoringSetRootEndpoint()}/${serverId}/scores`;
+export const scoringSetScoresGetEndpoint = (scoringSetId: number): string => {
+    return `${scoringSetRootEndpoint()}/${scoringSetId}/scores`;
 };
 
-export const scoringSetScorePostEndpoint = (serverId: number): string => {
-    return `${scoringSetRootEndpoint()}/${serverId}/scores`;
+export const scoringSetScorePostEndpoint = (scoringSetId: number): string => {
+    return `${scoringSetRootEndpoint()}/${scoringSetId}/scores`;
 };
 
 export const scoringSetScorePutEndpoint = (scoringSetScoreId: number): string => {
