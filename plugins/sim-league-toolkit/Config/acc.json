@@ -1,0 +1,19 @@
+{
+  "serverSettings": [
+    {"name": "tcpPort", "default": 9201, "canEditIfHosted": false},
+    {"name": "udpPort", "default": 9201, "canEditIfHosted": false},
+    {"name": "lanDiscovery", "default": 1, "canEditIfHosted": true},
+    {"name": "maxCarSlots", "default": 85, "canEditIfHosted": false},
+    {"name": "maxConnections", "default": 85, "canEditIfHosted": false},
+    {"name": "publicIP", "default": "", "canEditIfHosted": false},
+    {"name": "adminPassword", "default": "", "canEditIfHosted": true},
+    {"name": "password", "default": "", "canEditIfHosted": true},
+    {"name": "spectatorPassword", "default": "", "canEditIfHosted": true},
+    {"name": "centralEntryListPath", "default": "", "canEditIfHosted": true},
+    {"name": "dumpLeaderboards", "default": 1, "canEditIfHosted": true},
+    {"name": "ignorePrematureDisconnects", "default": 1, "canEditIfHosted": true},
+    {"name": "randomizeTrackWhenEmpty", "default": 1, "canEditIfHosted": true},
+    {"name": "registerToLobby", "default": 1, "canEditIfHosted": true},
+    {"name": "serverName", "default": "", "canEditIfHosted": true}
+  ]
+}
