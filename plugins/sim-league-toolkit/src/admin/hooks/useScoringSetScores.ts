@@ -9,18 +9,18 @@ import {
     scoringSetScoresGetEndpoint,
     scoringSetScoreDeleteEndpoint,
     scoringSetScorePutEndpoint, scoringSetScorePostEndpoint
-} from '../api/endpoints/scoringSetsApiEndpoints';
+} from '../api/endpoints/scoringSetApiEndpoints';
 
 interface UseScoringSetScoresResult {
-    createScoringSetScore: (serverId: number, data: ScoringSetScoreFormData) => Promise<number | null>;
+    createScoringSetScore: (scoringSetId: number, data: ScoringSetScoreFormData) => Promise<number | null>;
     deleteScoringSetScore: (id: number) => Promise<boolean>;
     isLoading: boolean;
     refresh: () => Promise<void>
     scoringSetScores: ScoringSetScore[];
-    updateScoringSetScore: (id: number, data: ScoringSetScoreFormData) => Promise<void>;
+    updateScoringSetScore: (id: number, data: ScoringSetScoreFormData) => Promise<boolean>;
 }
 
-export const useScoringSetScores = (serverId: number | null) => {
+export const useScoringSetScores = (serverId: number | null): UseScoringSetScoresResult => {
     const [scoringSetScores, setScoringSetScores] = useState<ScoringSetScore[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +42,7 @@ export const useScoringSetScores = (serverId: number | null) => {
         setIsLoading(false);
     }, [serverId]);
 
-    const createScoringSetScore = useCallback(async (data: ScoringSetScoreFormData): Promise<number | null> => {
+    const createScoringSetScore = useCallback(async (scoringSetId: number, data: ScoringSetScoreFormData): Promise<number | null> => {
         const response = await ApiClient.post<CreateResponse>(
             scoringSetScorePostEndpoint(serverId!),
             data

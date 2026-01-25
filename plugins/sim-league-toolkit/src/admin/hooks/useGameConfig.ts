@@ -31,7 +31,7 @@ export const useGameConfig = (gameKey: string | null): UseGameConfigResult => {
             setIsLoading(false);
         };
 
-        loadConfig();
+        loadConfig().then(_ => {});
     }, [gameKey]);
 
     return {config, isLoading: isLoading};
