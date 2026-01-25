@@ -4,10 +4,10 @@ import {useState} from '@wordpress/element';
 
 import {PrimeReactProvider} from 'primereact/api';
 
-import {Notifications} from './components/notifications';
+import {Notifications} from './components/Notifications';
 import {Menu} from 'primereact/menu';
 import {ContentNavigator} from './components/ContentNavigator';
-import {HeaderBar} from './components/headerBar';
+import {HeaderBar} from './components/HeaderBar';
 
 export const SimLeagueToolkitApp = () => {
 
@@ -25,7 +25,7 @@ export const SimLeagueToolkitApp = () => {
             command: () => setCurrentView('championships'),
         },
         {
-            label: __('Individual Events', 'sim-league-toolkit'),
+            label: __('Standalone Events', 'sim-league-toolkit'),
             icon: 'fa-solid fa-flag-checkered',
             command: () => setCurrentView('events'),
         },
