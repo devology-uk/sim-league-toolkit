@@ -10,7 +10,7 @@ import {HttpMethod} from '../../enums/HttpMethod';
 import {Server} from '../../types/Server';
 import {ServerCard} from './ServerCard';
 import {ServerEditor} from './ServerEditor';
-import {serversGetRoute, serverDeleteRoute} from '../../api/endpoints/serverApiRoutes';
+import {serversGetEndpoint, serverDeleteEndpoint} from '../../api/endpoints/serverApiEndpoints';
 
 export const Servers = () => {
     const [isBusy, setIsBusy] = useState(false);
@@ -26,7 +26,7 @@ export const Servers = () => {
     const loadData = () => {
         setIsBusy(true);
         apiFetch({
-                     path: serversGetRoute(),
+                     path: serversGetEndpoint(),
                      method: HttpMethod.GET,
                  }
         ).then((r: Server[]) => {
@@ -59,7 +59,7 @@ export const Servers = () => {
         setShowDeleteConfirmation(false);
         setIsBusy(true);
         apiFetch({
-                     path: serverDeleteRoute(selectedItem.id),
+                     path: serverDeleteEndpoint(selectedItem.id),
                      method: HttpMethod.DELETE,
                  }).then(() => {
             loadData();

@@ -1,71 +1,80 @@
-
 import {__} from '@wordpress/i18n';
-import {useState} from '@wordpress/element';
-
+import {Menu} from 'primereact/menu';
 import {PrimeReactProvider} from 'primereact/api';
 
 import {Notifications} from './components/Notifications';
-import {Menu} from 'primereact/menu';
 import {ContentNavigator} from './components/ContentNavigator';
 import {HeaderBar} from './components/HeaderBar';
+import {useHashState} from './hooks/useHashState';
+import {ViewType} from './types/ViewType';
+import {ViewConfig} from './types/ViewConfig';
 
 export const SimLeagueToolkitApp = () => {
 
-    const [currentView, setCurrentView] = useState('dashboard');
+    const stateKey: string = 'currentView';
+    const [currentView, setCurrentView] = useHashState<ViewType>(stateKey, 'dashboard');
 
-    const menuItems = [
+    const viewConfigs: ViewConfig[] = [
         {
             label: __('Dashboard', 'sim-league-toolkit'),
             icon: 'fa-solid fa-gauge-high',
-            command: () => setCurrentView('dashboard'),
+            view: 'dashboard'
         },
         {
             label: __('Championships', 'sim-league-toolkit'),
             icon: 'fa-solid fa-trophy',
-            command: () => setCurrentView('championships'),
+            view: 'championships',
         },
         {
             label: __('Standalone Events', 'sim-league-toolkit'),
             icon: 'fa-solid fa-flag-checkered',
-            command: () => setCurrentView('events'),
+            view: 'events',
         },
         {
             label: __('Event Classes', 'sim-league-toolkit'),
             icon: 'fa-solid fa-layer-group',
-            command: () => setCurrentView('eventClasses'),
+            view: 'eventClasses',
         },
         {
             label: __('Games', 'sim-league-toolkit'),
             icon: 'fa-solid fa-gamepad',
-            command: () => setCurrentView('games'),
+            view: 'games',
         },
         {
             label: __('Rule Sets', 'sim-league-toolkit'),
             icon: 'fa-solid fa-scale-balanced',
-            command: () => setCurrentView('ruleSets'),
+            view: 'ruleSets',
         },
         {
             label: __('Scoring Sets', 'sim-league-toolkit'),
             icon: 'fa-solid fa-table-list',
-            command: () => setCurrentView('scoringSets'),
+            view: 'scoringSets',
         },
         {
             label: __('Servers', 'sim-league-toolkit'),
             icon: 'fa-solid fa-server',
-            command: () => setCurrentView('servers'),
+            view: 'servers',
         }
     ];
+
+    const menuItems = viewConfigs.map(({label, icon, view}) => ({
+        label,
+        icon,
+        command: () => setCurrentView(view),
+    }));
+
     return (
-            <PrimeReactProvider>
-                <Notifications/>
-                <HeaderBar />
-                <div className='main-container'>
-                    <div className='menu-container'>
-                        <Menu model={menuItems} />
-                    </div>
-                    <div className='content-container'>
-                        <ContentNavigator currentView={currentView} />
-                    </div>
+        <PrimeReactProvider>
+            <Notifications/>
+            <HeaderBar/>
+            <div className='main-container'>
+                <div className='menu-container'>
+                    <Menu model={menuItems}/>
                 </div>
-            </PrimeReactProvider>);
-}
+                <div className='content-container'>
+                    <ContentNavigator currentView={currentView}/>
+                </div>
+            </div>
+        </PrimeReactProvider>
+    );
+};

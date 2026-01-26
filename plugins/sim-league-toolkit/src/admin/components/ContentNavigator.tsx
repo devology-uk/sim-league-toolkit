@@ -6,8 +6,12 @@ import {Events} from './events/Events';
 import {EventClasses} from './eventClasses/EventClasses';
 import {ScoringSets} from './scoringSets/ScoringSets';
 import {Servers} from './servers/Servers';
+import {ViewType} from '../types/ViewType';
 
-export const ContentNavigator = ({currentView}) => {
+interface ContentNavigatorProps {
+    currentView:ViewType;
+}
+export const ContentNavigator = ({currentView}: ContentNavigatorProps) => {
     switch (currentView) {
         case 'championships':
             return <Championships/>;
