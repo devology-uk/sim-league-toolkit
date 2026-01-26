@@ -1,5 +1,4 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Column, ColumnEditorOptions, ColumnEvent} from 'primereact/column';
@@ -9,9 +8,9 @@ import {Panel} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {getServerSettings} from './serverSettingProvider';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {ServerSetting} from '../../types/ServerSetting';
-import {serverSettingsGetRoute, serverSettingsPostRoute} from '../../api/endpoints/serverApiRoutes';
+import {ServerSettingFormData} from '../../types/ServerSettingFormData';
+import {useServerSettings} from '../../hooks/useServerSettings';
 
 interface ServerSettingProps {
     serverId: number;
@@ -19,18 +18,16 @@ interface ServerSettingProps {
 }
 
 export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
-    const [isBusy, setIsBusy] = useState(false);
+
+    const {createServerSetting, findServerSettingByName, isLoading, updateServerSetting} = useServerSettings(serverId);
+
     const [data, setData] = useState<ServerSetting[]>([]);
 
     useEffect(() => {
-        loadData();
-    }, [serverId, gameKey]);
-
-    const loadData = () => {
-        setIsBusy(true);
         const settings = [];
-        const serverSettings = getServerSettings(gameKey);
-        serverSettings.forEach((s) => {
+        const settingDefinitions = getServerSettings(gameKey);
+
+        settingDefinitions.forEach((s) => {
             settings.push({
                               serverId: serverId,
                               settingName: s.name,
@@ -38,21 +35,16 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
                               isEditEnabled: s.editableIfHosted
                           });
         });
-        apiFetch({
-                     path: serverSettingsGetRoute(serverId),
-                     method: HttpMethod.GET,
-                 }).then((r: ServerSetting[]) => {
-            settings.forEach(s => {
-                const savedSetting = r.find(i => i.settingName === s.settingName);
-                if (savedSetting) {
-                    s.settingValue = savedSetting.settingValue;
-                    s.id = savedSetting.id;
-                }
-            });
-            setData(settings);
-            setIsBusy(false);
+        settings.forEach(s => {
+            const savedSetting = findServerSettingByName(s.settingName);
+            if (savedSetting) {
+                s.settingValue = savedSetting.settingValue;
+                s.id = savedSetting.id;
+            }
         });
-    };
+        setData(settings);
+
+    }, [serverId, gameKey]);
 
     const valueEditor = (options: ColumnEditorOptions) => {
         return <InputText type='text' value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>;
@@ -69,23 +61,26 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
 
         rowData[field] = newValue;
 
-        saveSetting(rowData);
+        saveSetting(rowData).then(_ => {
+        });
     };
 
-    const saveSetting = (setting: ServerSetting) => {
-        setIsBusy(true);
-        apiFetch({
-                     path: serverSettingsPostRoute(),
-                     method: HttpMethod.POST,
-                     data: setting,
-                 }).then(() => {
-            loadData();
-        });
+    const saveSetting = async (setting: ServerSetting) => {
+        const formData: ServerSettingFormData = {
+            settingName: setting.settingName,
+            settingValue: setting.settingValue
+        };
+
+        if (setting.id === 0) {
+            await createServerSetting(serverId, formData);
+        } else {
+            await updateServerSetting(serverId, formData);
+        }
     };
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <div className='flex flex-column align-items-start gap-2'>
                 <p style={{maxWidth: '400px'}}>
                     {__('The game supports settings that can be configured through files or via an admin console provided by the hosting provider.',

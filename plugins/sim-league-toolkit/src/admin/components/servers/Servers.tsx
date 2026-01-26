@@ -1,39 +1,21 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
+import {useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {Server} from '../../types/Server';
 import {ServerCard} from './ServerCard';
 import {ServerEditor} from './ServerEditor';
-import {serversGetEndpoint, serverDeleteEndpoint} from '../../api/endpoints/serverApiEndpoints';
+import {useServers} from '../../hooks/useServers';
 
 export const Servers = () => {
-    const [isBusy, setIsBusy] = useState(false);
-    const [data, setData] = useState<Server[]>([]);
+    const {deleteServer, isLoading, servers} = useServers();
+
     const [selectedItem, setSelectedItem] = useState<Server>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: serversGetEndpoint(),
-                     method: HttpMethod.GET,
-                 }
-        ).then((r: Server[]) => {
-            setData(r ?? []);
-            setIsBusy(false);
-        });
-    };
 
     const onAdd = () => {
         setShowEditor(true);
@@ -55,17 +37,12 @@ export const Servers = () => {
         setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: serverDeleteEndpoint(selectedItem.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setSelectedItem(null);
-            setIsBusy(false);
-        });
+
+        await deleteServer(selectedItem.id);
+
+        setSelectedItem(null);
     };
 
     const onEditorCancelled = () => {
@@ -76,7 +53,6 @@ export const Servers = () => {
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        loadData();
     };
 
     const headerTemplate = () => {
@@ -99,7 +75,7 @@ export const Servers = () => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <h3>{__('Servers', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you create re-usable Servers with settings configured that can be applied to championship events or individual events, saving you time and effort avoiding the need to enter the same settings multiple times.',
@@ -114,7 +90,7 @@ export const Servers = () => {
                     'sim-league-toolkit')}
             </p>
 
-            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={servers} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Servers have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&

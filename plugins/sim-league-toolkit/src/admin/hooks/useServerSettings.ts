@@ -12,15 +12,17 @@ import {
 } from '../api/endpoints/serverApiEndpoints';
 
 interface UseServerSettingsResult {
-    createServerSetting: (serverId: number, data: ServerSettingFormData) => Promise<number | null>;
+    createServerSetting: (serverId: number, data: ServerSettingFormData) => Promise<number>;
     deleteServerSetting: (id: number) => Promise<boolean>;
+    findServerSetting: (id: number) => ServerSetting;
+    findServerSettingByName: (name: string) => ServerSetting | null;
     isLoading: boolean;
     refresh: () => Promise<void>
     serverSettings: ServerSetting[];
-    updateServerSetting: (id: number, data: ServerSettingFormData) => Promise<void>;
+    updateServerSetting: (id: number, data: ServerSettingFormData) => Promise<boolean>;
 }
 
-export const useServerSettings = (serverId: number | null) => {
+export const useServerSettings = (serverId: number | null) : UseServerSettingsResult => {
     const [serverSettings, setServerSettings] = useState<ServerSetting[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +44,7 @@ export const useServerSettings = (serverId: number | null) => {
         setIsLoading(false);
     }, [serverId]);
 
-    const createServerSetting = useCallback(async (data: ServerSettingFormData): Promise<number | null> => {
+    const createServerSetting = useCallback(async (serverId:number, data: ServerSettingFormData): Promise<number> => {
         const response = await ApiClient.post<CreateResponse>(
             serverSettingPostEndpoint(serverId!),
             data
@@ -79,6 +81,9 @@ export const useServerSettings = (serverId: number | null) => {
         return response.success;
     }, [refresh]);
 
+    const findServerSetting = (id: number): ServerSetting => serverSettings.find(ss => ss.id === id);
+    const findServerSettingByName = (name: string): ServerSetting => serverSettings.find(ss => ss.settingName === name) ?? null;
+
     useEffect(() => {
         refresh().then(_ => {});
     }, [refresh]);
@@ -86,6 +91,8 @@ export const useServerSettings = (serverId: number | null) => {
     return {
         createServerSetting,
         deleteServerSetting,
+        findServerSetting,
+        findServerSettingByName,
         isLoading,
         refresh,
         serverSettings,

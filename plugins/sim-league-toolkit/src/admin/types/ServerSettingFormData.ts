@@ -1,7 +1,4 @@
-import {Entity} from './Entity';
-
-export interface ServerSettingFormData extends Entity {
-    serverId: number;
+export interface ServerSettingFormData {
     settingName: string;
     settingValue: string;
 }

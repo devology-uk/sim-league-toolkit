@@ -14,6 +14,7 @@ import {
 interface UseServersResult {
     createServer: (data: ServerFormData) => Promise<number | null>;
     deleteServer: (id: number) => Promise<boolean>;
+    findServer: (id: number) => Server;
     isLoading: boolean;
     refresh: () => Promise<void>;
     servers: Server[];
@@ -66,6 +67,8 @@ export const useServers = (): UseServersResult => {
         return apiResponse.success;
     }, [refresh]);
 
+    const findServer = (id: number) => servers.find(s => s.id === id);
+
     useEffect(() => {
         refresh().then(_ => {
         });
@@ -74,6 +77,7 @@ export const useServers = (): UseServersResult => {
     return {
         createServer,
         deleteServer,
+        findServer,
         servers,
         isLoading,
         refresh,

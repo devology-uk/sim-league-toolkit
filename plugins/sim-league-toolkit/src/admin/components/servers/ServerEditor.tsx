@@ -1,5 +1,4 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 import {FormEvent} from 'react';
 
@@ -10,13 +9,13 @@ import {InputText} from 'primereact/inputtext';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {GameSelector} from '../games/GameSelector';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {PlatformSelector} from '../games/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {Server} from '../../types/Server';
-import {serverGetRoute, serverPostRoute} from '../../api/endpoints/serverApiRoutes';
 import {ServerSettingList} from './ServerSettingList';
 import {ValidationError} from '../shared/ValidationError';
+import {useServers} from '../../hooks/useServers';
+import {ServerFormData} from '../../types/ServerFormData';
 
 interface ServerEditorProps {
     show: boolean;
@@ -26,10 +25,11 @@ interface ServerEditorProps {
 }
 
 export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerEditorProps) => {
+    const {createServer, findServer, isLoading, updateServer} = useServers();
+
     const [gameId, setGameId] = useState(0);
     const [gameKey, setGameKey] = useState('');
     const [gameName, setGameName] = useState('');
-    const [isBusy, setIsBusy] = useState(false);
     const [isHostedServer, setIsHostedServer] = useState(false);
     const [name, setName] = useState('');
     const [platformId, setPlatformId] = useState(0);
@@ -40,19 +40,13 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
             return;
         }
 
-        apiFetch({
-                     path: serverGetRoute(serverId),
-                     method: HttpMethod.GET,
-                 }).then((r: Server) => {
-            setGameId(r.gameId);
-            setGameKey(r.gameKey);
-            setGameName(r.game);
-            setIsHostedServer(r.isHostedServer);
-            setName(r.name);
-            setPlatformId(r.platformId);
-
-            setIsBusy(false);
-        });
+        const server = findServer(serverId);
+        setGameId(server.gameId);
+        setGameKey(server.gameKey);
+        setGameName(server.game);
+        setIsHostedServer(server.isHostedServer);
+        setName(server.name);
+        setPlatformId(server.platformId);
     }, [serverId]);
 
     const resetForm = () => {
@@ -62,35 +56,28 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
         setPlatformId(0);
     };
 
-    const onSave = (e: FormEvent<HTMLFormElement>) => {
+    const onSave = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
-        setIsBusy(true);
-        const entity: Server = {
+        const formData: ServerFormData = {
             gameId: gameId,
             isHostedServer: isHostedServer,
             name: name,
             platformId: platformId,
         };
 
-        if (serverId && serverId > 0) {
-            entity.id = serverId;
+        if (serverId === 0) {
+            await createServer(formData);
+        } else {
+            await updateServer(serverId, formData);
         }
 
-        apiFetch({
-                     path: serverPostRoute(),
-                     method: HttpMethod.POST,
-                     data: entity,
-                 }).then(() => {
-            onSaved();
-
-            resetForm();
-            setIsBusy(false);
-        });
+        onSaved();
+        resetForm();
     };
 
     const onSelectedGameChanged = (gameId: number) => {
@@ -124,7 +111,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Server', 'sim-league-toolkit')}>
-                    <BusyIndicator isBusy={isBusy}/>
+                    <BusyIndicator isBusy={isLoading}/>
                     <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                         <form onSubmit={onSave} noValidate>
                             <div className='flex flex-column align-items-stretch gap-2'>
@@ -169,8 +156,8 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                     </>
                                 }
                             </div>
-                            <SaveSubmitButton disabled={isBusy} name='submitServer'/>
-                            <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                            <SaveSubmitButton disabled={isLoading} name='submitServer'/>
+                            <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                         </form>
                         {serverId > 0 && (<ServerSettingList serverId={serverId} gameKey={gameKey}/>)}
                     </div>
