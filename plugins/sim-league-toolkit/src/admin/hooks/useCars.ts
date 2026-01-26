@@ -11,7 +11,7 @@ interface UseCarsResult {
     refresh: () => Promise<void>;
 }
 
-export const useGames = (gameId: number, carClass: string = ''): UseCarsResult => {
+export const useCars = (gameId: number, carClass: string = ''): UseCarsResult => {
     const [cars, setCars] = useState<Car[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

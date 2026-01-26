@@ -1,14 +1,10 @@
 import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
 import {__} from '@wordpress/i18n';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-
-import {HttpMethod} from '../../enums/HttpMethod';
-import {ListItem} from "../../types/ListItem";
-import {Track} from "../../types/Track";
-import {tracksGetRoute, trackGetRoute} from '../../api/endpoints/gameApiRoutes';
-import {TrackLayout} from "../../types/TrackLayout";
+import {ListItem} from '../../types/ListItem';
+import {useTracks} from '../../hooks/useTracks';
+import {useTrackLayouts} from '../../hooks/useTrackLayouts';
 import {ValidationError} from '../shared/ValidationError';
 
 interface TrackSelectorProps {
@@ -20,8 +16,8 @@ interface TrackSelectorProps {
     trackLayoutId?: number;
     disabled?: boolean;
     isInvalid?: boolean;
-    trackValidationMessage?: string
-    trackLayoutValidationMessage?: string
+    trackValidationMessage?: string;
+    trackLayoutValidationMessage?: string;
 }
 
 export const TrackSelector = ({
@@ -36,35 +32,12 @@ export const TrackSelector = ({
                                   trackValidationMessage = '',
                                   trackLayoutValidationMessage = ''
                               }: TrackSelectorProps) => {
+
+    const {isLoading: isLoadingTracks, tracks} = useTracks(gameId);
+    const {isLoading: isLoadingLayouts, trackLayouts} = useTrackLayouts(trackId);
+
     const [selectedTrackId, setSelectedTrackId] = useState(trackId);
     const [selectedTrackLayoutId, setSelectedTrackLayoutId] = useState(trackLayoutId);
-    const [tracks, setTracks] = useState<Track[]>([]);
-    const [trackLayouts, setTrackLayouts] = useState<TrackLayout[]>([]);
-
-    useEffect(() => {
-        apiFetch({
-            path: tracksGetRoute(gameId),
-            method: HttpMethod.GET,
-        }).then((r: Track[]) => {
-            setTracks(r);
-        });
-    }, [gameId]);
-
-    useEffect(() => {
-        setSelectedTrackId(trackId);
-
-        if(!gameSupportsLayouts) {
-            setTrackLayouts([]);
-            return;
-        }
-
-        apiFetch({
-            path: trackGetRoute(trackId),
-            method: HttpMethod.GET,
-        }).then((r: TrackLayout[]) => {
-            setTrackLayouts(r);
-        });
-    }, [trackId, gameSupportsLayouts]);
 
     useEffect(() => {
         setSelectedTrackLayoutId(trackLayoutId);
@@ -73,12 +46,12 @@ export const TrackSelector = ({
     const onSelectTrack = (e: DropdownChangeEvent) => {
         setSelectedTrackId(e.target.value);
         onSelectedTrackChanged(e.target.value);
-    }
+    };
 
-    const onSelectTrackLayout = (e:DropdownChangeEvent) => {
+    const onSelectTrackLayout = (e: DropdownChangeEvent) => {
         setSelectedTrackLayoutId(e.target.value);
         onSelectedTrackLayoutChanged(e.target.value);
-    }
+    };
 
     const trackListItems: ListItem[] = ([{value: 0, label: __('Please select...', 'sim-league-toolkit')}] as ListItem[])
         .concat(tracks.map(i => ({
@@ -99,7 +72,7 @@ export const TrackSelector = ({
             <label htmlFor='track-selector'>{__('Track', 'sim-league-toolkit')}</label>
             <Dropdown id='track-selector' value={selectedTrackId} options={trackListItems} onChange={onSelectTrack}
                       optionLabel='label'
-                      optionValue='value' disabled={disabled}/>
+                      optionValue='value' disabled={disabled || isLoadingTracks}/>
             <ValidationError
                 message={trackValidationMessage}
                 show={isInvalid && trackId === 0}/>
@@ -109,12 +82,12 @@ export const TrackSelector = ({
                     <Dropdown id='track-layout-selector' value={selectedTrackLayoutId} options={trackLayoutItems}
                               onChange={onSelectTrackLayout}
                               optionLabel='label'
-                              optionValue='value' disabled={disabled}/>
+                              optionValue='value' disabled={disabled || isLoadingLayouts}/>
                     <ValidationError
                         message={trackLayoutValidationMessage}
                         show={isInvalid && trackLayoutId === 0}/>
                 </>
             }
         </div>
-    )
-}
+    );
+};

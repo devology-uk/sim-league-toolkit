@@ -1,13 +1,11 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {Game} from '../../types/Game';
-import {gamesGetRoute} from '../../api/endpoints/gameApiRoutes';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {ValidationError} from '../shared/ValidationError';
+import {useGames} from '../../hooks/useGames';
 
 interface GameSelectorProps {
     onSelectedItemChanged: (item: Game) => void;
@@ -24,17 +22,9 @@ export const GameSelector = ({
                                  isInvalid = false,
                                  validationMessage = ''
                              }: GameSelectorProps) => {
-    const [items, setItems] = useState([]);
-    const [selectedItemId, setSelectedItemId] = useState(gameId);
+    const {games, isLoading} = useGames();
 
-    useEffect(() => {
-        apiFetch({
-                     path: gamesGetRoute(),
-                     method: HttpMethod.GET
-                 }).then((r: Game[]) => {
-            setItems(r);
-        });
-    }, []);
+    const [selectedItemId, setSelectedItemId] = useState(gameId);
 
     useEffect(() => {
         setSelectedItemId(gameId);
@@ -48,7 +38,7 @@ export const GameSelector = ({
     const listItems: ListItem[] = [{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    }].concat(items.map(i => ({
+    } as ListItem].concat(games.map(i => ({
         value: i.id,
         label: i.name
     })));
@@ -58,7 +48,7 @@ export const GameSelector = ({
             <label htmlFor='game-selector'>{__('Game', 'sim-league-toolkit')}</label>
             <Dropdown id='game-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
-                      optionValue='value' disabled={disabled}/>
+                      optionValue='value' disabled={disabled || isLoading}/>
             <ValidationError
                 message={validationMessage}
                 show={isInvalid}/>

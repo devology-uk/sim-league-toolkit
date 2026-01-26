@@ -1,12 +1,9 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-
-import {carClassesGetRoute} from '../../api/endpoints/gameApiRoutes';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
+import {useCarClasses} from '../../hooks/useCarClasses';
 import {ValidationError} from '../shared/ValidationError';
 
 export const CAR_CLASS_SELECTOR_DEFAULT_VALUE: string = 'any';
@@ -29,17 +26,9 @@ export const CarClassSelector = ({
                                      validationMessage = ''
                                  }: CarClassSelectorProps) => {
 
-    const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(carClass);
+    const {carClasses, isLoading} = useCarClasses(gameId);
 
-    useEffect(() => {
-        apiFetch({
-                     path: carClassesGetRoute(gameId),
-                     method: HttpMethod.GET,
-                 }).then((r: string[]) => {
-            setItems(r);
-        });
-    }, [gameId]);
+    const [selectedItem, setSelectedItem] = useState(carClass);
 
     useEffect(() => {
         setSelectedItem(carClass);
@@ -53,7 +42,7 @@ export const CarClassSelector = ({
     const listItems: ListItem[] = [{
         value: CAR_CLASS_SELECTOR_DEFAULT_VALUE,
         label: __('Please select...', 'sim-league-toolkit')
-    }].concat(items.map(i => ({
+    } as ListItem].concat(carClasses.map(i => ({
         value: i,
         label: i
     })));
@@ -61,7 +50,7 @@ export const CarClassSelector = ({
         <>
             <label htmlFor='car-class-selector'>{__('Car Class', 'sim-league-toolkit')}</label>
             <Dropdown id='car-class-selector' value={selectedItem} options={listItems} onChange={onSelect}
-                      disabled={disabled}/>
+                      disabled={disabled || isLoading}/>
             <ValidationError
                 message={validationMessage}
                 show={isInvalid}/>

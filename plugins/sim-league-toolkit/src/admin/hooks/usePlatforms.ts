@@ -10,7 +10,7 @@ interface UsePlatformsResult {
     refresh: () => Promise<void>;
 }
 
-export const useGames = (gameId: number): UsePlatformsResult => {
+export const usePlatforms = (gameId: number): UsePlatformsResult => {
     const [platforms, setPlatforms] = useState<Platform[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

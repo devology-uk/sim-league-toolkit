@@ -11,7 +11,7 @@ interface UseTracksResult {
     tracks: Track[];
 }
 
-export const useGames = (gameId: number): UseTracksResult => {
+export const useTracks = (gameId: number): UseTracksResult => {
     const [tracks, setTracks] = useState<Track[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

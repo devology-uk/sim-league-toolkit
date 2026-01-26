@@ -25,3 +25,7 @@ export const platformsGetEndpoint = (gameId: number): string => {
 export const tracksGetEndpoint = (gameId: number): string => {
     return `${gameRootEndpoint}/${gameId}/tracks`;
 }
+
+export const trackLayoutsGetEndpoint = (trackId: number): string => {
+    return `${gameRootEndpoint}/tracks/${trackId}`;
+}

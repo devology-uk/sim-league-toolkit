@@ -1,13 +1,10 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-
-import {HttpMethod} from '../../enums/HttpMethod';
 import {ListItem} from '../../types/ListItem';
 import {Platform} from '../../types/Platform';
-import {platformsGetRoute} from '../../api/endpoints/gameApiRoutes';
+import {usePlatforms} from '../../hooks/usePlatforms';
 import {ValidationError} from '../shared/ValidationError';
 
 interface PlatformSelectorProps {
@@ -27,17 +24,10 @@ export const PlatformSelector = ({
                                      isInvalid = false,
                                      validationMessage = ''
                                  }: PlatformSelectorProps) => {
-    const [items, setItems] = useState<Platform[]>([]);
-    const [selectedItemId, setSelectedItemId] = useState(platformId);
 
-    useEffect(() => {
-        apiFetch({
-                     path: platformsGetRoute(gameId),
-                     method: HttpMethod.GET,
-                 }).then((r: Platform[]) => {
-            setItems(r);
-        });
-    }, [gameId]);
+    const {isLoading, platforms} = usePlatforms(gameId);
+
+    const [selectedItemId, setSelectedItemId] = useState(platformId);
 
     useEffect(() => {
         setSelectedItemId(platformId);
@@ -51,7 +41,7 @@ export const PlatformSelector = ({
     const listItems: ListItem[] = ([{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    }] as ListItem[]).concat(items.map(i => ({
+    }] as ListItem[]).concat(platforms.map(i => ({
         value: i.id,
         label: `${i.name}`
     })));
@@ -61,7 +51,7 @@ export const PlatformSelector = ({
             <label htmlFor='platform-selector'>{__('Platform', 'sim-league-toolkit')}</label>
             <Dropdown id='platform-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
-                      optionValue='value' disabled={disabled}/>
+                      optionValue='value' disabled={disabled || isLoading}/>
             <ValidationError
                 message={validationMessage}
                 show={isInvalid}/>
