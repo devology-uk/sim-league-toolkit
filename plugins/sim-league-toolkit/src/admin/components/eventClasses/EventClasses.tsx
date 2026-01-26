@@ -1,6 +1,5 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
+import {useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
@@ -9,30 +8,14 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {EventClass} from '../../types/EventClass';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
-import {eventClassesGetRoute, eventClassDeleteRoute} from '../../api/endpoints/eventClassesApiRoutes';
-import {HttpMethod} from '../../enums/HttpMethod';
+import {useEventClasses} from '../../hooks/useEventClasses';
 
 export const EventClasses = () => {
-    const [isBusy, setIsBusy] = useState(false);
-    const [data, setData] = useState<EventClass[]>([]);
+    const {deleteEventClass, eventClasses, isLoading} = useEventClasses();
+
     const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: eventClassesGetRoute(),
-                     method: HttpMethod.GET,
-                 }).then((r: EventClass[]) => {
-            setData(r ?? []);
-            setIsBusy(false);
-        });
-    };
 
     const onAdd = () => {
         setShowEditor(true);
@@ -53,17 +36,11 @@ export const EventClasses = () => {
         setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: eventClassDeleteRoute(selectedItem.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setSelectedItem(null);
-            setIsBusy(false);
-        });
+
+        await deleteEventClass(selectedItem.id);
+        setSelectedItem(null);
     };
 
     const onEditorCancelled = () => {
@@ -74,7 +51,6 @@ export const EventClasses = () => {
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        loadData();
     };
 
     const headerTemplate = () => {
@@ -98,7 +74,7 @@ export const EventClasses = () => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <h3>{__('Event Classes', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you to create re-usable Event Classes that can be assigned to championships or individual events, saving you time and effort avoiding the need to create them multiple times.',
@@ -113,7 +89,7 @@ export const EventClasses = () => {
                     'sim-league-toolkit')}
             </p>
 
-            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={eventClasses} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Event Classes have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&

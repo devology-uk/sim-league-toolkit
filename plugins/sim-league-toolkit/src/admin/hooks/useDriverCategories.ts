@@ -11,7 +11,7 @@ interface UseDriverCategoriesResult {
     refresh: () => Promise<void>;
 }
 
-export const useGames = (gameId: number, driverCategoryClass: string = ''): UseDriverCategoriesResult => {
+export const useDriverCategories = (): UseDriverCategoriesResult => {
     const [driverCategories, setDriverCategories] = useState<DriverCategory[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

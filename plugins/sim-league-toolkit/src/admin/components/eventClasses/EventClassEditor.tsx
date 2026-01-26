@@ -1,22 +1,20 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import {FormEvent} from 'react';
 import {useEffect, useState} from '@wordpress/element';
+import {FormEvent} from 'react';
 
+import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
-import {Checkbox} from 'primereact/checkbox';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
 import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../games/CarClassSelector';
 import {CarSelector} from '../games/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
-import {EventClass} from '../../types/EventClass';
-import {eventClassGetRoute, eventClassPostRoute} from '../../api/endpoints/eventClassesApiRoutes';
+import {EventClassFormData} from '../../types/EventClassFormData';
 import {GameSelector} from '../games/GameSelector';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
+import {useEventClasses} from '../../hooks/useEventClasses';
 import {ValidationError} from '../shared/ValidationError';
 
 interface EventClassEditorProps {
@@ -27,11 +25,12 @@ interface EventClassEditorProps {
 }
 
 export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}: EventClassEditorProps) => {
+    const {createEventClass, deleteEventClass, findEventClass, isLoading, updateEventClass} = useEventClasses();
+
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
     const [driverCategoryId, setDriverCategoryId] = useState(0);
     const [gameId, setGameId] = useState(0);
     const [gameName, setGameName] = useState('');
-    const [isBusy, setIsBusy] = useState(false);
     const [isSingleCarClass, setIsSingleCarClass] = useState(false);
     const [name, setName] = useState('');
     const [singleCarId, setSingleCarId] = useState(0);
@@ -42,21 +41,13 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
             return;
         }
 
-        apiFetch({
-                     path: eventClassGetRoute(eventClassId),
-                     method: HttpMethod.GET,
-                 }).then((r: EventClass) => {
-            setGameId(r.gameId);
-            setGameName(r.game);
-            setDriverCategoryId(r.driverCategoryId);
-            setCarClass(r.carClass);
-            setIsSingleCarClass(r.isSingleCarClass);
-            setName(r.name);
-            if (r.isSingleCarClass) {
-                setSingleCarId(r.singleCarId);
-            }
-            setIsBusy(false);
-        });
+        const eventClass = findEventClass(eventClassId);
+        setCarClass(eventClass.carClass);
+        setDriverCategoryId(driverCategoryId);
+        setGameId(eventClass.gameId);
+        setGameName(eventClass.game);
+        setIsSingleCarClass(eventClass.isSingleCarClass);
+        setSingleCarId(eventClass.singleCarId ?? 0);
     }, [eventClassId]);
 
     const resetForm = () => {
@@ -68,15 +59,14 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
         setSingleCarId(0);
     };
 
-    const onSave = (e: FormEvent<HTMLFormElement>) => {
+    const onSave = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
-        setIsBusy(true);
-        const entity: EventClass = {
+        const formData: EventClassFormData = {
             carClass: carClass,
             driverCategoryId: driverCategoryId,
             gameId: gameId,
@@ -85,20 +75,13 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
             singleCarId: isSingleCarClass ? singleCarId : null,
         };
 
-        if (eventClassId && eventClassId > 0) {
-            entity.id = eventClassId;
+        if (eventClassId === 0) {
+            await createEventClass(formData);
+        } else {
+            await updateEventClass(eventClassId, formData);
         }
 
-        apiFetch({
-                     path: eventClassPostRoute(),
-                     method: HttpMethod.POST,
-                     data: entity,
-                 }).then(() => {
-            onSaved();
-
-            resetForm();
-            setIsBusy(false);
-        });
+        resetForm();
     };
 
     const onSelectedGameChanged = (gameId) => {
@@ -135,7 +118,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Event Class', 'sim-league-toolkit')}>
-                    <BusySpinner isBusy={isBusy}/>
+                    <BusySpinner isBusy={isLoading}/>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -165,6 +148,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
                                             show={validationErrors.includes('name')}/>
 
                                         <DriverCategorySelector driverCategoryId={driverCategoryId}
+                                                                disabled={isLoading}
                                                                 isInvalid={validationErrors.includes('driverCategoryId')}
                                                                 onSelectedItemChanged={setDriverCategoryId}
                                                                 validationMessage={__(
@@ -172,6 +156,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
                                                                     'sim-league-toolkit')}/>
                                         <CarClassSelector gameId={gameId}
                                                           carClass={carClass}
+                                                          disabled={isLoading}
                                                           isInvalid={validationErrors.includes('carClass')}
                                                           onSelectedItemChanged={setCarClass}
                                                           validationMessage={__('You must select a car class.',
@@ -187,6 +172,7 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
                                             <CarSelector gameId={gameId}
                                                          carClass={carClass}
                                                          carId={singleCarId}
+                                                         disabled={isLoading}
                                                          isInvalid={validationErrors.includes('singleCarId')}
                                                          onSelectedItemChanged={(c) => setSingleCarId(c.id)}
                                                          validationMessage={__(
@@ -198,8 +184,8 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
 
                             </div>
                         </div>
-                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
-                        <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                        <SaveSubmitButton disabled={isLoading} name='submitForm'/>
+                        <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                     </form>
                 </Dialog>
             )}
