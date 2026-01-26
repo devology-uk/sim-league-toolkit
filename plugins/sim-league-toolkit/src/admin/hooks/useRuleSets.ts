@@ -14,6 +14,7 @@ import {
 interface UseRuleSetsResult {
     createRuleSet: (data: RuleSetFormData) => Promise<number | null>;
     deleteRuleSet: (id: number) => Promise<boolean>;
+    findRuleSet: (id: number) => RuleSet | null;
     isLoading: boolean;
     refresh: () => Promise<void>;
     ruleSets: RuleSet[];
@@ -66,6 +67,8 @@ export const useRuleSets = (): UseRuleSetsResult => {
         return apiResponse.success;
     }, [refresh]);
 
+    const findRuleSet = (id: number): RuleSet => ruleSets.find(rs => rs.id === id) ?? null;
+
     useEffect(() => {
         refresh().then(_ => {
         });
@@ -74,6 +77,7 @@ export const useRuleSets = (): UseRuleSetsResult => {
     return {
         createRuleSet,
         deleteRuleSet,
+        findRuleSet,
         ruleSets,
         isLoading,
         refresh,

@@ -1,6 +1,5 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
+import {useState} from '@wordpress/element';
 
 import {Button} from 'primereact/button';
 import {ConfirmDialog} from 'primereact/confirmdialog';
@@ -10,11 +9,10 @@ import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../../enums/HttpMethod';
-import {RuleSet} from '../../types/RuleSet';
 import {RuleSetRule} from '../../types/RuleSetRule';
-import {rulesGetRoute, ruleDeleteRoute, rulePostRoute} from '../../api/endpoints/rulesApiRoutes';
+import {RuleSetRuleFormData} from '../../types/RuleSetRuleFormData';
 import {SaveButton} from '../shared/SaveButton';
+import {useRuleSetRules} from '../../hooks/useRuleSetRules';
 import {ValidationError} from '../shared/ValidationError';
 
 interface RuleListProps {
@@ -23,32 +21,20 @@ interface RuleListProps {
 
 export const RuleList = ({ruleSetId}: RuleListProps) => {
 
+    const {
+        createRuleSetRule,
+        deleteRuleSetRule,
+        isLoading,
+        ruleSetRules,
+        updateRuleSetRule
+    } = useRuleSetRules(ruleSetId);
+
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [isBusy, setIsBusy] = useState(false);
-    const [rules, setRules] = useState([]);
     const [ruleText, setRuleText] = useState('');
     const [selectedItem, setSelectedItem] = useState(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: rulesGetRoute(ruleSetId),
-                     method: HttpMethod.GET,
-                 }).then((r: RuleSet[]) => {
-            setRules(r);
-            setIsBusy(false);
-            setIsAdding(false);
-            setIsEditing(false);
-            setSelectedItem(null);
-        });
-    };
 
     const onAdd = () => {
         setSelectedItem(null);
@@ -67,17 +53,10 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
         setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: ruleDeleteRoute(selectedItem.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setSelectedItem(null);
-            setIsBusy(false);
-        });
+        await deleteRuleSetRule(selectedItem.id);
+        setSelectedItem(null);
     };
 
     const onDelete = (item: RuleSetRule) => {
@@ -91,32 +70,24 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
         setIsEditing(true);
     };
 
-    const onSave = () => {
+    const onSave = async () => {
         if (!validate()) {
             return;
         }
-        setIsBusy(true);
 
-        const entity: RuleSetRule = {
-            ruleSetId: ruleSetId,
+        const formData: RuleSetRuleFormData = {
             rule: ruleText,
         };
 
-        if (isEditing) {
-            entity.id = selectedItem.id;
+        if (isAdding) {
+            await createRuleSetRule(formData);
+        } else {
+            await updateRuleSetRule(selectedItem.id, formData);
         }
 
-        apiFetch({
-                     path: rulePostRoute(),
-                     method: HttpMethod.POST,
-                     data: entity,
-                 }).then(() => {
-            loadData();
-            setRuleText('');
-            setIsBusy(false);
-            setIsAdding(false);
-            setIsEditing(false);
-        });
+        setRuleText('');
+        setIsAdding(false);
+        setIsEditing(false);
     };
 
     const validate = () => {
@@ -162,9 +133,9 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             {!isAdding && !isEditing && (<Panel headerTemplate={headerTemplate}>
-                <ListBox value={selectedItem} onChange={(e) => setSelectedItem(e.value)} options={rules}
+                <ListBox value={selectedItem} onChange={(e) => setSelectedItem(e.value)} options={ruleSetRules}
                          optionLabel='rule'
                          itemTemplate={itemTemplate} className='w-full'
                          listStyle={{maxHeight: '250px', maxWidth: '550px'}}/>
@@ -177,8 +148,8 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
                     message={__('The text for the rule with at least 15 characters is required.', 'sim-league-toolkit')}
                     show={validationErrors.includes('description')}/>
                 <br/>
-                <SaveButton onClick={onSave} disabled={isBusy}/>
-                <CancelButton onCancel={onCancelEdit} disabled={isBusy}/>
+                <SaveButton onClick={onSave} disabled={isLoading}/>
+                <CancelButton onCancel={onCancelEdit} disabled={isLoading}/>
             </Panel>)}
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

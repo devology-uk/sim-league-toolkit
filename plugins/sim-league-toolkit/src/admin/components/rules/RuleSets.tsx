@@ -1,48 +1,29 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
+import {useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSet} from '../../types/RuleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';
-import {ruleSetsGetRoute, ruleSetDeleteRoute} from '../../api/endpoints/rulesApiRoutes';
+import {useRuleSets} from '../../hooks/useRuleSets';
 
 export const RuleSets = () => {
 
-    const [isBusy, setIsBusy] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<RuleSet>(null);
-    const [data, setData] = useState<RuleSet[]>([]);
+    const {deleteRuleSet, isLoading, ruleSets} = useRuleSets();
+
     const [selectedItem, setSelectedItem] = useState<RuleSet>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: ruleSetsGetRoute(),
-                     method: HttpMethod.GET,
-
-                 }).then((r: RuleSet[]) => {
-            setData(r ?? []);
-            setIsBusy(false);
-        });
-    };
 
     const onAdd = () => {
         setShowEditor(true);
     };
 
     const onDelete = (item: RuleSet) => {
-        setItemToDelete(item);
+        setSelectedItem(item);
         setShowDeleteConfirmation(true);
     };
 
@@ -53,20 +34,14 @@ export const RuleSets = () => {
 
     const onCancelDelete = () => {
         setShowDeleteConfirmation(false);
-        setItemToDelete(null);
+        setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: ruleSetDeleteRoute(itemToDelete.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setItemToDelete(null);
-            setIsBusy(false);
-        });
+
+        await deleteRuleSet(selectedItem.id);
+        setSelectedItem(null);
     };
 
     const onEditorCancelled = () => {
@@ -77,7 +52,6 @@ export const RuleSets = () => {
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        loadData();
     };
 
     const headerTemplate = () => {
@@ -100,7 +74,7 @@ export const RuleSets = () => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <h3>{__('Rule Sets', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you create re-usable Rule Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to write them multiple times.',
@@ -115,23 +89,23 @@ export const RuleSets = () => {
                     'sim-league-toolkit')}
             </p>
 
-            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={ruleSets} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Rule Sets have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <RuleSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
                                ruleSetId={selectedItem?.id}/>
             }
-            {itemToDelete && showDeleteConfirmation &&
+            {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}
                                header={__('Confirm Delete', 'sim-league-toolkit')}
                                icon='pi pi-exclamation-triangle'
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
-                               message={__('Deleting', 'sim-league-toolkit') + ' ' + itemToDelete.name + ' ' + __(
+                               message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
                                    'will remove any links to championships or individual events!!.  Do you wish to delete ',
-                                   'sim-league-toolkit') + ' ' + itemToDelete.name + '?'}
+                                   'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }
         </>
