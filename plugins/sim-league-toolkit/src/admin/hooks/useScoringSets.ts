@@ -9,11 +9,12 @@ import {
     scoringSetsGetEndpoint,
     scoringSetPostEndpoint,
     scoringSetDeleteEndpoint, scoringSetPutEndpoint
-} from '../api/endpoints/scoringSetsApiEndpoints';
+} from '../api/endpoints/scoringSetApiEndpoints';
 
 interface UseScoringSetsResult {
     createScoringSet: (data: ScoringSetFormData) => Promise<number | null>;
     deleteScoringSet: (id: number) => Promise<boolean>;
+    findScoringSet: (id: number) => ScoringSet;
     isLoading: boolean;
     refresh: () => Promise<void>;
     scoringSets: ScoringSet[];
@@ -66,6 +67,8 @@ export const useScoringSets = (): UseScoringSetsResult => {
         return apiResponse.success;
     }, [refresh]);
 
+    const findScoringSet = (id: number): ScoringSet => scoringSets.find(ss => ss.id === id);
+
     useEffect(() => {
         refresh().then(_ => {
         });
@@ -74,6 +77,7 @@ export const useScoringSets = (): UseScoringSetsResult => {
     return {
         createScoringSet,
         deleteScoringSet,
+        findScoringSet,
         scoringSets,
         isLoading,
         refresh,

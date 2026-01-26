@@ -1,5 +1,4 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dialog} from 'primereact/dialog';
@@ -7,14 +6,14 @@ import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from "../shared/BusyIndicator";
+import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
-import {ScoringSet} from "../../types/ScoringSet";
-import {scoringSetGetRoute, scoringSetPostRoute} from '../../api/endpoints/scoringSetsApiRoutes';
 import {ValidationError} from '../shared/ValidationError';
+import {useScoringSets} from '../../hooks/useScoringSets';
+import {FormEvent} from 'react';
+import {ScoringSetFormData} from '../../types/ScoringSetFormData';
 
 interface ScoringSetEditorProps {
     show: boolean;
@@ -25,8 +24,9 @@ interface ScoringSetEditorProps {
 
 export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}: ScoringSetEditorProps) => {
 
+    const {createScoringSet, findScoringSet, isLoading, updateScoringSet} = useScoringSets();
+
     const [description, setDescription] = useState('');
-    const [isBusy, setIsBusy] = useState(false);
     const [name, setName] = useState('');
     const [pointsForFastestLap, setPointsForFastestLap] = useState(0);
     const [pointsForFinishing, setPointsForFinishing] = useState(0);
@@ -38,17 +38,12 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
             return;
         }
 
-        apiFetch({
-            path: scoringSetGetRoute(scoringSetId),
-            method: HttpMethod.GET,
-        }).then((r: ScoringSet ) => {
-            setDescription(r.description);
-            setName(r.name);
-            setPointsForFastestLap(r.pointsForFastestLap);
-            setPointsForFinishing(r.pointsForFinishing);
-            setPointsForPole(r.pointsForPole);
-            setIsBusy(false);
-        });
+        const scoringSet = findScoringSet(scoringSetId);
+        setDescription(scoringSet.description);
+        setName(scoringSet.name);
+        setPointsForFastestLap(scoringSet.pointsForFastestLap);
+        setPointsForFinishing(scoringSet.pointsForFinishing);
+        setPointsForPole(scoringSet.pointsForPole);
     }, [scoringSetId]);
 
     const resetForm = () => {
@@ -57,17 +52,16 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
         setPointsForFastestLap(0);
         setPointsForFinishing(0);
         setPointsForPole(0);
-    }
+    };
 
-    const onSave = (evt) => {
-        evt.preventDefault();
+    const onSave = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
-        setIsBusy(true);
-        const entity: ScoringSet = {
+        const formData: ScoringSetFormData = {
             name: name,
             description: description,
             pointsForFastestLap: pointsForFastestLap,
@@ -75,21 +69,16 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
             pointsForPole: pointsForPole
         };
 
-        if (scoringSetId && scoringSetId > 0) {
-            entity.id = scoringSetId;
+        if (scoringSetId === 0) {
+            await createScoringSet(formData);
+        } else {
+            await updateScoringSet(scoringSetId, formData);
         }
+        
+        onSaved();
 
-        apiFetch({
-            path: scoringSetPostRoute(),
-            method: HttpMethod.POST,
-            data: entity,
-        }).then(() => {
-            onSaved();
-
-            resetForm();
-            setIsBusy(false);
-        });
-    }
+        resetForm();
+    };
 
     const validate = () => {
         const errors = [];
@@ -116,13 +105,13 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }
+    };
 
     return (
         <>
             {show && (
                 <Dialog visible={show} onHide={onCancelled} header={__('Scoring Set', 'sim-league-toolkit')}>
-                    <BusyIndicator isBusy={isBusy} />
+                    <BusyIndicator isBusy={isLoading}/>
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -141,21 +130,26 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
                                                placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
                                                rows={5} cols={40}/>
                                 <ValidationError
-                                    message={__('A brief description of the scoring set with at least 15 characters is required.', 'sim-league-toolkit')}
+                                    message={__(
+                                        'A brief description of the scoring set with at least 15 characters is required.',
+                                        'sim-league-toolkit')}
                                     show={validationErrors.includes('description')}/>
 
                                 <label
-                                    htmlFor='scoring-set-points-for-fastest-lap'>{__('Points for Fastest Lap', 'sim-league-toolkit')}</label>
+                                    htmlFor='scoring-set-points-for-fastest-lap'>{__('Points for Fastest Lap',
+                                                                                     'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-fastest-lap' value={pointsForFastestLap}
                                              onChange={(e) => setPointsForFastestLap(e.value)}
                                              min={0}
                                              placeholder={__('Points for Fastest Lap', 'sim-league-toolkit')}/>
                                 <ValidationError
-                                    message={__('Points for fastest lap cannot be less than zero', 'sim-league-toolkit')}
+                                    message={__('Points for fastest lap cannot be less than zero',
+                                                'sim-league-toolkit')}
                                     show={validationErrors.includes('pointsForFastestLap')}/>
 
                                 <label
-                                    htmlFor='scoring-set-points-for-finishing'>{__('Points for Finishing', 'sim-league-toolkit')}</label>
+                                    htmlFor='scoring-set-points-for-finishing'>{__('Points for Finishing',
+                                                                                   'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-finishing' value={pointsForFinishing}
                                              onChange={(e) => setPointsForFinishing(e.value)}
                                              min={0}
@@ -165,7 +159,8 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
                                     show={validationErrors.includes('pointsForFinishing')}/>
 
                                 <label
-                                    htmlFor='scoring-set-points-for-pole'>{__('Points for Pole', 'sim-league-toolkit')}</label>
+                                    htmlFor='scoring-set-points-for-pole'>{__('Points for Pole',
+                                                                              'sim-league-toolkit')}</label>
                                 <InputNumber id='scoring-set-points-for-pole' value={pointsForPole}
                                              onChange={(e) => setPointsForPole(e.value)}
                                              min={0}
@@ -176,12 +171,12 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
 
                             </div>
                         </div>
-                        <SaveSubmitButton disabled={isBusy} name='submitRuleSet'/>
-                        <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                        <SaveSubmitButton disabled={isLoading} name='submitFrm'/>
+                        <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                     </form>
                     {scoringSetId > 0 && (<ScoreList scoringSetId={scoringSetId}/>)}
                 </Dialog>
             )}
         </>
-    )
-}
+    );
+};

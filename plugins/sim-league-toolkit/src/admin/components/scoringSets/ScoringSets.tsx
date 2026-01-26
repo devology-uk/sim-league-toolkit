@@ -1,40 +1,21 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect, useState} from '@wordpress/element';
+import {useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
 import {ScoringSet} from '../../types/ScoringSet';
-import {scoringSetsGetRoute, scoringSetDeleteRoute} from '../../api/endpoints/scoringSetsApiRoutes';
+import {useScoringSets} from '../../hooks/useScoringSets';
 
 export const ScoringSets = () => {
-    const [isBusy, setIsBusy] = useState(false);
-    const [data, setData] = useState<ScoringSet[]>([]);
+    const {deleteScoringSet, isLoading, scoringSets} = useScoringSets();
+
     const [selectedItem, setSelectedItem] = useState<ScoringSet>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: scoringSetsGetRoute(),
-                     method: HttpMethod.GET,
-                 }
-        )
-            .then((r: ScoringSet[]) => {
-                setData(r ?? []);
-                setIsBusy(false);
-            });
-    };
 
     const onAdd = () => {
         setShowEditor(true);
@@ -55,17 +36,10 @@ export const ScoringSets = () => {
         setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: scoringSetDeleteRoute(selectedItem.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setSelectedItem(null);
-            setIsBusy(false);
-        });
+        await deleteScoringSet(selectedItem.id);
+        setSelectedItem(null);
     };
 
     const onEditorCancelled = () => {
@@ -76,7 +50,6 @@ export const ScoringSets = () => {
     const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        loadData();
     };
 
     const headerTemplate = () => {
@@ -99,7 +72,7 @@ export const ScoringSets = () => {
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <h3>{__('Scoring Sets', 'sim-league-toolkit')}</h3>
             <p>
                 {__('Sim League Toolkit allows you create re-usable Scoring Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to create them multiple times.',
@@ -114,7 +87,7 @@ export const ScoringSets = () => {
                     'sim-league-toolkit')}
             </p>
 
-            <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+            <DataView value={scoringSets} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                       emptyMessage={__('No Scoring Sets have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&

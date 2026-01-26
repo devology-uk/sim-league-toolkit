@@ -1,14 +1,11 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {ListItem} from "../../types/ListItem";
-import {ScoringSet} from "../../types/ScoringSet";
+import {ListItem} from '../../types/ListItem';
+import {useScoringSets} from '../../hooks/useScoringSets';
 import {ValidationError} from '../shared/ValidationError';
-import {scoringSetsGetRoute} from '../../api/endpoints/scoringSetsApiRoutes';
-import {HttpMethod} from '../../enums/HttpMethod';
 
 interface ScoringSetSelectorProps {
     onSelectedItemChanged: (item: number) => void;
@@ -25,31 +22,23 @@ export const ScoringSetSelector = ({
                                        isInvalid = false,
                                        validationMessage = ''
                                    }: ScoringSetSelectorProps) => {
-    const [items, setItems] = useState<ScoringSet[]>([]);
+    const {scoringSets} = useScoringSets();
+
     const [selectedItemId, setSelectedItemId] = useState(scoringSetId);
 
     useEffect(() => {
-        apiFetch({
-            path: scoringSetsGetRoute(),
-            method: HttpMethod.GET,
-        }).then((r: ScoringSet[]) => {
-            setItems(r);
-        });
-    }, []);
-
-    useEffect(() => {
         setSelectedItemId(scoringSetId);
-    }, [scoringSetId])
+    }, [scoringSetId]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
         onSelectedItemChanged(e.target.value);
-    }
+    };
 
     const listItems: ListItem[] = ([{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    }] as ListItem[]).concat(items.map(i => ({
+    }] as ListItem[]).concat(scoringSets.map(i => ({
         value: i.id,
         label: i.name
     })));
@@ -64,5 +53,5 @@ export const ScoringSetSelector = ({
                 message={validationMessage}
                 show={isInvalid}/>
         </div>
-    )
-}
+    );
+};
