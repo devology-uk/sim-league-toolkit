@@ -13,3 +13,4 @@ export interface ChampionshipClass {
     singleCarId?: number;
     singleCarName?: string;
 }
+

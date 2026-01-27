@@ -6,6 +6,7 @@
   use DateTime;
   use Exception;
   use SLTK\Core\Constants;
+  use SLTK\Core\Enums\ChampionshipType;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
   use stdClass;
@@ -14,12 +15,12 @@
 
     private bool $allowEntryChange = false;
     private string $bannerImageUrl = '';
+    private ChampionshipType $championshipType = ChampionshipType::Standard;
     private string $description = '';
     private int $entryChangeLimit = 0;
     private string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
     private bool $isActive = false;
-    private bool $isTrackMasterChampionship = false;
     private string $name = '';
     private string $platform = '';
     private int $platformId = Constants::DEFAULT_ID;
@@ -42,12 +43,12 @@
       if ($data != null) {
         $this->allowEntryChange = $data->allowEntryChange ?? false;
         $this->bannerImageUrl = $data->bannerImageUrl;
+        $this->championshipType = $data->championshipType ?? ChampionshipType::Standard;
         $this->description = $data->description ?? '';
         $this->entryChangeLimit = $data->entryChangeLimit ?? 0;
         $this->game = $data->game ?? '';
         $this->gameId = $data->gameId;
         $this->isActive = $data->isActive;
-        $this->isTrackMasterChampionship = $data->isTrackMasterChampionship;
         $this->name = $data->name ?? '';
         $this->platform = $data->platform ?? '';
         $this->platformId = $data->platformId ?? Constants::DEFAULT_ID;
@@ -142,6 +143,14 @@
 
     public function setBannerImageUrl(string $value): void {
       $this->bannerImageUrl = $value;
+    }
+
+    public function getChampionshipType(): ChampionshipType {
+        return $this->championshipType ?? ChampionshipType::Standard;
+    }
+
+    public function setChampionshipType(ChampionshipType $value): void {
+        $this->championshipType = $value;
     }
 
     public function getDescription(): string {
@@ -329,11 +338,11 @@
       $result = [
         'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
+        'championshipType' => $this->getChampionshipType(),
         'description' => $this->getDescription(),
         'entryChangeLimit' => $this->getEntryChangeLimit(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
-        'isTrackMasterChampionship' => $this->getIsTrackMasterChampionship(),
         'name' => $this->getName(),
         'platformId' => $this->getPlatformId(),
         'resultsToDiscard' => $this->getResultsToDiscard(),
@@ -356,12 +365,12 @@
       $result = [
         'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
+        'championshipType' => $this->getChampionshipType(),
         'description' => $this->getDescription(),
         'entryChangeLimit' => $this->getEntryChangeLimit(),
         'game' => $this->getGame(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
-        'isTrackMasterChampionship' => $this->getIsTrackMasterChampionship(),
         'name' => $this->getName(),
         'platform' => $this->getPlatform(),
         'platformId' => $this->getPlatformId(),

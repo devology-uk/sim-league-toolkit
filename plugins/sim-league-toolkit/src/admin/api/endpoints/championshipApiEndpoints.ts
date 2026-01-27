@@ -6,16 +6,22 @@ const championshipClassRootEndpoint = 'championship-class';
 
 const championshipEventRootEndpoint = 'championship-event';
 
-export const championshipGetEndPoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}}`;
+export const championshipDeleteEndpoint = (championshipId: number) => `${championshipRootEndpoint}/${championshipId}`;
+
+export const championshipPostEndpoint = () => championshipRootEndpoint;
+
+export const championshipPutEndpoint = (championshipId: number) => `${championshipRootEndpoint}/${championshipId}`;
+
+export const championshipsGetEndpoint = () => championshipsRootEndpoint;
+
 
 export const championshipClassesGetEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/classes`;
 
-export const championshipClassesPostEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/classes`;
+export const championshipClassPostEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/classes`;
 
 export const championshipClassDeleteEndpoint = (eventClassId: number) => `${championshipClassRootEndpoint}/${eventClassId}`;
+
 
 export const championshipEventEndpoint = (championshipEventId: number) => `${championshipEventRootEndpoint}/${championshipEventId}`;
 
 export const championshipEventsEndpoint = (championshipId: number): string => `${championshipRootEndpoint}/${championshipId}/events`;
-
-export const championshipsGetEndpoint = () => championshipsRootEndpoint;

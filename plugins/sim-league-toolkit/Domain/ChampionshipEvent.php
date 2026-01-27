@@ -2,6 +2,7 @@
 
   namespace SLTK\Domain;
 
+  use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use SLTK\Database\Repositories\EventRefsRepository;
@@ -25,24 +26,36 @@
       }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): ?self
     {
       $row = ChampionshipEventsRepository::getById($id);
       return $row ? new self($row) : null;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getByEventRefId(int $eventRefId): ?self
     {
       $row = ChampionshipEventsRepository::getByEventRefId($eventRefId);
       return $row ? new self($row) : null;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function list(): array
     {
       $rows = ChampionshipEventsRepository::listAll();
       return array_map(fn($row) => new self($row), $rows);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function listByChampionshipId(int $championshipId): array
     {
       $rows = ChampionshipEventsRepository::listByChampionshipId($championshipId);
@@ -50,7 +63,7 @@
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function delete(int $id): void
     {
@@ -96,7 +109,7 @@
           ChampionshipEventsRepository::update($this->getId(), $this->toArray());
         }
       }
-      catch (\Exception)
+      catch (Exception)
       {
         return false;
       }

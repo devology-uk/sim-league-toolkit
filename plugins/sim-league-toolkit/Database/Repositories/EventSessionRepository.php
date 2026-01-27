@@ -36,8 +36,8 @@
      * @throws Exception
      */
     public static function getById(int $id): ?stdClass {
-      $sessions = TableNames::prefixed(TableNames::EVENT_SESSIONS);
-      $eventRefs = TableNames::prefixed(TableNames::EVENT_REFS);
+      $sessions = self::prefixedTableName(TableNames::EVENT_SESSIONS);
+      $eventRefs = self::prefixedTableName(TableNames::EVENT_REFS);
 
       $query = "SELECT 
                 s.*,
@@ -60,8 +60,8 @@
      * @throws Exception
      */
     public static function listAll(): array {
-      $sessions = TableNames::prefixed(TableNames::EVENT_SESSIONS);
-      $eventRefs = TableNames::prefixed(TableNames::EVENT_REFS);
+      $sessions = self::prefixedTableName(TableNames::EVENT_SESSIONS);
+      $eventRefs = self::prefixedTableName(TableNames::EVENT_REFS);
 
       $query = "SELECT 
                 s.*,
@@ -84,8 +84,8 @@
      * @throws Exception
      */
     public static function listByEventRefId(int $eventRefId): array {
-      $sessions = TableNames::prefixed(TableNames::EVENT_SESSIONS);
-      $eventRefs = TableNames::prefixed(TableNames::EVENT_REFS);
+      $sessions = self::prefixedTableName(TableNames::EVENT_SESSIONS);
+      $eventRefs = self::prefixedTableName(TableNames::EVENT_REFS);
 
       $query = "SELECT 
                 s.*,

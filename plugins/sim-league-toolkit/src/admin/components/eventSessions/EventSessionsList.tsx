@@ -1,9 +1,9 @@
 import {__} from '@wordpress/i18n';
 import {useState} from '@wordpress/element';
 
+import {Button} from 'primereact/button';
 import {Column} from 'primereact/column';
 import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
-import {Button} from 'primereact/button';
 import {DataTable, DataTableRowReorderEvent} from 'primereact/datatable';
 import {Dialog} from 'primereact/dialog';
 
@@ -12,7 +12,7 @@ import {DynamicSessionForm} from './DynamicSessionForm';
 import {EventSession} from '../../types/EventSession';
 import {EventSessionFormData} from '../../types/EventSessionFormData';
 import {SessionTypeLabels} from '../../generated/enums';
-import {useEventSessions} from '../../hooks/useEventSession';
+import {useEventSessions} from '../../hooks/useEventSessions';
 
 interface EventSessionListProps {
     eventRefId: number;
@@ -21,12 +21,12 @@ interface EventSessionListProps {
 
 export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) => {
     const {
-        sessions,
+        createEventSession,
+        deleteEventSession,
+        eventSessions,
         isLoading,
-        createSession,
-        updateSession,
-        deleteSession,
-        reorderSessions,
+        reorderEventSessions,
+        updateEventSession,
     } = useEventSessions(eventRefId);
 
     const {config: gameConfig} = useGameConfig(gameId);
@@ -55,9 +55,9 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
 
         try {
             if (editingSession?.id) {
-                await updateSession(editingSession.id, data);
+                await updateEventSession(editingSession.id, data);
             } else {
-                await createSession(data);
+                await createEventSession(data);
             }
             closeDialog();
         } finally {
@@ -73,7 +73,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                           acceptClassName: 'p-button-danger',
                           accept: async () => {
                               if (session.id) {
-                                  await deleteSession(session.id);
+                                  await deleteEventSession(session.id);
                               }
                           },
                       });
@@ -84,7 +84,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
         const sessionIds = reorderedSessions
             .map((s) => s.id)
             .filter((id): id is number => id !== undefined);
-        await reorderSessions(sessionIds);
+        await reorderEventSessions(sessionIds);
     };
 
     const sessionTypeTemplate = (rowData: EventSession) => {
@@ -132,7 +132,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
             </div>
 
             <DataTable
-                value={sessions}
+                value={eventSessions}
                 loading={isLoading}
                 reorderableRows
                 onRowReorder={handleReorder}

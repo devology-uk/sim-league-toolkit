@@ -3,6 +3,7 @@
     "generate:enums": "php ./scripts/generate-enums.php",
     "prebuild": "npm run generate:enums",
     "prestart": "npm run generate:enums",
+    "prestart:hot": "npm run generate:enums",
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "start:hot": "wp-scripts start --hot --webpack-dev-server"

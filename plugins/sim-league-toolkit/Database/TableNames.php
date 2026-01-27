@@ -31,10 +31,4 @@
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
     public final const string USERS = 'users';
     public final const string USER_PROFILES = 'sltk_user_profile';
-
-    public static function prefixed(string $tableName): string {
-      global $wpdb;
-
-      return $wpdb->prefix . $tableName;
-    }
   }

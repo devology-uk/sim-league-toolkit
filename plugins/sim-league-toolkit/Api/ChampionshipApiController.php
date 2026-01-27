@@ -121,11 +121,11 @@
       $entity = new Championship();
       $entity->setAllowEntryChange($data->allowEntryChange);
       $entity->setBannerImageUrl($data->bannerImageUrl);
+      $entity->setChampionshipType($data->championshipType);
       $entity->setDescription($data->description);
       $entity->setEntryChangeLimit($data->entryChangeLimit);
       $entity->setGameId($data->gameId);
       $entity->setIsActive($data->isActive ?? false);
-      $entity->setIsTrackMasterChampionship($data->isTrackMasterChampionship);
       $entity->setName($data->name);
       $entity->setPlatformId($data->platformId);
       $entity->setResultsToDiscard($data->resultsToDiscard);

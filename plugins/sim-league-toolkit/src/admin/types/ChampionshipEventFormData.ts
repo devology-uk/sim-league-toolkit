@@ -1,7 +1,5 @@
-import {Entity} from './Entity';
 
-export interface ChampionshipEventFormData extends Entity {
-    championshipId: number;
+export interface ChampionshipEventFormData {
     description: string;
     isActive: boolean;
     name: string;

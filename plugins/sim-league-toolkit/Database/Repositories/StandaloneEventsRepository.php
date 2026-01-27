@@ -12,12 +12,12 @@
      */
     public static function getById(int $id): ?\stdClass
     {
-      $events = TableNames::prefixed(TableNames::STANDALONE_EVENTS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
-      $scoringSets = TableNames::prefixed(TableNames::SCORING_SETS);
-      $ruleSets = TableNames::prefixed(TableNames::RULE_SETS);
+      $events = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+      $games = self::prefixedTableName(TableNames::GAMES);
+      $tracks = self::prefixedTableName(TableNames::TRACKS);
+      $layouts = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
+      $scoringSets = self::prefixedTableName(TableNames::SCORING_SETS);
+      $ruleSets = self::prefixedTableName(TableNames::RULE_SETS);
 
       $query = "SELECT 
                 e.*,
@@ -42,12 +42,12 @@
      */
     public static function getByEventRefId(int $eventRefId): ?\stdClass
     {
-      $events = TableNames::prefixed(TableNames::STANDALONE_EVENTS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
-      $scoringSets = TableNames::prefixed(TableNames::SCORING_SETS);
-      $ruleSets = TableNames::prefixed(TableNames::RULE_SETS);
+      $events = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+      $games = self::prefixedTableName(TableNames::GAMES);
+      $tracks = self::prefixedTableName(TableNames::TRACKS);
+      $layouts = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
+      $scoringSets = self::prefixedTableName(TableNames::SCORING_SETS);
+      $ruleSets = self::prefixedTableName(TableNames::RULE_SETS);
 
       $query = "SELECT 
                 e.*,
@@ -73,12 +73,12 @@
      */
     public static function listAll(): array
     {
-      $events = TableNames::prefixed(TableNames::STANDALONE_EVENTS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
-      $scoringSets = TableNames::prefixed(TableNames::SCORING_SETS);
-      $ruleSets = TableNames::prefixed(TableNames::RULE_SETS);
+      $events = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+      $games = self::prefixedTableName(TableNames::GAMES);
+      $tracks = self::prefixedTableName(TableNames::TRACKS);
+      $layouts = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
+      $scoringSets = self::prefixedTableName(TableNames::SCORING_SETS);
+      $ruleSets = self::prefixedTableName(TableNames::RULE_SETS);
 
       $query = "SELECT 
                 e.*,

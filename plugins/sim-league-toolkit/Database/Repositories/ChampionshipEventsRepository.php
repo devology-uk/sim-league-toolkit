@@ -4,19 +4,20 @@
 
   use Exception;
   use SLTK\Database\TableNames;
+  use stdClass;
 
   class ChampionshipEventsRepository extends RepositoryBase
   {
     /**
      * @throws Exception
      */
-    public static function getById(int $id): ?\stdClass
+    public static function getById(int $id): ?stdClass
     {
-      $events = TableNames::prefixed(TableNames::CHAMPIONSHIP_EVENTS);
-      $championships = TableNames::prefixed(TableNames::CHAMPIONSHIPS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
+      $eventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $layoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
       $query = "SELECT 
                 e.*,
@@ -24,11 +25,11 @@
                 g.name as game,
                 t.name as track,
                 tl.name as trackLayout
-            FROM {$events} e
-            LEFT JOIN {$championships} c ON e.championshipId = c.id
-            LEFT JOIN {$games} g ON e.gameId = g.id
-            LEFT JOIN {$tracks} t ON e.trackId = t.id
-            LEFT JOIN {$layouts} tl ON e.trackLayoutId = tl.id
+            FROM {$eventsTableName} e
+            LEFT JOIN {$championshipsTableName} c ON e.championshipId = c.id
+            LEFT JOIN {$gamesTableName} g ON e.gameId = g.id
+            LEFT JOIN {$tracksTableName} t ON e.trackId = t.id
+            LEFT JOIN {$layoutsTableName} tl ON e.trackLayoutId = tl.id
             WHERE e.id = '{$id}';";
 
       return self::getRow($query);
@@ -37,13 +38,13 @@
     /**
      * @throws Exception
      */
-    public static function getByEventRefId(int $eventRefId): ?\stdClass
+    public static function getByEventRefId(int $eventRefId): ?stdClass
     {
-      $events = TableNames::prefixed(TableNames::CHAMPIONSHIP_EVENTS);
-      $championships = TableNames::prefixed(TableNames::CHAMPIONSHIPS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
+      $eventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $layoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
       $query = "SELECT 
                 e.*,
@@ -51,27 +52,27 @@
                 g.name as game,
                 t.name as track,
                 tl.name as trackLayout
-            FROM {$events} e
-            LEFT JOIN {$championships} c ON e.championshipId = c.id
-            LEFT JOIN {$games} g ON e.gameId = g.id
-            LEFT JOIN {$tracks} t ON e.trackId = t.id
-            LEFT JOIN {$layouts} tl ON e.trackLayoutId = tl.id
+            FROM {$eventsTableName} e
+            LEFT JOIN {$championshipsTableName} c ON e.championshipId = c.id
+            LEFT JOIN {$gamesTableName} g ON e.gameId = g.id
+            LEFT JOIN {$tracksTableName} t ON e.trackId = t.id
+            LEFT JOIN {$layoutsTableName} tl ON e.trackLayoutId = tl.id
             WHERE e.eventRefId = '{$eventRefId}';";
 
       return self::getRow($query);
     }
 
     /**
-     * @return \stdClass[]
+     * @return stdClass[]
      * @throws Exception
      */
     public static function listAll(): array
     {
-      $events = TableNames::prefixed(TableNames::CHAMPIONSHIP_EVENTS);
-      $championships = TableNames::prefixed(TableNames::CHAMPIONSHIPS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
+      $eventsTableName =  (TableNames::CHAMPIONSHIP_EVENTS);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $layoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
       $query = "SELECT 
                 e.*,
@@ -79,27 +80,27 @@
                 g.name as game,
                 t.name as track,
                 tl.name as trackLayout
-            FROM {$events} e
-            LEFT JOIN {$championships} c ON e.championshipId = c.id
-            LEFT JOIN {$games} g ON e.gameId = g.id
-            LEFT JOIN {$tracks} t ON e.trackId = t.id
-            LEFT JOIN {$layouts} tl ON e.trackLayoutId = tl.id
-            ORDER BY e.eventDate ASC;";
+            FROM {$eventsTableName} e
+            LEFT JOIN {$championshipsTableName} c ON e.championshipId = c.id
+            LEFT JOIN {$gamesTableName} g ON e.gameId = g.id
+            LEFT JOIN {$tracksTableName} t ON e.trackId = t.id
+            LEFT JOIN {$layoutsTableName} tl ON e.trackLayoutId = tl.id
+            ORDER BY e.eventDate;";
 
       return self::getResults($query);
     }
 
     /**
-     * @return \stdClass[]
+     * @return stdClass[]
      * @throws Exception
      */
     public static function listByChampionshipId(int $championshipId): array
     {
-      $events = TableNames::prefixed(TableNames::CHAMPIONSHIP_EVENTS);
-      $championships = TableNames::prefixed(TableNames::CHAMPIONSHIPS);
-      $games = TableNames::prefixed(TableNames::GAMES);
-      $tracks = TableNames::prefixed(TableNames::TRACKS);
-      $layouts = TableNames::prefixed(TableNames::TRACK_LAYOUTS);
+      $eventsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENTS);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $tracksTableName = self::prefixedTableName(TableNames::TRACKS);
+      $layoutsTableName = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
 
       $query = "SELECT 
                 e.*,
@@ -107,13 +108,13 @@
                 g.name as game,
                 t.name as track,
                 tl.name as trackLayout
-            FROM {$events} e
-            LEFT JOIN {$championships} c ON e.championshipId = c.id
-            LEFT JOIN {$games} g ON e.gameId = g.id
-            LEFT JOIN {$tracks} t ON e.trackId = t.id
-            LEFT JOIN {$layouts} tl ON e.trackLayoutId = tl.id
+            FROM {$eventsTableName} e
+            LEFT JOIN {$championshipsTableName} c ON e.championshipId = c.id
+            LEFT JOIN {$gamesTableName} g ON e.gameId = g.id
+            LEFT JOIN {$tracksTableName} t ON e.trackId = t.id
+            LEFT JOIN {$layoutsTableName} tl ON e.trackLayoutId = tl.id
             WHERE e.championshipId = '{$championshipId}'
-            ORDER BY e.round ASC;";
+            ORDER BY e.round;";
 
       return self::getResults($query);
     }

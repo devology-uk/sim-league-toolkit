@@ -14,8 +14,8 @@
 
       return "CREATE TABLE {$tableName} (
             id BIGINT NOT NULL AUTO_INCREMENT,
-            eventType VARCHAR(50) NOT NULL
-            PRIMARY KEY (id),
+            eventType VARCHAR(50) NOT NULL,
+            PRIMARY KEY  (id),
             INDEX idx_event_type (eventType)
         ) {$charsetCollate};";
     }

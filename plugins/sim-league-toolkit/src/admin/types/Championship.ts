@@ -1,14 +1,15 @@
-import {Entity} from "./Entity";
+import {Entity} from './Entity';
+import {ChampionshipType} from './generated/ChampionshipType';
 
 export interface Championship extends Entity {
     allowEntryChange: boolean;
     bannerImageUrl: string;
+    championshipType: ChampionshipType;
     description: string;
     entryChangeLimit: number;
     game?: string;
     gameId: number;
     isActive: boolean;
-    isTrackMasterChampionship: boolean;
     name: string;
     platform?: string;
     platformId: number;
@@ -24,3 +25,5 @@ export interface Championship extends Entity {
     trackMasterTrackLayoutId?: number;
     trophiesAwarded: boolean;
 }
+
+

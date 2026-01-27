@@ -1,12 +1,9 @@
 import {__} from '@wordpress/i18n';
+import {ChampionshipType} from '../types/generated/ChampionshipType';
 
-export enum ChampionshipTypes {
-    Standard = 0,
-    Trackmaster
-}
 
-export const translateChampionshipType = (championshipType: ChampionshipTypes): string => {
-    if (championshipType === ChampionshipTypes.Trackmaster) {
+export const translateChampionshipType = (championshipType: ChampionshipType): string => {
+    if (championshipType === ChampionshipType.TRACK_MASTER) {
         return __('Track Master', 'sim-league-toolkit');
     }
 

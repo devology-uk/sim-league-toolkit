@@ -1,6 +1,5 @@
 import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
 import {FormEvent} from 'react';
 
 import {Calendar} from 'primereact/calendar';
@@ -12,18 +11,16 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {Championship} from '../../types/Championship';
-import {championshipPostRoute} from '../../api/endpoints/championshipApiRoutes';
-import {ChampionshipTypes} from '../../enums/ChampionshipTypes';
+import {ChampionshipType} from '../../types/generated/ChampionshipType';
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
-import {Game} from '../../types/Game';
-import {gameGetRoute} from '../../api/endpoints/gameApiRoutes';
 import {GameSelector} from '../games/GameSelector';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {PlatformSelector} from '../games/PlatformSelector';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
 import {TrackSelector} from '../games/TrackSelector';
+import {useChampionships} from '../../hooks/useChampionships';
+import {useGames} from '../../hooks/useGames';
 import {ValidationError} from '../shared/ValidationError';
 
 interface NewChampionshipEditorProps {
@@ -34,13 +31,15 @@ interface NewChampionshipEditorProps {
 const minDate = new Date();
 
 export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEditorProps) => {
+    const {createChampionship, isLoading} = useChampionships();
+    const {findGame} = useGames();
+
     const [allowEntryChange, setAllowEntryChange] = useState(true);
-    const [championshipType, setChampionshipType] = useState(ChampionshipTypes.Standard);
+    const [championshipType, setChampionshipType] = useState<ChampionshipType>(ChampionshipType.STANDARD);
     const [description, setDescription] = useState('');
     const [entryChangeLimit, setEntryChangeLimit] = useState(1);
     const [gameId, setGameId] = useState(0);
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
-    const [isBusy, setIsBusy] = useState(false);
     const [name, setName] = useState('');
     const [platformId, setPlatformId] = useState(0);
     const [resultsToDiscard, setResultsToDiscard] = useState(0);
@@ -52,19 +51,15 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        apiFetch({
-                     path: gameGetRoute(gameId),
-                     method: 'GET'
-                 }).then((r: Game) => {
-            setGameSupportsLayouts(r.supportsLayouts);
-        });
+        const game = findGame(gameId);
+        setGameSupportsLayouts(game.supportsLayouts);
     }, [gameId]);
 
     const resetForm = () => {
         setGameId(0);
         setPlatformId(0);
         setAllowEntryChange(false);
-        setChampionshipType(ChampionshipTypes.Standard);
+        setChampionshipType(ChampionshipType.STANDARD);
         setEntryChangeLimit(0);
         setDescription('');
         setName('');
@@ -77,22 +72,21 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
         setValidationErrors([]);
     };
 
-    const onSave = (e: FormEvent<HTMLFormElement>) => {
+    const onSave = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
-        setIsBusy(true);
-        const entity: Championship = {
+        const formData: Championship = {
             allowEntryChange: allowEntryChange,
             bannerImageUrl: '',
+            championshipType: championshipType,
             description: description,
             entryChangeLimit: entryChangeLimit,
             gameId: gameId,
             isActive: false,
-            isTrackMasterChampionship: championshipType === ChampionshipTypes.Trackmaster,
             name: name,
             platformId: platformId,
             resultsToDiscard: resultsToDiscard,
@@ -102,23 +96,17 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
             trophiesAwarded: false
         };
 
-        if (entity.isTrackMasterChampionship) {
-            entity.trackMasterTrackId = trackMasterTrackId;
+        if (formData.championshipType === ChampionshipType.TRACK_MASTER) {
+            formData.trackMasterTrackId = trackMasterTrackId;
 
             if (gameSupportsLayouts) {
-                entity.trackMasterTrackLayoutId = trackMasterTrackLayoutId;
+                formData.trackMasterTrackLayoutId = trackMasterTrackLayoutId;
             }
         }
 
-        apiFetch({
-                     path: championshipPostRoute(),
-                     method: HttpMethod.POST,
-                     data: entity,
-                 }).then(() => {
-            onSaved();
-            resetForm();
-            setIsBusy(false);
-        });
+        await createChampionship(formData);
+        onSaved();
+        resetForm();
     };
 
     const onSelectedGameChanged = (gameId: number) => {
@@ -150,7 +138,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
             errors.push('scoringSet');
         }
 
-        if (championshipType === ChampionshipTypes.Trackmaster) {
+        if (championshipType === ChampionshipType.TRACK_MASTER) {
             if (trackMasterTrackId < 1) {
                 errors.push('trackMasterTrack');
             }
@@ -166,7 +154,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
 
     return (
         <>
-            <BusyIndicator isBusy={isBusy}/>
+            <BusyIndicator isBusy={isLoading}/>
             <h3>{__('New Championship', 'sim-league-toolkit')}</h3>
             <form onSubmit={onSave} noValidate>
                 <GameSelector gameId={gameId}
@@ -210,12 +198,12 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
 
                                 <ChampionshipTypeSelector championshipType={championshipType}
                                                           onSelectedItemChanged={setChampionshipType}
-                                                          disabled={isBusy}/>
+                                                          disabled={isLoading}/>
                             </div>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <RuleSetSelector ruleSetId={ruleSetId}
                                                  onSelectedItemChanged={setRuleSetId}
-                                                 disabled={isBusy}/>
+                                                 disabled={isLoading}/>
                                 <ScoringSetSelector scoringSetId={scoringSetId}
                                                     isInvalid={validationErrors.includes('scoringSet')}
                                                     validationMessage={__(
@@ -243,14 +231,14 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                                                  onChange={(e) => setEntryChangeLimit(e.value)}
                                                  min={1}/>
                                 </>}
-                                {championshipType === ChampionshipTypes.Trackmaster &&
+                                {championshipType === ChampionshipType.TRACK_MASTER &&
                                     <TrackSelector gameId={gameId}
                                                    gameSupportsLayouts={gameSupportsLayouts}
                                                    trackId={trackMasterTrackId}
                                                    trackLayoutId={trackMasterTrackLayoutId}
                                                    isInvalid={validationErrors.includes('trackMasterTrack') || validationErrors.includes(
                                                        'trackMasterTrackLayout')}
-                                                   disabled={isBusy}
+                                                   disabled={isLoading}
                                                    onSelectedTrackChanged={setTrackMasterTrackId}
                                                    onSelectedTrackLayoutChanged={setTrackMasterTrackLayoutId}
                                                    trackValidationMessage={__(
@@ -262,8 +250,8 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                                     />}
                             </div>
                         </div>
-                        <SaveSubmitButton disabled={isBusy} name='submitForm'/>
-                        <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                        <SaveSubmitButton disabled={isLoading} name='submitForm'/>
+                        <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                     </>
                 }
             </form>

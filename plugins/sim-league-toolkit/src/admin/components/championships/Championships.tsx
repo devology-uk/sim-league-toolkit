@@ -1,6 +1,5 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
+import {useState} from '@wordpress/element';
 
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
@@ -9,32 +8,16 @@ import {BusyIndicator} from '../shared/BusyIndicator';
 import {Championship} from '../../types/Championship';
 import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
-import {championshipDeleteRoute, championshipsGetRoute} from '../../api/endpoints/championshipApiRoutes';
+import {useChampionships} from '../../hooks/useChampionships';
 
 export const Championships = () => {
+    const {championships, deleteChampionship, isLoading} = useChampionships();
+
     const [isAdding, setIsAdding] = useState(false);
-    const [isBusy, setIsBusy] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [data, setData] = useState<Championship[]>([]);
     const [selectedItem, setSelectedItem] = useState<Championship>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = () => {
-        setIsBusy(true);
-        apiFetch({
-                     path: championshipsGetRoute(),
-                     method: HttpMethod.GET,
-                 }).then((r: Championship[]) => {
-            setData(r ?? []);
-            setIsBusy(false);
-        });
-    };
 
     const onAdd = () => {
         setIsAdding(true);
@@ -46,17 +29,10 @@ export const Championships = () => {
         setSelectedItem(null);
     };
 
-    const onConfirmDelete = () => {
+    const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-        setIsBusy(true);
-        apiFetch({
-                     path: championshipDeleteRoute(selectedItem.id),
-                     method: HttpMethod.DELETE,
-                 }).then(() => {
-            loadData();
-            setSelectedItem(null);
-            setIsBusy(false);
-        });
+        await deleteChampionship(selectedItem.id);
+        setSelectedItem(null);
     };
 
     const onDelete = (item: Championship) => {
@@ -80,7 +56,6 @@ export const Championships = () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
-        loadData();
     };
 
     const headerTemplate = () => {
@@ -105,13 +80,13 @@ export const Championships = () => {
     return (
         <>
             {!isAdding && !isEditing && <>
-                <BusyIndicator isBusy={isBusy}/>
+                <BusyIndicator isBusy={isLoading}/>
                 <h3>{__('Championships', 'sim-league-toolkit')}</h3>
                 <p>
                     {__('The championships you have created are displayed below.', 'sim-league-toolkit')}
                 </p>
 
-                <DataView value={data} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+                <DataView value={championships} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
                           emptyMessage={__('No Championships have been defined.', 'sim-league-toolkit')}
                           style={{marginRight: '1rem'}}/>
             </>

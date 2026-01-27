@@ -8,10 +8,12 @@
 
 require_once __DIR__ . '/script-autoloader.php';
 
+  use SLTK\Core\Enums\ChampionshipType;
   use SLTK\Core\Enums\EventType;
   use SLTK\Core\Enums\EventSessionType;
 
   $enums = [
+    'ChampionshipType' => ChampionshipType::class,
     'EventType' => EventType::class,
     'SessionType' => EventSessionType::class,
   ];
@@ -23,6 +25,7 @@ require_once __DIR__ . '/script-autoloader.php';
     $cases = $class::cases();
 
     // Generate const object
+    $output = "import {__} from '@wordpress/i18n';\n\n";
     $output .= "export const {$name} = {\n";
     foreach ($cases as $case) {
       $constName = strtoupper(preg_replace('/(?<!^)[A-Z]/', '_$0', $case->name));
@@ -36,26 +39,26 @@ require_once __DIR__ . '/script-autoloader.php';
     // Generate labels
     $output .= "export const {$name}Labels: Record<{$name}, string> = {\n";
     foreach ($cases as $case) {
-      $output .= "    '{$case->value}': '{$case->label()}',\n";
+      $output .= "    '{$case->value}': __('{$case->label()}', 'sltk-league-toolkit'),\n";
     }
     $output .= "};\n\n";
 
     // Generate options array for select inputs
     $output .= "export const {$name}Options = [\n";
     foreach ($cases as $case) {
-      $output .= "    { value: '{$case->value}', label: '{$case->label()}' },\n";
+      $output .= "    { value: '{$case->value}', label: __('{$case->label()}', 'sltk-league-toolkit') },\n";
     }
     $output .= "] as const;\n\n";
+
+    $outputPath = __DIR__ . '/../src/admin/types/generated/' . $name . '.ts';
+    $outputDir = dirname($outputPath);
+
+    if (!is_dir($outputDir)) {
+      mkdir($outputDir, 0755, true);
+    }
+
+    file_put_contents($outputPath, $output);
   }
-
-  $outputPath = __DIR__ . '/../src/admin/generated/enums.ts';
-  $outputDir = dirname($outputPath);
-
-  if (!is_dir($outputDir)) {
-    mkdir($outputDir, 0755, true);
-  }
-
-  file_put_contents($outputPath, $output);
 
   echo "Generated: {$outputPath}\n";
   echo 'Enums processed: ' . implode(', ', array_keys($enums)) . "\n";

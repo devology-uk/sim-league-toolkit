@@ -1,5 +1,4 @@
 import {__} from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {useState, useEffect} from '@wordpress/element';
 
 import {FormEvent} from 'react';
@@ -9,16 +8,14 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {ChampionshipEvent} from '../../types/ChampionshipEvent';
-import {championshipEventRootEndpoint} from '../../api/endpoints/championshipEventsApiRoutes';
+import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
 import {Dialog} from 'primereact/dialog';
-import {Game} from '../../types/Game';
-import {gameGetRoute} from '../../api/endpoints/gameApiRoutes';
-import {HttpMethod} from '../../enums/HttpMethod';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../games/TrackSelector';
 import {ValidationError} from '../shared/ValidationError';
+import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
+import {useGames} from '../../hooks/useGames';
 
 interface NewChampionshipEventEditorProps {
     championshipId: number;
@@ -39,17 +36,17 @@ defaultTime.setMinutes(0);
 defaultTime.setSeconds(0);
 defaultTime.setMilliseconds(0);
 
-
-
 export const NewChampionshipEventEditor = ({
                                                championshipId,
                                                gameId,
                                                onSaved,
                                                onCancelled
                                            }: NewChampionshipEventEditorProps) => {
+    const {createChampionshipEvent, isLoading} = useChampionshipEvents(championshipId);
+    const {findGame} = useGames();
+
     const [description, setDescription] = useState('');
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
-    const [isBusy, setIsBusy] = useState(false);
     const [name, setName] = useState('');
     const [ruleSetId, setRuleSetId] = useState(0);
     const [startDateTime, setStartDateTime] = useState(minDate);
@@ -58,48 +55,33 @@ export const NewChampionshipEventEditor = ({
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        apiFetch({
-                     path: gameGetRoute(gameId),
-                     method: 'GET'
-                 }).then((r: Game) => {
-            setGameSupportsLayouts(r.supportsLayouts);
-        });
+        const game = findGame(gameId);
+        setGameSupportsLayouts(game.supportsLayouts);
     }, [gameId]);
 
-    const onSave = (e: FormEvent<HTMLFormElement>) => {
+    const onSave = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!validate()) {
             return;
         }
 
-        setIsBusy(true);
-        const entity: ChampionshipEvent = {
-            bannerImageUrl: '',
-            championshipId: championshipId,
-            description: description,
+        const formData: ChampionshipEventFormData = {
+            description,
             isActive: false,
-            isCompleted: false,
-            name: name,
-            ruleSetId: ruleSetId,
+            name,
+            ruleSetId,
             startDateTime: startDateTime.toISOString(),
-            trackId: trackId
+            trackId
         };
 
         if (gameSupportsLayouts) {
-            entity.trackLayoutId = trackLayoutId;
+            formData.trackLayoutId = trackLayoutId;
         }
 
-        apiFetch({
-                     path: championshipEventRootEndpoint(),
-                     method: HttpMethod.POST,
-                     data: entity,
-                 }).then(() => {
-            onSaved();
-            resetForm();
-            setIsBusy(false);
-
-        });
+        await createChampionshipEvent(formData);
+        onSaved();
+        resetForm();
     };
 
     const resetForm = () => {
@@ -138,7 +120,7 @@ export const NewChampionshipEventEditor = ({
     return (
         <>
             <Dialog visible={true} onHide={onCancelled} header={__('New Championship Event', 'sim-league-toolkit')}>
-                <BusyIndicator isBusy={isBusy}/>
+                <BusyIndicator isBusy={isLoading}/>
                 <form onSubmit={onSave} noValidate>
                     <div className='flex flex-row  align-items-stretch gap-4'>
                         <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
@@ -166,12 +148,12 @@ export const NewChampionshipEventEditor = ({
                                 htmlFor='championship-event-start-date'>{__('Start Date',
                                                                             'sim-league-toolkit')}</label>
                             <Calendar value={startDateTime} onChange={(e) => setStartDateTime(e.value)}
-                                      minDate={minDate} readOnlyInput dateFormat='D, M d yy' showTime hourFormat='24' />
+                                      minDate={minDate} readOnlyInput dateFormat='D, M d yy' showTime hourFormat='24'/>
 
                             <TrackSelector onSelectedTrackChanged={setTrackId}
                                            onSelectedTrackLayoutChanged={setTrackLayoutId} gameId={gameId}
                                            gameSupportsLayouts={gameSupportsLayouts} trackId={trackId}
-                                           trackLayoutId={trackLayoutId} disabled={isBusy}
+                                           trackLayoutId={trackLayoutId} disabled={isLoading}
                                            isInvalid={validationErrors.includes('track') || validationErrors.includes(
                                                'trackLayout')}
                                            trackValidationMessage={__('You must select the track that will be used' +
@@ -182,11 +164,11 @@ export const NewChampionshipEventEditor = ({
                                                                             'sim-league-toolkit')}/>
                             <RuleSetSelector ruleSetId={ruleSetId}
                                              onSelectedItemChanged={setRuleSetId}
-                                             disabled={isBusy}/>
+                                             disabled={isLoading}/>
                         </div>
                     </div>
-                    <SaveSubmitButton disabled={isBusy} name='submitForm'/>
-                    <CancelButton onCancel={onCancelled} disabled={isBusy}/>
+                    <SaveSubmitButton disabled={isLoading} name='submitForm'/>
+                    <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                 </form>
 
             </Dialog>
