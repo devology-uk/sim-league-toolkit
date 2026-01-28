@@ -11,7 +11,7 @@ export const serversGetEndpoint = () => {
 };
 
 export const serverPostEndpoint = () => {
-    return serversRootEndpoint;
+    return serverRootEndpoint;
 };
 
 export const serverPutEndpoint = (serverId: number): string => {

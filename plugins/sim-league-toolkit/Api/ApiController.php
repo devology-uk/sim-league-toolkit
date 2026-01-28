@@ -56,6 +56,22 @@
       return '/' . $this->resourceName;
     }
 
+    protected function registerDeleteRoute(string $route, string $callbackName): void {
+      $this->registerRoute($route, 'DELETE', $callbackName);
+    }
+
+    protected function registerGetRoute(string $route, string $callbackName): void {
+      $this->registerRoute($route, 'GET', $callbackName);
+    }
+
+    protected function registerPostRoute(string $route, string $callbackName): void {
+      $this->registerRoute($route, 'POST', $callbackName);
+    }
+
+    protected function registerPutRoute(string $route, string $callbackName): void {
+      $this->registerRoute($route, 'PUT', $callbackName);
+    }
+
     protected function registerRoute(string $route, string|array $methods, string $callbackName): void {
       register_rest_route(
         self::NAMESPACE,

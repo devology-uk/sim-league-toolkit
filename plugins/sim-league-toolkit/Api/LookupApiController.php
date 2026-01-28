@@ -6,7 +6,6 @@
   use SLTK\Core\Constants;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   abstract class LookupApiController extends ApiController {
 
@@ -28,10 +27,10 @@
       return $this->onGetById($request);
     }
 
-
     public function registerRoutes(): void {
-      $this->registerGetRoute();
-      $this->registerGetByIdRoute();
+      $resourceName = $this->getResourceName();
+      $this->registerGetRoute("$resourceName/(?P<id>\\d+)", 'getById');
+      $this->registerGetRoute("{$resourceName}s", 'get');
       $this->onRegisterRoutes();
     }
 
@@ -39,20 +38,9 @@
       return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
-
     protected abstract function onGet(WP_REST_Request $request): WP_REST_Response;
 
     protected abstract function onGetById(WP_REST_Request $request): WP_REST_Response;
 
     protected abstract function onRegisterRoutes(): void;
-
-    private function registerGetByIdRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'getById');
-    }
-
-    private function registerGetRoute(): void {
-      $route = $this->getResourceName() . 's';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'get');
-    }
   }

@@ -20,11 +20,12 @@
      * @throws Exception
      */
     public function deleteSetting(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function() use ($request)
+      {
+        Server::deleteSetting($this->getId($request));
 
-      Server::deleteSetting($id);
-
-      return rest_ensure_response(true);
+        return ApiResponse::noContent();
+      });
     }
 
     /**
@@ -129,10 +130,6 @@
       $newItem->setName($data->name);
       $newItem->setPlatformId($data->platformId);
 
-      if (isset($data->id) && $data->id > 0) {
-        $newItem->setId($data->id);
-      }
-
       $newItem->save();
 
       return rest_ensure_response($newItem);
@@ -146,22 +143,22 @@
     }
 
     private function registerDeleteSettingRoute(): void {
-      $route = $this->getResourceName() . '/settings/(?P<id>[\d]+)';
-      $this->registerRoute($route, WP_REST_Server::DELETABLE, 'deleteSetting');
+      $this->registerRoute($this->getResourceName() . '/settings/(?P<id>[\d]+)', WP_REST_Server::DELETABLE, 'deleteSetting');
     }
 
     private function registerGetSettingRoute(): void {
-      $route = $this->getResourceName() . '/settings/(?P<id>[\d]+)';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'getSetting');
+      $this->registerRoute($this->getResourceName() . '/settings/(?P<id>[\d]+)', WP_REST_Server::READABLE, 'getSetting');
     }
 
     private function registerGetSettingsRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/settings';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'getSettings');
+      $this->registerRoute($this->getResourceName() . '/(?P<id>\d+)/settings', WP_REST_Server::READABLE, 'getSettings');
     }
 
     private function registerPostSettingRoute(): void {
-      $route = $this->getResourceName() . '/settings';
-      $this->registerRoute($route, WP_REST_Server::CREATABLE, 'postSetting');
+      $this->registerRoute($this->getResourceName() . '/settings', WP_REST_Server::CREATABLE, 'postSetting');
+    }
+
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+
     }
   }

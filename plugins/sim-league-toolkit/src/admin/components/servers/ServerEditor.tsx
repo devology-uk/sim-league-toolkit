@@ -41,6 +41,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
         }
 
         const server = findServer(serverId);
+        console.log(server);
         setGameId(server.gameId);
         setGameKey(server.gameKey);
         setGameName(server.game);
@@ -120,7 +121,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                                   isInvalid={validationErrors.includes('game')}
                                                   validationMessage={__(
                                                       'You must select the game that this server will be used with.')}
-                                                  onSelectedItemChanged={(g) => onSelectedGameChanged(g.id)}/>
+                                                  onSelectedItemChanged={onSelectedGameChanged}/>
                                 }
                                 {serverId >= 1 &&
                                     <>
@@ -135,7 +136,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                                                           isInvalid={validationErrors.includes('platform')}
                                                           validationMessage={__(
                                                               'You must select the platform that this server will be used with.')}
-                                                          onSelectedItemChanged={(p) => onSelectedPlatformChanged(p.id)}/>
+                                                          onSelectedItemChanged={onSelectedPlatformChanged}/>
 
                                         <label htmlFor='server-name'>{__('Name', 'sim-league-toolkit')}</label>
                                         <InputText id='server-name' value={name}

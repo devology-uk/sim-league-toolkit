@@ -18,22 +18,8 @@
     /**
      * @throws Exception
      */
-    public static function addSetting(array $setting): int {
-      return self::insert(TableNames::SERVER_SETTINGS, $setting);
-    }
-
-    /**
-     * @throws Exception
-     */
     public static function delete(int $id): void {
       self::deleteById(TableNames::SERVERS, $id);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function deleteSetting(int $id): void {
-      self::deleteById(TableNames::SERVER_SETTINGS, $id);
     }
 
     /**
@@ -53,32 +39,6 @@
             WHERE s.id = {$id};";
 
       return self::getRow($query);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function getSettingById(int $id): ?stdClass {
-      return self::getRowById(TableNames::SERVER_SETTINGS, $id);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function getSettingByName(int $serverId, string $settingName): ?stdClass {
-      $filter = "serverId = {$serverId} and settingName = '{$settingName}'";
-
-      return self::getRowFromTable(TableNames::SERVER_SETTINGS, $filter);
-    }
-
-    /**
-     * @return stdClass[]
-     */
-    public static function getSettings(int $serverId): array {
-
-      $filter = "serverId = {$serverId}";
-
-      return self::getResultsFromTable(TableNames::SERVER_SETTINGS, $filter);
     }
 
     /**
@@ -112,10 +72,6 @@
 
 
     public static function update(int $id, array $updates): void {
-      self::updateById(TableNames::SERVER_SETTINGS, $id, $updates);
-    }
-
-    public static function updateSetting(int $id, array $updates): void {
       self::updateById(TableNames::SERVER_SETTINGS, $id, $updates);
     }
   }

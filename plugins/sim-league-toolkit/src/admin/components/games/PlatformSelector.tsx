@@ -9,7 +9,7 @@ import {ValidationError} from '../shared/ValidationError';
 
 interface PlatformSelectorProps {
     gameId: number;
-    onSelectedItemChanged: (item: Platform) => void;
+    onSelectedItemChanged: (id: number) => void;
     platformId?: number;
     disabled?: boolean;
     isInvalid?: boolean;

@@ -5,7 +5,6 @@
   use Exception;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   abstract class BasicApiController extends LookupApiController {
 
@@ -27,39 +26,25 @@
       return $this->onPost($request);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function put(WP_REST_Request $request): WP_REST_Response {
+      return $this->onPut($request);
+    }
+
     public function registerRoutes(): void {
       parent::registerRoutes();
-      $this->registerDeleteRoute();
-      $this->registerPostRoute();
+      $resourceName = $this->getResourceName();
+      $this->registerDeleteRoute("$resourceName/(?P<id>\\d+)", 'delete');
+      $this->registerPostRoute($resourceName, 'post');
+      $this->registerPutRoute("$resourceName/(?P<id>\\d+)", 'put');
     }
 
     protected abstract function onDelete(WP_REST_Request $request): WP_REST_Response;
 
     protected abstract function onPost(WP_REST_Request $request): WP_REST_Response;
 
-    private function registerDeleteRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)',
-        [
-          [
-            'methods' => WP_REST_Server::DELETABLE,
-            'callback' => [$this, 'delete'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
+    protected abstract function onPut(WP_REST_Request $request): WP_REST_Response;
 
-    private function registerPostRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName(),
-        [
-          [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'post'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
   }

@@ -8,7 +8,7 @@ import {ValidationError} from '../shared/ValidationError';
 import {useGames} from '../../hooks/useGames';
 
 interface GameSelectorProps {
-    onSelectedItemChanged: (item: Game) => void;
+    onSelectedItemChanged: (id: number) => void;
     gameId: number;
     disabled?: boolean;
     isInvalid?: boolean;

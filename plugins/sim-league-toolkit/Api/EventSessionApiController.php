@@ -2,39 +2,50 @@
 
   namespace SLTK\Api;
 
+  use SLTK\Core\Constants;
   use SLTK\Domain\EventSession;
   use WP_REST_Request;
   use WP_REST_Response;
 
-  class EventSessionApiController extends ApiController
-  {
-    public function __construct()
-    {
+  class EventSessionApiController extends ApiController {
+    public function __construct() {
       parent::__construct(ResourceNames::EVENT_SESSION);
     }
 
-    public function registerRoutes(): void
-    {
-      $resource = $this->getResourceName();
+    public function add(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $eventSession = $this->hydrateFromRequest(new EventSession(), $request);
 
-      $this->registerRoute($resource, 'GET', 'list');
-      $this->registerRoute($resource, 'POST', 'add');
-      $this->registerRoute($resource . '/(?P<id>\d+)', 'GET', 'get');
-      $this->registerRoute($resource . '/(?P<id>\d+)', 'PUT', 'update');
-      $this->registerRoute($resource . '/(?P<id>\d+)', 'DELETE', 'delete');
-      $this->registerRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions', 'GET', 'listByEventRef');
-      $this->registerRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions/reorder', 'PUT', 'reorder');
+        if (!$eventSession->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Event Session', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::created($eventSession->getId());
+      });
     }
 
-    protected function canExecute(): bool
-    {
-      return current_user_can('manage_options');
+    public function delete(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        EventSession::delete($this->getId($request));
+
+        return ApiResponse::noContent();
+      });
     }
 
-    public function list(): WP_REST_Response
-    {
-      return $this->execute(function()
-      {
+    public function get(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $eventSession = EventSession::get($this->getId($request));
+
+        if ($eventSession === null) {
+          return ApiResponse::notFound('EventSession');
+        }
+
+        return ApiResponse::success($eventSession->toDto());
+      });
+    }
+
+    public function list(): WP_REST_Response {
+      return $this->execute(function () {
         $eventSessions = EventSession::list();
 
         return ApiResponse::success(
@@ -43,10 +54,8 @@
       });
     }
 
-    public function listByEventRef(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
+    public function listByEventRef(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
         $eventRefId = (int)$request['eventRefId'];
         $eventSessions = EventSession::listByEventRefId($eventRefId);
 
@@ -56,72 +65,20 @@
       });
     }
 
-    public function get(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
-        $eventSession = EventSession::get($this->getId($request));
+    public function registerRoutes(): void {
+      $resource = $this->getResourceName();
 
-        if ($eventSession === null)
-        {
-          return ApiResponse::notFound('EventSession');
-        }
-
-        return ApiResponse::success($eventSession->toDto());
-      });
+      $this->registerGetRoute($resource, 'list');
+      $this->registerPostRoute($resource, 'add');
+      $this->registerGetRoute($resource . '/(?P<id>\d+)', 'get');
+      $this->registerPutRoute($resource . '/(?P<id>\d+)', 'update');
+      $this->registerDeleteRoute($resource . '/(?P<id>\d+)', 'delete');
+      $this->registerGetRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions', 'listByEventRef');
+      $this->registerPutRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions/reorder', 'reorder');
     }
 
-    public function add(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
-        $eventSession = $this->hydrateFromRequest(new EventSession(), $request);
-
-        if (!$eventSession->save())
-        {
-          return ApiResponse::badRequest('Failed to save eventSession');
-        }
-
-        return ApiResponse::created($eventSession->getId());
-      });
-    }
-
-    public function update(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
-        $eventSession = EventSession::get($this->getId($request));
-
-        if ($eventSession === null)
-        {
-          return ApiResponse::notFound('EventSession');
-        }
-
-        $eventSession = $this->hydrateFromRequest($eventSession, $request);
-
-        if (!$eventSession->save())
-        {
-          return ApiResponse::badRequest('Failed to update eventSession');
-        }
-
-        return ApiResponse::success(['id' => $eventSession->getId()]);
-      });
-    }
-
-    public function delete(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
-        EventSession::delete($this->getId($request));
-
-        return ApiResponse::noContent();
-      });
-    }
-
-    public function reorder(WP_REST_Request $request): WP_REST_Response
-    {
-      return $this->execute(function() use ($request)
-      {
+    public function reorder(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
         $eventRefId = (int)$request['eventRefId'];
         $eventSessionIds = $this->getParams($request)['eventSessionIds'] ?? [];
 
@@ -131,8 +88,29 @@
       });
     }
 
-    private function hydrateFromRequest(EventSession $session, WP_REST_Request $request): EventSession
-    {
+    public function update(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $eventSession = EventSession::get($this->getId($request));
+
+        if ($eventSession === null) {
+          return ApiResponse::notFound('EventSession');
+        }
+
+        $eventSession = $this->hydrateFromRequest($eventSession, $request);
+
+        if (!$eventSession->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update eventSession', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $eventSession->getId()]);
+      });
+    }
+
+    protected function canExecute(): bool {
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
+    }
+
+    private function hydrateFromRequest(EventSession $session, WP_REST_Request $request): EventSession {
       $params = $this->getParams($request);
 
       $session->setEventRefId((int)$params['eventRefId']);

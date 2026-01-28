@@ -4,10 +4,10 @@
 
   use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\ServerRepository;
+  use SLTK\Database\Repositories\ServerSettingRepository;
   use stdClass;
 
-  class ServerSetting extends EntityBase {
+  class ServerSetting extends DomainBase {
     private int $serverId = Constants::DEFAULT_ID;
     private string $settingName = '';
     private string $settingValue;
@@ -19,6 +19,35 @@
         $this->settingName = $data->settingName ?? '';
         $this->settingValue = $data->settingValue ?? '';
       }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function get(int $id): ServerSetting|null {
+      $queryResult = ServerSettingRepository::getById($id);
+
+      if(!$queryResult) {
+        return null;
+
+      }
+      return new ServerSetting($queryResult);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function list(): array {
+      throw new Exception("Not supported");
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function listByServerId(int $serverId): array {
+      $queryResult = ServerSettingRepository::listByServerId($serverId);
+
+      return self::mapServerSettings($queryResult);
     }
 
     public function getServerId() {
@@ -49,10 +78,10 @@
      * @throws Exception
      */
     public function save(): void {
-      if ($this->getId() !== Constants::DEFAULT_ID) {
-        ServerRepository::updateSetting($this->getId(), $this->toArray(false));
+      if ($this->hasId()) {
+        ServerSettingRepository::update($this->getId(), $this->toArray(false));
       } else {
-        $this->setId(ServerRepository::addSetting($this->toArray(false)));
+        $this->setId(ServerSettingRepository::add($this->toArray(false)));
       }
     }
 
@@ -66,7 +95,7 @@
         'settingValue' => $this->getSettingValue(),
       ];
 
-      if ($includeId  && $this->hasId()) {
+      if ($includeId && $this->hasId()) {
         $result['id'] = $this->getId();
       }
 
@@ -84,10 +113,20 @@
         'settingValue' => $this->getSettingValue(),
       ];
 
-      if($this->hasId()) {
+      if ($this->hasId()) {
         $result['id'] = $this->getId();
       }
 
       return $result;
+    }
+
+    private static function mapServerSettings(array $queryResults): array {
+      $results = array();
+
+      foreach ($queryResults as $item) {
+        $results[] = new ServerSetting($item);
+      }
+
+      return $results;
     }
   }

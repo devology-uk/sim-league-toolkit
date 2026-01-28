@@ -13,5 +13,5 @@
 
     public static abstract function list(): array;
 
-    public abstract function save(): bool;
+    public abstract function save(): void;
   }
