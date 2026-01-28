@@ -1,10 +1,7 @@
-const championshipRootEndpoint = 'championship';
-
-const championshipsRootEndpoint = 'championships';
-
-const championshipClassRootEndpoint = 'championship-class';
-
-const championshipEventRootEndpoint = 'championship-event';
+const championshipRootEndpoint = '/championship';
+const championshipsRootEndpoint = '/championships';
+const championshipClassRootEndpoint = '/championship-class';
+const championshipEventRootEndpoint = '/championship-event';
 
 export const championshipDeleteEndpoint = (championshipId: number) => `${championshipRootEndpoint}/${championshipId}`;
 

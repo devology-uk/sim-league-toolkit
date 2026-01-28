@@ -1,10 +1,7 @@
-
-export const eventSessionRootEndpoint = (): string => {
-    return 'event-session';
-};
+export const eventSessionRootEndpoint =  '/event-session';
 
 export const eventSessionEndpoint = (sessionId: number): string => {
-    return `${eventSessionRootEndpoint()}/${sessionId}`;
+    return `${eventSessionRootEndpoint}/${sessionId}`;
 };
 
 export const eventSessionsByEventRefEndpoint = (eventRefId: number): string => {

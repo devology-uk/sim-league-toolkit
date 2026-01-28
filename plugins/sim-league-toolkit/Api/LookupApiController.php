@@ -47,28 +47,12 @@
     protected abstract function onRegisterRoutes(): void;
 
     private function registerGetByIdRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getById'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . '/(?P<id>\d+)';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'getById');
     }
 
     private function registerGetRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName(),
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'get'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . 's';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'get');
     }
   }

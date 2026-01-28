@@ -1,43 +1,35 @@
-const serverRootEndpoint = () => {
-    return 'server';
-};
-
-const serversRootEndpoint = () => {
-    return 'servers';
-};
-
-const serverSettingRootEndpoint = () => {
-    return 'server-setting';
-};
+const serverRootEndpoint = '/server';
+const serversRootEndpoint = '/servers';
+const serverSettingRootEndpoint = '/server-setting';
 
 export const serverDeleteEndpoint = (serverId: number): string => {
-    return `${serverRootEndpoint()}/${serverId}`;
+    return `${serverRootEndpoint}/${serverId}`;
 };
 
 export const serversGetEndpoint = () => {
-    return serversRootEndpoint();
+    return serversRootEndpoint;
 };
 
 export const serverPostEndpoint = () => {
-    return serversRootEndpoint();
+    return serversRootEndpoint;
 };
 
 export const serverPutEndpoint = (serverId: number): string => {
-    return `${serverRootEndpoint()}/${serverId}`;
+    return `${serverRootEndpoint}/${serverId}`;
 };
 
 export const serverSettingDeleteEndpoint = (serverSettingId: number): string => {
-    return `${serverSettingRootEndpoint()}/${serverSettingId}`;
+    return `${serverSettingRootEndpoint}/${serverSettingId}`;
 };
 
 export const serverSettingsGetEndpoint = (serverId: number): string => {
-    return `${serverRootEndpoint()}/${serverId}/settings`;
+    return `${serverRootEndpoint}/${serverId}/settings`;
 };
 
 export const serverSettingPostEndpoint = (serverId: number): string => {
-    return `${serverRootEndpoint()}/${serverId}/settings`;
+    return `${serverRootEndpoint}/${serverId}/settings`;
 };
 
 export const serverSettingPutEndpoint = (serverSettingId: number): string => {
-    return `${serverSettingRootEndpoint()}/${serverSettingId}`;
+    return `${serverSettingRootEndpoint}/${serverSettingId}`;
 };

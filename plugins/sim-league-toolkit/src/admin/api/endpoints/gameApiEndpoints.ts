@@ -1,6 +1,6 @@
 
-const gameRootEndpoint = 'game';
-const gamesRootEndpoint = 'games';
+const gameRootEndpoint = '/game';
+const gamesRootEndpoint = '/games';
 
 export const carClassesGetEndpoint = (gameId: number): string => {
     return `${gameRootEndpoint}/${gameId}/car-classes`;

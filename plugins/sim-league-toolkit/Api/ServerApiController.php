@@ -146,54 +146,22 @@
     }
 
     private function registerDeleteSettingRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/settings/(?P<id>[\d]+)',
-        [
-          [
-            'methods' => WP_REST_Server::DELETABLE,
-            'callback' => [$this, 'deleteSetting'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . '/settings/(?P<id>[\d]+)';
+      $this->registerRoute($route, WP_REST_Server::DELETABLE, 'deleteSetting');
     }
 
     private function registerGetSettingRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/settings/(?P<id>[\d]+)',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getSetting'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . '/settings/(?P<id>[\d]+)';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'getSetting');
     }
 
     private function registerGetSettingsRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)/settings',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getSettings'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . '/(?P<id>\d+)/settings';
+      $this->registerRoute($route, WP_REST_Server::READABLE, 'getSettings');
     }
 
     private function registerPostSettingRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/settings',
-        [
-          [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'postSetting'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      $route = $this->getResourceName() . '/settings';
+      $this->registerRoute($route, WP_REST_Server::CREATABLE, 'postSetting');
     }
   }

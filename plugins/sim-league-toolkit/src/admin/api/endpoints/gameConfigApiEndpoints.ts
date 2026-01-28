@@ -1,7 +1,5 @@
-export const gameConfigsGetEndPoint = (): string => {
-    return 'game-config';
-};
+const gameConfigRootEndpoint =  '/game-config';
 
-export const gameConfigGetEndPoint = (gameKey: string): string => {
-    return `game-config/${gameKey}`;
+export const gameConfigGetEndpoint = (gameKey: string): string => {
+    return `${gameConfigRootEndpoint}/${gameKey}`;
 };

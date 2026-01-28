@@ -2,7 +2,7 @@ import {useState, useEffect} from '@wordpress/element';
 
 import {ApiClient} from '../api/ApiClient';
 import {GameConfig} from '../types/GameConfig';
-import {gameConfigGetEndPoint} from '../api/endpoints/gameConfigApiEndpoints';
+import {gameConfigGetEndpoint} from '../api/endpoints/gameConfigApiEndpoints';
 
 interface UseGameConfigResult {
     config: GameConfig | null;
@@ -22,7 +22,7 @@ export const useGameConfig = (gameKey: string | null): UseGameConfigResult => {
         const loadConfig = async () => {
             setIsLoading(true);
 
-            const response = await ApiClient.get<GameConfig>(gameConfigGetEndPoint(gameKey));
+            const response = await ApiClient.get<GameConfig>(gameConfigGetEndpoint(gameKey));
             if (response.success) {
                 setConfig(response.data);
             } else {
