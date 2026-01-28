@@ -11,8 +11,8 @@ import {useGameConfig} from '../../hooks/useGameConfig';
 import {DynamicSessionForm} from './DynamicSessionForm';
 import {EventSession} from '../../types/EventSession';
 import {EventSessionFormData} from '../../types/EventSessionFormData';
-import {SessionTypeLabels} from '../../generated/enums';
 import {useEventSessions} from '../../hooks/useEventSessions';
+import {SessionTypeLabels} from '../../types/generated/SessionType';
 
 interface EventSessionListProps {
     eventRefId: number;

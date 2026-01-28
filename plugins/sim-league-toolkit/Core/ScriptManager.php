@@ -5,10 +5,12 @@
   class ScriptManager {
 
     public static function enqueueAdminScripts(string $hookSuffix): void {
+
+      error_log('SLTK enqueueAdminScripts called with hook: ' . $hookSuffix);
+
       if (!str_ends_with($hookSuffix, 'sim-league-toolkit')) {
         return;
       }
-
       if (DevServer::isRunning()) {
         self::enqueueDevScripts();
       } else {
@@ -28,11 +30,20 @@
         true
       );
 
-      // Main admin script from dev server
+      // Runtime chunk - must load before main script
+      wp_enqueue_script(
+        'sltk-runtime',
+        $baseUrl . '/runtime.js',
+        [],
+        null,
+        true
+      );
+
+      // Main admin script
       wp_enqueue_script(
         'sltk-admin-script',
         $baseUrl . '/admin/index.js',
-        ['wp-element', 'wp-api-fetch', 'wp-i18n'],
+        ['wp-element', 'wp-api-fetch', 'wp-i18n', 'sltk-runtime'],
         null,
         true
       );
@@ -49,17 +60,34 @@
 
       $asset = include $assetFile;
 
+      // Runtime chunk
+      $runtimeAssetFile = SLTK_PLUGIN_DIR . 'build/runtime.asset.php';
+      if (file_exists($runtimeAssetFile)) {
+        $runtimeAsset = include $runtimeAssetFile;
+        wp_enqueue_script(
+          'sltk-runtime',
+          SLTK_PLUGIN_ROOT_URL . '/build/runtime.js',
+          $runtimeAsset['dependencies'],
+          $runtimeAsset['version'],
+          true
+        );
+      }
+
+      $dependencies = $asset['dependencies'];
+      if (file_exists($runtimeAssetFile)) {
+        $dependencies[] = 'sltk-runtime';
+      }
+
       wp_enqueue_script(
         'sltk-admin-script',
         SLTK_PLUGIN_ROOT_URL . '/build/admin/index.js',
-        $asset['dependencies'],
+        $dependencies,
         $asset['version'],
         true
       );
 
       self::localizeScript();
     }
-
     private static function localizeScript(): void {
       wp_localize_script('sltk-admin-script', 'sltkData', [
         'apiUrl'  => rest_url('sltk/v1/'),

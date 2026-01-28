@@ -11,7 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {GameConfig} from '../../types/GameConfig';
 import {EventSessionFormData} from '../../types/EventSessionFormData';
 import {FieldDefinition} from '../../types/FieldDefinition';
-import { SessionTypeOptions, SessionType } from '../../generated/enums';
+import {SessionType, SessionTypeOptions} from '../../types/generated/SessionType';
 
 interface DynamicSessionFormProps {
     eventRefId: number;
