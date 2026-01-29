@@ -4,6 +4,7 @@
 
   use Exception;
   use JsonException;
+  use SLTK\Database\Repositories\ServerSettingRepository;
   use SLTK\Domain\Server;
   use SLTK\Domain\ServerSetting;
   use WP_REST_Request;
@@ -22,7 +23,7 @@
     public function deleteSetting(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function() use ($request)
       {
-        Server::deleteSetting($this->getId($request));
+        ServerSetting::delete($this->getId($request));
 
         return ApiResponse::noContent();
       });
@@ -136,26 +137,11 @@
     }
 
     protected function onRegisterRoutes(): void {
-      $this->registerDeleteSettingRoute();
-      $this->registerGetSettingRoute();
-      $this->registerGetSettingsRoute();
-      $this->registerPostSettingRoute();
-    }
-
-    private function registerDeleteSettingRoute(): void {
-      $this->registerRoute($this->getResourceName() . '/settings/(?P<id>[\d]+)', WP_REST_Server::DELETABLE, 'deleteSetting');
-    }
-
-    private function registerGetSettingRoute(): void {
-      $this->registerRoute($this->getResourceName() . '/settings/(?P<id>[\d]+)', WP_REST_Server::READABLE, 'getSetting');
-    }
-
-    private function registerGetSettingsRoute(): void {
-      $this->registerRoute($this->getResourceName() . '/(?P<id>\d+)/settings', WP_REST_Server::READABLE, 'getSettings');
-    }
-
-    private function registerPostSettingRoute(): void {
-      $this->registerRoute($this->getResourceName() . '/settings', WP_REST_Server::CREATABLE, 'postSetting');
+      $resourceName = $this->getResourceName();
+      $this->registerDeleteRoute("$resourceName/settings/(?P<id>[\\d]+)", 'deleteSetting');
+      $this->registerGetRoute("$resourceName/settings/(?P<id>[\\d]+)", 'getSetting');
+      $this->registerGetRoute("$resourceName/(?P<id>\\d+)/settings", 'getSettings');
+      $this->registerPostRoute("$resourceName/settings", 'postSetting');
     }
 
     protected function onPut(WP_REST_Request $request): WP_REST_Response {

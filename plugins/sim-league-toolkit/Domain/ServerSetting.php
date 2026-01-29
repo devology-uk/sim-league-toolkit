@@ -24,6 +24,13 @@
     /**
      * @throws Exception
      */
+    public static function delete(int $id): void {
+      ServerSettingRepository::delete($id);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): ServerSetting|null {
       $queryResult = ServerSettingRepository::getById($id);
 
