@@ -8,7 +8,7 @@
   use WP_REST_Request;
   use WP_REST_Response;
 
-  class EventClassesApiController extends BasicApiController {
+  class EventClassApiController extends BasicApiController {
     public function __construct() {
       parent::__construct(ResourceNames::EVENT_CLASS);
     }
