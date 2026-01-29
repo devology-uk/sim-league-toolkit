@@ -2,10 +2,38 @@
 
   namespace SLTK\Api;
 
+  use SLTK\Domain\RuleSet;
+
   class ApiRegistrar {
+
+    private static array $routeMap = [
+      // More specific patterns first
+      '#/' . ResourceNames::CHAMPIONSHIP_EVENT . 's#' => ChampionshipEventApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . 's/\d+/events#' => ChampionshipEventApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . 's#' => ChampionshipApiController::class,
+      '#/' . ResourceNames::DRIVER_CATEGORY . 's#' => DriverCategoryApiController::class,
+      '#/' . ResourceNames::EVENT_CLASS . 's#' => EventClassApiController::class,
+      '#/' . ResourceNames::GAME . 's#' => GameApiController::class,
+      '#/' . ResourceNames::GAME_CONFIG . 's#' => GameApiController::class,
+      '#/' . ResourceNames::RACE_NUMBER . 's#' => RaceNumberApiController::class,
+      '#/' . ResourceNames::RULE_SET . 's#' => RuleSetApiController::class,
+      '#/' . ResourceNames::SCORING_SET . 's#' => ScoringSetApiController::class,
+      '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
+      '#/' . ResourceNames::SERVER_SETTING . '#' => ServerSettingApiController::class,
+      '#/' . ResourceNames::SERVER . '#' => ServerApiController::class,
+    ];
 
     public const string API_NAMESPACE = 'sltk/v1';
 
+    private static function resolveController(string $request): ?ApiController {
+      foreach (self::$routeMap as $pattern => $controllerClass) {
+        if (preg_match($pattern, $request)) {
+          return new $controllerClass();
+        }
+      }
+
+      return null;
+    }
     public static function init(): void {
       add_action('rest_api_init', [self::class, 'registerRoutes']);
     }
@@ -17,53 +45,8 @@
         return;
       }
 
-      $apiController = null;
-
-
-      if (str_contains($wp->request, ResourceNames::CHAMPIONSHIP)) {
-        $apiController = new ChampionshipApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::CHAMPIONSHIP_EVENT)) {
-        $apiController = new ChampionshipEventApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::DRIVER_CATEGORY)) {
-        $apiController = new DriverCategoryApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::EVENT_CLASS)) {
-        $apiController = new EventClassesApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::GAME)) {
-        $apiController = new GameApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::GAME_CONFIG)) {
-        $apiController = new GameApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::RACE_NUMBER)) {
-        $apiController = new RaceNumberApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::RULE_SET)) {
-        $apiController = new RuleSetApiController();
-      }
-
-      if(str_contains($wp->request, ResourceNames::SCORING_SET)) {
-        $apiController = new ScoringSetApiController();
-      }
-
-      if (str_contains($wp->request, ResourceNames::SERVER)) {
-        $apiController = new ServerApiController();
-      }
-
-
-      if (is_subclass_of($apiController, ApiController::class) || is_subclass_of($apiController, LookupApiController::class) || is_subclass_of($apiController, BasicApiController::class)) {
-        $apiController->registerRoutes();
-      }
+      $apiController = self::resolveController($wp->request);
+      $apiController?->registerRoutes();
     }
 
   }
