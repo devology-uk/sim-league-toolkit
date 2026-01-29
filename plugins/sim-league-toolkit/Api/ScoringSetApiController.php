@@ -10,7 +10,7 @@
   use WP_REST_Response;
   use WP_REST_Server;
 
-  class ScoringSetApiController extends BasicApiController {
+  class ScoringSetApiController extends ApiController {
 
     public function __construct() {
       parent::__construct(ResourceNames::SCORING_SET);

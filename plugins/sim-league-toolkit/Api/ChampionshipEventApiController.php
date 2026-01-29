@@ -7,90 +7,111 @@
   use DateTimeZone;
   use Exception;
   use JsonException;
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Core\BannerImageProvider;
   use SLTK\Domain\ChampionshipEvent;
   use WP_REST_Request;
   use WP_REST_Response;
 
-  class ChampionshipEventApiController extends BasicApiController {
+  class ChampionshipEventApiController extends ApiController {
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
+
     public function __construct() {
       parent::__construct(ResourceNames::CHAMPIONSHIP_EVENT);
     }
 
-    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      $result = true;
-      try {
-        ChampionshipEvent::delete($id);
-      } catch (Exception) {
-        $result = false;
-      }
-
-      return rest_ensure_response($result);
+    public function registerRoutes(): void {
+      $this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        ChampionshipEvent::delete($this->getId($request));
+        return ApiResponse::noContent();
+      });
+    }
+
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = ChampionshipEvent::list();
 
-      $data = ChampionshipEvent::list($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = ChampionshipEvent::get($this->getId($request));
 
-      $data = ChampionshipEvent::get($id);
+        if ($data === null) {
+          return ApiResponse::notFound('Championship');
+        }
 
-      return rest_ensure_response($data->toDto());
+        return ApiResponse::success($data->toDto());
+      });
     }
 
-    /**
-     * @throws JsonException
-     */
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+      return $this->execute(function () use ($request) {
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        $entity = $this->hydrateFromRequest(new ChampionshipEvent(), $request);
 
-      $entity = new ChampionshipEvent();
-      if(empty($data->bannerImageUrl)) {
-        $data->bannerImageUrl = BannerImageProvider::getRandomBannerImageUrl();
-      }
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Championship Event', 'sim-league-toolkit'));
+        }
 
-      $entity->setBannerImageUrl($data->bannerImageUrl);
-      $entity->setChampionshipId($data->championshipId);
-      $entity->setDescription($data->description);
-      $entity->setName($data->name);
-      $entity->setRuleSetId($data->ruleSetId);
-      $startDateTime = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $data->startDateTime, new DateTimeZone('UTC'));
-      $entity->setStartDateTime($startDateTime);
-      $entity->setTrackId($data->trackId);
-
-      if (isset($data->trackLayoutId)) {
-        $entity->setTrackLayoutId($data->trackLayoutId);
-      }
-
-      if (isset($data->id) && $data->id > 0) {
-        $entity->setId($data->id);
-      }
-
-      $entity->save();
-
-      return rest_ensure_response($entity);
+        return ApiResponse::created($entity->getId());
+      });
     }
 
-    protected function onRegisterRoutes(): void {
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = ChampionshipEvent::get($this->getId($request));
+
+        if ($entity === null) {
+          return ApiResponse::notFound('ChampionshipEvent');
+        }
+
+        $entity = $this->hydrateFromRequest($entity, $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Championship Event', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
+    }
+
+    private function hydrateFromRequest(ChampionshipEvent $entity, WP_REST_Request $request): ChampionshipEvent {
+      $params = $this->getParams($request);
+
+      if(empty($params['bannerImageUrl'])) {
+        $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
+      } else {
+        $entity->setBannerImageUrl($params['bannerImageUrl']);
+      }
+      $entity->setChampionshipId((int)$params['championshipId']);
+      $entity->setDescription($params['description']);
+      $entity->setName($params['name']);
+      $entity->setRuleSetId((int)$params['ruleSetId']);
+      $startDateTime = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $params['startDateTime'], new DateTimeZone('UTC'));
+      $entity->setStartDateTime($startDateTime);
+      $entity->setTrackId((int)$params['trackId']);
+
+      if (isset($params['trackLayoutId'])) {
+        $entity->setTrackLayoutId($params['trackLayoutId']);
+      }
+
+      return $entity;
     }
   }

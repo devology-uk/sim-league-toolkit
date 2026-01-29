@@ -10,7 +10,7 @@
   use WP_REST_Response;
   use WP_REST_Server;
 
-  class RuleSetApiController extends BasicApiController {
+  class RuleSetApiController extends ApiController {
 
     public function __construct() {
       parent::__construct(ResourceNames::RULE_SET);

@@ -14,13 +14,13 @@
 
     public function add(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $eventSession = $this->hydrateFromRequest(new EventSession(), $request);
+        $entity = $this->hydrateFromRequest(new EventSession(), $request);
 
-        if (!$eventSession->save()) {
+        if (!$entity->save()) {
           return ApiResponse::badRequest(esc_html__('Failed to save Event Session', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::created($eventSession->getId());
+       return ApiResponse::created($entity->getId());
       });
     }
 
@@ -34,22 +34,22 @@
 
     public function get(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $eventSession = EventSession::get($this->getId($request));
+        $data = EventSession::get($this->getId($request));
 
-        if ($eventSession === null) {
+        if ($data === null) {
           return ApiResponse::notFound('EventSession');
         }
 
-        return ApiResponse::success($eventSession->toDto());
+        return ApiResponse::success($data->toDto());
       });
     }
 
     public function list(): WP_REST_Response {
       return $this->execute(function () {
-        $eventSessions = EventSession::list();
+        $data = EventSession::list();
 
         return ApiResponse::success(
-          array_map(fn($s) => $s->toDto(), $eventSessions)
+          array_map(fn($s) => $s->toDto(), $data)
         );
       });
     }
@@ -57,10 +57,10 @@
     public function listByEventRef(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
         $eventRefId = (int)$request['eventRefId'];
-        $eventSessions = EventSession::listByEventRefId($eventRefId);
+        $data = EventSession::listByEventRefId($eventRefId);
 
         return ApiResponse::success(
-          array_map(fn($s) => $s->toDto(), $eventSessions)
+          array_map(fn($s) => $s->toDto(), $data)
         );
       });
     }
@@ -90,19 +90,19 @@
 
     public function update(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $eventSession = EventSession::get($this->getId($request));
+        $entity = EventSession::get($this->getId($request));
 
-        if ($eventSession === null) {
+        if ($entity === null) {
           return ApiResponse::notFound('EventSession');
         }
 
-        $eventSession = $this->hydrateFromRequest($eventSession, $request);
+        $entity = $this->hydrateFromRequest($entity, $request);
 
-        if (!$eventSession->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to update eventSession', 'sim-league-toolkit'));
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Event Session', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success(['id' => $eventSession->getId()]);
+        return ApiResponse::success(['id' => $entity->getId()]);
       });
     }
 

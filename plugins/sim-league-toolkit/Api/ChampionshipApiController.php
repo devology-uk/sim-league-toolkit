@@ -7,170 +7,113 @@
   use DateTimeZone;
   use Exception;
   use JsonException;
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Domain\Championship;
   use WP_REST_Request;
   use WP_REST_Response;
   use WP_REST_Server;
 
-  class ChampionshipApiController extends BasicApiController {
+  class ChampionshipApiController extends ApiController {
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
+
     public function __construct() {
       parent::__construct(ResourceNames::CHAMPIONSHIP);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function deleteChampionshipClass(WP_REST_Request $request): WP_REST_Response {
-      $championshipId = $request->get_param('championshipId');
-      $eventClassId = $request->get_param('eventClassId');
-
-      Championship::deleteChampionshipClass($championshipId, $eventClassId);
-
-      return rest_ensure_response(true);
+    public function registerRoutes(): void {
+      $this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getClasses(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        Championship::delete($this->getId($request));
 
-      $data = Championship::listClasses($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::noContent();
+      });
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getEvents(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      $data = Championship::listEvents($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
-    }
-
-    /**
-     * @throws JsonException
-     * @throws Exception
-     */
-    public function postChampionshipClass(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
-
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
-
-      Championship::addChampionshipClass($data->championshipId, $data->eventClassId);
-
-      return rest_ensure_response(true);
-    }
-
-    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      $result = true;
-      try {
-        Championship::delete($id);
-      } catch (Exception) {
-        $result = false;
-      }
-
-      return rest_ensure_response($result);
-    }
-
-    /**
-     * @throws Exception
-     */
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = Championship::list();
+      return $this->execute(function () use ($request) {
+        $data = Championship::list();
 
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Championship::get($this->getId($request));
 
-      $data = Championship::get($id);
+        if ($data === null) {
+          return ApiResponse::notFound('Championship');
+        }
 
-      return rest_ensure_response($data->toDto());
+        return ApiResponse::success($data->toDto());
+      });
     }
 
-    /**
-     * @throws JsonException
-     */
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+      return $this->execute(function () use ($request) {
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        $entity = $this->hydrateFromRequest(new Championship(), $request);
 
-      $entity = new Championship();
-      $entity->setAllowEntryChange($data->allowEntryChange);
-      $entity->setBannerImageUrl($data->bannerImageUrl);
-      $entity->setChampionshipType($data->championshipType);
-      $entity->setDescription($data->description);
-      $entity->setEntryChangeLimit($data->entryChangeLimit);
-      $entity->setGameId($data->gameId);
-      $entity->setIsActive($data->isActive ?? false);
-      $entity->setName($data->name);
-      $entity->setPlatformId($data->platformId);
-      $entity->setResultsToDiscard($data->resultsToDiscard);
-      $entity->setRuleSetId($data->ruleSetId);
-      $entity->setScoringSetId($data->scoringSetId);
-      $startDate = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $data->startDate, new DateTimeZone('UTC'));
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Championship', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::created($entity->getId());
+      });
+    }
+
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = Championship::get($this->getId($request));
+
+        if ($entity === null) {
+          return ApiResponse::notFound('Championship');
+        }
+
+        $entity = $this->hydrateFromRequest($entity, $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Championship', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
+    }
+
+    private function hydrateFromRequest(Championship $entity, WP_REST_Request $request): Championship {
+      $params = $this->getParams($request);
+
+      $entity->setAllowEntryChange((int)$params['allowEntryChange']);
+      $entity->setBannerImageUrl($params['bannerImageUrl']);
+      $entity->setChampionshipType($params['championshipType']);
+      $entity->setDescription($params['description']);
+      $entity->setEntryChangeLimit((bool)$params['entryChangeLimit']);
+      $entity->setGameId((int)$params['gameId']);
+      $entity->setIsActive((bool)$params['isActive'] ?? false);
+      $entity->setName($params['name']);
+      $entity->setPlatformId((int)$params['platformId']);
+      $entity->setResultsToDiscard((int)$params['resultsToDiscard']);
+      $entity->setRuleSetId((int)$params['ruleSetId']);
+      $entity->setScoringSetId((int)$params['scoringSetId']);
+      $startDate = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $params['startDate'], new DateTimeZone('UTC'));
       $entity->setStartDate($startDate);
-      $entity->setTrackMasterTrackId($data->trackMasterTrackId ?? null);
-      $entity->setTrackMasterTrackLayoutId($data->trackMasterTrackLayoutId ?? null);
-      $entity->setTrophiesAwarded($data->trophiesAwarded ?? false);
+      $entity->setTrackMasterTrackId((int)$params['trackMasterTrackId'] ?? null);
+      $entity->setTrackMasterTrackLayoutId((int)$params['trackMasterTrackLayoutId'] ?? null);
+      $entity->setTrophiesAwarded((bool)$params['trophiesAwarded'] ?? false);
 
-      if ($data->id > 0) {
-        $entity->setId($data->id);
-      }
-
-      $entity->save();
-
-      return rest_ensure_response($entity);
-    }
-
-    protected function onRegisterRoutes(): void {
-      $this->registerGetClassesRoute();
-      $this->registerGetEventsRoute();
-      $this->registerPostClassRoute();
-      $this->registerDeleteClassRoute();
-    }
-
-    private function registerDeleteClassRoute(): void {
-      $route = $this->getResourceName() . '/(?P<championshipId>\d+)/classes/(?P<eventClassId>\d+)';
-      $this->registerRoute($route, WP_REST_Server::DELETABLE, 'deleteChampionshipClass');
-    }
-
-    private function registerGetClassesRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/classes';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'getClasses');
-    }
-
-    private function registerGetEventsRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/events';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'getEvents');
-    }
-
-    private function registerPostClassRoute(): void {
-
-      $route = $this->getResourceName() . '/classes';
-      $this->registerRoute($route, WP_REST_Server::CREATABLE, 'postChampionshipClass');
+      return $entity;
     }
   }

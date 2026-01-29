@@ -8,7 +8,7 @@
   use WP_REST_Request;
   use WP_REST_Response;
 
-  class ServerSettingApiController extends BasicApiController {
+  class ServerSettingApiController extends ApiController {
 
     /**
      * @throws Exception

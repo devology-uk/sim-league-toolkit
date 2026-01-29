@@ -4,81 +4,106 @@
 
   use Exception;
   use JsonException;
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Domain\EventClass;
   use WP_REST_Request;
   use WP_REST_Response;
 
-  class EventClassApiController extends BasicApiController {
+  class EventClassApiController extends ApiController {
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
+
     public function __construct() {
       parent::__construct(ResourceNames::EVENT_CLASS);
     }
 
-    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      $result = true;
-      try {
-        EventClass::delete($id);
-      } catch (Exception) {
-        $result = false;
-      }
-
-      return rest_ensure_response($result);
+    public function registerRoutes(): void {$this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        EventClass::delete($this->getId($request));
+
+        return ApiResponse::noContent();
+      });
+    }
+
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = EventClass::list();
+      return $this->execute(function () use ($request) {
+        $data = EventClass::list();
 
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
+
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = EventClass::get($this->getId($request));
 
-      $data = EventClass::get($id);
+        if ($data === null) {
+          return ApiResponse::notFound('EventClass');
+        }
 
-      return rest_ensure_response($data->toDto());
+        return ApiResponse::success($data->toDto());
+      });
     }
 
-    /**
-     * @throws JsonException
-     * @throws Exception
-     */
+
+
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+      return $this->execute(function () use ($request) {
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        $entity = $this->hydrateFromRequest(new EventClass(), $request);
 
-      $eventClass = new EventClass();
-      $eventClass->setCarClass($data->carClass);
-      $eventClass->setDriverCategoryId($data->driverCategoryId);
-      $eventClass->setGameId($data->gameId);
-      $eventClass->setIsSingleCarClass($data->isSingleCarClass);
-      $eventClass->setName($data->name);
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Event Class', 'sim-league-toolkit'));
+        }
 
-      if (isset($data->singleCarId) && $data->singleCarId > 0) {
-        $eventClass->setSingleCarId($data->singleCarId);
-      }
-
-      if ($data->id > 0) {
-        $eventClass->setId($data->id);
-      }
-
-      $eventClass->save();
-
-      return rest_ensure_response($eventClass);
+        return ApiResponse::created($entity->getId());
+      });
     }
 
-    protected function onRegisterRoutes(): void {
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = EventClass::get($this->getId($request));
+
+        if ($entity === null) {
+          return ApiResponse::notFound('EventClass');
+        }
+
+        $entity = $this->hydrateFromRequest($entity, $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Event Class', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
+    }
+
+    private function hydrateFromRequest(EventClass $entity, WP_REST_Request $request): EventClass {
+      $params = $this->getParams($request);
+
+      $entity->setCarClass($params['carClass']);
+      $entity->setDriverCategoryId((int)$params['driverCategoryId']);
+      $entity->setGameId((int)$params['gameId']);
+      $entity->setIsSingleCarClass((bool)$params['isSingleCarClass']);
+      $entity->setName($params['name']);
+
+      $singleCarId = $params['singleCarId'];
+      if (isset($singleCarId) && (int)$singleCarId > 0) {
+        $entity->setSingleCarId((int)$singleCarId);
+      }
+      return $entity;
     }
   }

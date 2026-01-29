@@ -16,21 +16,15 @@
       $this->resourceName = $resourceName;
     }
 
-    public function checkPermission(): bool|WP_Error {
-      if (!$this->canExecute()) {
-        return new WP_Error(
-          'rest_forbidden',
-          esc_html__('You do not have permission to access this resource.', 'sim-league-toolkit'),
-          ['status' => $this->getAuthorisationStatusCode()]
-        );
-      }
-
-      return true;
+    protected function getRestForbiddenError(): WP_Error {
+      return new WP_Error(
+        'rest_forbidden',
+        esc_html__('You do not have permission to access this resource.', 'sim-league-toolkit'),
+        ['status' => $this->getAuthorisationStatusCode()]
+      );
     }
 
     public abstract function registerRoutes(): void;
-
-    protected abstract function canExecute(): bool;
 
     protected function execute(callable $action): WP_REST_Response {
       try {
@@ -56,31 +50,15 @@
       return '/' . $this->resourceName;
     }
 
-    protected function registerDeleteRoute(string $route, string $callbackName): void {
-      $this->registerRoute($route, 'DELETE', $callbackName);
-    }
-
-    protected function registerGetRoute(string $route, string $callbackName): void {
-      $this->registerRoute($route, 'GET', $callbackName);
-    }
-
-    protected function registerPostRoute(string $route, string $callbackName): void {
-      $this->registerRoute($route, 'POST', $callbackName);
-    }
-
-    protected function registerPutRoute(string $route, string $callbackName): void {
-      $this->registerRoute($route, 'PUT', $callbackName);
-    }
-
-    protected function registerRoute(string $route, string|array $methods, string $callbackName): void {
+    protected function registerRoute(string $route, string|array $methods, callable $permissionCallback, callable $responseCallback): void {
       register_rest_route(
         self::NAMESPACE,
         $route,
         [
           [
             'methods' => $methods,
-            'callback' => [$this, $callbackName],
-            'permission_callback' => [$this, 'checkPermission'],
+            'callback' => $responseCallback,
+            'permission_callback' => $permissionCallback,
           ]
         ]
       );

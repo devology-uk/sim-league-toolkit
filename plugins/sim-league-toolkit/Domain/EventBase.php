@@ -2,6 +2,7 @@
 
   namespace SLTK\Domain;
 
+  use DateTime;
   use SLTK\Core\Constants;
   use stdClass;
 
@@ -17,14 +18,14 @@
     protected string $track = '';
     protected ?int $trackLayoutId = null;
     protected string $trackLayout = '';
-    protected \DateTime $eventDate;
+    protected DateTime $eventDate;
     protected bool $isActive = false;
 
     public function __construct(?stdClass $data = null)
     {
       parent::__construct($data);
 
-      $this->eventDate = new \DateTime();
+      $this->eventDate = new DateTime();
 
       if ($data !== null)
       {
@@ -45,8 +46,8 @@
       $this->trackLayoutId = isset($data->trackLayoutId) ? (int)$data->trackLayoutId : null;
       $this->trackLayout = $data->trackLayout ?? '';
       $this->eventDate = isset($data->eventDate)
-        ? \DateTime::createFromFormat(Constants::STANDARD_DATE_FORMAT, $data->eventDate)
-        : new \DateTime();
+        ? DateTime::createFromFormat(Constants::STANDARD_DATE_FORMAT, $data->eventDate)
+        : new DateTime();
       $this->isActive = (bool)($data->isActive ?? false);
     }
 
@@ -122,8 +123,8 @@
 
     public function getTrackLayout(): string { return $this->trackLayout; }
 
-    public function getEventDate(): \DateTime { return $this->eventDate; }
-    public function setEventDate(\DateTime $value): void { $this->eventDate = $value; }
+    public function getEventDate(): DateTime { return $this->eventDate; }
+    public function setEventDate(DateTime $value): void { $this->eventDate = $value; }
 
     public function getFormattedEventDate(): string
     {
