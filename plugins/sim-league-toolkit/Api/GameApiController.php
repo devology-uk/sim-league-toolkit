@@ -2,8 +2,8 @@
 
   namespace SLTK\Api;
 
-  use Exception;
-  use SLTK\Core\Constants;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
   use SLTK\Domain\Car;
   use SLTK\Domain\EventClass;
   use SLTK\Domain\Game;
@@ -11,166 +11,106 @@
   use SLTK\Domain\Track;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   class GameApiController extends ApiController {
+    use HasGet, HasGetById;
 
     public function __construct() {
       parent::__construct(ResourceNames::GAME);
     }
 
-    /**
-     * @throws Exception
-     */
     public function listCarClasses(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Car::listClassesForGame($this->getId($request));
 
-      $data = Car::listClassesForGame($id);
-
-      return rest_ensure_response($data);
+        return ApiResponse::success($data);
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     public function listCars(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-      $class = $request->get_param('class');
+      return $this->execute(function () use ($request) {
+        $data = Car::listForGame((int)$request->get_param('gameId'), $request->get_param('carClass'));
 
-      $data = Car::listForGame($id, $class);
-
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
-
-      $responseData = [];
-
-      foreach ($data as $item) {
-        $responseData[] = $item->toDto();
-      }
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success($data);
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     public function listEventClasses(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = EventClass::listForGame($this->getId($request));
 
-      $data = EventClass::listForGame($id);  $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     public function listPlatforms(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Platform::listForGame($this->getId($request));
 
-      $data = Platform::listForGame($id);
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     public function listTrackLayouts(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Track::listLayoutsForTrack($this->getId($request));
 
-      $data = Track::listLayoutsForTrack($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
     public function listTracks(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Track::listForGame($this->getId($request));
 
-      $data = Track::listForGame($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
-    public function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = Game::list();
-
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+    public function registerRoutes(): void {
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $routeBase = $this->getResourceName() . '(?P<id>\\d+)/';
+      $this->registerRoute($routeBase . 'cars', 'GET', [$this, 'canRead'], [$this, 'listCars']);
+      $this->registerRoute($routeBase . 'car-classes', 'GET', [$this, 'canRead'], [$this, 'listCarClasses']);
+      $this->registerRoute($routeBase . 'event-classes', 'GET', [$this, 'canRead'], [$this, 'listEventClasses']);
+      $this->registerRoute($routeBase . 'platforms', 'GET', [$this, 'canRead'], [$this, 'listPlatforms']);
+      $this->registerRoute($routeBase . 'tracks', 'GET', [$this, 'canRead'], [$this, 'listTracks']);
+      $this->registerRoute($this->getResourceName() . '/tracks/(?P<id>\\d+)', 'GET', [$this, 'canRead'], [$this, 'listTrackLayouts']);
     }
 
-    protected function canExecute(): bool {
-      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
+
+    protected function onGet(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $data = Game::list();
+
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
     }
 
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = Game::get($this->getId($request));
 
-      $data = Game::get($id);
+        if ($data === null) {
+          return ApiResponse::notFound('Game');
+        }
 
-      return rest_ensure_response($data->toDto());
+        return ApiResponse::success($data->toDto());
+      });
     }
 
-    protected function onRegisterRoutes(): void {
-      $this->registerCarsRoute();
-      $this->registerCarClassesRoute();
-      $this->registerEventClassesRoute();
-      $this->registerPlatformsRoute();
-      $this->registerTracksRoute();
-      $this->registerTrackLayoutsRoute();
-    }
-
-    private function registerCarClassesRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/car-classes';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listCarClasses');
-    }
-
-    private function registerCarsRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>[\d]+)/cars/(?P<class>[\w]+)';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listCars');
-    }
-
-    private function registerPlatformsRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/platforms';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listPlatforms');
-    }
-
-    private function registerTrackLayoutsRoute(): void {
-      $route = $this->getResourceName() . '/tracks/(?P<id>\d+)/layouts';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listTrackLayouts');
-    }
-
-    private function registerTracksRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/tracks';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listTracks');
-    }
-
-    private function registerEventClassesRoute(): void {
-      $route = $this->getResourceName() . '/(?P<id>\d+)/event-classes';
-      $this->registerRoute($route, WP_REST_Server::READABLE, 'listEventClasses');
+    private function canRead(): bool {
+      return true;
     }
   }

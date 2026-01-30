@@ -2,80 +2,49 @@
 
   namespace SLTK\Api;
 
-  use Exception;
-  use JsonException;
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Domain\RuleSet;
-  use SLTK\Domain\RuleSetRule;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   class RuleSetApiController extends ApiController {
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
 
     public function __construct() {
       parent::__construct(ResourceNames::RULE_SET);
     }
 
-
-    /**
-     * @throws Exception
-     */
-    public function deleteRule(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      RuleSet::deleteRule($id);
-
-      return rest_ensure_response(true);
+    public function registerRoutes(): void {
+      $this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getRule(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        RuleSet::delete($this->getId($request));
 
-      $data = RuleSet::getRuleById($id);
-
-      return rest_ensure_response($data);
+        return ApiResponse::noContent();
+      });
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getRules(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('ruleSetId');
+    protected function onGet(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $data = RuleSet::list();
 
-      $data = RuleSet::listRules($id);
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($i) => $i->toDto(), $data)
+        );
+      });
     }
 
-    /**
-     * @throws Exception
-     */
-    public function onDelete(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      RuleSet::delete($id);
-
-      return rest_ensure_response(true);
-    }
-
-    public function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = RuleSet::list();
-
-      $responseData = array_map(function ($item) {
-        return $item->toDto();
-      }, $data);
-
-      return rest_ensure_response($responseData);
-    }
-
-    public function onGetById(WP_REST_Request $request): WP_REST_Response {
+    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
       $id = $request->get_param('id');
 
       $data = RuleSet::get($id);
@@ -83,107 +52,45 @@
       return rest_ensure_response($data->toDto());
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function onPost(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+    protected function onPost(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        $entity = $this->hydrateFromRequest(new RuleSet(), $request);
 
-      $entity = new RuleSet();
-      $entity->setName($data->name);
-      $entity->setDescription($data->description);
-      $entity->setType($data->type);
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Rule Set', 'sim-league-toolkit'));
+        }
 
-      if (isset($data->id) && $data->id > 0) {
-        $entity->setId($data->id);
-      }
-
-      $entity->save();
-
-      return rest_ensure_response($entity->toDto());
+        return ApiResponse::created($entity->getId());
+      });
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function postRule(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = RuleSet::get($this->getId($request));
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        if ($entity === null) {
+          return ApiResponse::notFound('RuleSet');
+        }
 
-      $entity = new RuleSetRule();
-      $entity->setRuleSetId($data->ruleSetId);
-      $entity->setRule($data->rule);
+        $entity = $this->hydrateFromRequest($entity, $request);
 
-      if (isset($data->id) && $data->id > 0) {
-        $entity->setId($data->id);
-      }
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Rule Set', 'sim-league-toolkit'));
+        }
 
-      $ruleSet = RuleSet::get($entity->getRuleSetId());
-      $ruleSet->saveRule($entity);
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
 
-      return rest_ensure_response($entity->toDto());
     }
 
-    protected function onRegisterRoutes(): void {
-      $this->registerDeleteRuleRoute();
-      $this->registerGetRulesRoute();
-      $this->registerGetRulesRoute();
-      $this->registerPostRuleRoute();
-    }
+    private function hydrateFromRequest(RuleSet $entity, WP_REST_Request $request): RuleSet {
+      $params = $this->getParams($request);
 
-    private function registerDeleteRuleRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/rules/(?P<id>[\d]+)',
-        [
-          [
-            'methods' => WP_REST_Server::DELETABLE,
-            'callback' => [$this, 'deleteRule'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
+      $entity->setName($params['name']);
+      $entity->setDescription($params['description']);
+      $entity->setType($params['type']);
 
-    private function registerGetRuleRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/rules/(?P<id>[\d]+)',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getRules'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      return $entity;
     }
-
-    private function registerGetRulesRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<ruleSetId>[\d]+)/rules',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getRules'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
-
-    private function registerPostRuleRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/rules',
-        [
-          [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'postRule'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
-
   }

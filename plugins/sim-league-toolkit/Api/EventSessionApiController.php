@@ -2,56 +2,21 @@
 
   namespace SLTK\Api;
 
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Core\Constants;
   use SLTK\Domain\EventSession;
   use WP_REST_Request;
   use WP_REST_Response;
 
   class EventSessionApiController extends ApiController {
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
+
     public function __construct() {
       parent::__construct(ResourceNames::EVENT_SESSION);
-    }
-
-    public function add(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        $entity = $this->hydrateFromRequest(new EventSession(), $request);
-
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to save Event Session', 'sim-league-toolkit'));
-        }
-
-       return ApiResponse::created($entity->getId());
-      });
-    }
-
-    public function delete(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        EventSession::delete($this->getId($request));
-
-        return ApiResponse::noContent();
-      });
-    }
-
-    public function get(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        $data = EventSession::get($this->getId($request));
-
-        if ($data === null) {
-          return ApiResponse::notFound('EventSession');
-        }
-
-        return ApiResponse::success($data->toDto());
-      });
-    }
-
-    public function list(): WP_REST_Response {
-      return $this->execute(function () {
-        $data = EventSession::list();
-
-        return ApiResponse::success(
-          array_map(fn($s) => $s->toDto(), $data)
-        );
-      });
     }
 
     public function listByEventRef(WP_REST_Request $request): WP_REST_Response {
@@ -68,13 +33,13 @@
     public function registerRoutes(): void {
       $resource = $this->getResourceName();
 
-      $this->registerGetRoute($resource, 'list');
-      $this->registerPostRoute($resource, 'add');
-      $this->registerGetRoute($resource . '/(?P<id>\d+)', 'get');
-      $this->registerPutRoute($resource . '/(?P<id>\d+)', 'update');
-      $this->registerDeleteRoute($resource . '/(?P<id>\d+)', 'delete');
-      $this->registerGetRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions', 'listByEventRef');
-      $this->registerPutRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions/reorder', 'reorder');
+      $this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
+      $this->registerRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions', 'GET', [$this, 'canListByEventReg'], [$this, 'listByEventRef']);
+      $this->registerRoute('/event-refs/(?P<eventRefId>\d+)/eventSessions/reorder', 'POST', [$this, 'canReorder'], [$this, 'reorder']);
     }
 
     public function reorder(WP_REST_Request $request): WP_REST_Response {
@@ -88,7 +53,49 @@
       });
     }
 
-    public function update(WP_REST_Request $request): WP_REST_Response {
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        EventSession::delete($this->getId($request));
+
+        return ApiResponse::noContent();
+      });
+    }
+
+    protected function onGet(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () {
+        $data = EventSession::list();
+
+        return ApiResponse::success(
+          array_map(fn($s) => $s->toDto(), $data)
+        );
+      });
+    }
+
+    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $data = EventSession::get($this->getId($request));
+
+        if ($data === null) {
+          return ApiResponse::notFound('EventSession');
+        }
+
+        return ApiResponse::success($data->toDto());
+      });
+    }
+
+    protected function onPost(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = $this->hydrateFromRequest(new EventSession(), $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Event Session', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::created($entity->getId());
+      });
+    }
+
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
         $entity = EventSession::get($this->getId($request));
 
@@ -106,7 +113,11 @@
       });
     }
 
-    protected function canExecute(): bool {
+    private function canListByEventReg(): bool {
+      return true;
+    }
+
+    private function canReorder(): bool {
       return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 

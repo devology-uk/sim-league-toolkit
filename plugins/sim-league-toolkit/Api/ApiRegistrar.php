@@ -8,18 +8,19 @@
 
     private static array $routeMap = [
       // More specific patterns first
-      '#/' . ResourceNames::CHAMPIONSHIP_EVENT . 's#' => ChampionshipEventApiController::class,
-      '#/' . ResourceNames::CHAMPIONSHIP . 's/\d+/events#' => ChampionshipEventApiController::class,
-      '#/' . ResourceNames::CHAMPIONSHIP . 's#' => ChampionshipApiController::class,
-      '#/' . ResourceNames::DRIVER_CATEGORY . 's#' => DriverCategoryApiController::class,
-      '#/' . ResourceNames::EVENT_CLASS . 's#' => EventClassApiController::class,
-      '#/' . ResourceNames::GAME . 's#' => GameApiController::class,
-      '#/' . ResourceNames::GAME_CONFIG . 's#' => GameApiController::class,
-      '#/' . ResourceNames::RACE_NUMBER . 's#' => RaceNumberApiController::class,
-      '#/' . ResourceNames::RULE_SET . 's#' => RuleSetApiController::class,
-      '#/' . ResourceNames::SCORING_SET . 's#' => ScoringSetApiController::class,
-      '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '#' => ChampionshipEventApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/events#' => ChampionshipEventApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . '#' => ChampionshipApiController::class,
+      '#/' . ResourceNames::DRIVER_CATEGORY . '#' => DriverCategoryApiController::class,
+      '#/' . ResourceNames::EVENT_CLASS . '#' => EventClassApiController::class,
+      '#/' . ResourceNames::GAME . '#' => GameApiController::class,
+      '#/' . ResourceNames::GAME_CONFIG . '#' => GameApiController::class,
+      '#/' . ResourceNames::RULE_SET_RULE . '#' => RuleSetRuleApiController::class,
+      '#/' . ResourceNames::RULE_SET . '/\d+/rules#' => RuleSetRuleApiController::class,
+      '#/' . ResourceNames::RULE_SET . '#' => RuleSetApiController::class,
+      '#/' . ResourceNames::SCORING_SET . '#' => ScoringSetApiController::class,
       '#/' . ResourceNames::SERVER_SETTING . '#' => ServerSettingApiController::class,
+      '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '#' => ServerApiController::class,
     ];
 

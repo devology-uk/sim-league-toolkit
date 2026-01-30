@@ -40,7 +40,7 @@
         $data = EventClass::list();
 
         return ApiResponse::success(
-          array_map(fn($s) => $s->toDto(), $data)
+          array_map(fn($i) => $i->toDto(), $data)
         );
       });
     }

@@ -2,104 +2,47 @@
 
   namespace SLTK\Api;
 
-  use Exception;
-  use JsonException;
+  use SLTK\Api\Traits\HasDelete;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Domain\ScoringSet;
-  use SLTK\Domain\ScoringSetScore;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   class ScoringSetApiController extends ApiController {
+
+    use HasDelete, HasGet, HasGetById, HasPost, HasPut;
 
     public function __construct() {
       parent::__construct(ResourceNames::SCORING_SET);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function deleteScore(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      ScoringSet::deleteScore($id);
-
-      return rest_ensure_response(true);
+    public function registerRoutes(): void {
+      $this->registerDeleteRoute();
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getScores(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+    protected function onDelete(WP_REST_Request $request): void {
+      $this->execute(function () use ($request) {
+        ScoringSet::delete($this->getId($request));
 
-      $scoringSet = ScoringSet::get($id);
-
-      $data = $scoringSet->getScores();
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
-
-      $responseData = [];
-
-      foreach ($data as $item) {
-        $responseData[] = $item->toDto();
-      }
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::noContent();
+      });
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function postScore(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
-
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
-
-      $newItem = new ScoringSetScore();
-      $newItem->setPoints($data->points);
-      $newItem->setPosition($data->position);
-      $newItem->setScoringSetId($data->scoringSetId);
-
-      if (isset($data->id) && $data->id > 0) {
-        $newItem->setId($data->id);
-      }
-
-      $scoringSet = ScoringSet::get($data->scoringSetId);
-      $scoringSet->saveScore($newItem);
-
-      return rest_ensure_response($newItem);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
-
-      ScoringSet::delete($id);
-
-      return rest_ensure_response(true);
-    }
-
-    /**
-     * @throws Exception
-     */
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
-      $data = ScoringSet::list();
+      return $this->execute(function () use ($request) {
+        $data = ScoringSet::list();
 
-      if (empty($data)) {
-        return rest_ensure_response($data);
-      }
-
-      $responseData = [];
-
-      foreach ($data as $item) {
-        $responseData[] = $item->toDto();
-      }
-
-      return rest_ensure_response($responseData);
+        return ApiResponse::success(
+          array_map(fn($i) => $i->toDto(), $data)
+        );
+      });
     }
 
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
@@ -110,75 +53,48 @@
       return rest_ensure_response($data->toDto());
     }
 
-    /**
-     * @throws JsonException
-     */
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
-      $body = $request->get_body();
+      return $this->execute(function () use ($request) {
 
-      $data = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        $entity = $this->hydrateFromRequest(new ScoringSet(), $request);
 
-      $newItem = new ScoringSet();
-      $newItem->setName($data->name);
-      $newItem->setDescription($data->description);
-      $newItem->setPointsForFastestLap($data->pointsForFastestLap);
-      $newItem->setPointsForFinishing($data->pointsForFinishing);
-      $newItem->setPointsForPole($data->pointsForPole);
-      $newItem->setIsBuiltIn(false);
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Scoring Set', 'sim-league-toolkit'));
+        }
 
-      if (isset($data->id) && $data->id > 0) {
-        $newItem->setId($data->id);
-      }
-
-      $newItem->save();
-
-      return rest_ensure_response($newItem);
+        return ApiResponse::created($entity->getId());
+      });
     }
 
-    protected function onRegisterRoutes(): void {
-      $this->registerDeleteScoreRoute();
-      $this->registerGetScoresRoute();
-      $this->registerPostScoreRoute();
+    protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = ScoringSet::get($this->getId($request));
+
+        if ($entity === null) {
+          return ApiResponse::notFound('ScoringSet');
+        }
+
+        $entity = $this->hydrateFromRequest($entity, $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Scoring Set', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
+
     }
 
-    private function registerDeleteScoreRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/scores/(?P<id>[\d]+)',
-        [
-          [
-            'methods' => WP_REST_Server::DELETABLE,
-            'callback' => [$this, 'deleteScore'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
+    private function hydrateFromRequest(ScoringSet $entity, WP_REST_Request $request): ScoringSet {
+      $params = $this->getParams($request);
 
-    private function registerGetScoresRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/(?P<id>\d+)/scores',
-        [
-          [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getScores'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
-    }
+      $entity->setDescription($params['description']);
+      $entity->setName($params['name']);
+      $entity->setPointsForFastestLap($params['pointsForFastestLap']);
+      $entity->setPointsForFinishing($params['pointsForFinishing']);
+      $entity->setPointsForPole($params['pointsForPole']);
 
-    private function registerPostScoreRoute(): void {
-      register_rest_route(self::NAMESPACE,
-        $this->getResourceName() . '/scores',
-        [
-          [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'postScore'],
-            'permission_callback' => [$this, 'checkPermission'],
-          ]
-        ]
-      );
+      return $entity;
     }
-
 
   }

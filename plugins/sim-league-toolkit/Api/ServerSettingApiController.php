@@ -3,41 +3,78 @@
   namespace SLTK\Api;
 
   use Exception;
-  use SLTK\Api\BasicApiController;
+  use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
+  use SLTK\Api\Traits\HasPost;
+  use SLTK\Api\Traits\HasPut;
   use SLTK\Domain\ServerSetting;
   use WP_REST_Request;
   use WP_REST_Response;
 
   class ServerSettingApiController extends ApiController {
+    use HasGet, HasGetById, HasPost, HasPut;
 
-    /**
-     * @throws Exception
-     */
-    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
-      throw new Exception('Not supported');
+    public function registerRoutes(): void {
+      $this->registerGetRoute();
+      $this->registerGetByIdRoute();
+      $this->registerPostRoute();
+      $this->registerPutRoute();
+    }
+
+    protected function onGet(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $data = ServerSetting::list($this->getId($request));
+
+        return ApiResponse::success(
+          array_map(fn($i) => $i->toDto(), $data)
+        );
+      });
+    }
+
+    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+
+        $data = ScoringSet::getServerSettingById($this->getId($request));
+
+        if ($data === null) {
+          return ApiResponse::notFound('ServerSetting');
+        }
+
+        return ApiResponse::success($data->toDto());
+      });
     }
 
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $serverSetting = $this->hydrateFromRequest(new ServerSetting(), $request);
+
+        $entity = $this->hydrateFromRequest(new ServerSetting(), $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to save Server Setting', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::created($entity->getId());
       });
     }
 
     protected function onPut(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $entity = ServerSetting::get($this->getId($request));
 
+        if ($entity === null) {
+          return ApiResponse::notFound('ServerSetting');
+        }
+
+        $entity = $this->hydrateFromRequest($entity, $request);
+
+        if (!$entity->save()) {
+          return ApiResponse::badRequest(esc_html__('Failed to update Server Setting', 'sim-league-toolkit'));
+        }
+
+        return ApiResponse::success(['id' => $entity->getId()]);
+      });
     }
 
-    protected function onGet(WP_REST_Request $request): WP_REST_Response {
-
-    }
-
-    protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-
-    }
-
-    protected function onRegisterRoutes(): void {
-
-    }
 
     private function hydrateFromRequest(ServerSetting $serverSetting, WP_REST_Request $request): ServerSetting {
       $params = $this->getParams($request);

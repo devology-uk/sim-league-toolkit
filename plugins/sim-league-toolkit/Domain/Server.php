@@ -53,7 +53,7 @@
     /**
      * @throws Exception
      */
-    public static function get(int $id): Server {
+    public static function get(int $id): Server|null {
       $queryResult = ServerRepository::getById($id);
 
       return new Server($queryResult);

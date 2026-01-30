@@ -26,7 +26,7 @@
       }
     }
 
-    public static function get(int $id): Game {
+    public static function get(int $id): Game | null {
       return new Game(GameRepository::getById($id));
     }
 
