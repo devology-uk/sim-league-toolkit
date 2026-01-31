@@ -84,12 +84,14 @@
     /**
      * @throws Exception
      */
-    public function save(): void {
+    public function save(): bool {
       if ($this->hasId()) {
         ServerSettingRepository::update($this->getId(), $this->toArray(false));
       } else {
         $this->setId(ServerSettingRepository::add($this->toArray(false)));
       }
+
+      return true;
     }
 
     /**

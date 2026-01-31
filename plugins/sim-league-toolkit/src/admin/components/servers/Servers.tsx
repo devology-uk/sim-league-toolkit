@@ -27,7 +27,6 @@ export const Servers = () => {
     };
 
     const onEdit = (item: Server) => {
-        console.log(item);
         setSelectedItem(item);
         setShowEditor(true);
     };
@@ -95,7 +94,7 @@ export const Servers = () => {
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <ServerEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                              serverId={selectedItem?.id}/>
+                              server={selectedItem}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

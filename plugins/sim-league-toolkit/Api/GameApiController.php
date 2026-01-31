@@ -78,7 +78,7 @@
     public function registerRoutes(): void {
       $this->registerGetRoute();
       $this->registerGetByIdRoute();
-      $routeBase = $this->getResourceName() . '(?P<id>\\d+)/';
+      $routeBase = $this->getResourceName() . '/(?P<id>\\d+)/';
       $this->registerRoute($routeBase . 'cars', 'GET', [$this, 'canRead'], [$this, 'listCars']);
       $this->registerRoute($routeBase . 'car-classes', 'GET', [$this, 'canRead'], [$this, 'listCarClasses']);
       $this->registerRoute($routeBase . 'event-classes', 'GET', [$this, 'canRead'], [$this, 'listEventClasses']);
@@ -87,6 +87,10 @@
       $this->registerRoute($this->getResourceName() . '/tracks/(?P<id>\\d+)', 'GET', [$this, 'canRead'], [$this, 'listTrackLayouts']);
     }
 
+
+    public function canRead(): bool {
+      return true;
+    }
 
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
@@ -108,9 +112,5 @@
 
         return ApiResponse::success($data->toDto());
       });
-    }
-
-    private function canRead(): bool {
-      return true;
     }
   }

@@ -21,10 +21,10 @@ interface ServerEditorProps {
     show: boolean;
     onSaved: () => void;
     onCancelled: () => void;
-    serverId?: number;
+    server?: Server;
 }
 
-export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerEditorProps) => {
+export const ServerEditor = ({show, onSaved, onCancelled, server = null}: ServerEditorProps) => {
     const {createServer, findServer, isLoading, updateServer} = useServers();
 
     const [gameId, setGameId] = useState(0);
@@ -36,19 +36,18 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        if (serverId === 0) {
+        if (server === null) {
+            resetForm()
             return;
         }
 
-        const server = findServer(serverId);
-        console.log(server);
         setGameId(server.gameId);
         setGameKey(server.gameKey);
         setGameName(server.game);
         setIsHostedServer(server.isHostedServer);
         setName(server.name);
         setPlatformId(server.platformId);
-    }, [serverId]);
+    }, [server]);
 
     const resetForm = () => {
         setGameId(0);
@@ -71,10 +70,10 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
             platformId: platformId,
         };
 
-        if (serverId === 0) {
+        if (server === null) {
             await createServer(formData);
         } else {
-            await updateServer(serverId, formData);
+            await updateServer(server.id, formData);
         }
 
         onSaved();
@@ -116,14 +115,14 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                     <div className='flex flex-row  align-items-stretch gap-4' style={{minWidth: '750px'}}>
                         <form onSubmit={onSave} noValidate>
                             <div className='flex flex-column align-items-stretch gap-2'>
-                                {serverId < 1 &&
+                                {server === null &&
                                     <GameSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('game')}
                                                   validationMessage={__(
                                                       'You must select the game that this server will be used with.')}
                                                   onSelectedItemChanged={onSelectedGameChanged}/>
                                 }
-                                {serverId >= 1 &&
+                                {server &&
                                     <>
                                         <label htmlFor='server-name'>{__('Game', 'sim-league-toolkit')}</label>
                                         <span>{gameName}</span>
@@ -160,7 +159,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, serverId = 0}: ServerE
                             <SaveSubmitButton disabled={isLoading} name='submitServer'/>
                             <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                         </form>
-                        {serverId > 0 && (<ServerSettingList serverId={serverId} gameKey={gameKey}/>)}
+                        {server  && (<ServerSettingList serverId={server.id} gameKey={gameKey}/>)}
                     </div>
                 </Dialog>
             )}

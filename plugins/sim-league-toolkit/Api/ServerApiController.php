@@ -28,9 +28,6 @@
       $this->registerPutRoute();
     }
 
-    /**
-     * @throws Exception
-     */
     protected function onDelete(WP_REST_Request $request): void {
       $this->execute(function () use ($request) {
         Server::delete($this->getId($request));
@@ -44,7 +41,7 @@
         $data = Server::list();
 
         return ApiResponse::success(
-          array_map(fn($s) => $s->toDto(), $data)
+          array_map(fn($i) => $i->toDto(), $data)
         );
       });
     }

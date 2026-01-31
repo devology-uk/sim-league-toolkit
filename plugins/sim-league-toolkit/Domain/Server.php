@@ -142,12 +142,13 @@
     /**
      * @throws Exception
      */
-    public function save(): void {
-      if ($this->getId() === Constants::DEFAULT_ID) {
+    public function save(): bool {
+      if (!$this->hasId()) {
         $this->setId(ServerRepository::add($this->toArray()));
       } else {
         ServerRepository::update($this->getId(), $this->toArray());
       }
+      return true;
     }
 
     /**
