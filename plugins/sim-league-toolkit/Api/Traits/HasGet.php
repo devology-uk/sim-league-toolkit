@@ -8,7 +8,7 @@
   trait HasGet {
     abstract protected function execute(callable $action): WP_REST_Response;
     abstract protected function getResourceName(): string;
-    abstract protected function registerRoute(string $route, string|array $methods, callable $permissionCallback, callable $responseCallback): void;
+    abstract protected function registerRoute(string $route, string|array $methods, callable|array $permissionCallback, callable|array $responseCallback): void;
 
     abstract protected function onGet(WP_REST_Request $request): WP_REST_Response;
 
@@ -24,6 +24,6 @@
 
     protected function registerGetRoute(): void {
       $resourceName = $this->getResourceName();
-      $this->registerRoute($resourceName, 'GET', [$this, 'canGet'], [$this,'get']);
+      $this->registerRoute($resourceName . 's', 'GET', [$this,'canGet'], [$this,'get']);
     }
   }

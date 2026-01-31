@@ -11,7 +11,7 @@
   trait HasDelete {
     abstract protected function execute(callable $action): WP_REST_Response;
     abstract protected function getResourceName(): string;
-    abstract protected function registerRoute(string $route, string|array $methods, callable $permissionCallback, callable $responseCallback): void;
+    abstract protected function registerRoute(string $route, string|array $methods, callable|array $permissionCallback, callable|array $responseCallback): void;
     abstract protected function getRestForbiddenError(): WP_Error;
 
     abstract protected function onDelete(WP_REST_Request $request): void;

@@ -50,7 +50,7 @@
       return '/' . $this->resourceName;
     }
 
-    protected function registerRoute(string $route, string|array $methods, callable $permissionCallback, callable $responseCallback): void {
+    protected function registerRoute(string $route, string|array $methods, callable|array $permissionCallback, callable|array $responseCallback): void {
       register_rest_route(
         self::NAMESPACE,
         $route,

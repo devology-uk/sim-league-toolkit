@@ -10,7 +10,7 @@
   trait HasGetById {
     abstract protected function execute(callable $action): WP_REST_Response;
     abstract protected function getResourceName(): string;
-    abstract protected function registerRoute(string $route, string|array $methods, callable $permissionCallback, callable $responseCallback): void;
+    abstract protected function registerRoute(string $route, string|array $methods, callable|array $permissionCallback, callable|array $responseCallback): void;
     abstract protected function getRestForbiddenError(): WP_Error;
 
     abstract protected function onGetById(WP_REST_Request $request): WP_REST_Response;
@@ -27,7 +27,7 @@
 
     protected function registerGetByIdRoute(): void {
       $resourceName = $this->getResourceName();
-      $this->registerRoute("$resourceName/(?P<id>\\d+)", 'GET', [$this, 'canGetById'], [$this, 'getById']);
+      $this->registerRoute($resourceName . '/' . Constants::ROUTE_PATTERN_ID, 'GET', [$this, 'canGetById'], [$this, 'getById']);
     }
   }
 
