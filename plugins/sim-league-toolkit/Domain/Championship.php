@@ -9,9 +9,16 @@
   use SLTK\Core\Enums\ChampionshipType;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Championship extends DomainBase {
+  class Championship implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
+    use HasIdentity;
 
     private bool $allowEntryChange = false;
     private string $bannerImageUrl = '';
@@ -36,34 +43,8 @@
     private ?int $trackMasterTrackLayoutId = null;
     private bool $trophiesAwarded = false;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-
+    public function __construct() {
       $this->startDate = (new DateTime())->add(new DateInterval('P1D'));
-      if ($data != null) {
-        $this->allowEntryChange = $data->allowEntryChange ?? false;
-        $this->bannerImageUrl = $data->bannerImageUrl;
-        $this->championshipType = $data->championshipType ?? ChampionshipType::Standard;
-        $this->description = $data->description ?? '';
-        $this->entryChangeLimit = $data->entryChangeLimit ?? 0;
-        $this->game = $data->game ?? '';
-        $this->gameId = $data->gameId;
-        $this->isActive = $data->isActive;
-        $this->name = $data->name ?? '';
-        $this->platform = $data->platform ?? '';
-        $this->platformId = $data->platformId ?? Constants::DEFAULT_ID;
-        $this->resultsToDiscard = $data->resultsToDiscard ?? 0;
-        $this->ruleSet = $data->ruleSet ?? '';
-        $this->ruleSetId = $data->ruleSetId ?? null;
-        $this->scoringSet = $data->scoringSet ?? null;
-        $this->scoringSetId = $data->scoringSetId ?? Constants::DEFAULT_ID;
-        $this->startDate = DateTime::createFromFormat(Constants::STANDARD_DATE_FORMAT, $data->startDate);
-        $this->trackMasterTrack = $data->trackMasterTrack;
-        $this->trackMasterTrackId = $data->trackMasterTrackId ?? Constants::DEFAULT_ID;
-        $this->trackMasterTrackLayout = $data->trackMasterTrackLayout;
-        $this->trackMasterTrackLayoutId = $data->trackMasterTrackLayoutId ?? null;
-        $this->trophiesAwarded = $data->trophiesAwarded ?? false;
-      }
     }
 
     /**
@@ -90,6 +71,39 @@
      */
     public static function deleteChampionshipClass(int $championshipId, int $eventClassId): void {
       ChampionshipRepository::deleteClass($championshipId, $eventClassId);
+    }
+
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
+      }
+
+      $result = new self();
+      $result->setId((int)$data->id);
+      $result->setAllowEntryChange($data->allowEntryChange ?? false);
+      $result->setBannerImageUrl($data->bannerImageUrl);
+      $result->setChampionshipType($data->championshipType ?? ChampionshipType::Standard);
+      $result->setDescription($data->description ?? '');
+      $result->setEntryChangeLimit($data->entryChangeLimit ?? 0);
+      $result->setGame($data->game ?? '');
+      $result->setGameId($data->gameId);
+      $result->setIsActive($data->isActive);
+      $result->setName($data->name ?? '');
+      $result->setPlatform($data->platform ?? '');
+      $result->setPlatformId($data->platformId ?? Constants::DEFAULT_ID);
+      $result->setResultsToDiscard($data->resultsToDiscard ?? 0);
+      $result->setRuleSet($data->ruleSet ?? '');
+      $result->setRuleSetId($data->ruleSetId ?? null);
+      $result->setScoringSet($data->scoringSet ?? null);
+      $result->setScoringSetId($data->scoringSetId ?? Constants::DEFAULT_ID);
+      $result->setStartDate(DateTime::createFromFormat(Constants::STANDARD_DATE_FORMAT, $data->startDate));
+      $result->setTrackMasterTrack($data->trackMasterTrack);
+      $result->setTrackMasterTrackId($data->trackMasterTrackId ?? Constants::DEFAULT_ID);
+      $result->setTrackMasterTrackLayout($data->trackMasterTrackLayout ?? null);
+      $result->setTrackMasterTrackLayoutId($data->trackMasterTrackLayoutId ?? null);
+      $result->setTrophiesAwarded($data->trophiesAwarded ?? false);
+
+      return $result;
     }
 
     /**
@@ -126,7 +140,7 @@
      * @throws Exception
      */
     public static function listEvents(int $id): array {
-      return ChampionshipEvent::list($id);
+      return [];
     }
 
     public function getAllowEntryChange(): bool {
@@ -146,11 +160,11 @@
     }
 
     public function getChampionshipType(): ChampionshipType {
-        return $this->championshipType ?? ChampionshipType::Standard;
+      return $this->championshipType ?? ChampionshipType::Standard;
     }
 
     public function setChampionshipType(ChampionshipType $value): void {
-        $this->championshipType = $value;
+      $this->championshipType = $value;
     }
 
     public function getDescription(): string {
@@ -195,14 +209,6 @@
 
     public function setIsActive(bool $value): void {
       $this->isActive = $value;
-    }
-
-    public function getIsTrackMasterChampionship(): bool {
-      return $this->isTrackMasterChampionship ?? false;
-    }
-
-    public function setIsTrackMasterChampionship(bool $value): void {
-      $this->isTrackMasterChampionship = $value;
     }
 
     public function getName(): string {
@@ -317,25 +323,24 @@
       $this->trophiesAwarded = $value;
     }
 
-    public function save(): bool {
-      try {
-        if (!$this->hasId()) {
-          $this->setId(ChampionshipRepository::add($this->toArray()));
-        } else {
-          ChampionshipRepository::update($this->getId(), $this->toArray());
-        }
-      } catch (Exception) {
-        return false;
+    /**
+     * @throws Exception
+     */
+    public function save(): self {
+      if (!$this->hasId()) {
+        $this->setId(ChampionshipRepository::add($this->toArray()));
+      } else {
+        ChampionshipRepository::update($this->getId(), $this->toArray());
       }
 
-      return true;
+      return $this;
     }
 
     /**
      * @return array{fieldName: string, value: mixed}
      */
     public function toArray(): array {
-      $result = [
+      return [
         'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'championshipType' => $this->getChampionshipType(),
@@ -353,16 +358,12 @@
         'trackMasterTrackLayoutId' => $this->getTrackMasterTrackLayoutId(),
         'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     public function toDto(): array {
-      $result = [
+
+      return [
+        'id' => $this->getId(),
         'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
         'championshipType' => $this->getChampionshipType(),
@@ -385,31 +386,17 @@
         'trackMasterTrackLayoutId' => $this->getTrackMasterTrackLayoutId(),
         'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     private static function mapChampionshipEventClasses(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new ChampionshipEventClass($item);
-      }
-
-      return $results;
+      return array_map(function ($item) {
+        return new ChampionshipEventClass($item);
+      }, $queryResults);
     }
 
     private static function mapChampionships(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Championship($item);
-      }
-
-      return $results;
+      return array_map(function ($item) {
+        return self::fromStdClass($item);
+      }, $queryResults);
     }
   }

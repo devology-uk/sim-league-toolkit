@@ -5,8 +5,6 @@
   use DateTime;
   use DateTimeInterface;
   use DateTimeZone;
-  use Exception;
-  use JsonException;
   use SLTK\Api\Traits\HasDelete;
   use SLTK\Api\Traits\HasGet;
   use SLTK\Api\Traits\HasGetById;
@@ -15,7 +13,6 @@
   use SLTK\Domain\Championship;
   use WP_REST_Request;
   use WP_REST_Response;
-  use WP_REST_Server;
 
   class ChampionshipApiController extends ApiController {
     use HasDelete, HasGet, HasGetById, HasPost, HasPut;

@@ -2,8 +2,6 @@
 
   namespace SLTK\Api;
 
-  use Exception;
-  use JsonException;
   use SLTK\Api\Traits\HasDelete;
   use SLTK\Api\Traits\HasGet;
   use SLTK\Api\Traits\HasGetById;

@@ -2,12 +2,12 @@
 
   namespace SLTK\Api;
 
-  use Exception;
   use SLTK\Api\Traits\HasGet;
   use SLTK\Api\Traits\HasGetById;
   use SLTK\Api\Traits\HasPost;
   use SLTK\Api\Traits\HasPut;
   use SLTK\Core\Constants;
+  use SLTK\Domain\Server;
   use SLTK\Domain\ServerSetting;
   use WP_REST_Request;
   use WP_REST_Response;
@@ -28,17 +28,16 @@
 
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = ServerSetting::list($this->getId($request));
+        $data = Server::listSettings($this->getId($request));
 
-        return ApiResponse::success(array_map(fn($i) => $i->toDto(), $data)
-        );
+        return ApiResponse::success(array_map(fn($i) => $i->toDto(), $data));
       });
     }
 
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
 
-        $data = ServerSetting::getServerSettingById($this->getId($request));
+        $data = Server::getSettingById($this->getId($request));
 
         if ($data === null) {
           return ApiResponse::notFound('ServerSetting');
@@ -53,7 +52,7 @@
 
         $entity = $this->hydrateFromRequest(new ServerSetting(), $request);
 
-        if (!$entity->save()) {
+        if (!Server::addSetting($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to save Server Setting', 'sim-league-toolkit'));
         }
 
@@ -63,7 +62,7 @@
 
     protected function onPut(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $entity = ServerSetting::get($this->getId($request));
+        $entity = Server::getSettingById($this->getId($request));
 
         if ($entity === null) {
           return ApiResponse::notFound('ServerSetting');
@@ -71,7 +70,7 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
+        if (!Server::saveSetting($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to update Server Setting', 'sim-league-toolkit'));
         }
 

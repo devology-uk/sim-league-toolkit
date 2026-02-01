@@ -11,7 +11,7 @@ import {ServerEditor} from './ServerEditor';
 import {useServers} from '../../hooks/useServers';
 
 export const Servers = () => {
-    const {deleteServer, isLoading, servers} = useServers();
+    const {deleteServer, isLoading, refresh, servers} = useServers();
 
     const [selectedItem, setSelectedItem] = useState<Server>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -40,6 +40,7 @@ export const Servers = () => {
         setShowDeleteConfirmation(false);
 
         await deleteServer(selectedItem.id);
+        await refresh();
 
         setSelectedItem(null);
     };
@@ -49,9 +50,10 @@ export const Servers = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = () => {
+    const onEditorSaved = async () => {
         setShowEditor(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const headerTemplate = () => {

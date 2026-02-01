@@ -5,9 +5,17 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ServerRepository;
+  use SLTK\Database\Repositories\ServerSettingRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Server extends DomainBase {
+  class Server implements AggregateRoot, Deletable, Listable, Saveable {
+    use HasIdentity;
+
     private string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
     private string $gameKey = '';
@@ -16,24 +24,11 @@
     private string $platform = '';
     private int $platformId = 1;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-      if ($data) {
-        $this->game = $data->gameName ?? '';
-        $this->gameKey = $data->gameKey;
-        $this->name = $data->name ?? '';
-        $this->isHostedServer = $data->isHostedServer ?? false;
-        $this->gameId = $data->gameId ?? Constants::DEFAULT_ID;
-        $this->platform = $data->platformName ?? '';
-        $this->platformId = $data->platformId ?? 1;
-      }
-    }
-
     /**
      * @throws Exception
      */
     public static function addSetting(ServerSetting $serverSetting): int {
-      return ServerRepository::addSetting($serverSetting->toArray(false));
+      return ServerSettingRepository::add($serverSetting->toArray());
     }
 
     /**
@@ -47,7 +42,21 @@
      * @throws Exception
      */
     public static function deleteSetting(int $id): void {
-      ServerRepository::deleteSetting($id);
+      ServerSettingRepository::delete($id);
+    }
+
+    public static function fromStdClass(stdClass $data): self {
+      $result = new self();
+
+      $result->setGame($data->gameName ?? '');
+      $result->setGameKey($data->gameKey);
+      $result->setName($data->name ?? '');
+      $result->setIsHostedServer($data->isHostedServer ?? false);
+      $result->setGameId($data->gameId ?? Constants::DEFAULT_ID);
+      $result->setPlatform($data->platformName ?? '');
+      $result->setPlatformId($data->platformId ?? 1);
+
+      return $result;
     }
 
     /**
@@ -56,28 +65,29 @@
     public static function get(int $id): Server|null {
       $queryResult = ServerRepository::getById($id);
 
-      return new Server($queryResult);
+      return self::fromStdClass($queryResult);
     }
 
     /**
      * @throws Exception
      */
     public static function getSetting(int $serverId, string $settingName): ServerSetting|null {
-      $queryResult = ServerRepository::getSettingByName($serverId, $settingName);
+      $queryResult = ServerSettingRepository::getByName($serverId, $settingName);
 
-      return new ServerSetting($queryResult);
+      return ServerSetting::fromStdClass($queryResult);
     }
 
     /**
      * @throws Exception
      */
-    public static function getSettingById(int $id): ServerSetting {
-      $queryResult = ServerRepository::getSettingById($id);
+    public static function getSettingById(int $id): ServerSetting|null {
+      $queryResult = ServerSettingRepository::getById($id);
 
-      return new ServerSetting($queryResult);
+      return ServerSetting::fromStdClass($queryResult);
     }
 
     /**
+     * @return Server[]
      * @throws Exception
      */
     public static function list(): array {
@@ -86,11 +96,25 @@
       return self::mapServers($queryResults);
     }
 
+    /**
+     * @throws Exception
+     * @return ServerSetting[]
+     */
+    public static function listSettings(int $serverId): array {
+      $queryResults = ServerSettingRepository::listByServerId($serverId);
+
+      return self::mapServerSettings($queryResults);
+    }
+
     public function getGame(): string {
       return $this->game ?? '';
     }
 
-    public function getGameId() {
+    public function setGame(string $game): void {
+      $this->game = $game;
+    }
+
+    public function getGameId(): int {
       return $this->gameId ?? Constants::DEFAULT_ID;
     }
 
@@ -102,7 +126,11 @@
       return $this->gameKey;
     }
 
-    public function getIsHostedServer() {
+    public function setGameKey(string $value): void {
+      $this->gameKey = $value;
+    }
+
+    public function getIsHostedServer(): bool {
       return $this->isHostedServer ?? false;
     }
 
@@ -122,7 +150,11 @@
       return $this->platform ?? '';
     }
 
-    public function getPlatformId() {
+    public function setPlatform(string $platform): void {
+      $this->platform = $platform;
+    }
+
+    public function getPlatformId(): int {
       return $this->platformId ?? Constants::DEFAULT_ID;
     }
 
@@ -132,9 +164,10 @@
 
     /**
      * @return ServerSetting[]
+     * @throws Exception
      */
     public function getSettings(): array {
-      $queryResult = ServerRepository::getSettings($this->getId());
+      $queryResult = ServerSettingRepository::listByServerId($this->getId());
 
       return self::mapServerSettings($queryResult);
     }
@@ -142,23 +175,24 @@
     /**
      * @throws Exception
      */
-    public function save(): bool {
+    public function save(): self {
       if (!$this->hasId()) {
         $this->setId(ServerRepository::add($this->toArray()));
       } else {
         ServerRepository::update($this->getId(), $this->toArray());
       }
-      return true;
+
+      return $this;
     }
 
     /**
      * @throws Exception
      */
-    public function saveSetting(ServerSetting $entity): ServerSetting {
+    public static function saveSetting(ServerSetting $entity): ServerSetting {
       if (!$entity->hasId()) {
-        $entity->setId(ServerRepository::addSetting($entity->toArray(false)));
+        $entity->setId(ServerSettingRepository::add($entity->toArray()));
       } else {
-        ServerRepository::update($entity->getId(), $entity->toArray(false));
+        ServerRepository::update($entity->getId(), $entity->toArray());
       }
 
       return $entity;
@@ -180,7 +214,8 @@
      * @return array{fieldName: string, value: mixed}
      */
     public function toDto(): array {
-      $result = [
+      return [
+        'id' => $this->getId(),
         'name' => $this->getName(),
         'isHostedServer' => $this->getIsHostedServer(),
         'game' => $this->getGame(),
@@ -189,20 +224,13 @@
         'platform' => $this->getPlatform(),
         'platformId' => $this->getPlatformId(),
       ];
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
-      return $result;
-
     }
-
 
     private static function mapServerSettings(array $queryResults): array {
       $results = array();
 
       foreach ($queryResults as $item) {
-        $results[] = new ServerSetting($item);
+        $results[] = ServerSetting::fromStdClass($item);
       }
 
       return $results;
@@ -212,7 +240,7 @@
       $results = array();
 
       foreach ($queryResults as $item) {
-        $results[] = new Server($item);
+        $results[] = self::fromStdClass($item);
       }
 
       return $results;

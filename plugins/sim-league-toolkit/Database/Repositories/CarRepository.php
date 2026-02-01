@@ -8,7 +8,10 @@
 
   class CarRepository extends RepositoryBase {
 
-    public static function getById(int $gameId): stdClass {
+    /**
+     * @throws Exception
+     */
+    public static function getById(int $gameId): ?stdClass {
       return self::getRowById(TableNames::CARS, $gameId);
     }
 

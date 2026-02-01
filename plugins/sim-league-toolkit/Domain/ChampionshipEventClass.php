@@ -2,14 +2,17 @@
 
   namespace SLTK\Domain;
 
-  use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\EventClassesRepository;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class ChampionshipEventClass {
+  class ChampionshipEventClass implements ValueObject, ProvidesPersistableArray {
+    use HasIdentity;
 
     private string $carClass = '';
+    private string $championship = '';
     private int $championshipId = 0;
     private string $driverCategory = '';
     private int $driverCategoryId = Constants::DEFAULT_ID;
@@ -23,26 +26,31 @@
     private ?int $singleCarId = null;
     private ?string $singleCarName = null;
 
-    public function __construct(?stdClass $data = null) {
-      if ($data != null) {
-        $this->carClass = $data->carClass;
-        $this->championshipId = $data->championshipId;
-        $this->driverCategoryId = $data->driverCategoryId;
-        $this->driverCategory = $data->driverCategory;
-        $this->eventClassId = $data->eventClassId;
-        $this->gameId = $data->gameId;
-        $this->game = $data->game;
-        $this->isBuiltIn = $data->isBuiltIn;
-        $this->isInUse = $data->isInUse > 0;
-        $this->isSingleCarClass = $data->isSingleCarClass;
-        $this->name = $data->name;
-        $this->singleCarId = $data->singleCarId ?? null;
-        $this->singleCarName = $data->singleCarName ?? null;
-      }
+    public static function fromStdClass(?stdClass $data): ?self {
+      $result = new self();
+      $result->setCarClass($data->carClass);
+      $result->setChampionshipId($data->championshipId);
+      $result->setDriverCategoryId($data->driverCategoryId);
+      $result->setDriverCategory($data->driverCategory);
+      $result->setEventClassId($data->eventClassId);
+      $result->setGameId($data->gameId);
+      $result->setGame($data->game);
+      $result->setIsBuiltIn($data->isBuiltIn);
+      $result->setIsInUse($data->isInUse > 0);
+      $result->setIsSingleCarClass($data->isSingleCarClass);
+      $result->setName($data->name);
+      $result->setSingleCarId($data->singleCarId ?? null);
+      $result->setSingleCarName($data->singleCarName ?? null);
+
+      return $result;
     }
 
     public function getCarClass(): string {
       return $this->carClass ?? '';
+    }
+
+    public function getChampionship(): string {
+      return $this->championship ?? '';
     }
 
     public function getChampionshipId(): int {
@@ -77,13 +85,6 @@
       return $this->isInUse ?? false;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function isInUse(): bool {
-      return EventClassesRepository::isInUse($this->getId());
-    }
-
     public function setIsInUse(string $value): void {
       $this->isInUse = $value;
     }
@@ -96,10 +97,6 @@
       return $this->name ?? '';
     }
 
-    public function setName(string $value): void {
-      $this->name = $value;
-    }
-
     public function getSingleCarId(): ?int {
       return $this->singleCarId ?? null;
     }
@@ -108,18 +105,88 @@
       return $this->singleCarName ?? '';
     }
 
-    public function toDto(): array {
+    public function toArray(): array {
       return [
         'carClass' => $this->getCarClass(),
         'championshipId' => $this->getChampionshipId(),
+        'driverCategoryId' => $this->getDriverCategoryId(),
+        'eventClassId' => $this->getEventClassId(),
+        'gameId' => $this->getGameId(),
+        'isSingleCarClass' => $this->getIsSingleCarClass(),
+        'name' => $this->getName(),
+        'singleCarId' => $this->getSingleCarId(),
+      ];
+    }
+
+    public function toDto(): array {
+      return [
+        'id' => $this->getId(),
+        'carClass' => $this->getCarClass(),
+        'championshipId' => $this->getChampionshipId(),
+        'championship' => $this->getChampionship(),
+        'driverCategoryId' => $this->getDriverCategoryId(),
         'driverCategory' => $this->getDriverCategory(),
         'eventClassId' => $this->getEventClassId(),
         'game' => $this->getGame(),
+        'gameId' => $this->getGameId(),
         'isBuiltIn' => $this->getIsBuiltIn(),
         'isInUse' => $this->getIsInUse(),
         'isSingleCarClass' => $this->getIsSingleCarClass(),
         'name' => $this->getName(),
         'singleCarName' => $this->getSingleCarName(),
+        'singleCarId' => $this->getSingleCarId(),
       ];
+    }
+
+    private function setCarClass(string $carClass): void {
+      $this->carClass = $carClass;
+    }
+
+    private function setChampionship(string $championship): void {
+      $this->championship = $championship;
+    }
+
+    private function setChampionshipId(int $championshipId): void {
+      $this->championshipId = $championshipId;
+    }
+
+    private function setDriverCategory(string $driverCategory): void {
+      $this->driverCategory = $driverCategory;
+    }
+
+    private function setDriverCategoryId(int $driverCategoryId): void {
+      $this->driverCategoryId = $driverCategoryId;
+    }
+
+    private function setEventClassId(int $eventClassId): void {
+      $this->eventClassId = $eventClassId;
+    }
+
+    private function setGame(string $game): void {
+      $this->game = $game;
+    }
+
+    private function setGameId(int $gameId): void {
+      $this->gameId = $gameId;
+    }
+
+    private function setIsBuiltIn(bool $isBuiltIn): void {
+      $this->isBuiltIn = $isBuiltIn;
+    }
+
+    private function setIsSingleCarClass(bool $isSingleCarClass): void {
+      $this->isSingleCarClass = $isSingleCarClass;
+    }
+
+    private function setName(string $value): void {
+      $this->name = $value;
+    }
+
+    private function setSingleCarId(int $singleCarId): void {
+      $this->singleCarId = $singleCarId;
+    }
+
+    private function setSingleCarName(string $value): void {
+      $this->singleCarName = $value;
     }
   }

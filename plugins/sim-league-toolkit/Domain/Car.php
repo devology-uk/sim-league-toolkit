@@ -5,9 +5,12 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\CarRepository;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Car extends EntityBase {
+  class Car implements ValueObject {
+    use HasIdentity;
 
     private string $carClass = '';
     private string $carKey = '';
@@ -16,23 +19,28 @@
     private string $name = '';
     private int $year = 0;
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-
-      if ($data) {
-        $this->gameId = $data->gameId;
-        $this->carClass = $data->carClass;
-        $this->carKey = $data->carKey;
-        $this->name = $data->name;
-        $this->year = $data->year;
-        $this->manufacturer = $data->manufacturer;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if(!$data){
+        return null;
       }
+
+      $result = new self();
+      $result->setId($data->id);
+      $result->gameId = $data->gameId;
+      $result->carClass = $data->carClass;
+      $result->carKey = $data->carKey;
+      $result->name = $data->name;
+      $result->year = $data->year;
+      $result->manufacturer = $data->manufacturer;
+      return $result;
     }
 
-    public static function get(int $id): Car|null {
+    /**
+     * @throws Exception
+     */
+    public static function get(int $id): ?Car {
       $queryResult = CarRepository::getById($id);
-
-      return new Car($queryResult);
+      return self::fromStdClass($queryResult);
     }
 
     /**
@@ -75,8 +83,15 @@
       return $this->carClass;
     }
 
+    public function setCarClass(string $carClass): void {
+      $this->carClass = $carClass;
+    }
+
     public function getCarKey(): string {
       return $this->carKey;
+    }
+    public function setCarKey(string $carKey): void {
+      $this->carKey = $carKey;
     }
 
     public function getDisplayName(): string {
@@ -86,34 +101,40 @@
     public function getGameId(): int {
       return $this->gameId;
     }
+    public function setGameId(int $gameId): void {
+      $this->gameId = $gameId;
+    }
 
     public function getManufacturer(): string {
       return $this->manufacturer;
+    }
+    public function setManufacturer(string $manufacturer): void {
+      $this->manufacturer = $manufacturer;
     }
 
     public function getName(): string {
       return $this->name;
     }
+    public function setName(string $name): void {
+      $this->name = $name;
+    }
 
     public function getYear(): int {
       return $this->year;
     }
+    public function setYear(int $year): void {
+      $this->year = $year;
+    }
 
     public function toArray(): array {
-      $result = [
-        'carClass' => $this->carClass,
-        'carKey' => $this->carKey,
-        'gameId' => $this->gameId,
-        'manufacturer' => $this->manufacturer,
-        'name' => $this->name,
-        'year' => $this->year,
+      return [
+        'carClass' => $this->getCarClass(),
+        'carKey' => $this->getCarKey(),
+        'gameId' => $this->getgameId(),
+        'manufacturer' => $this->getManufacturer(),
+        'name' => $this->getName(),
+        'year' => $this->getYear(),
       ];
-
-      if ($this->getId() !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     public function toDto(): array {
@@ -126,14 +147,13 @@
         'name' => $this->getName(),
         'year' => $this->getYear(),
       ];
-
     }
 
     private static function mapCars(array $queryResults): array {
       $results = array();
 
       foreach ($queryResults as $item) {
-        $results[] = new Car($item);
+        $results[] = self::fromStdClass($item);
       }
 
       return $results;

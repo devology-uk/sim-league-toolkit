@@ -2,8 +2,8 @@
 
   namespace SLTK\Api;
 
-  use SLTK\Api\Traits\HasGetById;
   use SLTK\Api\Traits\HasGet;
+  use SLTK\Api\Traits\HasGetById;
   use SLTK\Domain\DriverCategory;
   use WP_REST_Request;
   use WP_REST_Response;

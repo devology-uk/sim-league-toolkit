@@ -1,6 +1,6 @@
 <?php
 
-  namespace SLTK\Domain;
+  namespace SLTK\Domain\Abstractions;
 
   use SLTK\Core\Constants;
   use stdClass;
@@ -24,9 +24,5 @@
 
     public function setId(int $value): void {
       $this->id = $value;
-    }
-
-    public function toArray(): array {
-      return get_object_vars($this);
     }
   }

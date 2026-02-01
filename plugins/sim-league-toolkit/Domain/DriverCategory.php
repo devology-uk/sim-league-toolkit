@@ -2,24 +2,26 @@
 
   namespace SLTK\Domain;
 
-  use SLTK\Core\Constants;
   use SLTK\Database\Repositories\DriverCategoriesRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class DriverCategory extends DomainBase {
+  class DriverCategory implements AggregateRoot {
+    use HasIdentity;
+
     private string $name = '';
     private int $participationRequirement = 0;
     private string $plaque = '';
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
+    public static function fromStdClass(?stdClass $data): ?self {
+      $result = new self();
 
-      if ($data !== null) {
-        $this->name = $data->name;
-        $this->plaque = $data->plaque;
-        $this->participationRequirement = $data->participationRequirement;
-      }
+      $result->setName($data->name);
+      $result->setParticipationRequirement($data->participationRequirement);
+      $result->setPlaque($data->plaque);
 
+      return $result;
     }
 
     public static function get(int $id): DriverCategory|null {
@@ -47,40 +49,30 @@
       return $this->plaque;
     }
 
-    public function save(): bool {
-      return false;
-    }
-
-    public function toArray(): array {
-      $result = [
-        'name' => $this->name,
-        'plaque' => $this->plaque,
-        'participationRequirement' => $this->participationRequirement,
-      ];
-
-      if ($this->getId() !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
-    }
-
     public function toDto(): array {
       return [
         'id' => $this->getId(),
-        'name' => $this->name,
-        'plaque' => $this->plaque,
-        'participationRequirement' => $this->participationRequirement,
+        'name' => $this->getName(),
+        'plaque' => $this->getPlaque(),
+        'participationRequirement' => $this->getParticipationRequirement(),
       ];
     }
 
     private static function mapDriverCategories(array $queryResults): array {
-      $results = array();
+      return array_map(function ($item) {
+        return self::fromStdClass($item);
+      }, $queryResults);
+    }
 
-      foreach ($queryResults as $item) {
-        $results[] = new DriverCategory($item);
-      }
+    private function setName(string $value): void {
+      $this->name = $value;
+    }
 
-      return $results;
+    private function setParticipationRequirement(int $participationRequirement): void {
+      $this->participationRequirement = $participationRequirement;
+    }
+
+    private function setPlaque(string $plaque): void {
+      $this->plaque = $plaque;
     }
   }
