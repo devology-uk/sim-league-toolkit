@@ -2,23 +2,29 @@
 
   namespace SLTK\Domain;
 
-  use SLTK\Core\Constants;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class ScoringSetScore extends EntityBase {
+  class ScoringSetScore implements ValueObject, ProvidesPersistableArray {
+    use HasIdentity;
 
     private int $points = 0;
     private int $position = 0;
     private int $scoringSetId = 0;
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-      if ($data) {
-        $this->scoringSetId = $data->scoringSetId;
-        $this->position = $data->position;
-        $this->points = $data->points;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
       }
 
+      $result = new self();
+      $result->setId($data->id);
+      $result->setScoringSetId($data->scoringSetId);
+      $result->setPoints($data->points);
+
+      return $result;
     }
 
     public function getPoints(): int {
@@ -45,20 +51,20 @@
       $this->scoringSetId = $value;
     }
 
-    public function toArray(bool $includeId = true): array {
-      $result = [
+    /**
+     * @return array{fieldName: string, value: mixed}
+     */
+    public function toArray(): array {
+      return [
         'scoringSetId' => $this->getScoringSetId(),
         'position' => $this->getPosition(),
         'points' => $this->getPoints(),
       ];
-
-      if ($includeId && $this->getId() !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
+    /**
+     * @return array{fieldName: string, value: mixed}
+     */
     public function toDto(): array {
       return [
         'id' => $this->getId(),

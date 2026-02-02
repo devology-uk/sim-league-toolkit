@@ -2,60 +2,30 @@
 
   namespace SLTK\Domain;
 
-  use Exception;
-  use SLTK\Database\Repositories\PlatformRepository;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Platform extends DomainBase {
+  class Platform implements ValueObject {
+    use HasIdentity;
 
     private string $name = '';
     private string $playerIdPrefix = '';
     private string $shortName = '';
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
 
-      if ($data) {
-        $this->name = $data->name;
-        $this->shortName = $data->shortName;
-        $this->playerIdPrefix = $data->playerIdPrefix;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
       }
-    }
 
-    /**
-     * @throws Exception
-     */
-    public static function get(int $id): Platform|null {
-      $queryResult = PlatformRepository::get($id);
+      $result = new self();
 
-      return new Platform($queryResult);
-    }
+      $result->setName($data->name);
+      $result->setPlayerIdPrefix($data->playerIdPrefix);
+      $result->setShortName($data->shortName);
 
-    /***
-     * @return Platform[]
-     */
-    public static function list(): array {
-      $queryResults = PlatformRepository::listAll();
-
-      return self::mapPlatforms($queryResults);
-    }
-
-    /***
-     * @return Platform[]
-     * @throws Exception
-     */
-    public static function listForGame(int $gameId): array {
-      $queryResults = PlatformRepository::listForGame($gameId);
-
-      return self::mapPlatforms($queryResults);
-    }
-
-    /***
-     * @return int[]
-     * @throws Exception
-     */
-    public static function listIdsForGame(int $gameId): array {
-      return PlatformRepository::listIdsForGame($gameId);
+      return $result;
     }
 
     public function getName(): string {
@@ -70,10 +40,6 @@
       return $this->shortName;
     }
 
-    public function save(): bool {
-      return false;
-    }
-
     public function toDto(): array {
       return [
         'id' => $this->getId(),
@@ -83,13 +49,15 @@
       ];
     }
 
-    private static function mapPlatforms(array $queryResults): array {
-      $results = array();
+    private function setName(string $value): void {
+      $this->name = $value;
+    }
 
-      foreach ($queryResults as $item) {
-        $results[] = new Platform($item);
-      }
+    private function setPlayerIdPrefix(string $value): void {
+      $this->playerIdPrefix = $value;
+    }
 
-      return $results;
+    private function setShortName(string $value): void {
+      $this->shortName = $value;
     }
   }

@@ -5,29 +5,62 @@
   use Exception;
   use SLTK\Database\Repositories\CarRepository;
   use SLTK\Database\Repositories\GameRepository;
+  use SLTK\Database\Repositories\PlatformRepository;
   use SLTK\Database\Repositories\TrackRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Game extends DomainBase {
+  class Game implements AggregateRoot, Listable {
+    use HasIdentity;
+
+    private string $gameKey = '';
     private string $latestVersion = '';
     private string $name = '';
     private bool $published = false;
     private bool $supportsLayouts = false;
     private bool $supportsResultUpload = false;
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-      if ($data) {
-        $this->name = $data->name ?? '';
-        $this->latestVersion = $data->latestVersion ?? '';
-        $this->supportsResultUpload = $data->supportsResultUpload;
-        $this->published = $data->published ?? false;
-        $this->supportsLayouts = $data->supportsLayouts ?? false;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
       }
+
+      $result = new self();
+
+      $result->setGameKey($data->gameKey ?? '');
+      $result->setName($data->name ?? '');
+      $result->setLatestVersion($data->latestVersion ?? '');
+      $result->setSupportsResultUpload($data->supportsResultUpload ?? false);
+      $result->setPublished($data->published ?? false);
+      $result->setSupportsLayouts($data->supportsLayouts ?? false);
+
+      return $result;
     }
 
-    public static function get(int $id): Game | null {
-      return new Game(GameRepository::getById($id));
+    public static function get(int $id): Game|null {
+      return self::fromStdClass(GameRepository::getById($id));
+    }
+
+    /**
+     * @return string[]
+     * @throws Exception
+     */
+    public static function getCarClasses(int $gameId): array {
+      return CarRepository::listCarClassesForGame($gameId);
+    }
+
+    /**
+     * @return Car[]
+     * @throws Exception
+     */
+    public static function getCars(int $gameId): array {
+      $queryResults = CarRepository::listForGame($gameId);
+
+      return array_map(function ($item) {
+        return Car::fromStdClass($item);
+      }, $queryResults);
     }
 
     /**
@@ -35,6 +68,38 @@
      */
     public static function getGameKey(int $id): string {
       return GameRepository::getKey($id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getPlatformById(int $id): Platform {
+      $queryResult = PlatformRepository::get($id);
+
+      return Platform::fromStdClass($queryResult);
+    }
+
+    /**
+     * @return Platform[]
+     * @throws Exception
+     */
+    public static function getPlatforms(int $gameId): array {
+      $queryResults = PlatformRepository::listForGame($gameId);
+
+      return array_map(function ($item) {
+        return Platform::fromStdClass($item);
+      }, $queryResults);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getTracks(int $gameId): array {
+      $queryResult = TrackRepository::listForGame($gameId);
+
+      return array_map(function ($item) {
+        return new Track($item);
+      }, $queryResult);
     }
 
     /**
@@ -55,26 +120,6 @@
       return self::mapGames($queryResults);
     }
 
-    /**
-     * @return string[]
-     * @throws Exception
-     */
-    public function getCarClasses(): array {
-      $queryResult = CarRepository::listCarClassesForGame($this->getId());
-
-      return $this->mapCarClasses($queryResult);
-    }
-
-    /**
-     * @return Car[]
-     * @throws Exception
-     */
-    public function getCars(): array {
-      $queryResults = CarRepository::listForGame($this->getId());
-
-      return $this->mapCars($queryResults);
-    }
-
     public function getIsPublished(): bool {
       return $this->published;
     }
@@ -92,15 +137,7 @@
      * @throws Exception
      */
     public function getPlatformIds(): array {
-      return Platform::listIdsForGame($this->getId());
-    }
-
-    /**
-   * @return int[]
-   * @throws Exception
-   */
-    public function getPlatforms(): array {
-      return Platform::listForGame($this->getId());
+      return PlatformRepository::listIdsForGame($this->getId());
     }
 
     public function getSupportsLayouts(): bool {
@@ -109,19 +146,6 @@
 
     public function getSupportsResultUpload(): bool {
       return $this->supportsResultUpload;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getTracks(): array {
-      $queryResult = TrackRepository::listForGame($this->getId());
-
-      return $this->mapTracks($queryResult);
-    }
-
-    public function save(): bool {
-      return false;
     }
 
     /**
@@ -139,13 +163,9 @@
     }
 
     private static function mapGames(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Game($item);
-      }
-
-      return $results;
+      return array_map(function ($item) {
+        return Game::fromStdClass($item);
+      }, $queryResults);
     }
 
     private static function mapTracks(array $queryResults): array {
@@ -176,5 +196,29 @@
       }
 
       return $results;
+    }
+
+    private function setGameKey(string $value): void {
+      $this->gameKey = $value;
+    }
+
+    private function setLatestVersion(string $value): void {
+      $this->latestVersion = $value;
+    }
+
+    private function setName(string $value): void {
+      $this->name = trim($value);
+    }
+
+    private function setPublished(bool $value): void {
+      $this->published = $value;
+    }
+
+    private function setSupportsLayouts(bool $value): void {
+      $this->supportsLayouts = $value;
+    }
+
+    private function setSupportsResultUpload(false $value): void {
+      $this->supportsResultUpload = $value;
     }
   }

@@ -11,8 +11,7 @@
     /**
      * @throws Exception
      */
-    public static function get(int $id) {
-
+    public static function get(int $id): stdClass {
       return self::getRowById(TableNames::PLATFORMS, $id);
     }
 
@@ -27,6 +26,7 @@
 
     /**
      * @return stdClass[]
+     * @throws Exception
      */
     public static function listAll(): array {
       return self::getResultsFromTable(TableNames::PLATFORMS);

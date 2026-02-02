@@ -42,7 +42,10 @@
             add_action('load-profile.php', [self::class, 'handleErrors']);
         }
 
-        public static function renderUserProfileExtension(WP_User $user): void {
+      /**
+       * @throws \Exception
+       */
+      public static function renderUserProfileExtension(WP_User $user): void {
             $userData = get_user_meta($user->ID);
             $currentRaceNumber = (int)($userData[UserMetaKeys::RACE_NUMBER][0] ?? 0);
             $currentCountry = (int)($userData[UserMetaKeys::COUNTRY_ID][0] ?? 0);
@@ -78,7 +81,7 @@
                                     $countries = Country::list();
                                     foreach ($countries as $country) {
                                         ?>
-                                        <option value='<?= $country->id ?>' <?= selected($country->id, $currentCountry, false) ?>><?= $country->name ?></option>
+                                        <option value='<?= $country->getId() ?>' <?= selected($country->getId(), $currentCountry, false) ?>><?= $country->getName() ?></option>
                                         <?php
                                     }
                                 ?>

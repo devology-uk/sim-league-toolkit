@@ -5,42 +5,13 @@
   use SLTK\Core\UserMetaKeys;
   use stdClass;
 
-  class RaceNumber extends DomainBase {
+  class RaceNumber {
     public final const int MAXIMUM = 998;
     public final const int MINIMUM = 1;
 
-    public int $raceNumber = 0;
-
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-      if($data) {
-        $this->raceNumber = $data->raceNumber;
-      }
-    }
-
-    /**
-     * @param int $userId
-     * @param int $raceNumber
-     *
-     * @return void
-     */
     public static function allocate(int $userId, int $raceNumber): void {
       self::reset($raceNumber);
       update_user_meta($userId, UserMetaKeys::RACE_NUMBER, $raceNumber);
-    }
-
-    public static function get(int $id): object|null {
-      // TODO: Implement get() method.
-      return null;
-    }
-
-    public static function list(): array {
-      return [];
-    }
-
-    public function save(): bool {
-      // TODO: Implement save() method.
-      return false;
     }
 
     /**

@@ -5,21 +5,20 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\RuleSetRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class RuleSet extends DomainBase {
+  class RuleSet implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
+    use HasIdentity;
+
     private string $description = '';
     private string $name = '';
     private string $type = '';
-
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-      if ($data != null) {
-        $this->name = $data->name ?? '';
-        $this->description = $data->description ?? '';
-        $this->type = $data->type ?? '';
-      }
-    }
 
     /**
      * @throws Exception
@@ -35,14 +34,24 @@
       RuleSetRepository::deleteRule($id);
     }
 
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
+      }
+
+      $result = new self();
+
+      $result->setName($data->name ?? '');
+      $result->setDescription($data->description ?? '');
+      $result->setType($data->type ?? '');
+
+      return $result;
+    }
+
     public static function get(int $id): RuleSet|null {
       $result = RuleSetRepository::getById($id);
 
-      if ($result != null) {
-        return new RuleSet($result);
-      }
-
-      return null;
+      return self::fromStdClass($result);
     }
 
     /**
@@ -62,19 +71,23 @@
      * @return RuleSet[]
      */
     public static function list(): array {
-      $results = RuleSetRepository::list();
+      $queryResults = RuleSetRepository::list();
 
-      return self::mapRuleSets($results);
+      return array_map(function ($item) {
+        return self::fromStdClass($item);
+      }, $queryResults);
     }
 
     /**
      * @return RuleSetRule[]
      * @throws Exception
      */
-    public static function listRules(mixed $id): array {
-      $ruleSet = RuleSet::get($id);
+    public static function listRules(int $ruleSetId): array {
+      $queryResults = RuleSetRepository::listRules($ruleSetId);
 
-      return $ruleSet->getRules() ?? [];
+      return array_map(function ($item) {
+        return RuleSetRule::fromStdClass($item);
+      }, $queryResults);
     }
 
     public function getDescription(): string {
@@ -93,14 +106,6 @@
       $this->name = $name;
     }
 
-    /**
-     * @return RuleSetRule[]
-     * @throws Exception
-     */
-    public function getRules(): array {
-      return self::mapRuleSetRules(RuleSetRepository::listRules($this->getId()));
-    }
-
     public function getType(): string {
       return $this->type;
     }
@@ -109,18 +114,18 @@
       $this->type = $type;
     }
 
-    public function save(): bool {
-      try {
-        if ($this->getId() == Constants::DEFAULT_ID) {
-          $this->setId(RuleSetRepository::add($this->toArray(false)));
-        } else {
-          RuleSetRepository::update($this->getId(), $this->toArray(false));
-        }
+    /**
+     * @throws Exception
+     */
+    public function save(): self {
 
-        return true;
-      } catch (Exception) {
-        return false;
+      if ($this->getId() == Constants::DEFAULT_ID) {
+        $this->setId(RuleSetRepository::add($this->toArray()));
+      } else {
+        RuleSetRepository::update($this->getId(), $this->toArray());
       }
+
+      return $this;
     }
 
     public function saveRule(RuleSetRule $rule): bool {
@@ -141,18 +146,12 @@
     /**
      * @return array{columnName: string, value: mixed}
      */
-    public function toArray(bool $includeId = true): array {
-      $result = [
+    public function toArray(): array {
+      return [
         'name' => $this->getName(),
         'description' => $this->getDescription(),
         'type' => $this->getType(),
       ];
-
-      if ($includeId && $this->getId() != Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     /**
@@ -165,25 +164,5 @@
         'description' => $this->getDescription(),
         'type' => $this->getType(),
       ];
-    }
-
-    private static function mapRuleSetRules(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new RuleSetRule($item);
-      }
-
-      return $results;
-    }
-
-    private static function mapRuleSets(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new RuleSet($item);
-      }
-
-      return $results;
     }
   }

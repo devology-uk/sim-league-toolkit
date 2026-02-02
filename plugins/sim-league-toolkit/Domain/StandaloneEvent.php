@@ -5,9 +5,15 @@
   use Exception;
   use SLTK\Database\Repositories\EventRefsRepository;
   use SLTK\Database\Repositories\StandaloneEventsRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\EventBase;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
   use stdClass;
 
-  class StandaloneEvent extends EventBase {
+  class StandaloneEvent extends EventBase implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
     private bool $isPublic = true;
     private int $maxEntrants = 0;
     private string $ruleSet = '';
@@ -15,18 +21,6 @@
     private string $scoringSet = '';
     private ?int $scoringSetId = null;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-
-      if ($data !== null) {
-        $this->scoringSetId = isset($data->scoringSetId) ? (int)$data->scoringSetId : null;
-        $this->scoringSet = $data->scoringSet ?? '';
-        $this->ruleSetId = isset($data->ruleSetId) ? (int)$data->ruleSetId : null;
-        $this->ruleSet = $data->ruleSet ?? '';
-        $this->maxEntrants = (int)($data->maxEntrants ?? 0);
-        $this->isPublic = (bool)($data->isPublic ?? true);
-      }
-    }
 
     /**
      * @throws Exception
@@ -41,6 +35,18 @@
       if ($event->hasEventRef()) {
         EventRefsRepository::delete($event->getEventRefId());
       }
+    }
+
+    public static function fromStdClass(?stdClass $data): ?self {
+      if(!$data) {
+        return null;
+      }
+
+      $result = new self();
+
+      $result->hydrateFromStdClass($data);
+
+      return $result;
     }
 
     /**
@@ -114,8 +120,10 @@
       $this->scoringSetId = $value;
     }
 
-    public function save(): bool {
-      try {
+    /**
+     * @throws Exception
+     */
+    public function save(): self {
         if (!$this->hasId()) {
           $eventRefId = EventRefsRepository::add($this->getEventType());
           $this->setEventRefId($eventRefId);
@@ -124,11 +132,8 @@
         } else {
           StandaloneEventsRepository::update($this->getId(), $this->toArray());
         }
-      } catch (Exception) {
-        return false;
-      }
 
-      return true;
+        return $this;
     }
 
     public function toArray(): array {
@@ -137,10 +142,6 @@
       $result['ruleSetId'] = $this->getRuleSetId();
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
 
       return $result;
     }
@@ -154,10 +155,6 @@
       $result['ruleSet'] = $this->getRuleSet();
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
 
       return $result;
     }

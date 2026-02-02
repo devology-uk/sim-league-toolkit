@@ -3,9 +3,13 @@
   namespace SLTK\Domain;
 
   use SLTK\Core\Constants;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class TrackLayout extends EntityBase {
+  class TrackLayout implements ValueObject {
+    use HasIdentity;
+
     private int $corners;
     private string $game;
     private int $gameId;
@@ -15,19 +19,25 @@
     private string $track;
     private int $trackId;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
+    public static function fromStdClass(?stdClass $data): ?self {
 
-      if ($data) {
-        $this->gameId = $data->gameId;
-        $this->game = $data->game;
-        $this->trackId = $data->trackId;
-        $this->track = $data->track;
-        $this->layoutId = $data->layoutId;
-        $this->name = $data->name;
-        $this->corners = $data->corners;
-        $this->length = $data->length;
+      if (!$data) {
+        return null;
       }
+
+      $result = new self();
+
+      $result->setId($data->id);
+      $result->seCorners($data->corners);
+      $result->setGame($data->game);
+      $result->setGameId($data->gameId);
+      $result->setLayoutId($data->layoutId);
+      $result->setLength($data->length);
+      $result->setName($data->name);
+      $result->setTrack($data->track);
+      $result->setTrackId($data->trackId);
+
+      return $result;
     }
 
     public function getCorners(): int {
@@ -64,14 +74,47 @@
 
     public function toDto(): array {
       return [
-        'corners' => $this->corners,
-        'game' => $this->game,
-        'gameId' => $this->gameId,
-        'layoutId' => $this->layoutId,
-        'length' => $this->length,
-        'name' => $this->name,
-        'track' => $this->track,
-        'trackId' => $this->trackId,
+        'id' => $this->getId(),
+        'corners' => $this->getCorners(),
+        'game' => $this->getGame(),
+        'gameId' => $this->getGameId(),
+        'layoutId' => $this->getLayoutId(),
+        'length' => $this->getLength(),
+        'name' => $this->getName(),
+        'track' => $this->getTrack(),
+        'trackId' => $this->getTrackId(),
       ];
+    }
+
+    private function seCorners(int $corners): void {
+      $this->corners = $corners;
+    }
+
+    private function setGame(string $game): void {
+      $this->game = $game;
+    }
+
+    private function setGameId(int $gameId): void {
+      $this->gameId = $gameId;
+    }
+
+    private function setLayoutId(int $layoutId): void {
+      $this->layoutId = $layoutId;
+    }
+
+    private function setLength(int $length): void {
+      $this->length = $length;
+    }
+
+    private function setName(string $name): void {
+      $this->name = $name;
+    }
+
+    private function setTrack(string $track): void {
+      $this->track = $track;
+    }
+
+    private function setTrackId(int $trackId): void {
+      $this->trackId = $trackId;
     }
   }

@@ -2,12 +2,13 @@
 
   namespace SLTK\Domain;
 
-  use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\TrackRepository;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class Track extends DomainBase {
+  class Track implements ValueObject {
+    use HasIdentity;
 
     private string $country = '';
     private string $countryCode = '';
@@ -18,54 +19,25 @@
     private string $shortName = '';
     private string $trackId = '';
 
-    public function __construct(stdClass $data = null) {
-      parent::__construct($data);
-      if ($data) {
-        $this->gameId = $data->gameId;
-        $this->trackId = $data->trackId;
-        $this->shortName = $data->shortName;
-        $this->fullName = $data->fullName;
-        $this->country = $data->country;
-        $this->countryCode = $data->countryCode;
-        $this->latitude = $data->latitude;
-        $this->longitude = $data->longitude;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
       }
-    }
 
-    public static function get(int $id): Track|null {
-      $queryResult = TrackRepository::getById($id);
+      $result = new self();
 
-      return new Track($queryResult);
-    }
+      $result->setId($data->id);
+      $result->setGameId($data->gameId);
+      $result->setShortName($data->shortName);
+      $result->setFullName($data->fullName);
+      $result->setCountry($data->country);
+      $result->setCountryCode($data->countryCode);
+      $result->setLatitude($data->latitude);
+      $result->setLongitude($data->longitude);
+      $result->setLongitude($data->longitude);
+      $result->setTrackId($data->trackId);
 
-    /**
-     * @return Track[]
-     * @throws Exception
-     */
-    public static function list(): array {
-      $queryResult = TrackRepository::list();
-
-      return self::mapTracks($queryResult);
-    }
-
-    /**
-     * @return Track[]
-     * @throws Exception
-     */
-    public static function listForGame(int $gameId): array {
-      $queryResult = TrackRepository::listForGame($gameId);
-
-      return self::mapTracks($queryResult);
-    }
-
-    /**
-     * @return TrackLayout[]
-     * @throws Exception
-     */
-    public static function listLayoutsForTrack(int $trackId): array {
-      $queryResult = TrackRepository::listLayoutsForTrack($trackId);
-
-      return self::mapTrackLayouts($queryResult);
+      return $result;
     }
 
     public function getCountry(): string {
@@ -100,31 +72,9 @@
       return $this->trackId;
     }
 
-    public function save(): bool {
-      return false;
-    }
-
-    public function toArray(): array {
-      $result = [
-        'gameId' => $this->gameId,
-        'trackId' => $this->trackId,
-        'shortName' => $this->shortName,
-        'fullName' => $this->fullName,
-        'country' => $this->country,
-        'countryCode' => $this->countryCode,
-        'latitude' => $this->latitude,
-        'longitude' => $this->longitude,
-      ];
-
-      if ($this->getId() !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
-    }
-
     public function toDto(): array {
-      $result = [
+      return [
+        'id' => $this->getId(),
         'gameId' => $this->gameId,
         'trackId' => $this->trackId,
         'shortName' => $this->shortName,
@@ -134,31 +84,38 @@
         'latitude' => $this->latitude,
         'longitude' => $this->longitude,
       ];
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
-    private static function mapTracks(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Track($item);
-      }
-
-      return $results;
+    private function setCountry(string $country): void {
+      $this->country = $country;
     }
 
-    private static function mapTrackLayouts(array $queryResults): array {
-      $results = array();
-
-      foreach($queryResults as $item) {
-        $results[] = new TrackLayout($item);
-      }
-
-      return $results;
+    private function setCountryCode(string $countryCode): void {
+      $this->countryCode = $countryCode;
     }
+
+    private function setFullName(string $fullName): void {
+      $this->fullName = $fullName;
+    }
+
+    private function setGameId(int $gameId): void {
+      $this->gameId = $gameId;
+    }
+
+    private function setLatitude(float $latitude): void {
+      $this->latitude = $latitude;
+    }
+
+    private function setLongitude(float $longitude): void {
+      $this->longitude = $longitude;
+    }
+
+    private function setShortName(string $shortName): void {
+      $this->shortName = $shortName;
+    }
+
+    private function setTrackId(int $trackId): void {
+      $this->trackId = $trackId;
+    }
+
   }

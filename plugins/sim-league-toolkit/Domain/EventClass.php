@@ -5,9 +5,16 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\EventClassesRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class EventClass extends DomainBase {
+  class EventClass implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
+    use HasIdentity;
 
     private string $carClass = '';
     private string $driverCategory = '';
@@ -20,28 +27,33 @@
     private ?int $singleCarId = null;
     private ?string $singleCarName = null;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-
-      if ($data != null) {
-        $this->carClass = $data->carClass;
-        $this->driverCategoryId = $data->driverCategoryId;
-        $this->driverCategory = $data->driverCategory;
-        $this->gameId = $data->gameId;
-        $this->game = $data->game;
-        $this->isBuiltIn = $data->isBuiltIn;
-        $this->isSingleCarClass = $data->isSingleCarClass;
-        $this->name = $data->name;
-        $this->singleCarId = $data->singleCarId ?? null;
-        $this->singleCarName = $data->singleCarName ?? null;
-      }
-    }
-
     /**
      * @throws Exception
      */
     public static function delete(int $id): void {
       EventClassesRepository::delete($id);
+    }
+
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
+      }
+
+      $result = new self();
+      $result->setId($data->id);
+      $result->setCarClass($data->carClass);
+      $result->setDriverCategory($data->driverCategory);
+      $result->setDriverCategoryId($data->driverCategoryId);
+      $result->setGame($data->game);
+      $result->setGameId($data->gameId);
+      $result->setIsBuiltIn($data->isBuiltIn);
+      $result->setIsSingleCarClass($data->isSingleCarClass);
+      $result->setName($data->name);
+      $result->setSingleCarId($data->singleCarId);
+      $result->setSingleCarName($data->singleCarName);
+
+
+      return $result;
     }
 
     /**
@@ -157,22 +169,18 @@
     /**
      * @throws Exception
      */
-    public function save(): bool {
-      try {
-        if ($this->getId() == Constants::DEFAULT_ID) {
-          $this->setId(EventClassesRepository::add($this->toArray()));
-        } else {
-          EventClassesRepository::update($this->getId(), $this->toArray());
-        }
-
-        return true;
-      } catch (Exception) {
-        return false;
+    public function save(): self {
+      if ($this->getId() == Constants::DEFAULT_ID) {
+        $this->setId(EventClassesRepository::add($this->toArray()));
+      } else {
+        EventClassesRepository::update($this->getId(), $this->toArray());
       }
+
+      return $this;
     }
 
     public function toArray(): array {
-      $result = [
+      return [
         'carClass' => $this->getCarClass(),
         'driverCategoryId' => $this->getDriverCategoryId(),
         'gameId' => $this->getGameId(),
@@ -181,12 +189,6 @@
         'name' => $this->getName(),
         'singleCarId' => $this->getSingleCarId(),
       ];
-
-      if ($this->getId() != Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     /**
@@ -209,7 +211,6 @@
       ];
     }
 
-
     private static function mapEventClasses(array $queryResults): array {
       $results = array();
 
@@ -218,5 +219,17 @@
       }
 
       return $results;
+    }
+
+    private function setDriverCategory(string $driverCategory): void {
+      $this->driverCategory = $driverCategory;
+    }
+
+    private function setGame(string $game): void {
+      $this->game = $game;
+    }
+
+    private function setSingleCarName(string $singleCarName): void {
+      $this->singleCarName = $singleCarName;
     }
   }

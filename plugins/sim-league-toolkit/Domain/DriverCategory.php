@@ -4,10 +4,11 @@
 
   use SLTK\Database\Repositories\DriverCategoriesRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Listable;
   use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class DriverCategory implements AggregateRoot {
+  class DriverCategory implements AggregateRoot, Listable {
     use HasIdentity;
 
     private string $name = '';

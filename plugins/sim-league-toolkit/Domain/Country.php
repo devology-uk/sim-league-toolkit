@@ -5,9 +5,11 @@
   use Exception;
   use SLTK\Database\Repositories\CountriesRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
   class Country implements AggregateRoot {
+    use HasIdentity;
 
     private string $alpha2 = '';
     private string $alpha3 = '';

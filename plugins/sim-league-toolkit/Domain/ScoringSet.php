@@ -5,9 +5,16 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ScoringSetRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
+  use SLTK\Domain\Abstractions\Listable;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class ScoringSet extends DomainBase {
+  class ScoringSet implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
+    use HasIdentity;
 
     private string $description = '';
     private bool $isBuiltIn = false;
@@ -17,44 +24,41 @@
     private int $pointsForFinishing = 0;
     private int $pointsForPole = 0;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-      if ($data != null) {
-        $this->description = $data->description ?? '';
-        $this->isBuiltIn = $data->isBuiltIn ?? false;
-        $this->isInUse = $data->isInUse ?? false;
-        $this->name = $data->name ?? '';
-        $this->pointsForFastestLap = $data->pointsForFastestLap ?? 0;
-        $this->pointsForFinishing = $data->pointsForFinishing ?? 0;
-        $this->pointsForPole = $data->pointsForPole ?? 0;
-      }
-    }
-
     /**
      * @throws Exception
      */
-    public static function delete(int $id): bool {
+    public static function delete(int $id): void {
       ScoringSetRepository::delete($id);
-
-      return true;
     }
 
     /**
      * @throws Exception
      */
-    public static function deleteScore(int $id): bool {
+    public static function deleteScore(int $id): void {
       ScoringSetRepository::deleteScore($id);
-
-      return true;
     }
 
-    public static function get(int $id): ScoringSet|null {
-      $result = ScoringSetRepository::getById($id);
-      if ($result != null) {
-        return new ScoringSet($result);
+    public static function fromStdClass(?stdClass $data): ?self {
+      if(!$data) {
+        return null;
       }
 
-      return null;
+      $result = new self();
+
+      $result->setDescription($data->description ?? '');
+      $result->setIsBuiltIn($data->isBuiltIn ?? false);
+      $result->setIsInUse($data->isInUse ?? false);
+      $result->setName($data->name ?? '');
+      $result->setPointsForFastestLap($data->pointsForFastestLap ?? 0);
+      $result->setPointsForFinishing($data->pointsForFinishing ?? 0);
+      $result->setPointsForPole($data->pointsForPole ?? 0);
+
+      return $result;
+    }
+
+    public static function get(int $id): self|null {
+      $queryResult = ScoringSetRepository::getById($id);
+      return self::fromStdClass($queryResult);
     }
 
     /**
@@ -62,9 +66,10 @@
      * @throws Exception
      */
     public static function list(): array {
-      $results = ScoringSetRepository::list();
-
-      return self::mapScoringSets($results);
+      $queryResults = ScoringSetRepository::list();
+      return array_map(function ($item) {
+        return self::fromStdClass($item);
+      }, $queryResults);
     }
 
     public function getDescription(): string {
@@ -75,7 +80,7 @@
       $this->description = trim($value);
     }
 
-    public function getIsBuiltIn() {
+    public function getIsBuiltIn(): bool {
       return $this->isBuiltIn ?? false;
     }
 
@@ -83,7 +88,7 @@
       $this->isBuiltIn = $value;
     }
 
-    public function getIsInUse() {
+    public function getIsInUse(): bool {
       return $this->isInUse ?? false;
     }
 
@@ -127,22 +132,24 @@
      * @return ScoringSetScore[]
      * @throws Exception
      */
-    public function getScores(): array {
-      return self::mapScoringSetScores(ScoringSetRepository::listScores($this->getId()));
+    public static function getScores(int $ruleSetId): array {
+      $queryResults = ScoringSetRepository::listScores($ruleSetId);
+
+      return array_map(function ($item) {
+        return ScoringSetScore::fromStdClass($item);
+      }, $queryResults);
     }
 
-    public function save(): bool {
-      try {
+    /**
+     * @throws Exception
+     */
+    public function save(): self {
         if ($this->getId() == Constants::DEFAULT_ID) {
-          $this->setId(ScoringSetRepository::add($this->toArray(false)));
+          $this->setId(ScoringSetRepository::add($this->toArray()));
         } else {
-          ScoringSetRepository::update($this->getId(), $this->toArray(false));
+          ScoringSetRepository::update($this->getId(), $this->toArray());
         }
-      } catch (Exception) {
-        return false;
-      }
-
-      return true;
+        return $this;
     }
 
     public function saveScore(ScoringSetScore $score): bool {
@@ -163,20 +170,14 @@
     /**
      * @return array{fieldName: string, value: mixed}
      */
-    public function toArray(bool $includeId = true): array {
-      $result = [
+    public function toArray(): array {
+      return [
         'name' => $this->getName(),
         'description' => $this->getDescription(),
         'pointsForFastestLap' => $this->getPointsForFastestLap(),
         'pointsForFinishing' => $this->getPointsForFinishing(),
         'pointsForPole' => $this->getPointsForPole(),
       ];
-
-      if ($includeId && $this->getId() != Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     /**
@@ -193,25 +194,5 @@
         'pointsForFinishing' => $this->getPointsForFinishing(),
         'pointsForPole' => $this->getPointsForPole(),
       ];
-    }
-
-    private static function mapScoringSetScores(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new ScoringSetScore($item);
-      }
-
-      return $results;
-    }
-
-    private static function mapScoringSets(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new ScoringSet($item);
-      }
-
-      return $results;
     }
   }

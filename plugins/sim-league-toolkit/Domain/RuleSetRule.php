@@ -2,21 +2,28 @@
 
   namespace SLTK\Domain;
 
-  use Exception;
-  use SLTK\Core\Constants;
-  use SLTK\Database\Repositories\RuleSetRepository;
+  use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class RuleSetRule extends EntityBase {
+  class RuleSetRule implements ValueObject, ProvidesPersistableArray {
+    use HasIdentity;
+
     private string $rule = '';
     private int $ruleSetId = 0;
 
-    public function __construct(?stdClass $data = null) {
-      parent::__construct($data);
-      if ($data) {
-        $this->rule = $data->rule;
-        $this->ruleSetId = $data->ruleSetId;
+    public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
       }
+
+      $result = new self();
+
+      $result->setRule($data->rule);
+      $result->setRuleSetId($data->ruleSetId);
+
+      return $result;
     }
 
     public function getRule(): string {
@@ -38,17 +45,11 @@
     /**
      * @return array{fieldName: string, value: mixed}
      */
-    public function toArray(bool $includeId = true): array {
-      $result = [
+    public function toArray(): array {
+      return [
         'ruleSetId' => $this->getRuleSetId(),
         'rule' => $this->getRule(),
       ];
-
-      if ($includeId && $this->getId() !== Constants::DEFAULT_ID) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
     }
 
     /**
