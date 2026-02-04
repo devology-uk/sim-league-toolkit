@@ -21,6 +21,7 @@
 
       $result = new self();
 
+      $result->setId((int) $data->id);
       $result->setName($data->name);
       $result->setPlayerIdPrefix($data->playerIdPrefix);
       $result->setShortName($data->shortName);

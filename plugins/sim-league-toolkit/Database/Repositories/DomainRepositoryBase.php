@@ -30,12 +30,9 @@
       return self::getRowById(self::getTableName(), $id);
     }
 
-    /**
-     * @throws Exception
-     */
     public static function init(string $tableName): void {
-      if(!empty($tableName)) {
-        throw new Exception(esc_html__("The $tableName repository has already been initialized.", 'sim-league-toolkit'));
+      if(!empty(self::$tableName)) {
+        return;
       }
 
       self::$tableName = $tableName;

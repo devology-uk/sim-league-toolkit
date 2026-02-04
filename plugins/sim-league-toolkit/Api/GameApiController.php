@@ -47,7 +47,7 @@
 
     public function listPlatforms(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = Platform::listForGame($this->getId($request));
+        $data = Game::getPlatforms($this->getId($request));
 
         return ApiResponse::success(
           array_map(fn($s) => $s->toDto(), $data)
@@ -57,7 +57,7 @@
 
     public function listTrackLayouts(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = Track::listLayoutsForTrack($this->getId($request));
+        $data = Game::getTrackLayouts($this->getId($request));
 
         return ApiResponse::success(
           array_map(fn($s) => $s->toDto(), $data)
@@ -67,7 +67,7 @@
 
     public function listTracks(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = Track::listForGame($this->getId($request));
+        $data = Game::getTracks($this->getId($request));
 
         return ApiResponse::success(
           array_map(fn($s) => $s->toDto(), $data)

@@ -3,7 +3,8 @@
   namespace SLTK\Domain;
 
   use SLTK\Core\Constants;
-  use SLTK\Domain\Abstractions\Traits\HasIdentity;
+  use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
   class ServerSetting implements ValueObject {
@@ -13,7 +14,7 @@
     private string $settingName = '';
     private string $settingValue;
 
-    public static function fromStdClass(stdClass $data): ServerSetting {
+    public static function fromStdClass(?stdClass $data): ?self {
       $result = new ServerSetting();
 
       $result->setId($data->id);

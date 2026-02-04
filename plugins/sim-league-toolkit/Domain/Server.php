@@ -45,9 +45,15 @@
       ServerSettingRepository::delete($id);
     }
 
-    public static function fromStdClass(stdClass $data): self {
+    public static function fromStdClass(?stdClass $data): ?self {
+
+      if (!$data) {
+        return null;
+      }
+
       $result = new self();
 
+      $result->setId((int) $data->id);
       $result->setGame($data->gameName ?? '');
       $result->setGameKey($data->gameKey);
       $result->setName($data->name ?? '');
@@ -97,13 +103,26 @@
     }
 
     /**
-     * @throws Exception
      * @return ServerSetting[]
+     * @throws Exception
      */
     public static function listSettings(int $serverId): array {
       $queryResults = ServerSettingRepository::listByServerId($serverId);
 
       return self::mapServerSettings($queryResults);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function saveSetting(ServerSetting $entity): ServerSetting {
+      if (!$entity->hasId()) {
+        $entity->setId(ServerSettingRepository::add($entity->toArray()));
+      } else {
+        ServerRepository::update($entity->getId(), $entity->toArray());
+      }
+
+      return $entity;
     }
 
     public function getGame(): string {
@@ -183,19 +202,6 @@
       }
 
       return $this;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function saveSetting(ServerSetting $entity): ServerSetting {
-      if (!$entity->hasId()) {
-        $entity->setId(ServerSettingRepository::add($entity->toArray()));
-      } else {
-        ServerRepository::update($entity->getId(), $entity->toArray());
-      }
-
-      return $entity;
     }
 
     /**

@@ -4,16 +4,19 @@
 
   use Exception;
   use SLTK\Database\TableNames;
-  use SLTK\Domain\TrackLayout;
   use stdClass;
 
   class TrackRepository extends RepositoryBase {
 
+    /**
+     * @throws Exception
+     */
     public static function getById(int $gameId): stdClass {
       return self::getRowById(TableNames::TRACKS, $gameId);
     }
 
     /**
+     * @return stdClass[]
      * @throws Exception
      */
     public static function list(): array {
@@ -21,6 +24,7 @@
     }
 
     /**
+     * @return stdClass[]
      * @throws Exception
      */
     public static function listForGame(int $gameId): array {
@@ -28,7 +32,7 @@
     }
 
     /**
-     * @return TrackLayout[]
+     * @return stdClass[]
      * @throws Exception
      */
     public static function listLayoutsForTrack(int $trackId): array {

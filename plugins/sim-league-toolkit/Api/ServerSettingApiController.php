@@ -62,19 +62,20 @@
 
     protected function onPut(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $entity = Server::getSettingById($this->getId($request));
+        $params = $this->getParams($request);
+        $entity = Server::getSetting($this->getId($request), $params['settingName']);
 
         if ($entity === null) {
           return ApiResponse::notFound('ServerSetting');
         }
 
-        $entity = $this->hydrateFromRequest($entity, $request);
+        $entity->setSettingValue($params['settingValue']);
 
         if (!Server::saveSetting($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to update Server Setting', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success(['id' => $entity->getId()]);
+        return ApiResponse::success();
       });
     }
 

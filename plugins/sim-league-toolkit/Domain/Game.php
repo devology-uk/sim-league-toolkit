@@ -92,13 +92,26 @@
     }
 
     /**
+     * @return TrackLayout
+     * @throws Exception
+     */
+    public static function getTrackLayouts(int $trackId): array {
+      $queryResult = TrackRepository::listLayoutsForTrack($trackId);
+
+      return array_map(function ($item) {
+        return TrackLayout::fromStdClass($item);
+      }, $queryResult);
+    }
+
+    /**
+     * @return Track[]
      * @throws Exception
      */
     public static function getTracks(int $gameId): array {
       $queryResult = TrackRepository::listForGame($gameId);
 
       return array_map(function ($item) {
-        return new Track($item);
+        return Track::fromStdClass($item);
       }, $queryResult);
     }
 
@@ -166,36 +179,6 @@
       return array_map(function ($item) {
         return Game::fromStdClass($item);
       }, $queryResults);
-    }
-
-    private static function mapTracks(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Track($item);
-      }
-
-      return $results;
-    }
-
-    private function mapCarClasses(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = $item->carClass;
-      }
-
-      return $results;
-    }
-
-    private function mapCars(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new Car($item);
-      }
-
-      return $results;
     }
 
     private function setGameKey(string $value): void {
