@@ -29,6 +29,7 @@
 
       $result = new self();
 
+      $result->setId($data->id);
       $result->setGameKey($data->gameKey ?? '');
       $result->setName($data->name ?? '');
       $result->setLatestVersion($data->latestVersion ?? '');
@@ -92,7 +93,7 @@
     }
 
     /**
-     * @return TrackLayout
+     * @return TrackLayout[]
      * @throws Exception
      */
     public static function getTrackLayouts(int $trackId): array {
@@ -201,7 +202,7 @@
       $this->supportsLayouts = $value;
     }
 
-    private function setSupportsResultUpload(false $value): void {
+    private function setSupportsResultUpload(bool $value): void {
       $this->supportsResultUpload = $value;
     }
   }
