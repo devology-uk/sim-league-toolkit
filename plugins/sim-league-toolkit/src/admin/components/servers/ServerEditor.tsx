@@ -25,7 +25,7 @@ interface ServerEditorProps {
 }
 
 export const ServerEditor = ({show, onSaved, onCancelled, server = null}: ServerEditorProps) => {
-    const {createServer, isLoading, updateServer} = useServers();
+    const {createServer, isLoading, refresh, updateServer} = useServers();
 
     const [gameId, setGameId] = useState(0);
     const [gameKey, setGameKey] = useState('');
@@ -159,7 +159,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, server = null}: Server
                             <SaveSubmitButton disabled={isLoading} name='submitServer'/>
                             <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                         </form>
-                        {server  && (<ServerSettingList serverId={server.id} gameKey={gameKey}/>)}
+                        {server  && (<ServerSettingList serverId={server.id} isHostedServer={server.isHostedServer} gameKey={gameKey}/>)}
                     </div>
                 </Dialog>
             )}

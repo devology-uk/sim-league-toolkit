@@ -45,9 +45,10 @@ export const Servers = () => {
         setSelectedItem(null);
     };
 
-    const onEditorCancelled = () => {
+    const onEditorCancelled = async () => {
         setShowEditor(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const onEditorSaved = async () => {

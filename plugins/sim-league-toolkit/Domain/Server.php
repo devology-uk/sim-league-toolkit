@@ -35,6 +35,7 @@
      * @throws Exception
      */
     public static function delete(int $id): void {
+      ServerSettingRepository::deleteByServerId($id);
       ServerRepository::delete($id);
     }
 

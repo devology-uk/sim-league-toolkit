@@ -63,6 +63,7 @@
 
     /**
      * @return stdClass[]
+     * @throws Exception
      */
     public static function listSettings(int $serverId): array {
       $filter = "serverId = {$serverId}";
@@ -71,7 +72,10 @@
     }
 
 
+    /**
+     * @throws Exception
+     */
     public static function update(int $id, array $updates): void {
-      self::updateById(TableNames::SERVER_SETTINGS, $id, $updates);
+      self::updateById(TableNames::SERVERS, $id, $updates);
     }
   }

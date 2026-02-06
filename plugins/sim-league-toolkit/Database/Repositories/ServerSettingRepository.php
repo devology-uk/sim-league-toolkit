@@ -7,6 +7,17 @@
   use stdClass;
 
   class ServerSettingRepository extends DomainRepositoryBase {
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteByServerId(int $serverId): void {
+      $tableName = self::prefixedTableName(TableNames::SERVER_SETTINGS);
+      $query = "DELETE FROM $tableName WHERE serverId = $serverId";
+
+      self::execute($query);
+    }
+
     /**
      * @throws Exception
      */

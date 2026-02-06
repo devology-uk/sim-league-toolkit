@@ -14,39 +14,52 @@ import {useServerSettings} from '../../hooks/useServerSettings';
 
 interface ServerSettingProps {
     serverId: number;
+    isHostedServer: boolean;
     gameKey: string;
 }
 
-export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
+export const ServerSettingList = ({serverId, isHostedServer, gameKey}: ServerSettingProps) => {
 
-    const {createServerSetting, findServerSettingByName, isLoading, updateServerSetting} = useServerSettings(serverId);
+    const {createServerSetting, findServerSettingByName, isLoading, refresh, updateServerSetting} = useServerSettings(serverId);
 
     const [data, setData] = useState<ServerSetting[]>([]);
 
     useEffect(() => {
+        if(isLoading) {
+            return;
+        }
+
         const settings = [];
         const settingDefinitions = getServerSettings(gameKey);
 
         settingDefinitions.forEach((s) => {
-            settings.push({
-                              serverId: serverId,
-                              settingName: s.name,
-                              settingValue: s.default,
-                              isEditEnabled: s.editableIfHosted
-                          });
-        });
-        settings.forEach(s => {
-            const savedSetting = findServerSettingByName(s.settingName);
+            const setting: {
+                serverId: number;
+                settingName: string;
+                settingValue: string;
+                isEditEnabled: boolean,
+                id?: number
+            } = {
+                serverId: serverId,
+                settingName: s.name,
+                settingValue: s.default,
+                isEditEnabled: (isHostedServer && s.editableIfHosted) || !isHostedServer
+            };
+            const savedSetting = findServerSettingByName(setting.settingName);
             if (savedSetting) {
-                s.settingValue = savedSetting.settingValue;
-                s.id = savedSetting.id;
+                setting.settingValue = savedSetting.settingValue;
+                setting.id = savedSetting.id;
             }
+            settings.push(setting);
         });
         setData(settings);
 
-    }, [serverId, gameKey]);
+    }, [serverId, gameKey, isLoading]);
 
     const valueEditor = (options: ColumnEditorOptions) => {
+        if(!options.rowData['isEditEnabled']) {
+            return options.value;
+        }
         return <InputText type='text' value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>;
     };
 
@@ -54,7 +67,7 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
         let {rowData, newValue, field, originalEvent: event} = e;
         event.stopPropagation();
 
-        if (field !== 'settingValue' || newValue === rowData[field] || newValue.length < 1) {
+        if (field !== 'settingValue' || newValue === rowData[field]) {
             event.preventDefault();
             return;
         }
@@ -71,11 +84,13 @@ export const ServerSettingList = ({serverId, gameKey}: ServerSettingProps) => {
             settingValue: setting.settingValue
         };
 
-        if (setting.id === 0) {
-            await createServerSetting(serverId, formData);
-        } else {
+        if (setting.id > 0) {
             await updateServerSetting(serverId, formData);
+        } else {
+            await createServerSetting(serverId, formData);
         }
+
+        await refresh();
     };
 
     return (

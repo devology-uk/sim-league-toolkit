@@ -22,7 +22,7 @@
     public function registerRoutes(): void {
       $this->registerRoute(ResourceNames::SERVER .'/' . Constants::ROUTE_PATTERN_ID . '/settings', 'GET', [$this, 'canGet'], [$this, 'get']);
       $this->registerGetByIdRoute();
-      $this->registerPostRoute();
+      $this->registerRoute(ResourceNames::SERVER .'/' . Constants::ROUTE_PATTERN_ID . '/settings', 'POST', [$this, 'canPost'], [$this, 'post']);
       $this->registerPutRoute();
     }
 
@@ -75,7 +75,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Server Setting', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success();
+        return ApiResponse::success($entity);
       });
     }
 
@@ -83,6 +83,7 @@
     private function hydrateFromRequest(ServerSetting $serverSetting, WP_REST_Request $request): ServerSetting {
       $params = $this->getParams($request);
 
+      $serverSetting->setServerId($request->get_param('id'));
       $serverSetting->setSettingName($params['settingName']);
       $serverSetting->setSettingValue($params['settingValue']);
 

@@ -25,13 +25,17 @@ export const PlatformSelector = ({
                                      validationMessage = ''
                                  }: PlatformSelectorProps) => {
 
-    const {isLoading, platforms} = usePlatforms(gameId);
+    const {isLoading, platforms, refresh} = usePlatforms(gameId);
 
     const [selectedItemId, setSelectedItemId] = useState(platformId);
 
     useEffect(() => {
         setSelectedItemId(platformId);
     }, [platformId]);
+
+    useEffect(() => {
+        refresh().then(_ => {});
+    }, [gameId]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
