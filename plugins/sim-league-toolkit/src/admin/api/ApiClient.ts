@@ -8,18 +8,29 @@ import {ApiResponse} from '../types/ApiResponse';
 
 const API_NAMESPACE = '/sltk/v1';
 
+const createNoticeId = (): string => {
+    return '#' + (new Date()).valueOf();
+}
+
+const timeoutNotice = (noticeId: string) => {
+    setTimeout(() => {
+        dispatch(noticesStore).removeNotice(noticeId).then(_ => {})
+    }, 30000);
+}
+
 const showErrorNotice = (message: string): void => {
     dispatch(noticesStore).createErrorNotice(message, {
+        id: createNoticeId(),
         isDismissible: true,
         type: 'snackbar',
-    }).then(_ => {});
+    }).then(r => timeoutNotice(r.notice.id));
 };
 
 const showSuccessNotice = (message: string): void => {
     dispatch(noticesStore).createSuccessNotice(message, {
         isDismissible: true,
         type: 'snackbar',
-    }).then(_ => {});
+    }).then(r => timeoutNotice(r.notice.id));
 };
 
 const handleApiError = (error: unknown): ApiError => {
