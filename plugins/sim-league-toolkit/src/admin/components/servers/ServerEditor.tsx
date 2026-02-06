@@ -25,7 +25,7 @@ interface ServerEditorProps {
 }
 
 export const ServerEditor = ({show, onSaved, onCancelled, server = null}: ServerEditorProps) => {
-    const {createServer, isLoading, refresh, updateServer} = useServers();
+    const {createServer, isLoading, updateServer} = useServers();
 
     const [gameId, setGameId] = useState(0);
     const [gameKey, setGameKey] = useState('');
