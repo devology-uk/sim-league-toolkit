@@ -224,7 +224,6 @@
      */
     protected static function throwIfError(string $message): void {
       if (self::db()->last_error) {
-        self::printWpdbError($message);
         throw new Exception($message . ': ' . self::db()->last_error);
       }
     }
