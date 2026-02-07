@@ -39,12 +39,13 @@
     }
 
     public static function fromStdClass(?stdClass $data): ?self {
-      if(!$data) {
+      if (!$data) {
         return null;
       }
 
       $result = new self();
 
+      $result->setId($data->id);
       $result->setDescription($data->description ?? '');
       $result->setIsBuiltIn($data->isBuiltIn ?? false);
       $result->setIsInUse($data->isInUse ?? false);
@@ -56,9 +57,34 @@
       return $result;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function get(int $id): self|null {
       $queryResult = ScoringSetRepository::getById($id);
+
       return self::fromStdClass($queryResult);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getScoreById(int $getId): ScoringSetScore|null {
+      $queryResult = ScoringSetRepository::getScoreById($getId);
+
+      return ScoringSetScore::fromStdClass($queryResult);
+    }
+
+    /**
+     * @return ScoringSetScore[]
+     * @throws Exception
+     */
+    public static function getScores(int $ruleSetId): array {
+      $queryResults = ScoringSetRepository::listScores($ruleSetId);
+
+      return array_map(function ($item) {
+        return ScoringSetScore::fromStdClass($item);
+      }, $queryResults);
     }
 
     /**
@@ -67,8 +93,21 @@
      */
     public static function list(): array {
       $queryResults = ScoringSetRepository::list();
+
       return array_map(function ($item) {
         return self::fromStdClass($item);
+      }, $queryResults);
+    }
+
+    /**
+     * @return ScoringSetScore[]
+     * @throws Exception
+     */
+    public static function listScores(int $scoringSetId): array {
+      $queryResults = ScoringSetRepository::listScores($scoringSetId);
+
+      return array_map(function ($item) {
+        return ScoringSetScore::fromStdClass($item);
       }, $queryResults);
     }
 
@@ -129,36 +168,25 @@
     }
 
     /**
-     * @return ScoringSetScore[]
-     * @throws Exception
-     */
-    public static function getScores(int $ruleSetId): array {
-      $queryResults = ScoringSetRepository::listScores($ruleSetId);
-
-      return array_map(function ($item) {
-        return ScoringSetScore::fromStdClass($item);
-      }, $queryResults);
-    }
-
-    /**
      * @throws Exception
      */
     public function save(): self {
-        if ($this->getId() == Constants::DEFAULT_ID) {
-          $this->setId(ScoringSetRepository::add($this->toArray()));
-        } else {
-          ScoringSetRepository::update($this->getId(), $this->toArray());
-        }
-        return $this;
+      if ($this->getId() == Constants::DEFAULT_ID) {
+        $this->setId(ScoringSetRepository::add($this->toArray()));
+      } else {
+        ScoringSetRepository::update($this->getId(), $this->toArray());
+      }
+
+      return $this;
     }
 
     public function saveScore(ScoringSetScore $score): bool {
       try {
-        $existing = ScoringSetRepository::getScore($this->getId(), $score->getPosition());
-        if (isset($existing->id)) {
-          ScoringSetRepository::updateScore($existing->id, $score->toArray(false));
+        if($score->hasId()) {
+          $existing = ScoringSetRepository::getScoreById($this->getId());
+          ScoringSetRepository::updateScore($existing->id, $score->toArray());
         } else {
-          $score->setId(ScoringSetRepository::addScore($score->toArray(false)));
+          $score->setId(ScoringSetRepository::addScore($score->toArray()));
         }
 
         return true;

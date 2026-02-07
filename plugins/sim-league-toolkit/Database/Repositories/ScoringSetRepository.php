@@ -37,6 +37,9 @@
 
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): stdClass|null {
       return self::getRowById(TableNames::SCORING_SETS, $id);
     }
@@ -44,11 +47,8 @@
     /**
      * @throws Exception
      */
-    public static function getScore(int $scoringSetId, int $position): stdClass|null {
-      $tableName = self::prefixedTableName(TableNames::SCORING_SET_SCORES);
-      $query = "SELECT * FROM {$tableName} WHERE scoringSetId = {$scoringSetId} AND position = {$position}";
-
-      return self::getRow($query);
+    public static function getScoreById(int $id): stdClass|null {
+      return self::getRowById(TableNames::SCORING_SET_SCORES, $id);
     }
 
     /**
@@ -73,17 +73,20 @@
      * @throws Exception
      */
     public static function listScores(int $scoringSetId): array {
-      $tableName = self::prefixedTableName(TableNames::SCORING_SET_SCORES);
-
-      $query = "SELECT * FROM {$tableName} WHERE scoringSetId = {$scoringSetId} ORDER BY position";
-
-      return self::getResults($query);
+      $filter = "scoringSetId = $scoringSetId";
+      return self::getResultsFromTable(TableNames::SCORING_SET_SCORES, $filter, 'position');
     }
 
+    /**
+     * @throws Exception
+     */
     public static function update(int $id, array $updates): void {
       self::updateById(TableNames::SCORING_SETS, $id, $updates);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function updateScore(int $id, array $updates): void {
       self::updateById(TableNames::SCORING_SET_SCORES, $id, $updates);
     }

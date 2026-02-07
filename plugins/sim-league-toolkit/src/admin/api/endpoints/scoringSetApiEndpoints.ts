@@ -1,13 +1,13 @@
 const scoringSetRootEndpoint = () => {
-    return 'scoring-set';
+    return '/scoring-set';
 };
 
 const scoringSetsRootEndpoint = () => {
-    return 'scoring-sets';
+    return '/scoring-sets';
 };
 
 const scoringSetScoreRootEndpoint = () => {
-    return 'scoring-set-score';
+    return '/scoring-set-score';
 };
 
 export const scoringSetDeleteEndpoint = (scoringSetId: number): string => {
@@ -19,7 +19,7 @@ export const scoringSetsGetEndpoint = () => {
 };
 
 export const scoringSetPostEndpoint = () => {
-    return scoringSetsRootEndpoint();
+    return scoringSetRootEndpoint();
 };
 
 export const scoringSetPutEndpoint = (scoringSetId: number): string => {

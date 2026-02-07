@@ -17,6 +17,7 @@
     public final const string RULE_SET = 'rule-set';
     public final const string RULE_SET_RULE = 'rule-set-rule';
     public final const string SCORING_SET = 'scoring-set';
+    public final const string SCORING_SET_SCORE = 'scoring-set-score';
     public final const string SERVER = 'server';
     public final const string SERVER_SETTING = 'server-setting';
     public final const string STANDALONE_EVENT = 'standalone-event';

@@ -23,6 +23,7 @@
       $result->setId($data->id);
       $result->setScoringSetId($data->scoringSetId);
       $result->setPoints($data->points);
+      $result->setPosition($data->position);
 
       return $result;
     }
@@ -70,6 +71,7 @@
         'id' => $this->getId(),
         'position' => $this->getPosition(),
         'points' => $this->getPoints(),
+        'scoringSetId' => $this->getScoringSetId(),
       ];
     }
   }

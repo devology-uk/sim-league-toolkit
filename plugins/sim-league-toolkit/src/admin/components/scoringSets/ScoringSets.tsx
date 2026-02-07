@@ -11,7 +11,7 @@ import {ScoringSet} from '../../types/ScoringSet';
 import {useScoringSets} from '../../hooks/useScoringSets';
 
 export const ScoringSets = () => {
-    const {deleteScoringSet, isLoading, scoringSets} = useScoringSets();
+    const {deleteScoringSet, isLoading, refresh, scoringSets} = useScoringSets();
 
     const [selectedItem, setSelectedItem] = useState<ScoringSet>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -47,9 +47,10 @@ export const ScoringSets = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = () => {
+    const onEditorSaved = async () => {
         setShowEditor(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const headerTemplate = () => {
@@ -92,7 +93,7 @@ export const ScoringSets = () => {
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <ScoringSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                                  scoringSetId={selectedItem?.id}/>
+                                  scoringSet={selectedItem}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

@@ -20,19 +20,19 @@ interface UseScoringSetScoresResult {
     updateScoringSetScore: (id: number, data: ScoringSetScoreFormData) => Promise<boolean>;
 }
 
-export const useScoringSetScores = (serverId: number | null): UseScoringSetScoresResult => {
+export const useScoringSetScores = (scoringSetId: number | null): UseScoringSetScoresResult => {
     const [scoringSetScores, setScoringSetScores] = useState<ScoringSetScore[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const refresh = useCallback(async () => {
-        if (!serverId) {
+        if (!scoringSetId) {
             setScoringSetScores([]);
             return;
         }
 
         setIsLoading(true);
         const response = await ApiClient.get<ScoringSetScore[]>(
-            scoringSetScoresGetEndpoint(serverId)
+            scoringSetScoresGetEndpoint(scoringSetId)
         );
 
         if (response.success) {
@@ -40,11 +40,11 @@ export const useScoringSetScores = (serverId: number | null): UseScoringSetScore
         }
 
         setIsLoading(false);
-    }, [serverId]);
+    }, [scoringSetId]);
 
     const createScoringSetScore = useCallback(async (scoringSetId: number, data: ScoringSetScoreFormData): Promise<number | null> => {
         const response = await ApiClient.post<CreateResponse>(
-            scoringSetScorePostEndpoint(serverId!),
+            scoringSetScorePostEndpoint(scoringSetId!),
             data
         );
 
@@ -55,7 +55,7 @@ export const useScoringSetScores = (serverId: number | null): UseScoringSetScore
         }
 
         return null;
-    }, [serverId, refresh]);
+    }, [scoringSetId, refresh]);
 
     const deleteScoringSetScore = useCallback(async (id: number): Promise<boolean> => {
         const response = await ApiClient.delete(scoringSetScoreDeleteEndpoint(id));

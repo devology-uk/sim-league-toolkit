@@ -65,7 +65,7 @@ export const SimLeagueToolkitApp = () => {
 
     return (
         <PrimeReactProvider>
-            <Notifications/>
+            <Notifications />
             <HeaderBar/>
             <div className='main-container'>
                 <div className='menu-container'>

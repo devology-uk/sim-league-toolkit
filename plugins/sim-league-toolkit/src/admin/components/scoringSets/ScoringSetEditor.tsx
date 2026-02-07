@@ -14,15 +14,16 @@ import {ValidationError} from '../shared/ValidationError';
 import {useScoringSets} from '../../hooks/useScoringSets';
 import {FormEvent} from 'react';
 import {ScoringSetFormData} from '../../types/ScoringSetFormData';
+import {ScoringSet} from '../../types/ScoringSet';
 
 interface ScoringSetEditorProps {
     show: boolean;
     onSaved: () => void;
     onCancelled: () => void;
-    scoringSetId?: number;
+    scoringSet?: ScoringSet;
 }
 
-export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}: ScoringSetEditorProps) => {
+export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSet = null}: ScoringSetEditorProps) => {
 
     const {createScoringSet, findScoringSet, isLoading, updateScoringSet} = useScoringSets();
 
@@ -34,17 +35,16 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        if (scoringSetId === 0) {
+        if(!scoringSet) {
             return;
         }
 
-        const scoringSet = findScoringSet(scoringSetId);
         setDescription(scoringSet.description);
         setName(scoringSet.name);
         setPointsForFastestLap(scoringSet.pointsForFastestLap);
         setPointsForFinishing(scoringSet.pointsForFinishing);
         setPointsForPole(scoringSet.pointsForPole);
-    }, [scoringSetId]);
+    }, [scoringSet]);
 
     const resetForm = () => {
         setDescription('');
@@ -69,10 +69,10 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
             pointsForPole: pointsForPole
         };
 
-        if (scoringSetId === 0) {
+        if (!scoringSet) {
             await createScoringSet(formData);
         } else {
-            await updateScoringSet(scoringSetId, formData);
+            await updateScoringSet(scoringSet.id, formData);
         }
         
         onSaved();
@@ -174,7 +174,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSetId = 0}:
                         <SaveSubmitButton disabled={isLoading} name='submitFrm'/>
                         <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                     </form>
-                    {scoringSetId > 0 && (<ScoreList scoringSetId={scoringSetId}/>)}
+                    {scoringSet && (<ScoreList scoringSetId={scoringSet.id}/>)}
                 </Dialog>
             )}
         </>
