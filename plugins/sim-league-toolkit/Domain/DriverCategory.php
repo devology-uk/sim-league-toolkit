@@ -18,6 +18,7 @@
     public static function fromStdClass(?stdClass $data): ?self {
       $result = new self();
 
+      $result->setId($data->id);
       $result->setName($data->name);
       $result->setParticipationRequirement($data->participationRequirement);
       $result->setPlaque($data->plaque);

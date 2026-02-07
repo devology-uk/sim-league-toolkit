@@ -2,7 +2,8 @@ import {useState, useEffect, useCallback} from '@wordpress/element';
 
 import {ApiClient} from '../api/ApiClient';
 import {DriverCategory} from '../types/DriverCategory';
-import {driverCategoriesGetEndpoint} from '../api/endpoints/eventClassApiEndpoints';
+
+import {driverCategoryGetEndpoint} from '../api/endpoints/driverCategoryGetEndpoint';
 
 interface UseDriverCategoriesResult {
     driverCategories: DriverCategory[];
@@ -18,7 +19,7 @@ export const useDriverCategories = (): UseDriverCategoriesResult => {
     const refresh = useCallback(async () => {
         setIsLoading(true);
 
-        const apiResponse = await ApiClient.get<DriverCategory[]>(driverCategoriesGetEndpoint());
+        const apiResponse = await ApiClient.get<DriverCategory[]>(driverCategoryGetEndpoint());
         if (apiResponse.success) {
             setDriverCategories(apiResponse.data ?? []);
         }

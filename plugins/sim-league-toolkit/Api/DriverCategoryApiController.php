@@ -38,7 +38,7 @@
     }
 
     public function registerRoutes(): void {
-      $this->registerGetRoute();
+      $this->registerRoute(ResourceNames::DRIVER_CATEGORY, 'GET', [$this, 'canGet'], [$this,'get']);
       $this->registerGetByIdRoute();
     }
   }

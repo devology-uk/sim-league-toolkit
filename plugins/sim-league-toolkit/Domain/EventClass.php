@@ -49,8 +49,8 @@
       $result->setIsBuiltIn($data->isBuiltIn);
       $result->setIsSingleCarClass($data->isSingleCarClass);
       $result->setName($data->name);
-      $result->setSingleCarId($data->singleCarId);
-      $result->setSingleCarName($data->singleCarName);
+      $result->setSingleCarId($data->singleCarId ?? null);
+      $result->setSingleCarName($data->singleCarName ?? null);
 
 
       return $result;
@@ -62,16 +62,19 @@
     public static function get(int $id): EventClass|null {
       $queryResult = EventClassesRepository::getById($id);
 
-      return new EventClass($queryResult);
+      return EventClass::fromStdClass($queryResult);
     }
 
     /**
+     * @return EventClass[]
      * @throws Exception
      */
     public static function list(): array {
       $queryResult = EventClassesRepository::list();
 
-      return self::mapEventClasses($queryResult);
+      return array_map(function (stdClass $item) {
+        return EventClass::fromStdClass($item);
+      }, $queryResult);
     }
 
     /**
@@ -81,7 +84,9 @@
     public static function listForGame(int $gameId): array {
       $queryResult = EventClassesRepository::listForGame($gameId);
 
-      return self::mapEventClasses($queryResult);
+      return array_map(function (stdClass $item) {
+        return EventClass::fromStdClass($item);
+      }, $queryResult);
     }
 
     /**
@@ -155,8 +160,8 @@
       $this->singleCarId = $value;
     }
 
-    public function getSingleCarName(): string {
-      return $this->singleCarName ?? '';
+    public function getSingleCarName(): ?string {
+      return $this->singleCarName;
     }
 
     /**
@@ -211,16 +216,6 @@
       ];
     }
 
-    private static function mapEventClasses(array $queryResults): array {
-      $results = array();
-
-      foreach ($queryResults as $item) {
-        $results[] = new EventClass($item);
-      }
-
-      return $results;
-    }
-
     private function setDriverCategory(string $driverCategory): void {
       $this->driverCategory = $driverCategory;
     }
@@ -229,7 +224,7 @@
       $this->game = $game;
     }
 
-    private function setSingleCarName(string $singleCarName): void {
+    private function setSingleCarName(?string $singleCarName): void {
       $this->singleCarName = $singleCarName;
     }
   }

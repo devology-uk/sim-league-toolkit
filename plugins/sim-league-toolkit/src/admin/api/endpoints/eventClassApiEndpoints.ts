@@ -1,10 +1,5 @@
-const driverCategoriesRootEndpoint = '/driver-categories';
 const eventClassRootEndpoint = '/event-class';
 const eventClassesRootEndpoint = '/event-classes';
-
-export const driverCategoriesGetEndpoint = () => {
-    return driverCategoriesRootEndpoint;
-};
 
 export const eventClassDeleteEndpoint = (eventClassId: number) => {
     return `${eventClassRootEndpoint}/${eventClassId}`;

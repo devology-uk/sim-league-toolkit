@@ -19,7 +19,7 @@
     }
 
     public function registerRoutes(): void {$this->registerDeleteRoute();
-      $this->registerGetRoute();
+      $this->registerRoute(ResourceNames::EVENT_CLASS . 'es', 'GET', [$this, 'canGet'], [$this, 'get'] );
       $this->registerGetByIdRoute();
       $this->registerPostRoute();
       $this->registerPutRoute();

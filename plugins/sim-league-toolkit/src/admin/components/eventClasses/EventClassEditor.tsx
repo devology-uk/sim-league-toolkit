@@ -11,6 +11,7 @@ import {CancelButton} from '../shared/CancelButton';
 import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../games/CarClassSelector';
 import {CarSelector} from '../games/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
+import {EventClass} from '../../types/EventClass';
 import {EventClassFormData} from '../../types/EventClassFormData';
 import {GameSelector} from '../games/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
@@ -21,11 +22,11 @@ interface EventClassEditorProps {
     show: boolean;
     onSaved: () => void;
     onCancelled: () => void;
-    eventClassId?: number;
+    eventClass?: EventClass;
 }
 
-export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}: EventClassEditorProps) => {
-    const {createEventClass, deleteEventClass, findEventClass, isLoading, updateEventClass} = useEventClasses();
+export const EventClassEditor = ({show, onSaved, onCancelled, eventClass = null}: EventClassEditorProps) => {
+    const {createEventClass, isLoading, updateEventClass} = useEventClasses();
 
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
     const [driverCategoryId, setDriverCategoryId] = useState(0);
@@ -37,18 +38,18 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
-        if (eventClassId === 0) {
+        if (!eventClass) {
             return;
         }
 
-        const eventClass = findEventClass(eventClassId);
         setCarClass(eventClass.carClass);
-        setDriverCategoryId(driverCategoryId);
+        setDriverCategoryId(eventClass.driverCategoryId);
         setGameId(eventClass.gameId);
         setGameName(eventClass.game);
         setIsSingleCarClass(eventClass.isSingleCarClass);
+        setName(eventClass.name);
         setSingleCarId(eventClass.singleCarId ?? 0);
-    }, [eventClassId]);
+    }, [eventClass]);
 
     const resetForm = () => {
         setCarClass(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
@@ -75,12 +76,12 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
             singleCarId: isSingleCarClass ? singleCarId : null,
         };
 
-        if (eventClassId === 0) {
+        if (!eventClass) {
             await createEventClass(formData);
         } else {
-            await updateEventClass(eventClassId, formData);
+            await updateEventClass(eventClass.id, formData);
         }
-
+        onSaved();
         resetForm();
     };
 
@@ -122,15 +123,15 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClassId = 0}:
                     <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row  align-items-stretch gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '300px'}}>
-                                {eventClassId < 1 &&
+                                {!eventClass &&
                                     <GameSelector gameId={gameId}
-                                                  disabled={eventClassId !== 0}
+                                                  disabled={isLoading}
                                                   isInvalid={validationErrors.includes('game')}
                                                   validationMessage={__(
                                                       'You must select the game that this class will be used with.')}
                                                   onSelectedItemChanged={onSelectedGameChanged}/>
                                 }
-                                {eventClassId >= 1 &&
+                                {eventClass &&
                                     <>
                                         <label htmlFor='event-class-name'>{__('Game', 'sim-league-toolkit')}</label>
                                         <span>{gameName}</span>

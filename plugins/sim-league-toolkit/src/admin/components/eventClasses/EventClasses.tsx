@@ -11,7 +11,7 @@ import {EventClassEditor} from './EventClassEditor';
 import {useEventClasses} from '../../hooks/useEventClasses';
 
 export const EventClasses = () => {
-    const {deleteEventClass, eventClasses, isLoading} = useEventClasses();
+    const {deleteEventClass, eventClasses, isLoading, refresh} = useEventClasses();
 
     const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -48,9 +48,10 @@ export const EventClasses = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = () => {
+    const onEditorSaved = async () => {
         setShowEditor(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const headerTemplate = () => {
@@ -94,7 +95,7 @@ export const EventClasses = () => {
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <EventClassEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                                  eventClassId={selectedItem?.id}/>
+                                  eventClass={selectedItem}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
