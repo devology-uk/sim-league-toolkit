@@ -12,25 +12,19 @@ const createNoticeId = (): string => {
     return '#' + (new Date()).valueOf();
 }
 
-const timeoutNotice = (noticeId: string, timeoutSeconds: number = 20) => {
-    setTimeout(() => {
-        dispatch(noticesStore).removeNotice(noticeId).then(_ => {})
-    }, timeoutSeconds * 1000);
-}
-
 const showErrorNotice = (message: string): void => {
     dispatch(noticesStore).createErrorNotice(message, {
         id: createNoticeId(),
         isDismissible: true,
         type: 'snackbar',
-    }).then(r => timeoutNotice(r.notice.id));
+    }).then(_ => {});
 };
 
 const showSuccessNotice = (message: string): void => {
     dispatch(noticesStore).createSuccessNotice(message, {
         isDismissible: true,
         type: 'snackbar',
-    }).then(r => timeoutNotice(r.notice.id, 10));
+    }).then(_ => {});
 };
 
 const handleApiError = (error: unknown): ApiError => {
