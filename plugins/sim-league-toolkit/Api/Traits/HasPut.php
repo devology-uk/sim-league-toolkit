@@ -14,9 +14,7 @@
     abstract protected function onPut(WP_REST_Request $request): WP_REST_Response;
 
     public function put(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        return $this->onPut($request);
-      });
+      return $this->onPut($request);
     }
 
     public function canPut(): bool {

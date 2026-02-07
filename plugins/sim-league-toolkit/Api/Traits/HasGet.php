@@ -13,9 +13,7 @@
     abstract protected function onGet(WP_REST_Request $request): WP_REST_Response;
 
     public function get(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        return $this->onGet($request);
-      });
+      return $this->onGet($request);
     }
 
     public function canGet(): bool {

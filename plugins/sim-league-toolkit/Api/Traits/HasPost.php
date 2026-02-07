@@ -16,9 +16,7 @@
     abstract protected function onPost(WP_REST_Request $request): WP_REST_Response;
 
     public function post(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
         return $this->onPost($request);
-      });
     }
 
     public function canPost(): bool {
@@ -27,6 +25,6 @@
 
     protected function registerPostRoute(): void {
       $resourceName = $this->getResourceName();
-      $this->registerRoute("$resourceName", 'POST', [$this, 'canPost'], [$this, 'post']);
+      $this->registerRoute($resourceName, 'POST', [$this, 'canPost'], [$this, 'post']);
     }
   }

@@ -16,9 +16,7 @@
     abstract protected function onGetById(WP_REST_Request $request): WP_REST_Response;
 
     public function getById(WP_REST_Request $request): WP_REST_Response {
-      return $this->execute(function () use ($request) {
-        return $this->onGetById($request);
-      });
+      return $this->onGetById($request);
     }
 
     public function canGetById(): bool {
