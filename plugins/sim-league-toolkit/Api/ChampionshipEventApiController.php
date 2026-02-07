@@ -30,8 +30,8 @@
       $this->registerPutRoute();
     }
 
-    protected function onDelete(WP_REST_Request $request): void {
-      $this->execute(function () use ($request) {
+    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
         ChampionshipEvent::delete($this->getId($request));
         return ApiResponse::noContent();
       });
