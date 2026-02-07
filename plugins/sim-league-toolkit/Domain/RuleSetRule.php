@@ -20,6 +20,7 @@
 
       $result = new self();
 
+      $result->setId($data->id);
       $result->setRule($data->rule);
       $result->setRuleSetId($data->ruleSetId);
 

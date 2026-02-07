@@ -22,10 +22,20 @@
      * @throws Exception
      */
     protected static function deleteById(string $tableNameWithoutPrefix, int $id, string $idColumnName = 'id'): void {
-
       self::db()->delete(self::prefixedTableName($tableNameWithoutPrefix), [$idColumnName => $id]);
 
       self::throwIfError(esc_html__('Unexpected error deleting data from database.', 'sim-league-toolkit'));
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected static function deleteFromTable(string $tableNameWithoutPrefix, string $filter): void {
+      $tableName = self::prefixedTableName($tableNameWithoutPrefix);
+      $sql = "DELETE FROM {$tableName} WHERE {$filter};";
+
+      self::db()->query($sql);
+      self::throwIfError(esc_html__('Unexpected error deleting rows from table', 'sim-league-toolkit'));
     }
 
     /**

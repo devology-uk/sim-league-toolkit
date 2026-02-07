@@ -12,7 +12,7 @@ import {
 } from '../api/endpoints/ruleSetApiEndpoints';
 
 interface UseRuleSetRulesResult {
-    createRuleSetRule: (data: RuleSetRuleFormData) => Promise<number | null>;
+    createRuleSetRule: (ruleSetId: number, data: RuleSetRuleFormData) => Promise<number | null>;
     deleteRuleSetRule: (id: number) => Promise<boolean>;
     isLoading: boolean;
     refresh: () => Promise<void>
@@ -42,14 +42,14 @@ export const useRuleSetRules = (ruleSetId: number | null): UseRuleSetRulesResult
         setIsLoading(false);
     }, [ruleSetId]);
 
-    const createRuleSetRule = useCallback(async (data: RuleSetRuleFormData): Promise<number | null> => {
+    const createRuleSetRule = useCallback(async (ruleSetId: number, data: RuleSetRuleFormData): Promise<number | null> => {
         const response = await ApiClient.post<CreateResponse>(
             ruleSetRulePostEndpoint(ruleSetId!),
             data
         );
 
         if (response.success && response.data) {
-            ApiClient.showSuccess(__('Rule Set Score added successfully', 'sim-league-toolkit'));
+            ApiClient.showSuccess(__('Rule Set Rule added successfully', 'sim-league-toolkit'));
             await refresh();
             return response.data.id;
         }
@@ -61,7 +61,7 @@ export const useRuleSetRules = (ruleSetId: number | null): UseRuleSetRulesResult
         const response = await ApiClient.delete(ruleSetRuleDeleteEndpoint(id));
 
         if (response.success) {
-            ApiClient.showSuccess(__('Rule Set Score deleted successfully', 'sim-league-toolkit'));
+            ApiClient.showSuccess(__('Rule Set Rule deleted successfully', 'sim-league-toolkit'));
             await refresh();
         }
 
@@ -72,7 +72,7 @@ export const useRuleSetRules = (ruleSetId: number | null): UseRuleSetRulesResult
         const response = await ApiClient.put(ruleSetRulePutEndpoint(id), data);
 
         if (response.success) {
-            ApiClient.showSuccess(__('Rule Set Score updated successfully', 'sim-league-toolkit'));
+            ApiClient.showSuccess(__('Rule Set Rule updated successfully', 'sim-league-toolkit'));
             await refresh();
         }
 

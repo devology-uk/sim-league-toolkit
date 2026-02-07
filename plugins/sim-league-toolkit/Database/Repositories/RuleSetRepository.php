@@ -25,8 +25,9 @@
     /**
      * @throws Exception
      */
-    public static function delete(int $locationId): void {
-      self::deleteById(TableNames::RULE_SETS, $locationId);
+    public static function delete(int $ruleSetId): void {
+      self::deleteFromTable(TableNames::RULE_SET_RULES, "ruleSetId = '{$ruleSetId}'");
+      self::deleteById(TableNames::RULE_SETS, $ruleSetId);
     }
 
     /**
@@ -36,6 +37,9 @@
         self::deleteById(TableNames::RULE_SET_RULES, $ruleId);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): stdClass|null {
       return self::getRowById(TableNames::RULE_SETS, $id);
     }
@@ -52,6 +56,7 @@
 
     /**
      * @return stdClass[]
+     * @throws Exception
      */
     public static function list(): array {
       return self::getResultsFromTable(TableNames::RULE_SETS);

@@ -7,6 +7,7 @@
   use SLTK\Api\Traits\HasGetById;
   use SLTK\Api\Traits\HasPost;
   use SLTK\Api\Traits\HasPut;
+  use SLTK\Core\Constants;
   use SLTK\Domain\RuleSet;
   use SLTK\Domain\RuleSetRule;
   use WP_REST_Request;
@@ -15,16 +16,20 @@
   class RuleSetRuleApiController extends ApiController {
     use HasDelete, HasGet, HasGetById, HasPost, HasPut;
 
+    public function __construct() {
+      parent::__construct(ResourceNames::RULE_SET_RULE);
+    }
+
     public function registerRoutes(): void {
       $this->registerDeleteRoute();
-      $this->registerGetRoute();
+      $this->registerRoute(ResourceNames::RULE_SET .'/' . Constants::ROUTE_PATTERN_ID . '/rules', 'GET', [$this, 'canGet'], [$this, 'get']);
       $this->registerGetByIdRoute();
-      $this->registerPostRoute();
+      $this->registerRoute(ResourceNames::RULE_SET .'/' . Constants::ROUTE_PATTERN_ID . '/rules', 'POST', [$this, 'canPost'], [$this, 'post']);
       $this->registerPutRoute();
     }
 
-    protected function onDelete(WP_REST_Request $request): void {
-      $this->execute(function () use ($request) {
+    protected function onDelete(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
 
         RuleSet::deleteRule($this->getId($request));
 
@@ -59,8 +64,9 @@
       return $this->execute(function () use ($request) {
 
         $entity = $this->hydrateFromRequest(new RuleSetRule(), $request);
+        $ruleSet = RuleSet::get($this->getId($request));
 
-        if (!$entity->save()) {
+        if (!$ruleSet->saveRule($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to save Rule', 'sim-league-toolkit'));
         }
 
@@ -70,15 +76,16 @@
 
     protected function onPut(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $entity = RuleSetRule::get($this->getId($request));
+        $entity = RuleSet::getRuleById($this->getId($request));
 
         if ($entity === null) {
           return ApiResponse::notFound('RuleSetRule');
         }
 
         $entity = $this->hydrateFromRequest($entity, $request);
+        $ruleSet = RuleSet::get($this->getId($request));
 
-        if (!$entity->save()) {
+        if (!$ruleSet->saveRule($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to update Rule', 'sim-league-toolkit'));
         }
 
@@ -89,7 +96,7 @@
     private function hydrateFromRequest(RuleSetRule $entity, WP_REST_Request $request): RuleSetRule {
       $params = $this->getParams($request);
 
-      $entity->setRuleSetId((int)$params['ruleSetId']);
+      $entity->setRuleSetId($this->getId($request));
       $entity->setRule($params['rule']);
 
       return $entity;

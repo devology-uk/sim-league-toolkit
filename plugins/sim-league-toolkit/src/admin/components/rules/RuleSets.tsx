@@ -12,7 +12,7 @@ import {useRuleSets} from '../../hooks/useRuleSets';
 
 export const RuleSets = () => {
 
-    const {deleteRuleSet, isLoading, ruleSets} = useRuleSets();
+    const {deleteRuleSet, isLoading, refresh, ruleSets} = useRuleSets();
 
     const [selectedItem, setSelectedItem] = useState<RuleSet>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -49,9 +49,10 @@ export const RuleSets = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = () => {
+    const onEditorSaved = async () => {
         setShowEditor(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const headerTemplate = () => {
@@ -94,7 +95,7 @@ export const RuleSets = () => {
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
                 <RuleSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                               ruleSetId={selectedItem?.id}/>
+                               ruleSet={selectedItem}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

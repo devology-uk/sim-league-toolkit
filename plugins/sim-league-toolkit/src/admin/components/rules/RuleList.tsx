@@ -80,7 +80,7 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
         };
 
         if (isAdding) {
-            await createRuleSetRule(formData);
+            await createRuleSetRule(ruleSetId, formData);
         } else {
             await updateRuleSetRule(selectedItem.id, formData);
         }
@@ -146,7 +146,7 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
                                rows={10} cols={50}/>
                 <ValidationError
                     message={__('The text for the rule with at least 15 characters is required.', 'sim-league-toolkit')}
-                    show={validationErrors.includes('description')}/>
+                    show={validationErrors.includes('ruleText')}/>
                 <br/>
                 <SaveButton onClick={onSave} disabled={isLoading}/>
                 <CancelButton onCancel={onCancelEdit} disabled={isLoading}/>

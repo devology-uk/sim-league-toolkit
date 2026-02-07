@@ -11,7 +11,7 @@ export const ruleSetsGetEndpoint = () => {
 };
 
 export const ruleSetPostEndpoint = () => {
-    return ruleSetsRootEndpoint;
+    return ruleSetRootEndpoint;
 };
 
 export const ruleSetPutEndpoint = (ruleSetId: number): string => {

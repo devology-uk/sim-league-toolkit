@@ -13,31 +13,31 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
 import {useRuleSets} from '../../hooks/useRuleSets';
 import {RuleSetFormData} from '../../types/RuleSetFormData';
+import {RuleSet} from '../../types/RuleSet';
 
 interface RuleSetEditorProps {
     show: boolean;
     onSaved: () => void;
     onCancelled: () => void;
-    ruleSetId: number | null;
+    ruleSet: RuleSet | null;
 }
 
-export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleSetEditorProps) => {
+export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSet = null}: RuleSetEditorProps) => {
 
-    const {createRuleSet, findRuleSet, isLoading, updateRuleSet} = useRuleSets();
+    const {createRuleSet, isLoading, updateRuleSet} = useRuleSets();
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
-        if (ruleSetId === 0) {
+        if (ruleSet === null) {
             return;
         }
 
-        const ruleSet = findRuleSet(ruleSetId);
         setDescription(ruleSet.description);
         setName(ruleSet.name);
-    }, [ruleSetId]);
+    }, [ruleSet]);
 
     const resetForm = () => {
         setName('');
@@ -56,10 +56,10 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
             description: description
         };
 
-        if (ruleSetId === 0) {
+        if (!ruleSet) {
             await createRuleSet(formData);
         } else {
-            await updateRuleSet(ruleSetId, formData);
+            await updateRuleSet(ruleSet.id, formData);
         }
 
         onSaved();
@@ -112,7 +112,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSetId = 0}: RuleS
                         <SaveSubmitButton disabled={isLoading} name='submitRuleSet'/>
                         <CancelButton onCancel={onCancelled} disabled={isLoading}/>
                     </form>
-                    {ruleSetId && (<RuleList ruleSetId={ruleSetId}/>)}
+                    {ruleSet && (<RuleList ruleSetId={ruleSet.id}/>)}
                 </Dialog>
             )}
         </>

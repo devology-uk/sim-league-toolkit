@@ -18,7 +18,6 @@
 
     private string $description = '';
     private string $name = '';
-    private string $type = '';
 
     /**
      * @throws Exception
@@ -41,9 +40,9 @@
 
       $result = new self();
 
+      $result->setId($data->id);
       $result->setName($data->name ?? '');
       $result->setDescription($data->description ?? '');
-      $result->setType($data->type ?? '');
 
       return $result;
     }
@@ -106,14 +105,6 @@
       $this->name = $name;
     }
 
-    public function getType(): string {
-      return $this->type;
-    }
-
-    public function setType(string $type): void {
-      $this->type = $type;
-    }
-
     /**
      * @throws Exception
      */
@@ -130,11 +121,11 @@
 
     public function saveRule(RuleSetRule $rule): bool {
       try {
-        $existing = RuleSetRepository::getRuleById($rule->getId());
-        if (isset($existing->id)) {
-          RuleSetRepository::updateRule($existing->id, $rule->toArray(false));
+        if($rule->hasId()){
+          $existing = RuleSetRepository::getRuleById($rule->getId());
+          RuleSetRepository::updateRule($existing->id, $rule->toArray());
         } else {
-          $rule->setId(RuleSetRepository::addRule($rule->toArray(false)));
+          $rule->setId(RuleSetRepository::addRule($rule->toArray()));
         }
 
         return true;
@@ -150,7 +141,6 @@
       return [
         'name' => $this->getName(),
         'description' => $this->getDescription(),
-        'type' => $this->getType(),
       ];
     }
 
@@ -162,7 +152,6 @@
         'id' => $this->getId(),
         'name' => $this->getName(),
         'description' => $this->getDescription(),
-        'type' => $this->getType(),
       ];
     }
   }
