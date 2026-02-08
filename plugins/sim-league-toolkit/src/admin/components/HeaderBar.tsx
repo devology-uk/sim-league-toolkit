@@ -1,14 +1,20 @@
-import {__} from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
+import { Toolbar } from 'primereact/toolbar';
+import { ReactNode } from 'react';
 
+// @ts-ignore
 import logoImage from '../../../assets/images/logo-small-transparent.png';
 
-import {Toolbar} from 'primereact/toolbar';
+interface HeaderBarProps {
+    startContent?: ReactNode;
+}
 
-export const HeaderBar = () => {
-    const startContent = (
+export const HeaderBar = ({ startContent }: HeaderBarProps) => {
+    const defaultStartContent = (
         <>
-            <img src={logoImage} className='logo' alt={__('Sim League Toolkit loge', 'sim-league-toolkit')} />
-            <span className='header-text'>Sim League Toolkit</span>
+            {startContent}
+            <img src={logoImage} className='logo' alt={__('Sim League Toolkit logo', 'sim-league-toolkit')} />
+            <span className='header-text'>{__('Sim League Toolkit', 'sim-league-toolkit')}</span>
         </>
     );
 
@@ -16,8 +22,9 @@ export const HeaderBar = () => {
         <>
             <h3>Socials</h3>
         </>
-    )
+    );
+
     return (
-        <Toolbar start={startContent} end={endContent}/>
-    )
-}
+        <Toolbar start={defaultStartContent} end={endContent} />
+    );
+};

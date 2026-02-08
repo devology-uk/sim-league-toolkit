@@ -1,4 +1,3 @@
-
 #sltk-admin-root {
   background-color: var(--surface-ground);
   padding: 0;
@@ -11,7 +10,7 @@
 
   h4 {
     color: var(--surface-900);
-    font-size: 1rem
+    font-size: 1rem;
   }
 
   p {
@@ -60,10 +59,91 @@
     .menu-container {
       width: 200px;
       height: 100%;
+      transition: width 0.3s ease;
+      background: var(--surface-card);
+      border-right: 1px solid var(--surface-border);
+      position: relative;
+
+      .p-menu {
+        width: 100%;
+        border: none;
+        background: transparent;
+
+        .p-menuitem-link {
+          color: var(--surface-900);
+          text-decoration: none;
+          padding: 0.75rem 1rem;
+
+          &:hover {
+            background-color: var(--surface-hover);
+            color: var(--surface-900);
+          }
+
+          &:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 0.15rem var(--primary-color);
+          }
+
+          &:visited {
+            color: var(--surface-900);
+          }
+        }
+
+        .p-menuitem {
+          margin-bottom: 0.25rem;
+        }
+
+        .p-menuitem-icon {
+          color: var(--primary-color);
+          font-size: 1.25rem;
+          margin-right: 0.75rem;
+        }
+
+        .p-menuitem-text {
+          color: var(--surface-900);
+        }
+      }
+
+      &.collapsed {
+        width: 60px;
+
+        .p-menu {
+          width: 100%;
+        }
+
+        .p-menuitem-text {
+          display: none;
+        }
+
+        .p-menuitem-icon {
+          margin-right: 0;
+          font-size: 1.25rem;
+        }
+
+        .p-menuitem-link {
+          justify-content: center;
+          padding: 0.75rem;
+        }
+      }
+
+      .collapse-toggle {
+        position: absolute;
+        right: -15px;
+        top: 10px;
+        z-index: 10;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        background: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        margin-top: 0 !important;
+      }
     }
 
     .content-container {
+      flex: 1;
       padding: 2rem;
+      overflow-x: auto;
 
       label {
         color: var(--surface-900);
@@ -80,6 +160,11 @@
     }
   }
 
+  .mobile-menu-toggle {
+    margin-right: 1rem;
+    margin-top: 0 !important;
+  }
+
   .mr-2 {
     margin-right: .2rem;
   }
@@ -92,7 +177,7 @@
     margin-top: .4rem;
   }
 
-  .busy-spinner-container{
+  .busy-spinner-container {
     position: relative;
     width: 100%;
     height: 100%;
@@ -103,6 +188,96 @@
     top: 0;
     left: 0;
     right: 0;
+  }
+
+  // Responsive breakpoints - WordPress admin style
+  @media (max-width: 960px) {
+    .main-container {
+      .menu-container {
+        width: 60px;
+
+        .p-menu {
+          width: 100%;
+        }
+
+        .p-menuitem-text {
+          display: none;
+        }
+
+        .p-menuitem-icon {
+          margin-right: 0;
+          font-size: 1.25rem;
+        }
+
+        .p-menuitem-link {
+          justify-content: center;
+          padding: 0.75rem;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 782px) {
+    .main-container {
+      .menu-container:not(.mobile-sidebar *) {
+        display: none;
+      }
+
+      .content-container {
+        width: 100%;
+        padding: 1rem;
+      }
+    }
+
+    .header-text {
+      font-size: 1.25rem;
+    }
+
+    .logo {
+      width: 96px;
+      height: auto;
+    }
+  }
+}
+
+// Mobile sidebar - outside root as PrimeReact renders in a portal
+.mobile-sidebar {
+  .p-sidebar-content {
+    padding: 0;
+  }
+
+  .p-menu {
+    width: 100%;
+    border: none;
+
+    .p-menuitem {
+      margin-bottom: 0.25rem;
+    }
+
+    .p-menuitem-link {
+      color: var(--surface-900);
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+
+      &:hover {
+        background-color: var(--surface-hover);
+        color: var(--surface-900);
+      }
+
+      &:visited {
+        color: var(--surface-900);
+      }
+    }
+
+    .p-menuitem-icon {
+      color: var(--primary-color);
+      font-size: 1.25rem;
+      margin-right: 0.75rem;
+    }
+
+    .p-menuitem-text {
+      color: var(--surface-900);
+    }
   }
 }
 
@@ -135,5 +310,5 @@
 .validation-error {
   color: var(--red-700);
   font-size: 1rem;
-  max-width: 350px
+  max-width: 350px;
 }

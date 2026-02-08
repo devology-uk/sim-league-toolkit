@@ -1,18 +1,39 @@
-import {__} from '@wordpress/i18n';
-import {Menu} from 'primereact/menu';
-import {PrimeReactProvider} from 'primereact/api';
+import { __ } from '@wordpress/i18n';
+import { useState, useEffect } from 'react';
 
-import {Notifications} from './components/Notifications';
-import {ContentNavigator} from './components/ContentNavigator';
-import {HeaderBar} from './components/HeaderBar';
-import {useHashState} from './hooks/useHashState';
-import {ViewType} from './types/ViewType';
-import {ViewConfig} from './types/ViewConfig';
+import { Button } from 'primereact/button';
+import {classNames} from 'primereact/utils';
+import { Menu } from 'primereact/menu';
+import {MenuItem, MenuItemOptions} from 'primereact/menuitem';
+import { PrimeReactProvider } from 'primereact/api';
+import { Sidebar } from 'primereact/sidebar';
+import { Tooltip } from 'primereact/tooltip';
+
+import { Notifications } from './components/Notifications';
+import { ContentNavigator } from './components/ContentNavigator';
+import { HeaderBar } from './components/HeaderBar';
+import { useHashState } from './hooks/useHashState';
+import { ViewType } from './types/ViewType';
+import { ViewConfig } from './types/ViewConfig';
 
 export const SimLeagueToolkitApp = () => {
-
     const stateKey: string = 'currentView';
     const [currentView, setCurrentView] = useHashState<ViewType>(stateKey, 'dashboard');
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            setIsMobile(width < 782);
+            setIsCollapsed(width < 960);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const viewConfigs: ViewConfig[] = [
         {
@@ -57,22 +78,67 @@ export const SimLeagueToolkitApp = () => {
         }
     ];
 
-    const menuItems = viewConfigs.map(({label, icon, view}) => ({
+    const menuItems = viewConfigs.map(({ label, icon, view }) => ({
         label,
         icon,
-        command: () => setCurrentView(view),
+        template: (item: MenuItem, options: MenuItemOptions) => (
+            <a
+                className={options.className}
+                onClick={options.onClick}
+                data-pr-tooltip={isCollapsed ? label : undefined}
+                data-pr-position="right"
+            >
+                <span className={`${icon} ${options.iconClassName}`} />
+                <span className={options.labelClassName}>{label}</span>
+            </a>
+        ),
+        command: () => {
+            setCurrentView(view);
+            if (isMobile) {
+                setSidebarVisible(false);
+            }
+        },
     }));
 
     return (
         <PrimeReactProvider>
             <Notifications />
-            <HeaderBar/>
-            <div className='main-container'>
-                <div className='menu-container'>
-                    <Menu model={menuItems}/>
-                </div>
-                <div className='content-container'>
-                    <ContentNavigator currentView={currentView}/>
+            <HeaderBar
+                startContent={
+                    isMobile && (
+                        <Button
+                            icon="fa-solid fa-bars"
+                            onClick={() => setSidebarVisible(true)}
+                            className="p-button-text mobile-menu-toggle"
+                            aria-label="Toggle menu"
+                        />
+                    )
+                }
+            />
+            <div className="main-container">
+                <Tooltip target="[data-pr-tooltip]" showDelay={150} />
+
+                {/* Desktop/Tablet Menu */}
+                {!isMobile && (
+                    <div className={classNames('menu-container', { 'collapsed': isCollapsed })}>
+                        <Menu model={menuItems} />
+                    </div>
+                )}
+
+                {/* Mobile Sidebar */}
+                {isMobile && (
+                    <Sidebar
+                        visible={sidebarVisible}
+                        onHide={() => setSidebarVisible(false)}
+                        className="mobile-sidebar"
+                        position="left"
+                    >
+                        <Menu model={menuItems} />
+                    </Sidebar>
+                )}
+
+                <div className="content-container">
+                    <ContentNavigator currentView={currentView} />
                 </div>
             </div>
         </PrimeReactProvider>
