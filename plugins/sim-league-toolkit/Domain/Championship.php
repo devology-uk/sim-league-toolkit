@@ -82,7 +82,7 @@
       $result->setId((int)$data->id);
       $result->setAllowEntryChange($data->allowEntryChange ?? false);
       $result->setBannerImageUrl($data->bannerImageUrl);
-      $result->setChampionshipType($data->championshipType ?? ChampionshipType::Standard);
+      $result->setChampionshipType(ChampionshipType::tryFrom($data->championshipType) ?? ChampionshipType::Standard);
       $result->setDescription($data->description ?? '');
       $result->setEntryChangeLimit($data->entryChangeLimit ?? 0);
       $result->setGame($data->game ?? '');
@@ -112,7 +112,7 @@
     public static function get(int $id): Championship|null {
       $queryResult = ChampionshipRepository::getById($id);
 
-      return new Championship($queryResult);
+      return Championship::fromStdClass($queryResult);
     }
 
     /**
@@ -122,7 +122,9 @@
     public static function list(): array {
       $queryResults = ChampionshipRepository::listAll();
 
-      return self::mapChampionships($queryResults);
+      return array_map(function ($item) {
+        return Championship::fromStdClass($item);
+      }, $queryResults);
     }
 
     /**
@@ -132,7 +134,9 @@
     public static function listClasses($id): array {
       $queryResults = EventClassesRepository::listForChampionship($id);
 
-      return self::mapChampionshipEventClasses($queryResults);
+      return array_map(function(&$item) {
+        return ChampionshipEventClass::fromStdClass($item);
+      }, $queryResults);
     }
 
     /**
@@ -287,7 +291,7 @@
       return $this->trackMasterTrack ?? null;
     }
 
-    public function setTrackMasterTrack(string $value): void {
+    public function setTrackMasterTrack(?string $value): void {
       $this->trackMasterTrack = $value;
     }
 
@@ -303,7 +307,7 @@
       return $this->trackMasterTrackLayout ?? null;
     }
 
-    public function setTrackMasterTrackLayout(string $value): void {
+    public function setTrackMasterTrackLayout(?string $value): void {
       $this->trackMasterTrackLayout = $value;
     }
 
@@ -386,17 +390,5 @@
         'trackMasterTrackLayoutId' => $this->getTrackMasterTrackLayoutId(),
         'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
-    }
-
-    private static function mapChampionshipEventClasses(array $queryResults): array {
-      return array_map(function ($item) {
-        return new ChampionshipEventClass($item);
-      }, $queryResults);
-    }
-
-    private static function mapChampionships(array $queryResults): array {
-      return array_map(function ($item) {
-        return self::fromStdClass($item);
-      }, $queryResults);
     }
   }

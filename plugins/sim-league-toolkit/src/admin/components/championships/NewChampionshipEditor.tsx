@@ -51,6 +51,10 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
+        if(gameId < 1){
+            return;
+        }
+
         const game = findGame(gameId);
         setGameSupportsLayouts(game.supportsLayouts);
     }, [gameId]);
@@ -160,17 +164,17 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                 <GameSelector gameId={gameId}
                               isInvalid={validationErrors.includes('game')}
                               validationMessage={__('You must select the game that this championship will use.')}
-                              onSelectedItemChanged={(g) => onSelectedGameChanged(g.id)}/>
+                              onSelectedItemChanged={(g) => onSelectedGameChanged(g)}/>
                 {gameId !== 0 &&
                     <>
-                        <div className='flex flex-row flex-wrap justify-content-between gap-4'>
+                        <div className='flex flex-row flex-wrap justify-content-start gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <PlatformSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('platform')}
                                                   validationMessage={__(
                                                       'You must select the platform the championship will use.',
                                                       'sim-league-toolkit')}
-                                                  onSelectedItemChanged={(p) => setPlatformId(p.id)}
+                                                  onSelectedItemChanged={(p) => setPlatformId(p)}
                                                   platformId={platformId}/>
                                 <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
                                 <InputText id='championship-name' value={name}

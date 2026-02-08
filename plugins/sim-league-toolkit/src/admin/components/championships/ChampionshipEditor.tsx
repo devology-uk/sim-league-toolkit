@@ -11,6 +11,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
+import {Championship} from '../../types/Championship';
 import {ChampionshipClasses} from './ChampionshipClasses';
 import {ChampionshipEvents} from '../championshipEvents/ChampionshipEvents';
 import {ChampionshipFormData} from '../../types/ChampionshipFormData';
@@ -27,15 +28,15 @@ import {useGames} from '../../hooks/useGames';
 interface ChampionshipEditorProps {
     onSaved: () => void;
     onCancelled: () => void;
-    championshipId?: number;
+    championship?: Championship;
 }
 
 const minDate = new Date();
 
-export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: ChampionshipEditorProps) => {
+export const ChampionshipEditor = ({onSaved, onCancelled, championship}: ChampionshipEditorProps) => {
 
-    const {findChampionship, isLoading, updateChampionship} = useChampionships();
-    const {findGame} = useGames();
+    const {isLoading, updateChampionship} = useChampionships();
+    const {findGame, isLoading: gamesLoading} = useGames();
 
     const [activeTabIndex, setActiveTabIndex] = useState<number | number[]>(0);
     const [allowEntryChange, setAllowEntryChange] = useState(true);
@@ -44,7 +45,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
     const [description, setDescription] = useState('');
     const [entryChangeLimit, setEntryChangeLimit] = useState(1);
     const [gameId, setGameId] = useState(0);
-    const [gameName, setGameName] = useState('');
+    const [gameName] = useState(championship.game);
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
     const [isActive, setIsActive] = useState<boolean>(false);
     const [name, setName] = useState('');
@@ -59,11 +60,10 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        if (championshipId === 0) {
+        if (!championship) {
             return;
         }
 
-        const championship = findChampionship(championshipId);
         setAllowEntryChange(championship.allowEntryChange);
         setBannerImageUrl(championship.bannerImageUrl);
         setChampionshipType(championship.championshipType);
@@ -85,14 +85,13 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                 setTrackMasterTrackLayoutId(championship.trackMasterTrackLayoutId);
             }
         }
-    }, [championshipId]);
+    }, [championship]);
 
     useEffect(() => {
-        if (gameId < 1) {
+        if (gamesLoading || gameId < 1) {
             return;
         }
         const game = findGame(gameId);
-        setGameName(game.name);
         setGameSupportsLayouts(game.supportsLayouts);
     }, [gameId]);
 
@@ -127,7 +126,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             }
         }
 
-        await updateChampionship(championshipId, formData);
+        await updateChampionship(championship.id, formData);
 
         onSaved();
     };
@@ -178,14 +177,14 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
             <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
                 <AccordionTab header={__('Details', 'sim-league-toolkit')}>
                     <form onSubmit={onSave} noValidate>
-                        <div className='flex flex-row flex-wrap justify-content-between gap-4'>
+                        <div className='flex flex-row flex-wrap justify-content-start gap-4'>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <PlatformSelector gameId={gameId}
                                                   isInvalid={validationErrors.includes('platform')}
                                                   validationMessage={__(
                                                       'You must select the platform the championship will use.',
                                                       'sim-league-toolkit')}
-                                                  onSelectedItemChanged={(p) => setPlatformId(p.id)}
+                                                  onSelectedItemChanged={(p) => setPlatformId(p)}
                                                   platformId={platformId}/>
                                 <label htmlFor='championship-name'>{__('Name', 'sim-league-toolkit')}</label>
                                 <InputText id='championship-name' value={name}
@@ -278,10 +277,10 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championshipId = 0}: C
                     </form>
                 </AccordionTab>
                 <AccordionTab header={__('Classes', 'sim-league-toolkit')}>
-                    <ChampionshipClasses championshipId={championshipId} gameId={gameId}/>
+                    <ChampionshipClasses championshipId={championship.id} gameId={gameId}/>
                 </AccordionTab>
                 <AccordionTab header={__('Events', 'sim-league-toolkit')}>
-                    <ChampionshipEvents championshipId={championshipId} gameId={gameId}/>
+                    <ChampionshipEvents championshipId={championship.id} gameId={gameId}/>
                 </AccordionTab>
                 <AccordionTab header={__('Server', 'sim-league-toolkit')}>
                 </AccordionTab>

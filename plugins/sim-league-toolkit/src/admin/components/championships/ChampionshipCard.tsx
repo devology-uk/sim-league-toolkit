@@ -3,6 +3,7 @@ import {__} from '@wordpress/i18n';
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
 import {Championship} from '../../types/Championship';
+import {ChampionshipType} from '../../types/generated/ChampionshipType';
 
 interface ChampionshipCardProps {
     championship: Championship;
@@ -25,7 +26,7 @@ export const ChampionshipCard = ({championship, onRequestEdit, onRequestDelete}:
     );
     const header = (
         <img alt={__('Banner image', 'sim-league-toolkit')}
-             src={championship.bannerImageUrl}/>
+             src={championship.bannerImageUrl} height='168px'/>
     );
 
     return (
@@ -44,10 +45,10 @@ export const ChampionshipCard = ({championship, onRequestEdit, onRequestDelete}:
                 </tr>
                 <tr>
                     <th scope='row'>{__('Type', 'sim-league-toolkit')}</th>
-                    <td>{championship.isTrackMasterChampionship ? __('Track Master', 'sim-league-toolkit') : __('Standard',
+                    <td>{championship.championshipType === ChampionshipType.TRACK_MASTER ? __('Track Master', 'sim-league-toolkit') : __('Standard',
                                                                                                        'sim-league-toolkit')}</td>
                 </tr>
-                {championship.isTrackMasterChampionship && (
+                {championship.championshipType === ChampionshipType.TRACK_MASTER && (
                     <tr>
                         <th scope='row'>{__('Track', 'sim-league-toolkit')}</th>
                         <td>{championship.trackMasterTrack}</td>

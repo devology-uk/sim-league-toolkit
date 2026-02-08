@@ -10,6 +10,8 @@
   use SLTK\Api\Traits\HasGetById;
   use SLTK\Api\Traits\HasPost;
   use SLTK\Api\Traits\HasPut;
+  use SLTK\Core\BannerImageProvider;
+  use SLTK\Core\Enums\ChampionshipType;
   use SLTK\Domain\Championship;
   use WP_REST_Request;
   use WP_REST_Response;
@@ -63,6 +65,9 @@
       return $this->execute(function () use ($request) {
 
         $entity = $this->hydrateFromRequest(new Championship(), $request);
+        if(empty($entity->getBannerImageUrl())) {
+          $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
+        }
 
         if (!$entity->save()) {
           return ApiResponse::badRequest(esc_html__('Failed to save Championship', 'sim-league-toolkit'));
@@ -95,7 +100,7 @@
 
       $entity->setAllowEntryChange((int)$params['allowEntryChange']);
       $entity->setBannerImageUrl($params['bannerImageUrl']);
-      $entity->setChampionshipType($params['championshipType']);
+      $entity->setChampionshipType(ChampionshipType::tryFrom($params['championshipType']) ?? ChampionshipType::Standard);
       $entity->setDescription($params['description']);
       $entity->setEntryChangeLimit((bool)$params['entryChangeLimit']);
       $entity->setGameId((int)$params['gameId']);
@@ -107,8 +112,12 @@
       $entity->setScoringSetId((int)$params['scoringSetId']);
       $startDate = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $params['startDate'], new DateTimeZone('UTC'));
       $entity->setStartDate($startDate);
-      $entity->setTrackMasterTrackId((int)$params['trackMasterTrackId'] ?? null);
-      $entity->setTrackMasterTrackLayoutId((int)$params['trackMasterTrackLayoutId'] ?? null);
+      if(isset($params['trackMasterTrackId'])) {
+        $entity->setTrackMasterTrackId((int)$params['trackMasterTrackId']);
+        if(isset($params['trackMasterTrackLayoutId'])) {
+          $entity->setTrackMasterTrackLayoutId((int)$params['trackMasterTrackLayoutId']);
+        }
+      }
       $entity->setTrophiesAwarded((bool)$params['trophiesAwarded'] ?? false);
 
       return $entity;

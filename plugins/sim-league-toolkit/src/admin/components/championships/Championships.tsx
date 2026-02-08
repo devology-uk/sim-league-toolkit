@@ -12,7 +12,7 @@ import {NewChampionshipEditor} from './NewChampionshipEditor';
 import {useChampionships} from '../../hooks/useChampionships';
 
 export const Championships = () => {
-    const {championships, deleteChampionship, isLoading} = useChampionships();
+    const {championships, deleteChampionship, isLoading, refresh} = useChampionships();
 
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -52,10 +52,11 @@ export const Championships = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = () => {
+    const onEditorSaved = async () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
+        await refresh();
     };
 
     const headerTemplate = () => {
@@ -93,7 +94,7 @@ export const Championships = () => {
             }
             {isAdding && <NewChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}/>}
             {isEditing && <ChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                                              championshipId={selectedItem?.id}/>}
+                                              championship={selectedItem}/>}
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}

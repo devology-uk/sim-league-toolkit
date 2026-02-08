@@ -1,7 +1,9 @@
+import {ChampionshipType} from './generated/ChampionshipType';
+
 export interface ChampionshipFormData {
     allowEntryChange: boolean;
     bannerImageUrl: string;
-    championshipType: string;
+    championshipType: ChampionshipType;
     description: string;
     entryChangeLimit: number;
     gameId: number;
