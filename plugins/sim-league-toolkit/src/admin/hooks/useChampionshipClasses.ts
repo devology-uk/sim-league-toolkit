@@ -57,7 +57,7 @@ export const useChampionshipClasses = (championshipId: number | null): UseChampi
     }, [championshipId, refresh]);
 
     const deleteChampionshipClass = useCallback(async (id: number): Promise<boolean> => {
-        const apiResponse = await ApiClient.delete(championshipClassDeleteEndpoint(id));
+        const apiResponse = await ApiClient.delete(championshipClassDeleteEndpoint(championshipId, id));
 
         if (apiResponse.success) {
             ApiClient.showSuccess(__('Championship Class deleted successfully', 'sim-league-toolkit'));

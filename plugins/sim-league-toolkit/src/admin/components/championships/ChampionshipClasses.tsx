@@ -4,25 +4,26 @@ import {useState} from '@wordpress/element';
 import {Button} from 'primereact/button';
 import {DataView} from 'primereact/dataview';
 
+import {AvailableEventClassSelector} from './AvailableEventClassSelector';
 import {ChampionshipClass} from '../../types/ChampionshipClass';
 import {ChampionshipClassCard} from './ChampionshipClassCard';
-import {EventClassSelector} from '../eventClasses/EventClassSelector';
-import {useChampionshipClasses} from '../../hooks/useChampionshipClasses';
 import {ChampionshipClassFormData} from '../../types/ChampionshipClassFormData';
+import {useChampionshipClasses} from '../../hooks/useChampionshipClasses';
 
 interface ChampionshipClassesProps {
-    championshipId: number,
-    gameId: number,
+    championshipId: number
 }
 
-export const ChampionshipClasses = ({championshipId, gameId}: ChampionshipClassesProps) => {
-    const {championshipClasses, createChampionshipClass, deleteChampionshipClass, isLoading} = useChampionshipClasses(
+export const ChampionshipClasses = ({championshipId}: ChampionshipClassesProps) => {
+    const {championshipClasses, createChampionshipClass, deleteChampionshipClass, isLoading, refresh} = useChampionshipClasses(
         championshipId);
 
     const [selectedEventClassId, setSelectedEventClassId] = useState(0);
+    const [reloadAvailableEvents, setReloadAvailableEvents] = useState<boolean>(false);
 
     const onDelete = async (item: ChampionshipClass) => {
         await deleteChampionshipClass(item.eventClassId);
+        triggerReload()
     };
 
     const onSelectEventClass = (itemId: number) => {
@@ -35,12 +36,20 @@ export const ChampionshipClasses = ({championshipId, gameId}: ChampionshipClasse
         };
 
         await createChampionshipClass(championshipId, formData);
+        await refresh();
+        triggerReload();
     };
 
     const itemTemplate = (item: ChampionshipClass) => {
         return <ChampionshipClassCard championshipClass={item} key={item.eventClassId}
                                       onRequestDelete={onDelete}/>;
     };
+
+    const triggerReload = () => {
+        setReloadAvailableEvents(true);
+
+        setTimeout(() => setReloadAvailableEvents(false), 3000);
+    }
 
     return (
         <>
@@ -54,8 +63,7 @@ export const ChampionshipClasses = ({championshipId, gameId}: ChampionshipClasse
             </p>
 
             <div>
-                <EventClassSelector onSelectedItemChanged={onSelectEventClass} eventClassId={selectedEventClassId}
-                                    gameId={gameId}/>
+                <AvailableEventClassSelector onSelectedItemChanged={onSelectEventClass} championshipId={championshipId} reload={reloadAvailableEvents} />
                 <Button onClick={onAssignEventClass} disabled={isLoading || selectedEventClassId === 0}
                         icon='pi pi-plus' size='small'/>
             </div>

@@ -182,11 +182,11 @@
       $this->name = $value;
     }
 
-    private function setSingleCarId(int $singleCarId): void {
+    private function setSingleCarId(?int $singleCarId): void {
       $this->singleCarId = $singleCarId;
     }
 
-    private function setSingleCarName(string $value): void {
+    private function setSingleCarName(?string $value): void {
       $this->singleCarName = $value;
     }
   }

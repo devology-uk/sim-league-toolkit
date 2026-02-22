@@ -7,6 +7,8 @@
     public const string API_NAMESPACE = 'sltk/v1';
     private static array $routeMap = [
       // More specific patterns first
+      '#/' . ResourceNames::CHAMPIONSHIP_CLASS . '#' => ChampionshipClassApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/classes#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '#' => ChampionshipEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/events#' => ChampionshipEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '#' => ChampionshipApiController::class,

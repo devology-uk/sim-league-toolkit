@@ -5,6 +5,7 @@
   class ResourceNames {
     public final const string CAR = 'car';
     public final const string CHAMPIONSHIP = 'championship';
+    public final const string CHAMPIONSHIP_CLASS = 'championship-class';
     public final const string CHAMPIONSHIP_EVENT = 'championship-event';
     public final const string COUNTRY = 'country';
     public final const string DRIVER_CATEGORY = 'driver-category';

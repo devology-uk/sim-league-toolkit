@@ -78,6 +78,28 @@
      * @return stdClass[]
      * @throws Exception
      */
+    public static function listAvailableForChampionship(int $championshipId): array {
+      $tableName = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $championshipEventClassesTableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+      $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
+
+      $query = "SELECT ec.*
+                FROM $tableName ec
+                INNER JOIN $championshipsTableName c
+                ON ec.gameId = c.gameId
+                LEFT OUTER JOIN $championshipEventClassesTableName cc
+                ON c.id = cc.championshipId
+                AND ec.id = cc.eventClassId
+                WHERE c.id = $championshipId
+                AND cc.eventClassId IS NULL;";
+
+      return self::getResults($query);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
     public static function listForChampionship($id): array {
       $tableName = self::prefixedTableName(TableNames::EVENT_CLASSES);
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);

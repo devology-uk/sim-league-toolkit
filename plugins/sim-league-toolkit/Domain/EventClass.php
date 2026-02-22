@@ -17,9 +17,9 @@
     use HasIdentity;
 
     private string $carClass = '';
-    private string $driverCategory = '';
+    private ?string $driverCategory = '';
     private int $driverCategoryId = Constants::DEFAULT_ID;
-    private string $game = '';
+    private ?string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
     private bool $isBuiltIn = false;
     private bool $isSingleCarClass = false;
@@ -83,6 +83,18 @@
      */
     public static function listForGame(int $gameId): array {
       $queryResult = EventClassesRepository::listForGame($gameId);
+
+      return array_map(function (stdClass $item) {
+        return EventClass::fromStdClass($item);
+      }, $queryResult);
+    }
+
+    /**
+     * @return EventClass[]
+     * @throws Exception
+     */
+    public static function listAvailableForChampionship(int $championshipId): array {
+      $queryResult = EventClassesRepository::listAvailableForChampionship($championshipId);
 
       return array_map(function (stdClass $item) {
         return EventClass::fromStdClass($item);
@@ -216,11 +228,11 @@
       ];
     }
 
-    private function setDriverCategory(string $driverCategory): void {
+    private function setDriverCategory(?string $driverCategory): void {
       $this->driverCategory = $driverCategory;
     }
 
-    private function setGame(string $game): void {
+    private function setGame(?string $game): void {
       $this->game = $game;
     }
 
