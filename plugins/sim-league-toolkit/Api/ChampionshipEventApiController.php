@@ -11,6 +11,8 @@
   use SLTK\Api\Traits\HasPost;
   use SLTK\Api\Traits\HasPut;
   use SLTK\Core\BannerImageProvider;
+  use SLTK\Core\Constants;
+  use SLTK\Domain\Championship;
   use SLTK\Domain\ChampionshipEvent;
   use WP_REST_Request;
   use WP_REST_Response;
@@ -24,7 +26,7 @@
 
     public function registerRoutes(): void {
       $this->registerDeleteRoute();
-      $this->registerGetRoute();
+      $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/events', 'GET', [$this, 'canGet'], [$this, 'get']);
       $this->registerGetByIdRoute();
       $this->registerPostRoute();
       $this->registerPutRoute();
@@ -32,14 +34,15 @@
 
     protected function onDelete(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        ChampionshipEvent::delete($this->getId($request));
+        Championship::deleteEvent($this->getId($request));
+
         return ApiResponse::noContent();
       });
     }
 
     protected function onGet(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = ChampionshipEvent::list();
+        $data = Championship::listEvents($this->getId($request));
 
         return ApiResponse::success(
           array_map(fn($s) => $s->toDto(), $data)
@@ -49,7 +52,7 @@
 
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = ChampionshipEvent::get($this->getId($request));
+        $data = Championship::getEventById($this->getId($request));
 
         if ($data === null) {
           return ApiResponse::notFound('Championship');
@@ -93,7 +96,7 @@
     private function hydrateFromRequest(ChampionshipEvent $entity, WP_REST_Request $request): ChampionshipEvent {
       $params = $this->getParams($request);
 
-      if(empty($params['bannerImageUrl'])) {
+      if (empty($params['bannerImageUrl'])) {
         $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
       } else {
         $entity->setBannerImageUrl($params['bannerImageUrl']);

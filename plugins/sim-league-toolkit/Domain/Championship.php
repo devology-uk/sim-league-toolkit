@@ -7,6 +7,7 @@
   use Exception;
   use SLTK\Core\Constants;
   use SLTK\Core\Enums\ChampionshipType;
+  use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use SLTK\Database\Repositories\ChampionshipRepository;
   use SLTK\Database\Repositories\EventClassesRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
@@ -73,6 +74,13 @@
       ChampionshipRepository::deleteClass($championshipId, $eventClassId);
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function deleteEvent(int $eventId): void {
+      ChampionshipEventsRepository::delete($eventId);
+    }
+
     public static function fromStdClass(?stdClass $data): ?self {
       if (!$data) {
         return null;
@@ -113,6 +121,15 @@
       $queryResult = ChampionshipRepository::getById($id);
 
       return Championship::fromStdClass($queryResult);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getEventById(int $id): ChampionshipEvent|null {
+      $queryResult = ChampionshipEventsRepository::getById($id);
+
+      return ChampionshipEvent::fromStdClass($queryResult);
     }
 
     /**
