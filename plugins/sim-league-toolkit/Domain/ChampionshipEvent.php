@@ -2,6 +2,7 @@
 
   namespace SLTK\Domain;
 
+  use DateMalformedStringException;
   use DateTime;
   use DateTimeInterface;
   use DateTimeZone;
@@ -13,11 +14,10 @@
   use SLTK\Domain\Abstractions\Deletable;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
   use SLTK\Domain\Abstractions\Saveable;
-  use SLTK\Domain\Abstractions\ValueObject;
   use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class ChampionshipEvent implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable, ValueObject {
+  class ChampionshipEvent implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable {
     use HasIdentity;
 
     private string $bannerImageUrl = '';
@@ -33,6 +33,9 @@
     private ?string $trackLayout = null;
     private ?int $trackLayoutId = null;
 
+    /**
+     * @throws DateMalformedStringException
+     */
     public function __construct() {
       $this->startDateTime = new DateTime('now', new DateTimeZone('UTC'));
     }
