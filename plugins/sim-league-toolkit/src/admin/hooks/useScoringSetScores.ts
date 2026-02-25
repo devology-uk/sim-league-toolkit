@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {useState, useCallback, useEffect} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {CreateResponse} from '../types/CreateResponse';
 import {ScoringSetScore} from '../types/ScoringSetScore';
 import {ScoringSetScoreFormData} from '../types/ScoringSetScoreFormData';

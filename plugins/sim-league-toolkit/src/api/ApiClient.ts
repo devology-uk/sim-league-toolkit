@@ -3,8 +3,8 @@ import apiFetch from '@wordpress/api-fetch';
 import {dispatch} from '@wordpress/data';
 import {store as noticesStore} from '@wordpress/notices';
 
-import {ApiError} from '../types/ApiError';
-import {ApiResponse} from '../types/ApiResponse';
+import type {ApiError} from './ApiError';
+import type {ApiResponse} from './ApiResponse';
 
 const API_NAMESPACE = '/sltk/v1';
 

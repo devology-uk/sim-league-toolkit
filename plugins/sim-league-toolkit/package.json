@@ -9,6 +9,7 @@
     "start:hot": "wp-scripts start --hot --webpack-dev-server"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.91.3",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/webpack-env": "^1.18.8",
@@ -30,5 +31,8 @@
     "react-use": "^17.6.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.21"
   }
 }

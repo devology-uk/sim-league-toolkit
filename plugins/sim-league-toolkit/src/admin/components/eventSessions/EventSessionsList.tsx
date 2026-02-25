@@ -7,7 +7,7 @@ import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
 import {DataTable, DataTableRowReorderEvent} from 'primereact/datatable';
 import {Dialog} from 'primereact/dialog';
 
-import {useGameConfig} from '../../hooks/useGameConfig';
+import {useGameConfig} from '../../../features/game/hooks/useGameConfig';
 import {DynamicSessionForm} from './DynamicSessionForm';
 import {EventSession} from '../../types/EventSession';
 import {EventSessionFormData} from '../../types/EventSessionFormData';

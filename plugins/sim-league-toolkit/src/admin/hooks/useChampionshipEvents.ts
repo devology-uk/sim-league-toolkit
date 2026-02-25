@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {ChampionshipEvent} from '../types/ChampionshipEvent';
 import {ChampionshipEventFormData} from '../types/ChampionshipEventFormData';
 import {championshipEventsEndpoint, championshipEventEndpoint} from '../api/endpoints/championshipApiEndpoints';

@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {EventClass} from '../types/EventClass';
 import {championshipClassesGetAvailableEndpoint} from '../api/endpoints/championshipApiEndpoints';
 

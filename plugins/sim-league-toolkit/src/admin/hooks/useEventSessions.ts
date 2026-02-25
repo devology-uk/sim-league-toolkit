@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {CreateResponse} from '../types/CreateResponse';
 import {EventSession} from '../types/EventSession';
 import {

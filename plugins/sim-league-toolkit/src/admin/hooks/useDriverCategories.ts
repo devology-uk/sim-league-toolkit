@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {DriverCategory} from '../types/DriverCategory';
 
 import {driverCategoryGetEndpoint} from '../api/endpoints/driverCategoryGetEndpoint';

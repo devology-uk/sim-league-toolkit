@@ -13,9 +13,9 @@ import {Dialog} from 'primereact/dialog';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../games/TrackSelector';
-import {ValidationError} from '../shared/ValidationError';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
-import {useGames} from '../../hooks/useGames';
+import {useGame} from '../../../features/game';
+import {ValidationError} from '../shared/ValidationError';
 
 interface NewChampionshipEventEditorProps {
     championshipId: number;
@@ -43,7 +43,7 @@ export const NewChampionshipEventEditor = ({
                                                onCancelled
                                            }: NewChampionshipEventEditorProps) => {
     const {createChampionshipEvent, isLoading} = useChampionshipEvents(championshipId);
-    const {findGame} = useGames();
+    const {data: game, isLoading: gameIsLoading} = useGame(gameId);
 
     const [description, setDescription] = useState('');
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
@@ -55,9 +55,8 @@ export const NewChampionshipEventEditor = ({
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        const game = findGame(gameId);
         setGameSupportsLayouts(game.supportsLayouts);
-    }, [gameId]);
+    }, [game]);
 
     const onSave = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();

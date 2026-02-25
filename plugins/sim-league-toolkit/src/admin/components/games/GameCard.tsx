@@ -1,7 +1,7 @@
 import {__} from '@wordpress/i18n';
 
 import {Card} from 'primereact/card';
-import {Game} from "../../types/Game";
+import {Game} from '../../../features/game';
 
 interface GameCardProps {
     game: Game;

@@ -20,7 +20,7 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
 import {TrackSelector} from '../games/TrackSelector';
 import {useChampionships} from '../../hooks/useChampionships';
-import {useGames} from '../../hooks/useGames';
+import {useGames} from '../../../features/game/hooks/useGames';
 import {ValidationError} from '../shared/ValidationError';
 
 interface NewChampionshipEditorProps {

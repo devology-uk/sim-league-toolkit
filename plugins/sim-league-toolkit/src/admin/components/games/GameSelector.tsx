@@ -2,10 +2,9 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
-import {Game} from '../../types/Game';
 import {ListItem} from '../../types/ListItem';
+import {useGames} from '../../../features/game';
 import {ValidationError} from '../shared/ValidationError';
-import {useGames} from '../../hooks/useGames';
 
 interface GameSelectorProps {
     onSelectedItemChanged: (id: number) => void;
@@ -22,7 +21,7 @@ export const GameSelector = ({
                                  isInvalid = false,
                                  validationMessage = ''
                              }: GameSelectorProps) => {
-    const {games, isLoading} = useGames();
+    const {data, isLoading} = useGames();
 
     const [selectedItemId, setSelectedItemId] = useState(gameId);
 
@@ -38,7 +37,7 @@ export const GameSelector = ({
     const listItems: ListItem[] = [{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    } as ListItem].concat(games.map(i => ({
+    } as ListItem].concat(data.map(i => ({
         value: i.id,
         label: i.name
     })));

@@ -23,7 +23,7 @@ import {ScoringSetSelector} from '../scoringSets/ScoringSetSelector';
 import {TrackSelector} from '../games/TrackSelector';
 import {ValidationError} from '../shared/ValidationError';
 import {useChampionships} from '../../hooks/useChampionships';
-import {useGames} from '../../hooks/useGames';
+import {useGames} from '../../../features/game/hooks/useGames';
 
 interface ChampionshipEditorProps {
     onSaved: () => void;

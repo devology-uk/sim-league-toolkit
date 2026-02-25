@@ -1,5 +1,5 @@
 import {__} from '@wordpress/i18n';
-import {ChampionshipType} from '../types/generated/ChampionshipType';
+import {ChampionshipType} from '../admin/types/generated/ChampionshipType';
 
 
 export const translateChampionshipType = (championshipType: ChampionshipType): string => {

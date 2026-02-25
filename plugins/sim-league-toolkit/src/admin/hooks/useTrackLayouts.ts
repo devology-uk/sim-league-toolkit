@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {TrackLayout} from '../types/TrackLayout';
 import {trackLayoutsGetEndpoint} from '../api/endpoints/gameApiEndpoints';
 

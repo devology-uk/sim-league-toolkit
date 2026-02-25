@@ -18,7 +18,7 @@ import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../games/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
 import {ValidationError} from '../shared/ValidationError';
-import {useGames} from '../../hooks/useGames';
+import {useGames} from '../../../features/game/hooks/useGames';
 
 interface ChampionshipEventEditorProps {
     championshipEvent: ChampionshipEvent;

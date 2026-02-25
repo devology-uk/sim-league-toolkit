@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from '@wordpress/element';
 
-import {ApiClient} from '../api/ApiClient';
+import {ApiClient} from '../../api/ApiClient';
 import {Platform} from '../types/Platform';
 import {platformsGetEndpoint} from '../api/endpoints/gameApiEndpoints';
 
