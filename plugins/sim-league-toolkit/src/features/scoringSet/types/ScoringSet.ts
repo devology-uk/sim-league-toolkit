@@ -1,6 +1,6 @@
-import {Entity} from '../../types/Entity';
+import {Entity} from '../../../types/Entity';
 
-export interface ScoringSetFormData extends Entity {
+export interface ScoringSet extends Entity {
     description: string;
     isBuiltIn?: boolean;
     isInUse?: boolean;
@@ -9,3 +9,4 @@ export interface ScoringSetFormData extends Entity {
     pointsForFinishing: number;
     pointsForPole: number;
 }
+

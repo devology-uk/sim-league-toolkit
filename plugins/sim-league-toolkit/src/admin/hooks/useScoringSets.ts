@@ -3,8 +3,8 @@ import {useState, useEffect, useCallback} from '@wordpress/element';
 
 import {ApiClient} from '../../api/ApiClient';
 import {CreateResponse} from '../types/CreateResponse';
-import {ScoringSet} from '../types/ScoringSet';
-import {ScoringSetFormData} from '../types/ScoringSetFormData';
+import {ScoringSet} from '../../features/scoringSet/types/ScoringSet';
+import {ScoringSetFormData} from '../../features/scoringSet/types/ScoringSetFormData';
 import {
     scoringSetsGetEndpoint,
     scoringSetPostEndpoint,
