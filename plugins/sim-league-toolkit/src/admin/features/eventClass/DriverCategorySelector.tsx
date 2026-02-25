@@ -5,7 +5,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
 import {useDriverCategories} from '../../../features/driverCategory';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface DriverCategorySelectorProps {
     disabled?: boolean;

@@ -6,7 +6,7 @@ import {DataTable} from 'primereact/datatable';
 import {InputText} from 'primereact/inputtext';
 import {Panel} from 'primereact/panel';
 
-import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {BusyIndicator} from '../../components/BusyIndicator';
 import {ServerSetting, ServerSettingFormData, useCreateServerSetting, useServerSettingDefinitions, useServerSettings, useUpdateServerSetting} from '../../../features/server';
 
 interface ServerSettingProps {

@@ -4,7 +4,7 @@ import {useState} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 import {useEventClassesByGame} from '../../../features/eventClass';
 
 interface EventClassSelectorProps {

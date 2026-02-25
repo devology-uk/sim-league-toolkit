@@ -4,7 +4,7 @@ import {useState} from '@wordpress/element';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {BusyIndicator} from '../../components/BusyIndicator';
 import {RuleSet, useDeleteRuleSet, useRuleSets} from '../../../features/ruleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';
