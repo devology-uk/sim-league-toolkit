@@ -78,7 +78,7 @@
      * @throws Exception
      */
     public static function deleteEvent(int $eventId): void {
-      ChampionshipEventsRepository::delete($eventId);
+      ChampionshipEvent::delete($eventId);
     }
 
     public static function fromStdClass(?stdClass $data): ?self {
@@ -161,7 +161,11 @@
      * @throws Exception
      */
     public static function listEvents(int $id): array {
-      return [];
+      $queryResults = ChampionshipEventsRepository::listByChampionshipId($id);
+
+      return array_map(function ($item) {
+        return ChampionshipEvent::fromStdClass($item);
+      }, $queryResults);
     }
 
     public function getAllowEntryChange(): bool {

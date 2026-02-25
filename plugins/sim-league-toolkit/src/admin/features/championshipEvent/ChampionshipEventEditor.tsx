@@ -6,13 +6,11 @@ import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';
 import {InputText} from 'primereact/inputtext';
-import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
 import {ChampionshipEvent, ChampionshipEventFormData, useUpdateChampionshipEvent} from '../../../features/championship';
 import {Dialog} from 'primereact/dialog';
-import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
 import {useGames} from '../../../features/game';
@@ -42,11 +40,9 @@ export const ChampionshipEventEditor = ({
     const {data: games = []} = useGames();
 
     const [activeTabIndex, setActiveTabIndex] = useState<number | number[]>(0);
-    const [description, setDescription] = useState(championshipEvent.description);
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
     const [isActive, setIsActive] = useState(championshipEvent.isActive);
     const [name, setName] = useState(championshipEvent.name);
-    const [ruleSetId, setRuleSetId] = useState(championshipEvent.ruleSetId);
     const [startDateTime, setStartDateTime] = useState(new Date(championshipEvent.startDateTime));
     const [trackId, setTrackId] = useState(championshipEvent.trackId);
     const [trackLayoutId, setTrackLayoutId] = useState(championshipEvent.trackLayoutId);
@@ -67,10 +63,8 @@ export const ChampionshipEventEditor = ({
         }
 
         const formData: ChampionshipEventFormData = {
-            description,
             isActive,
             name,
-            ruleSetId,
             startDateTime: startDateTime.toISOString(),
             trackId
         };
@@ -90,10 +84,6 @@ export const ChampionshipEventEditor = ({
             errors.push('name');
         }
 
-        if (!description || description.length < 15) {
-            errors.push('description');
-        }
-
         if (trackId < 1) {
             errors.push('track');
         }
@@ -108,7 +98,7 @@ export const ChampionshipEventEditor = ({
 
     return (
         <>
-            <Dialog visible={true} onHide={onCancelled} header={__('New Championship Event', 'sim-league-toolkit')}>
+            <Dialog visible={true} onHide={onCancelled} header={__('Edit Championship Event', 'sim-league-toolkit')}>
                 <BusyIndicator isBusy={isLoading}/>
                 <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
                     <AccordionTab header={__('Details', 'sim-league-toolkit')}>
@@ -125,20 +115,6 @@ export const ChampionshipEventEditor = ({
                                         message={__('A name with at least 5 characters is required',
                                                     'sim-league-toolkit')}
                                         show={validationErrors.includes('name')}/>
-
-                                    <label
-                                        htmlFor='championship-event-description'>{__('Description',
-                                                                                     'sim-league-toolkit')}</label>
-                                    <InputTextarea id='championship-event-description' value={description}
-                                                   onChange={(e) => setDescription(e.target.value)}
-                                                   placeholder={__('Enter Brief Description', 'sim-league-toolkit')}
-                                                   rows={5} cols={40}/>
-                                    <ValidationError
-                                        message={__(
-                                            'A brief description of the event with at least 15 characters is' +
-                                            ' required.',
-                                            'sim-league-toolkit')}
-                                        show={validationErrors.includes('description')}/>
 
                                     <label
                                         htmlFor='championship-event-start-date'>{__('Start Date',
@@ -162,9 +138,6 @@ export const ChampionshipEventEditor = ({
                                                        ' must select a track layout that' +
                                                        ' will be used for the event.',
                                                        'sim-league-toolkit')}/>
-                                    <RuleSetSelector ruleSetId={ruleSetId}
-                                                     onSelectedItemChanged={setRuleSetId}
-                                                     disabled={isLoading}/>
                                     <div className='flex flex-row justify-content-between'>
                                         <label
                                             htmlFor='is-active'>{__('Active', 'sim-league-toolkit')}</label>

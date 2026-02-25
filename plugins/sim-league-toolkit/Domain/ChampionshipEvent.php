@@ -2,16 +2,57 @@
 
   namespace SLTK\Domain;
 
+  use DateTime;
+  use DateTimeInterface;
+  use DateTimeZone;
+  use Exception;
   use SLTK\Core\Constants;
-  use SLTK\Domain\Abstractions\EventBase;
+  use SLTK\Database\Repositories\ChampionshipEventsRepository;
+  use SLTK\Database\Repositories\EventRefsRepository;
+  use SLTK\Domain\Abstractions\AggregateRoot;
+  use SLTK\Domain\Abstractions\Deletable;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
+  use SLTK\Domain\Abstractions\Saveable;
   use SLTK\Domain\Abstractions\ValueObject;
+  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
-  class ChampionshipEvent extends EventBase implements ValueObject, ProvidesPersistableArray {
+  class ChampionshipEvent implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable, ValueObject {
+    use HasIdentity;
+
+    private string $bannerImageUrl = '';
     private string $championship = '';
     private int $championshipId = Constants::DEFAULT_ID;
-    private int $round = 1;
+    private ?int $eventRefId = null;
+    private bool $isActive = false;
+    private bool $isCompleted = false;
+    private string $name = '';
+    private DateTime $startDateTime;
+    private string $track = '';
+    private int $trackId = Constants::DEFAULT_ID;
+    private ?string $trackLayout = null;
+    private ?int $trackLayoutId = null;
+
+    public function __construct() {
+      $this->startDateTime = new DateTime('now', new DateTimeZone('UTC'));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function delete(int $id): void {
+      $event = self::get($id);
+
+      if ($event === null) {
+        return;
+      }
+
+      if ($event->hasEventRef()) {
+        EventRefsRepository::delete($event->getEventRefId());
+      }
+
+      ChampionshipEventsRepository::delete($id);
+    }
 
     public static function fromStdClass(?stdClass $data): ?self {
       if (!$data) {
@@ -19,16 +60,47 @@
       }
 
       $result = new self();
-      $result->hydrateFromStdClass($data);
-      $result->setChampionshipId($data->championshipId);
-      $result->setChampionship($data->championship);
-      $result->setRound($data->round);
+      $result->setId((int)$data->id);
+      $result->setEventRefId(isset($data->eventRefId) ? (int)$data->eventRefId : null);
+      $result->setChampionshipId((int)$data->championshipId);
+      $result->setTrackId((int)$data->trackId);
+      $result->setTrackLayoutId(isset($data->trackLayoutId) ? (int)$data->trackLayoutId : null);
+      $result->setName($data->name ?? '');
+      $startDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $data->startDateTime, new DateTimeZone('UTC'));
+      $result->setStartDateTime($startDateTime ?: new DateTime('now', new DateTimeZone('UTC')));
+      $result->setIsActive((bool)($data->isActive ?? false));
+      $result->setIsCompleted((bool)($data->isCompleted ?? false));
+      $result->setBannerImageUrl($data->bannerImageUrl ?? '');
+      $result->setChampionship($data->championship ?? '');
+      $result->setTrack($data->track ?? '');
+      $result->setTrackLayout($data->trackLayout ?? null);
 
       return $result;
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function get(int $id): ?self {
+      $row = ChampionshipEventsRepository::getById($id);
+
+      return self::fromStdClass($row);
+    }
+
+    public function getBannerImageUrl(): string {
+      return $this->bannerImageUrl;
+    }
+
+    public function setBannerImageUrl(string $value): void {
+      $this->bannerImageUrl = $value;
+    }
+
     public function getChampionship(): string {
       return $this->championship;
+    }
+
+    private function setChampionship(string $value): void {
+      $this->championship = $value;
     }
 
     public function getChampionshipId(): int {
@@ -39,41 +111,126 @@
       $this->championshipId = $value;
     }
 
-    public function getEventType(): string {
-      return 'championship';
+    public function getEventRefId(): ?int {
+      return $this->eventRefId;
     }
 
-    public function getRound(): int {
-      return $this->round;
+    public function setEventRefId(?int $value): void {
+      $this->eventRefId = $value;
     }
 
-    public function setRound(int $value): void {
-      $this->round = $value;
+    public function getIsActive(): bool {
+      return $this->isActive;
+    }
+
+    public function setIsActive(bool $value): void {
+      $this->isActive = $value;
+    }
+
+    public function getIsCompleted(): bool {
+      return $this->isCompleted;
+    }
+
+    public function setIsCompleted(bool $value): void {
+      $this->isCompleted = $value;
+    }
+
+    public function getName(): string {
+      return $this->name;
+    }
+
+    public function setName(string $value): void {
+      $this->name = trim($value);
+    }
+
+    public function getStartDateTime(): DateTime {
+      return $this->startDateTime;
+    }
+
+    public function setStartDateTime(DateTime $value): void {
+      $this->startDateTime = $value;
+    }
+
+    public function getTrack(): string {
+      return $this->track;
+    }
+
+    private function setTrack(string $value): void {
+      $this->track = $value;
+    }
+
+    public function getTrackId(): int {
+      return $this->trackId;
+    }
+
+    public function setTrackId(int $value): void {
+      $this->trackId = $value;
+    }
+
+    public function getTrackLayout(): ?string {
+      return $this->trackLayout;
+    }
+
+    private function setTrackLayout(?string $value): void {
+      $this->trackLayout = $value;
+    }
+
+    public function getTrackLayoutId(): ?int {
+      return $this->trackLayoutId;
+    }
+
+    public function setTrackLayoutId(?int $value): void {
+      $this->trackLayoutId = $value;
+    }
+
+    public function hasEventRef(): bool {
+      return $this->eventRefId !== null && $this->eventRefId !== Constants::DEFAULT_ID;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function save(): self {
+      if (!$this->hasId()) {
+        $eventRefId = EventRefsRepository::add('championship');
+        $this->setEventRefId($eventRefId);
+        $this->setId(ChampionshipEventsRepository::add($this->toArray()));
+      } else {
+        ChampionshipEventsRepository::update($this->getId(), $this->toArray());
+      }
+
+      return $this;
     }
 
     public function toArray(): array {
-      $result = $this->commonToArray();
-      $result['championshipId'] = $this->getChampionshipId();
-      $result['round'] = $this->getRound();
-
-      if ($this->hasId()) {
-        $result['id'] = $this->getId();
-      }
-
-      return $result;
+      return [
+        'eventRefId' => $this->getEventRefId(),
+        'championshipId' => $this->getChampionshipId(),
+        'trackId' => $this->getTrackId(),
+        'trackLayoutId' => $this->getTrackLayoutId(),
+        'name' => $this->getName(),
+        'startDateTime' => $this->getStartDateTime()->format('Y-m-d H:i:s'),
+        'isActive' => $this->getIsActive(),
+        'isCompleted' => $this->getIsCompleted(),
+        'bannerImageUrl' => $this->getBannerImageUrl(),
+      ];
     }
 
     public function toDto(): array {
-      $result = $this->commonToDto();
-      $result['eventType'] = $this->getEventType();
-      $result['championshipId'] = $this->getChampionshipId();
-      $result['championship'] = $this->getChampionship();
-      $result['round'] = $this->getRound();
-
-      return $result;
-    }
-
-    private function setChampionship(string $championship): void {
-      $this->championship = $championship;
+      return [
+        'id' => $this->getId(),
+        'eventRefId' => $this->getEventRefId(),
+        'championshipId' => $this->getChampionshipId(),
+        'trackId' => $this->getTrackId(),
+        'trackLayoutId' => $this->getTrackLayoutId(),
+        'name' => $this->getName(),
+        'startDateTime' => $this->getStartDateTime()->format(DateTimeInterface::RFC3339_EXTENDED),
+        'isActive' => $this->getIsActive(),
+        'isCompleted' => $this->getIsCompleted(),
+        'bannerImageUrl' => $this->getBannerImageUrl(),
+        'championship' => $this->getChampionship(),
+        'track' => $this->getTrack(),
+        'trackLayout' => $this->getTrackLayout(),
+      ];
     }
   }

@@ -25,7 +25,7 @@ export const PlatformSelector = ({
                                      validationMessage = ''
                                  }: PlatformSelectorProps) => {
 
-    const {data, isLoading} = usePlatforms(gameId);
+    const {data = [], isLoading} = usePlatforms(gameId);
 
     const [selectedItemId, setSelectedItemId] = useState(platformId);
 

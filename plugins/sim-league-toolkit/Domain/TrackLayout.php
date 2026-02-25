@@ -98,7 +98,7 @@
       $this->gameId = $gameId;
     }
 
-    private function setLayoutId(int $layoutId): void {
+    private function setLayoutId(string $layoutId): void {
       $this->layoutId = $layoutId;
     }
 

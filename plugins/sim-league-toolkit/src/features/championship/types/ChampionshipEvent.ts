@@ -1,17 +1,15 @@
 export interface ChampionshipEvent {
     id: number;
-    bannerImageUrl: string;
-    championship?: string;
+    eventRefId: number;
     championshipId: number;
-    description: string;
+    trackId: number;
+    trackLayoutId?: number;
+    name: string;
+    startDateTime: string;
     isActive: boolean;
     isCompleted: boolean;
-    name: string;
-    ruleSet?: string;
-    ruleSetId: number;
-    startDateTime: string;
+    bannerImageUrl: string;
+    championship?: string;
     track?: string;
-    trackId: number;
     trackLayout?: string;
-    trackLayoutId?: number;
 }

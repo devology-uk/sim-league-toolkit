@@ -33,8 +33,8 @@ export const TrackSelector = ({
                                   trackLayoutValidationMessage = ''
                               }: TrackSelectorProps) => {
 
-    const {isLoading: isLoadingTracks, data: tracks} = useTracks(gameId);
-    const {isLoading: isLoadingLayouts, data: trackLayouts} = useTrackLayouts(trackId);
+    const {isLoading: isLoadingTracks, data: tracks = []} = useTracks(gameId);
+    const {isLoading: isLoadingLayouts, data: trackLayouts = []} = useTrackLayouts(trackId);
 
     const [selectedTrackId, setSelectedTrackId] = useState(trackId);
     const [selectedTrackLayoutId, setSelectedTrackLayoutId] = useState(trackLayoutId);

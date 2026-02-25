@@ -21,7 +21,7 @@ export const GameSelector = ({
                                  isInvalid = false,
                                  validationMessage = ''
                              }: GameSelectorProps) => {
-    const {data, isLoading} = useGames();
+    const {data = [], isLoading} = useGames();
 
     const [selectedItemId, setSelectedItemId] = useState(gameId);
 

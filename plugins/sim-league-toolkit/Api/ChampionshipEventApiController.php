@@ -28,7 +28,7 @@
       $this->registerDeleteRoute();
       $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/events', 'GET', [$this, 'canGet'], [$this, 'get']);
       $this->registerGetByIdRoute();
-      $this->registerPostRoute();
+      $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/events', 'POST', [$this, 'canPost'], [$this, 'post']);
       $this->registerPutRoute();
     }
 
@@ -55,7 +55,7 @@
         $data = Championship::getEventById($this->getId($request));
 
         if ($data === null) {
-          return ApiResponse::notFound('Championship');
+          return ApiResponse::notFound('ChampionshipEvent');
         }
 
         return ApiResponse::success($data->toDto());
@@ -64,12 +64,16 @@
 
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
+        $entity = new ChampionshipEvent();
+        $entity->setChampionshipId($this->getId($request));
 
-        $entity = $this->hydrateFromRequest(new ChampionshipEvent(), $request);
+        $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to save Championship Event', 'sim-league-toolkit'));
+        if (empty($entity->getBannerImageUrl())) {
+          $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
         }
+
+        $entity->save();
 
         return ApiResponse::created($entity->getId());
       });
@@ -83,36 +87,26 @@
           return ApiResponse::notFound('ChampionshipEvent');
         }
 
-        $entity = $this->hydrateFromRequest($entity, $request);
+        $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to update Championship Event', 'sim-league-toolkit'));
-        }
+        $params = $this->getParams($request);
+        $entity->setIsActive((bool)($params['isActive'] ?? false));
+
+        $entity->save();
 
         return ApiResponse::noContent();
       });
     }
 
-    private function hydrateFromRequest(ChampionshipEvent $entity, WP_REST_Request $request): ChampionshipEvent {
+    private function hydrateFromRequest(ChampionshipEvent $entity, WP_REST_Request $request): void {
       $params = $this->getParams($request);
 
-      if (empty($params['bannerImageUrl'])) {
-        $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
-      } else {
-        $entity->setBannerImageUrl($params['bannerImageUrl']);
-      }
-      $entity->setChampionshipId((int)$params['championshipId']);
-      $entity->setDescription($params['description']);
       $entity->setName($params['name']);
-      $entity->setRuleSetId((int)$params['ruleSetId']);
-      $startDateTime = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $params['startDateTime'], new DateTimeZone('UTC'));
-      $entity->setStartDateTime($startDateTime);
       $entity->setTrackId((int)$params['trackId']);
 
-      if (isset($params['trackLayoutId'])) {
-        $entity->setTrackLayoutId($params['trackLayoutId']);
-      }
+      $startDateTime = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $params['startDateTime'], new DateTimeZone('UTC'));
+      $entity->setStartDateTime($startDateTime ?: new \DateTime('now', new DateTimeZone('UTC')));
 
-      return $entity;
+      $entity->setTrackLayoutId(isset($params['trackLayoutId']) && $params['trackLayoutId'] ? (int)$params['trackLayoutId'] : null);
     }
   }

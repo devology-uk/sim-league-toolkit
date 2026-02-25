@@ -27,7 +27,7 @@ export const CarClassSelector = ({
                                      validationMessage = ''
                                  }: CarClassSelectorProps) => {
 
-    const {data: data, isLoading} = useCarClasses(gameId);
+    const {data = [], isLoading} = useCarClasses(gameId);
 
     const [selectedItem, setSelectedItem] = useState(carClass);
 

@@ -114,7 +114,7 @@
       $this->shortName = $shortName;
     }
 
-    private function setTrackId(int $trackId): void {
+    private function setTrackId(string $trackId): void {
       $this->trackId = $trackId;
     }
 
