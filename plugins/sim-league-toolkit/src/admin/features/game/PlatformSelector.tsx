@@ -2,10 +2,10 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
+
 import {ListItem} from '../../types/ListItem';
-import {Platform} from '../../types/Platform';
-import {usePlatforms} from '../../hooks/usePlatforms';
-import {ValidationError} from '../shared/ValidationError';
+import {usePlatforms} from '../../../features/game';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface PlatformSelectorProps {
     gameId: number;
@@ -25,17 +25,13 @@ export const PlatformSelector = ({
                                      validationMessage = ''
                                  }: PlatformSelectorProps) => {
 
-    const {isLoading, platforms, refresh} = usePlatforms(gameId);
+    const {data, isLoading} = usePlatforms(gameId);
 
     const [selectedItemId, setSelectedItemId] = useState(platformId);
 
     useEffect(() => {
         setSelectedItemId(platformId);
     }, [platformId]);
-
-    useEffect(() => {
-        refresh().then(_ => {});
-    }, [gameId]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
@@ -45,7 +41,7 @@ export const PlatformSelector = ({
     const listItems: ListItem[] = ([{
         value: 0,
         label: __('Please select...', 'sim-league-toolkit')
-    }] as ListItem[]).concat(platforms.map(i => ({
+    }] as ListItem[]).concat(data.map(i => ({
         value: i.id,
         label: `${i.name}`
     })));

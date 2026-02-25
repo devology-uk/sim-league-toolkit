@@ -2,9 +2,10 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
+
 import {ListItem} from '../../types/ListItem';
-import {useCarClasses} from '../../hooks/useCarClasses';
-import {ValidationError} from '../shared/ValidationError';
+import {useCarClasses} from '../../../features/game';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 export const CAR_CLASS_SELECTOR_DEFAULT_VALUE: string = 'any';
 
@@ -26,7 +27,7 @@ export const CarClassSelector = ({
                                      validationMessage = ''
                                  }: CarClassSelectorProps) => {
 
-    const {carClasses, isLoading} = useCarClasses(gameId);
+    const {data: data, isLoading} = useCarClasses(gameId);
 
     const [selectedItem, setSelectedItem] = useState(carClass);
 
@@ -42,7 +43,7 @@ export const CarClassSelector = ({
     const listItems: ListItem[] = [{
         value: CAR_CLASS_SELECTOR_DEFAULT_VALUE,
         label: __('Please select...', 'sim-league-toolkit')
-    } as ListItem].concat(carClasses.map(i => ({
+    } as ListItem].concat(data.map(i => ({
         value: i,
         label: i
     })));

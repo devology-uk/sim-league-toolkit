@@ -1,6 +1,5 @@
 import {ApiClient} from '../../../api';
-import type {Game} from '../types/Game';
-import type {GameConfig} from '../types/GameConfig';
+import {Game, GameConfig, Car, Track, TrackLayout, Platform} from '../';
 
 const gameRootEndpoint = '/game';
 const gamesRootEndpoint = '/games';
@@ -10,6 +9,12 @@ const endpoints = {
     get: gamesRootEndpoint,
     getById: (gameId: number)=> `${gameRootEndpoint}/${gameId}`,
     getConfig: (gameKey: string) => `${gameConfigRootEndpoint}/${gameKey}`,
+    getCarClasses: (gameId: number) => `${gameRootEndpoint}/${gameId}/carClasses`,
+    getCars: (gameId: number) => `${gameRootEndpoint}/${gameId}/cars`,
+    getCarsByClass: (gameId: number, carClass: string) => `${gameRootEndpoint}/${gameId}/cars/${carClass}`,
+    getPlatforms: (gameId: number) => `${gameRootEndpoint}/${gameId}/platforms`,
+    getTracks: (gameId: number) => `${gameRootEndpoint}/${gameId}/tracks`,
+    getTrackLayouts: (trackId: number) => `${gameRootEndpoint}/tracks/${trackId}`,
 }
 
 export const gameApi = {
@@ -36,4 +41,58 @@ export const gameApi = {
         }
         return response.data;
     },
+
+    listCarClasses: async (gameId: number): Promise<string[]> => {
+        const response = await ApiClient.get<string[]>(endpoints.getCarClasses(gameId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch car classes for ${gameId}`);
+        }
+        return response.data;
+
+    },
+
+    listCars: async (gameId: number): Promise<Car[]> => {
+        const response = await ApiClient.get<Car[]>(endpoints.getCars(gameId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch cars for ${gameId}`);
+        }
+        return response.data;
+
+    },
+
+    listCarsByClass: async (gameId: number, carClass: string): Promise<Car[]> => {
+        const response = await ApiClient.get<Car[]>(endpoints.getCarsByClass(gameId, carClass));
+        if (!response.success) {
+            throw new Error(`Failed to fetch cars for ${gameId} and ${carClass}`);
+        }
+        return response.data;
+
+    },
+
+    listPlatforms: async (gameId: number): Promise<Platform[]> => {
+        const response = await ApiClient.get<Platform[]>(endpoints.getPlatforms(gameId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch platforms for ${gameId}`);
+        }
+        return response.data;
+
+    },
+
+    listTracks: async (gameId: number): Promise<Track[]> => {
+        const response = await ApiClient.get<Track[]>(endpoints.getTracks(gameId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch tracks for ${gameId}`);
+        }
+        return response.data;
+
+    },
+
+    listTrackLayouts: async (trackId: number): Promise<TrackLayout[]> => {
+        const response = await ApiClient.get<TrackLayout[]>(endpoints.getTrackLayouts(trackId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch layouts for ${trackId}`);
+        }
+        return response.data;
+
+    }
 }

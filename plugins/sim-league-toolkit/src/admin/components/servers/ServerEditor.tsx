@@ -8,8 +8,8 @@ import {InputText} from 'primereact/inputtext';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {GameSelector} from '../games/GameSelector';
-import {PlatformSelector} from '../games/PlatformSelector';
+import {GameSelector} from '../../features/game/GameSelector';
+import {PlatformSelector} from '../../features/game/PlatformSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {Server} from '../../types/Server';
 import {ServerSettingList} from './ServerSettingList';

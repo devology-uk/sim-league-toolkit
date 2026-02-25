@@ -12,7 +12,7 @@ import {DynamicSessionForm} from './DynamicSessionForm';
 import {EventSession} from '../../types/EventSession';
 import {EventSessionFormData} from '../../types/EventSessionFormData';
 import {useEventSessions} from '../../hooks/useEventSessions';
-import {SessionTypeLabels} from '../../types/generated/SessionType';
+import {SessionTypeLabels} from '../../../enums/generated/SessionType';
 
 interface EventSessionListProps {
     eventRefId: number;

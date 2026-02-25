@@ -1,4 +1,4 @@
-import {Entity} from "../../../admin/types/Entity";
+import {Entity} from "../../../types/Entity";
 
 export interface Game extends Entity {
     gameKey: string;

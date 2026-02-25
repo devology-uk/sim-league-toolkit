@@ -3,7 +3,7 @@ import {__} from '@wordpress/i18n';
 import {DataView} from 'primereact/dataview';
 import {Panel} from 'primereact/panel';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
 import {Game, useGames} from '../../../features/game';
 import {GameCard} from './GameCard';
 

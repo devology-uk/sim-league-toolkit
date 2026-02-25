@@ -4,7 +4,7 @@ import {useEffect, useState} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {ListItem} from '../../types/ListItem';
 import {useGames} from '../../../features/game';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface GameSelectorProps {
     onSelectedItemChanged: (id: number) => void;

@@ -8,12 +8,12 @@ import {InputText} from 'primereact/inputtext';
 
 import {BusySpinner} from '../shared/BusySpinner';
 import {CancelButton} from '../shared/CancelButton';
-import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../games/CarClassSelector';
-import {CarSelector} from '../games/CarSelector';
+import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../../features/game/CarClassSelector';
+import {CarSelector} from '../../features/game/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
 import {EventClass} from '../../types/EventClass';
 import {EventClassFormData} from '../../types/EventClassFormData';
-import {GameSelector} from '../games/GameSelector';
+import {GameSelector} from '../../features/game/GameSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {useEventClasses} from '../../hooks/useEventClasses';
 import {ValidationError} from '../shared/ValidationError';

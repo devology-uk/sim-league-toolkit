@@ -2,10 +2,10 @@ import {useEffect, useState} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
+
 import {ListItem} from '../../types/ListItem';
-import {useTracks} from '../../hooks/useTracks';
-import {useTrackLayouts} from '../../hooks/useTrackLayouts';
-import {ValidationError} from '../shared/ValidationError';
+import {useTracks, useTrackLayouts} from '../../../features/game';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface TrackSelectorProps {
     onSelectedTrackChanged: (itemId: number) => void;
@@ -33,8 +33,8 @@ export const TrackSelector = ({
                                   trackLayoutValidationMessage = ''
                               }: TrackSelectorProps) => {
 
-    const {isLoading: isLoadingTracks, tracks} = useTracks(gameId);
-    const {isLoading: isLoadingLayouts, trackLayouts} = useTrackLayouts(trackId);
+    const {isLoading: isLoadingTracks, data: tracks} = useTracks(gameId);
+    const {isLoading: isLoadingLayouts, data: trackLayouts} = useTrackLayouts(trackId);
 
     const [selectedTrackId, setSelectedTrackId] = useState(trackId);
     const [selectedTrackLayoutId, setSelectedTrackLayoutId] = useState(trackLayoutId);

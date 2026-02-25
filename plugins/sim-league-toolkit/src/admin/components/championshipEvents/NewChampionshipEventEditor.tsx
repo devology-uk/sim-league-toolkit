@@ -1,18 +1,18 @@
 import {__} from '@wordpress/i18n';
 import {useState, useEffect} from '@wordpress/element';
 
-import {FormEvent} from 'react';
 import {Calendar} from 'primereact/calendar';
+import {Dialog} from 'primereact/dialog';
+import {FormEvent} from 'react';
 import {InputText} from 'primereact/inputtext';
-import {InputTextarea} from 'primereact/inputtextarea';
 
+import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
-import {Dialog} from 'primereact/dialog';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {TrackSelector} from '../games/TrackSelector';
+import {TrackSelector} from '../../features/game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
 import {useGame} from '../../../features/game';
 import {ValidationError} from '../shared/ValidationError';

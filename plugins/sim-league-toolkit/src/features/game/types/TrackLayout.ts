@@ -1,4 +1,4 @@
-import {Entity} from "./Entity";
+import {Entity} from "../../../types/Entity";
 
 export interface TrackLayout extends Entity {
     corners: number;

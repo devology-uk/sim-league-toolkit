@@ -15,7 +15,7 @@ import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
 import {Dialog} from 'primereact/dialog';
 import {RuleSetSelector} from '../rules/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {TrackSelector} from '../games/TrackSelector';
+import {TrackSelector} from '../../features/game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
 import {ValidationError} from '../shared/ValidationError';
 import {useGames} from '../../../features/game/hooks/useGames';

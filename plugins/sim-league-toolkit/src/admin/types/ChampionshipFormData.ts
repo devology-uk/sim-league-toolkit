@@ -1,4 +1,4 @@
-import {ChampionshipType} from './generated/ChampionshipType';
+import {ChampionshipType} from '../../enums/generated/ChampionshipType';
 
 export interface ChampionshipFormData {
     allowEntryChange: boolean;

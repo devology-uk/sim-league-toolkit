@@ -7,8 +7,6 @@
   use SLTK\Domain\Car;
   use SLTK\Domain\EventClass;
   use SLTK\Domain\Game;
-  use SLTK\Domain\Platform;
-  use SLTK\Domain\Track;
   use WP_REST_Request;
   use WP_REST_Response;
 
@@ -17,6 +15,10 @@
 
     public function __construct() {
       parent::__construct(ResourceNames::GAME);
+    }
+
+    public function canRead(): bool {
+      return true;
     }
 
     public function listCarClasses(WP_REST_Request $request): WP_REST_Response {
@@ -85,11 +87,6 @@
       $this->registerRoute($routeBase . 'platforms', 'GET', [$this, 'canRead'], [$this, 'listPlatforms']);
       $this->registerRoute($routeBase . 'tracks', 'GET', [$this, 'canRead'], [$this, 'listTracks']);
       $this->registerRoute($this->getResourceName() . '/tracks/(?P<id>\\d+)', 'GET', [$this, 'canRead'], [$this, 'listTrackLayouts']);
-    }
-
-
-    public function canRead(): bool {
-      return true;
     }
 
     protected function onGet(WP_REST_Request $request): WP_REST_Response {

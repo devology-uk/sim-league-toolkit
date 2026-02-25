@@ -1,5 +1,5 @@
-import {Entity} from './Entity';
-import {ChampionshipType} from './generated/ChampionshipType';
+import {Entity} from '../../types/Entity';
+import {ChampionshipType} from '../../enums/generated/ChampionshipType';
 
 export interface Championship extends Entity {
     allowEntryChange: boolean;

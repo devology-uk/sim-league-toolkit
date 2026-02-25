@@ -1,5 +1,5 @@
 import {Dashboard} from './dashboard/Dashboard';
-import {Games} from './games/Games';
+import {Games} from '../features/game/Games';
 import {RuleSets} from './rules/RuleSets';
 import {Championships} from './championships/Championships';
 import {Events} from './events/Events';
