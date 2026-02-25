@@ -1,12 +1,10 @@
-import {Entity} from '../../types/Entity';
-
-export interface Server extends Entity {
+export interface Server {
+    id?: number;
     game?: string;
     gameId: number;
     gameKey?: string;
-    name: string;
     isHostedServer: boolean;
+    name: string;
     platform?: string;
     platformId: number;
 }
-
