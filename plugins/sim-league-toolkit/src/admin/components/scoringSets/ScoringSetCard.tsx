@@ -1,7 +1,7 @@
 import {Button} from 'primereact/button';
 import {__} from '@wordpress/i18n';
 import {Card} from 'primereact/card';
-import {ScoringSet} from "../../types/ScoringSet";
+import {ScoringSet} from '../../../features/scoringSet';
 
 interface ScoringSetCardProps {
     scoringSet: ScoringSet;

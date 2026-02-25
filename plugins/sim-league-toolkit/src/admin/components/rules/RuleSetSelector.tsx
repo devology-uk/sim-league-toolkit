@@ -4,7 +4,7 @@ import {useEffect, useState} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
-import {useRuleSets} from '../../hooks/useRuleSets';
+import {useRuleSets} from '../../../features/ruleSet';
 
 interface RuleSetSelectorProps {
     onSelectedItemChanged: (ruleSetId: number) => void;
@@ -13,7 +13,7 @@ interface RuleSetSelectorProps {
 }
 
 export const RuleSetSelector = ({onSelectedItemChanged, ruleSetId = 0, disabled = false}: RuleSetSelectorProps) => {
-    const {isLoading, ruleSets} = useRuleSets();
+    const {data: ruleSets = [], isLoading} = useRuleSets();
     const [selectedItemId, setSelectedItemId] = useState(ruleSetId);
 
     useEffect(() => {

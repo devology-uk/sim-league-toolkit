@@ -4,7 +4,7 @@ import {useEffect, useState} from '@wordpress/element';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
-import {useScoringSets} from '../../hooks/useScoringSets';
+import {useScoringSets} from '../../../features/scoringSet';
 import {ValidationError} from '../shared/ValidationError';
 
 interface ScoringSetSelectorProps {
@@ -22,7 +22,7 @@ export const ScoringSetSelector = ({
                                        isInvalid = false,
                                        validationMessage = ''
                                    }: ScoringSetSelectorProps) => {
-    const {scoringSets} = useScoringSets();
+    const {data: scoringSets = [], isLoading} = useScoringSets();
 
     const [selectedItemId, setSelectedItemId] = useState(scoringSetId);
 
@@ -48,7 +48,7 @@ export const ScoringSetSelector = ({
             <label htmlFor='scoring-set-selector'>{__('Scoring Set', 'sim-league-toolkit')}</label>
             <Dropdown id='scoring-set-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
-                      optionValue='value' disabled={disabled}/>
+                      optionValue='value' disabled={disabled || isLoading}/>
             <ValidationError
                 message={validationMessage}
                 show={isInvalid}/>

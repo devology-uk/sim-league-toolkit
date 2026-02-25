@@ -2,7 +2,7 @@ import {__} from '@wordpress/i18n';
 
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
-import {EventClass} from "../../types/EventClass";
+import {EventClass} from '../../../features/eventClass';
 
 interface EventClassCardProps {
     eventClass: EventClass;

@@ -3,7 +3,7 @@ import {Games} from '../features/game/Games';
 import {RuleSets} from './rules/RuleSets';
 import {Championships} from './championships/Championships';
 import {Events} from './events/Events';
-import {EventClasses} from './eventClasses/EventClasses';
+import {EventClasses} from '../features/eventClass/EventClasses';
 import {ScoringSets} from './scoringSets/ScoringSets';
 import {Servers} from './servers/Servers';
 import {ViewType} from '../types/ViewType';

@@ -2,9 +2,10 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
+
 import {ListItem} from '../../types/ListItem';
-import {useDriverCategories} from '../../hooks/useDriverCategories';
-import {ValidationError} from '../shared/ValidationError';
+import {useDriverCategories} from '../../../features/driverCategory';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface DriverCategorySelectorProps {
     disabled?: boolean;
@@ -21,7 +22,7 @@ export const DriverCategorySelector = ({
                                            isInvalid = false,
                                            validationMessage = ''
                                        }: DriverCategorySelectorProps) => {
-    const {driverCategories, isLoading} = useDriverCategories();
+    const {data = [], isLoading} = useDriverCategories();
     const [selectedItemId, setSelectedItemId] = useState(driverCategoryId);
 
     useEffect(() => {
@@ -34,7 +35,7 @@ export const DriverCategorySelector = ({
     };
 
     const listItems: ListItem[] = ([{value: 0, label: __('Please select...', 'sim-league-toolkit')} as ListItem])
-        .concat(driverCategories.map(i => ({
+        .concat(data.map(i => ({
             value: i.id,
             label: i.name
         })));

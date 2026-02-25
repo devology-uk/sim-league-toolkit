@@ -11,9 +11,7 @@ import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {SaveButton} from '../shared/SaveButton';
-import {ScoringSetScore} from '../../types/ScoringSetScore';
-import {ScoringSetScoreFormData} from '../../types/ScoringSetScoreFormData';
-import {useScoringSetScores} from '../../hooks/useScoringSetScores';
+import {ScoringSetScore, ScoringSetScoreFormData, useCreateScoringSetScore, useDeleteScoringSetScore, useScoringSetScores, useUpdateScoringSetScore} from '../../../features/scoringSet';
 import {ValidationError} from '../shared/ValidationError';
 
 interface ScoreListProps {
@@ -22,13 +20,10 @@ interface ScoreListProps {
 
 export const ScoreList = ({scoringSetId}: ScoreListProps) => {
 
-    const {
-        createScoringSetScore,
-        deleteScoringSetScore,
-        isLoading,
-        scoringSetScores,
-        updateScoringSetScore
-    } = useScoringSetScores(scoringSetId);
+    const {data: scoringSetScores = [], isLoading} = useScoringSetScores(scoringSetId);
+    const {mutateAsync: createScoringSetScore} = useCreateScoringSetScore(scoringSetId);
+    const {mutateAsync: updateScoringSetScore} = useUpdateScoringSetScore(scoringSetId);
+    const {mutateAsync: deleteScoringSetScore} = useDeleteScoringSetScore(scoringSetId);
 
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -102,9 +97,9 @@ export const ScoreList = ({scoringSetId}: ScoreListProps) => {
         };
 
         if (isEditing) {
-            await updateScoringSetScore(selectedItem.id, formData);
+            await updateScoringSetScore({id: selectedItem.id, data: formData});
         } else {
-            await createScoringSetScore(scoringSetId, formData);
+            await createScoringSetScore(formData);
         }
 
         setPoints(0);

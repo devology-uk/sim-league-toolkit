@@ -6,17 +6,15 @@ import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusySpinner} from '../shared/BusySpinner';
-import {CancelButton} from '../shared/CancelButton';
-import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../../features/game/CarClassSelector';
-import {CarSelector} from '../../features/game/CarSelector';
+import {BusySpinner} from '../../components/shared/BusySpinner';
+import {CancelButton} from '../../components/shared/CancelButton';
+import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../game/CarClassSelector';
+import {CarSelector} from '../game/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
-import {EventClass} from '../../types/EventClass';
-import {EventClassFormData} from '../../types/EventClassFormData';
-import {GameSelector} from '../../features/game/GameSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {useEventClasses} from '../../hooks/useEventClasses';
-import {ValidationError} from '../shared/ValidationError';
+import {GameSelector} from '../game/GameSelector';
+import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
+import {ValidationError} from '../../components/shared/ValidationError';
+import {EventClass, EventClassFormData, useCreateEventClass, useUpdateEventClass} from '../../../features/eventClass';
 
 interface EventClassEditorProps {
     show: boolean;
@@ -26,7 +24,9 @@ interface EventClassEditorProps {
 }
 
 export const EventClassEditor = ({show, onSaved, onCancelled, eventClass = null}: EventClassEditorProps) => {
-    const {createEventClass, isLoading, updateEventClass} = useEventClasses();
+    const {mutateAsync: createEventClass, isPending: isCreating} = useCreateEventClass();
+    const {mutateAsync: updateEventClass, isPending: isUpdating} = useUpdateEventClass();
+    const isLoading = isCreating || isUpdating;
 
     const [carClass, setCarClass] = useState(CAR_CLASS_SELECTOR_DEFAULT_VALUE);
     const [driverCategoryId, setDriverCategoryId] = useState(0);
@@ -73,13 +73,13 @@ export const EventClassEditor = ({show, onSaved, onCancelled, eventClass = null}
             gameId: gameId,
             isSingleCarClass: isSingleCarClass,
             name: name,
-            singleCarId: isSingleCarClass ? singleCarId : null,
+            singleCarId: isSingleCarClass ? singleCarId : undefined,
         };
 
         if (!eventClass) {
             await createEventClass(formData);
         } else {
-            await updateEventClass(eventClass.id, formData);
+            await updateEventClass({id: eventClass.id, data: formData});
         }
         onSaved();
         resetForm();

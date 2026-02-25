@@ -1,12 +1,11 @@
 import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
+import {useState} from '@wordpress/element';
 
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
-import {EventClass} from '../../types/EventClass';
 import {ListItem} from '../../types/ListItem';
-import {useEventClasses} from '../../hooks/useEventClasses';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/shared/ValidationError';
+import {useEventClassesByGame} from '../../../features/eventClass';
 
 interface EventClassSelectorProps {
     disabled?: boolean;
@@ -25,18 +24,8 @@ export const EventClassSelector = ({
                                        isInvalid = false,
                                        validationMessage = ''
                                    }: EventClassSelectorProps) => {
-    const {findEventClassesByGameId, isLoading} = useEventClasses();
-
-    const [items, setItems] = useState<EventClass[]>([]);
+    const {data = [], isLoading} = useEventClassesByGame(gameId);
     const [selectedItemId, setSelectedItemId] = useState(eventClassId);
-
-    useEffect(() => {
-        setItems(findEventClassesByGameId(gameId));
-    }, [gameId]);
-
-    useEffect(() => {
-        setSelectedItemId(eventClassId);
-    }, [eventClassId]);
 
     const onSelect = (e: DropdownChangeEvent) => {
         setSelectedItemId(e.target.value);
@@ -44,7 +33,7 @@ export const EventClassSelector = ({
     };
 
     const listItems: ListItem[] = ([{value: 0, label: __('Please select...', 'sim-league-toolkit')}] as ListItem[])
-        .concat(items.map(i => ({
+        .concat(data.map(i => ({
             value: i.id,
             label: i.name
         })));

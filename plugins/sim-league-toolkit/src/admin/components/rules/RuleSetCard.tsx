@@ -3,7 +3,7 @@ import {__} from '@wordpress/i18n';
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
 
-import {RuleSet} from "../../types/RuleSet";
+import {RuleSet} from '../../../features/ruleSet';
 
 interface RuleSetCardProps {
     ruleSet: RuleSet;

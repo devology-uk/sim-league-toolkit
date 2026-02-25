@@ -5,14 +5,14 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
-import {RuleSet} from '../../types/RuleSet';
+import {RuleSet, useDeleteRuleSet, useRuleSets} from '../../../features/ruleSet';
 import {RuleSetCard} from './RuleSetCard';
 import {RuleSetEditor} from './RuleSetEditor';
-import {useRuleSets} from '../../hooks/useRuleSets';
 
 export const RuleSets = () => {
 
-    const {deleteRuleSet, isLoading, refresh, ruleSets} = useRuleSets();
+    const {data: ruleSets = [], isLoading} = useRuleSets();
+    const {mutateAsync: deleteRuleSet} = useDeleteRuleSet();
 
     const [selectedItem, setSelectedItem] = useState<RuleSet>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -49,10 +49,9 @@ export const RuleSets = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = async () => {
+    const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        await refresh();
     };
 
     const headerTemplate = () => {

@@ -9,10 +9,8 @@ import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
-import {RuleSetRule} from '../../types/RuleSetRule';
-import {RuleSetRuleFormData} from '../../types/RuleSetRuleFormData';
+import {RuleSetRule, RuleSetRuleFormData, useCreateRuleSetRule, useDeleteRuleSetRule, useRuleSetRules, useUpdateRuleSetRule} from '../../../features/ruleSet';
 import {SaveButton} from '../shared/SaveButton';
-import {useRuleSetRules} from '../../hooks/useRuleSetRules';
 import {ValidationError} from '../shared/ValidationError';
 
 interface RuleListProps {
@@ -21,13 +19,10 @@ interface RuleListProps {
 
 export const RuleList = ({ruleSetId}: RuleListProps) => {
 
-    const {
-        createRuleSetRule,
-        deleteRuleSetRule,
-        isLoading,
-        ruleSetRules,
-        updateRuleSetRule
-    } = useRuleSetRules(ruleSetId);
+    const {data: ruleSetRules = [], isLoading} = useRuleSetRules(ruleSetId);
+    const {mutateAsync: createRuleSetRule} = useCreateRuleSetRule(ruleSetId);
+    const {mutateAsync: updateRuleSetRule} = useUpdateRuleSetRule(ruleSetId);
+    const {mutateAsync: deleteRuleSetRule} = useDeleteRuleSetRule(ruleSetId);
 
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -80,9 +75,9 @@ export const RuleList = ({ruleSetId}: RuleListProps) => {
         };
 
         if (isAdding) {
-            await createRuleSetRule(ruleSetId, formData);
+            await createRuleSetRule(formData);
         } else {
-            await updateRuleSetRule(selectedItem.id, formData);
+            await updateRuleSetRule({id: selectedItem.id, data: formData});
         }
 
         setRuleText('');

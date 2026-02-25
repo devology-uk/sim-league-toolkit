@@ -11,9 +11,7 @@ import {CancelButton} from '../shared/CancelButton';
 import {RuleList} from './RuleList';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ValidationError} from '../shared/ValidationError';
-import {useRuleSets} from '../../hooks/useRuleSets';
-import {RuleSetFormData} from '../../types/RuleSetFormData';
-import {RuleSet} from '../../types/RuleSet';
+import {RuleSet, RuleSetFormData, useCreateRuleSet, useUpdateRuleSet} from '../../../features/ruleSet';
 
 interface RuleSetEditorProps {
     show: boolean;
@@ -24,7 +22,9 @@ interface RuleSetEditorProps {
 
 export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSet = null}: RuleSetEditorProps) => {
 
-    const {createRuleSet, isLoading, updateRuleSet} = useRuleSets();
+    const {mutateAsync: createRuleSet, isPending: isCreating} = useCreateRuleSet();
+    const {mutateAsync: updateRuleSet, isPending: isUpdating} = useUpdateRuleSet();
+    const isLoading = isCreating || isUpdating;
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -59,7 +59,7 @@ export const RuleSetEditor = ({show, onSaved, onCancelled, ruleSet = null}: Rule
         if (!ruleSet) {
             await createRuleSet(formData);
         } else {
-            await updateRuleSet(ruleSet.id, formData);
+            await updateRuleSet({id: ruleSet.id, data: formData});
         }
 
         onSaved();

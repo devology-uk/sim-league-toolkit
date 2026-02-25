@@ -4,14 +4,14 @@ import {useState} from '@wordpress/element';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {EventClass} from '../../types/EventClass';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
 import {EventClassCard} from './EventClassCard';
 import {EventClassEditor} from './EventClassEditor';
-import {useEventClasses} from '../../hooks/useEventClasses';
+import {EventClass, useDeleteEventClass, useEventClasses} from '../../../features/eventClass';
 
 export const EventClasses = () => {
-    const {deleteEventClass, eventClasses, isLoading, refresh} = useEventClasses();
+    const {data: eventClasses = [], isLoading} = useEventClasses();
+    const {mutateAsync: deleteEventClass} = useDeleteEventClass();
 
     const [selectedItem, setSelectedItem] = useState<EventClass>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -38,7 +38,6 @@ export const EventClasses = () => {
 
     const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
-
         await deleteEventClass(selectedItem.id);
         setSelectedItem(null);
     };
@@ -48,10 +47,9 @@ export const EventClasses = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = async () => {
+    const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        await refresh();
     };
 
     const headerTemplate = () => {

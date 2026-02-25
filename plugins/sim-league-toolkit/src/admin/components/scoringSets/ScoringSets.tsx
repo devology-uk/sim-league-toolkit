@@ -7,11 +7,11 @@ import {DataView} from 'primereact/dataview';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
-import {ScoringSet} from '../../types/ScoringSet';
-import {useScoringSets} from '../../hooks/useScoringSets';
+import {ScoringSet, useDeleteScoringSet, useScoringSets} from '../../../features/scoringSet';
 
 export const ScoringSets = () => {
-    const {deleteScoringSet, isLoading, refresh, scoringSets} = useScoringSets();
+    const {data: scoringSets = [], isLoading} = useScoringSets();
+    const {mutateAsync: deleteScoringSet} = useDeleteScoringSet();
 
     const [selectedItem, setSelectedItem] = useState<ScoringSet>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -47,10 +47,9 @@ export const ScoringSets = () => {
         setSelectedItem(null);
     };
 
-    const onEditorSaved = async () => {
+    const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        await refresh();
     };
 
     const headerTemplate = () => {

@@ -6,3 +6,4 @@ export {useEventClass} from './hooks/useEventClass';
 export {useCreateEventClass} from './hooks/useCreateEventClass';
 export {useUpdateEventClass} from './hooks/useUpdateEventClass';
 export {useDeleteEventClass} from './hooks/useDeleteEventClass';
+export {useEventClassesByGame} from './hooks/useEventClassesByGame';

@@ -11,10 +11,8 @@ import {CancelButton} from '../shared/CancelButton';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
 import {ValidationError} from '../shared/ValidationError';
-import {useScoringSets} from '../../hooks/useScoringSets';
 import {FormEvent} from 'react';
-import {ScoringSetFormData} from '../../types/ScoringSetFormData';
-import {ScoringSet} from '../../types/ScoringSet';
+import {ScoringSet, ScoringSetFormData, useCreateScoringSet, useUpdateScoringSet} from '../../../features/scoringSet';
 
 interface ScoringSetEditorProps {
     show: boolean;
@@ -25,7 +23,9 @@ interface ScoringSetEditorProps {
 
 export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSet = null}: ScoringSetEditorProps) => {
 
-    const {createScoringSet, findScoringSet, isLoading, updateScoringSet} = useScoringSets();
+    const {mutateAsync: createScoringSet, isPending: isCreating} = useCreateScoringSet();
+    const {mutateAsync: updateScoringSet, isPending: isUpdating} = useUpdateScoringSet();
+    const isLoading = isCreating || isUpdating;
 
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
@@ -72,7 +72,7 @@ export const ScoringSetEditor = ({show, onSaved, onCancelled, scoringSet = null}
         if (!scoringSet) {
             await createScoringSet(formData);
         } else {
-            await updateScoringSet(scoringSet.id, formData);
+            await updateScoringSet({id: scoringSet.id, data: formData});
         }
         
         onSaved();
