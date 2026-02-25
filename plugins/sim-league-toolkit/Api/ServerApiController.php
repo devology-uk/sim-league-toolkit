@@ -83,7 +83,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Server', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success($entity);
+        return ApiResponse::noContent();
       });
     }
     private function hydrateFromRequest(Server $entity, WP_REST_Request $request): Server {

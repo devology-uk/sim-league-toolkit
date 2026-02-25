@@ -75,7 +75,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Server Setting', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success($entity);
+        return ApiResponse::noContent();
       });
     }
 

@@ -79,7 +79,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Rule Set', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success(['id' => $entity->getId()]);
+        return ApiResponse::noContent();
       });
 
     }

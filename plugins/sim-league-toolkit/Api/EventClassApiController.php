@@ -85,7 +85,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Event Class', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success(['id' => $entity->getId()]);
+        return ApiResponse::noContent();
       });
     }
 

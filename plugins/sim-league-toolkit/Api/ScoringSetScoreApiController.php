@@ -89,7 +89,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Score', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success($entity);
+        return ApiResponse::noContent();
       });
     }
 

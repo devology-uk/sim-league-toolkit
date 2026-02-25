@@ -89,7 +89,7 @@
           return ApiResponse::badRequest(esc_html__('Failed to update Championship Event', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success(['id' => $entity->getId()]);
+        return ApiResponse::noContent();
       });
     }
 
