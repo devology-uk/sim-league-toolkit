@@ -1,6 +1,5 @@
-import {Entity} from '../../types/Entity';
-
-export interface EventClass extends Entity {
+export interface EventClass {
+    id?: number;
     carClass: string;
     driverCategory?: string;
     driverCategoryId: number;
@@ -13,4 +12,3 @@ export interface EventClass extends Entity {
     singleCarId?: number;
     singleCarName?: string;
 }
-
