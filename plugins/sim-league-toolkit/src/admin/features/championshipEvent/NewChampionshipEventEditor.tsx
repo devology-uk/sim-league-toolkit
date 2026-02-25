@@ -9,10 +9,18 @@ import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
+<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championshipEvent/NewChampionshipEventEditor.tsx
 import {ChampionshipEventFormData, useCreateChampionshipEvent} from '../../../features/championship';
 import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
+========
+import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
+import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {TrackSelector} from '../game/TrackSelector';
+import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
+>>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championshipEvents/NewChampionshipEventEditor.tsx
 import {useGame} from '../../../features/game';
 import {ValidationError} from '../../components/ValidationError';
 

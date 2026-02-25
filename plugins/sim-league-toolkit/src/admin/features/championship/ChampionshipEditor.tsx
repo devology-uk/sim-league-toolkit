@@ -11,7 +11,11 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
+<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championship/ChampionshipEditor.tsx
 import {Championship, ChampionshipFormData, useUpdateChampionship} from '../../../features/championship';
+========
+import {Championship} from '../../types/Championship';
+>>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championships/ChampionshipEditor.tsx
 import {ChampionshipClasses} from './ChampionshipClasses';
 import {ChampionshipEvents} from '../championshipEvent/ChampionshipEvents';
 import {ChampionshipType, ChampionshipTypeLabels} from '../../../enums/generated/ChampionshipType';
@@ -21,7 +25,12 @@ import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {ScoringSetSelector} from '../scoringSet/ScoringSetSelector';
 import {TrackSelector} from '../game/TrackSelector';
 import {ValidationError} from '../../components/ValidationError';
+<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championship/ChampionshipEditor.tsx
 import {useGames} from '../../../features/game';
+========
+import {useChampionships} from '../../hooks/useChampionships';
+import {useGames} from '../../../features/game/hooks/useGames';
+>>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championships/ChampionshipEditor.tsx
 
 interface ChampionshipEditorProps {
     onSaved: () => void;
