@@ -6,11 +6,11 @@ import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {CancelButton} from '../../components/shared/CancelButton';
+import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
 import {ScoreList} from './ScoreList';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/shared/ValidationError';
 import {FormEvent} from 'react';
 import {ScoringSet, ScoringSetFormData, useCreateScoringSet, useUpdateScoringSet} from '../../../features/scoringSet';
 

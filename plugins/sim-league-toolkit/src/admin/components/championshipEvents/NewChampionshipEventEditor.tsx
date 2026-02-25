@@ -10,7 +10,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {BusyIndicator} from '../shared/BusyIndicator';
 import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
-import {RuleSetSelector} from '../rules/RuleSetSelector';
+import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../../features/game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';

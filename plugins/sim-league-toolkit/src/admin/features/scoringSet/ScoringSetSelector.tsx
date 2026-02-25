@@ -5,7 +5,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
 import {useScoringSets} from '../../../features/scoringSet';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface ScoringSetSelectorProps {
     onSelectedItemChanged: (item: number) => void;

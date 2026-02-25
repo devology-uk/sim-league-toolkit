@@ -7,11 +7,11 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {ListBox} from 'primereact/listbox';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {CancelButton} from '../../components/shared/CancelButton';
 import {RuleSetRule, RuleSetRuleFormData, useCreateRuleSetRule, useDeleteRuleSetRule, useRuleSetRules, useUpdateRuleSetRule} from '../../../features/ruleSet';
-import {SaveButton} from '../shared/SaveButton';
-import {ValidationError} from '../shared/ValidationError';
+import {SaveButton} from '../../components/shared/SaveButton';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface RuleListProps {
     ruleSetId: number;

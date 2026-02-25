@@ -6,11 +6,8 @@ import {DataTable} from 'primereact/datatable';
 import {InputText} from 'primereact/inputtext';
 import {Panel} from 'primereact/panel';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {getServerSettings} from './serverSettingProvider';
-import {ServerSetting} from '../../types/ServerSetting';
-import {ServerSettingFormData} from '../../types/ServerSettingFormData';
-import {useServerSettings} from '../../hooks/useServerSettings';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {ServerSetting, ServerSettingFormData, useCreateServerSetting, useServerSettingDefinitions, useServerSettings, useUpdateServerSetting} from '../../../features/server';
 
 interface ServerSettingProps {
     serverId: number;
@@ -20,17 +17,15 @@ interface ServerSettingProps {
 
 export const ServerSettingList = ({serverId, isHostedServer, gameKey}: ServerSettingProps) => {
 
-    const {createServerSetting, findServerSettingByName, isLoading, refresh, updateServerSetting} = useServerSettings(serverId);
+    const {data: serverSettings = [], isLoading} = useServerSettings(serverId);
+    const {mutateAsync: createServerSetting} = useCreateServerSetting(serverId);
+    const {mutateAsync: updateServerSetting} = useUpdateServerSetting(serverId);
+    const settingDefinitions = useServerSettingDefinitions(gameKey);
 
     const [data, setData] = useState<ServerSetting[]>([]);
 
     useEffect(() => {
-        if(isLoading) {
-            return;
-        }
-
         const settings = [];
-        const settingDefinitions = getServerSettings(gameKey);
 
         settingDefinitions.forEach((s) => {
             const setting: {
@@ -45,7 +40,7 @@ export const ServerSettingList = ({serverId, isHostedServer, gameKey}: ServerSet
                 settingValue: s.default,
                 isEditEnabled: (isHostedServer && s.editableIfHosted) || !isHostedServer
             };
-            const savedSetting = findServerSettingByName(setting.settingName);
+            const savedSetting = serverSettings.find(ss => ss.settingName === s.name);
             if (savedSetting) {
                 setting.settingValue = savedSetting.settingValue;
                 setting.id = savedSetting.id;
@@ -54,7 +49,7 @@ export const ServerSettingList = ({serverId, isHostedServer, gameKey}: ServerSet
         });
         setData(settings);
 
-    }, [serverId, gameKey, isLoading]);
+    }, [serverId, isHostedServer, settingDefinitions, serverSettings]);
 
     const valueEditor = (options: ColumnEditorOptions) => {
         if(!options.rowData['isEditEnabled']) {
@@ -85,12 +80,10 @@ export const ServerSettingList = ({serverId, isHostedServer, gameKey}: ServerSet
         };
 
         if (setting.id > 0) {
-            await updateServerSetting(serverId, formData);
+            await updateServerSetting({id: setting.id, data: formData});
         } else {
-            await createServerSetting(serverId, formData);
+            await createServerSetting(formData);
         }
-
-        await refresh();
     };
 
     return (

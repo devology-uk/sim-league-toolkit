@@ -6,16 +6,14 @@ import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
-import {GameSelector} from '../../features/game/GameSelector';
-import {PlatformSelector} from '../../features/game/PlatformSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {Server} from '../../types/Server';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {CancelButton} from '../../components/shared/CancelButton';
+import {GameSelector} from '../game/GameSelector';
+import {PlatformSelector} from '../game/PlatformSelector';
+import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
+import {Server, ServerFormData, useCreateServer, useUpdateServer} from '../../../features/server';
 import {ServerSettingList} from './ServerSettingList';
-import {ValidationError} from '../shared/ValidationError';
-import {useServers} from '../../hooks/useServers';
-import {ServerFormData} from '../../types/ServerFormData';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface ServerEditorProps {
     show: boolean;
@@ -25,7 +23,9 @@ interface ServerEditorProps {
 }
 
 export const ServerEditor = ({show, onSaved, onCancelled, server = null}: ServerEditorProps) => {
-    const {createServer, isLoading, updateServer} = useServers();
+    const {mutateAsync: createServer, isPending: isCreating} = useCreateServer();
+    const {mutateAsync: updateServer, isPending: isUpdating} = useUpdateServer();
+    const isLoading = isCreating || isUpdating;
 
     const [gameId, setGameId] = useState(0);
     const [gameKey, setGameKey] = useState('');
@@ -73,7 +73,7 @@ export const ServerEditor = ({show, onSaved, onCancelled, server = null}: Server
         if (server === null) {
             await createServer(formData);
         } else {
-            await updateServer(server.id, formData);
+            await updateServer({id: server.id, data: formData});
         }
 
         onSaved();

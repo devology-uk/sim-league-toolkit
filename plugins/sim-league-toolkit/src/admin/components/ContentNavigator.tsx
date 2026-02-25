@@ -1,11 +1,11 @@
 import {Dashboard} from './dashboard/Dashboard';
 import {Games} from '../features/game/Games';
-import {RuleSets} from './rules/RuleSets';
+import {RuleSets} from '../features/ruleSet/RuleSets';
 import {Championships} from './championships/Championships';
 import {Events} from './events/Events';
 import {EventClasses} from '../features/eventClass/EventClasses';
-import {ScoringSets} from './scoringSets/ScoringSets';
-import {Servers} from './servers/Servers';
+import {ScoringSets} from '../features/scoringSet/ScoringSets';
+import {Servers} from '../features/server/Servers';
 import {ViewType} from '../types/ViewType';
 
 interface ContentNavigatorProps {

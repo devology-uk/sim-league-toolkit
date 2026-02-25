@@ -12,5 +12,6 @@ export {useDeleteServer} from './hooks/useDeleteServer';
 
 export {useServerSettings} from './hooks/useServerSettings';
 export {useServerSetting} from './hooks/useServerSetting';
+export {useServerSettingDefinitions} from './hooks/useServerSettingDefinitions';
 export {useCreateServerSetting} from './hooks/useCreateServerSetting';
 export {useUpdateServerSetting} from './hooks/useUpdateServerSetting';

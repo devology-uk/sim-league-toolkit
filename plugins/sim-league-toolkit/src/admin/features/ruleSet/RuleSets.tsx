@@ -4,16 +4,17 @@ import {useState} from '@wordpress/element';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {Server} from '../../types/Server';
-import {ServerCard} from './ServerCard';
-import {ServerEditor} from './ServerEditor';
-import {useServers} from '../../hooks/useServers';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {RuleSet, useDeleteRuleSet, useRuleSets} from '../../../features/ruleSet';
+import {RuleSetCard} from './RuleSetCard';
+import {RuleSetEditor} from './RuleSetEditor';
 
-export const Servers = () => {
-    const {deleteServer, isLoading, refresh, servers} = useServers();
+export const RuleSets = () => {
 
-    const [selectedItem, setSelectedItem] = useState<Server>(null);
+    const {data: ruleSets = [], isLoading} = useRuleSets();
+    const {mutateAsync: deleteRuleSet} = useDeleteRuleSet();
+
+    const [selectedItem, setSelectedItem] = useState<RuleSet>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
 
@@ -21,12 +22,12 @@ export const Servers = () => {
         setShowEditor(true);
     };
 
-    const onDelete = (item: Server) => {
+    const onDelete = (item: RuleSet) => {
         setSelectedItem(item);
         setShowDeleteConfirmation(true);
     };
 
-    const onEdit = (item: Server) => {
+    const onEdit = (item: RuleSet) => {
         setSelectedItem(item);
         setShowEditor(true);
     };
@@ -39,31 +40,27 @@ export const Servers = () => {
     const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
 
-        await deleteServer(selectedItem.id);
-        await refresh();
-
+        await deleteRuleSet(selectedItem.id);
         setSelectedItem(null);
     };
 
-    const onEditorCancelled = async () => {
+    const onEditorCancelled = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        await refresh();
     };
 
-    const onEditorSaved = async () => {
+    const onEditorSaved = () => {
         setShowEditor(false);
         setSelectedItem(null);
-        await refresh();
     };
 
     const headerTemplate = () => {
         return (
             <div className='flex justify-content-between'>
-                <div>{__('Servers', 'sim-league-toolkit')}</div>
+                <div>{__('Rule Sets', 'sim-league-toolkit')}</div>
                 <div>
                     <button className='p-panel-header-icon p-link mr-2' onClick={onAdd}
-                            title={__('Add a new Server', 'sim-league-toolkit')}>
+                            title={__('Add a new Rule Set', 'sim-league-toolkit')}>
                         <span className='pi pi-plus'></span>
                     </button>
                 </div>
@@ -71,33 +68,33 @@ export const Servers = () => {
         );
     };
 
-    const itemTemplate = (item: Server) => {
-        return <ServerCard server={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>;
+    const itemTemplate = (item: RuleSet) => {
+        return <RuleSetCard ruleSet={item} key={item.id} onRequestEdit={onEdit} onRequestDelete={onDelete}/>;
     };
 
     return (
         <>
             <BusyIndicator isBusy={isLoading}/>
-            <h3>{__('Servers', 'sim-league-toolkit')}</h3>
+            <h3>{__('Rule Sets', 'sim-league-toolkit')}</h3>
             <p>
-                {__('Sim League Toolkit allows you create re-usable Servers with settings configured that can be applied to championship events or individual events, saving you time and effort avoiding the need to enter the same settings multiple times.',
+                {__('Sim League Toolkit allows you create re-usable Rule Sets that can be applied to championships or individual events, saving you time and effort avoiding the need to write them multiple times.',
                     'sim-league-toolkit')}
             </p>
             <p>
-                {__('A Server represents a game server where you host the events for your league, when you create a championship event or individual event you have the option to select the server that will host the event.',
+                {__('A Rule Set is a collection of Rules, when you create a championship or individual event you have the option to select a rule set that applies in addition to any community rules you have defined.',
                     'sim-league-toolkit')}
             </p>
             <p>
-                {__('Information to help members access the server for an event can be displayed in your web site using appropriate Gutenburg Blocks.',
+                {__('When members sign up for championships or individual events they are required to accept each set of rules.',
                     'sim-league-toolkit')}
             </p>
 
-            <DataView value={servers} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
-                      emptyMessage={__('No Servers have been defined.', 'sim-league-toolkit')}
+            <DataView value={ruleSets} itemTemplate={itemTemplate} layout='grid' header={headerTemplate()}
+                      emptyMessage={__('No Rule Sets have been defined.', 'sim-league-toolkit')}
                       style={{marginRight: '1rem'}}/>
             {showEditor &&
-                <ServerEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                              server={selectedItem}/>
+                <RuleSetEditor show={showEditor} onSaved={onEditorSaved} onCancelled={onEditorCancelled}
+                               ruleSet={selectedItem}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
@@ -107,7 +104,7 @@ export const Servers = () => {
                                acceptLabel={__('Yes', 'sim-league-toolkit)')}
                                rejectLabel={__('No', 'sim-league-toolkit')}
                                message={__('Deleting', 'sim-league-toolkit') + ' ' + selectedItem.name + ' ' + __(
-                                   'will remove any links to events!!.  Do you wish to delete ',
+                                   'will remove any links to championships or individual events!!.  Do you wish to delete ',
                                    'sim-league-toolkit') + ' ' + selectedItem.name + '?'}
                                style={{maxWidth: '50%'}}/>
             }

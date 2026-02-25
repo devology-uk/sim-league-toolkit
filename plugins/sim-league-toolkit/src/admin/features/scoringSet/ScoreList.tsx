@@ -8,11 +8,11 @@ import {DataTable} from 'primereact/datatable';
 import {InputNumber} from 'primereact/inputnumber';
 import {Panel, PanelHeaderTemplateOptions} from 'primereact/panel';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
-import {SaveButton} from '../shared/SaveButton';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {CancelButton} from '../../components/shared/CancelButton';
+import {SaveButton} from '../../components/shared/SaveButton';
 import {ScoringSetScore, ScoringSetScoreFormData, useCreateScoringSetScore, useDeleteScoringSetScore, useScoringSetScores, useUpdateScoringSetScore} from '../../../features/scoringSet';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/shared/ValidationError';
 
 interface ScoreListProps {
     scoringSetId: number;

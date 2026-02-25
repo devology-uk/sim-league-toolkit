@@ -13,7 +13,7 @@ import {CancelButton} from '../shared/CancelButton';
 import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
 import {Dialog} from 'primereact/dialog';
-import {RuleSetSelector} from '../rules/RuleSetSelector';
+import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
 import {SaveSubmitButton} from '../shared/SaveSubmitButton';
 import {TrackSelector} from '../../features/game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';

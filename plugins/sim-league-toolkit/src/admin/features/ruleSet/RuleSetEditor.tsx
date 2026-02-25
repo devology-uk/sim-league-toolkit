@@ -6,11 +6,11 @@ import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {CancelButton} from '../../components/shared/CancelButton';
 import {RuleList} from './RuleList';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {ValidationError} from '../shared/ValidationError';
+import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
+import {ValidationError} from '../../components/shared/ValidationError';
 import {RuleSet, RuleSetFormData, useCreateRuleSet, useUpdateRuleSet} from '../../../features/ruleSet';
 
 interface RuleSetEditorProps {
