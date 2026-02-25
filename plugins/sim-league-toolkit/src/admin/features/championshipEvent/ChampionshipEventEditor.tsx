@@ -10,24 +10,13 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
-<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championshipEvent/ChampionshipEventEditor.tsx
 import {ChampionshipEvent, ChampionshipEventFormData, useUpdateChampionshipEvent} from '../../../features/championship';
-========
-import {ChampionshipEvent} from '../../types/ChampionshipEvent';
-import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
->>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championshipEvents/ChampionshipEventEditor.tsx
 import {Dialog} from 'primereact/dialog';
 import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
-<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championshipEvent/ChampionshipEventEditor.tsx
 import {useGames} from '../../../features/game';
 import {ValidationError} from '../../components/ValidationError';
-========
-import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
-import {ValidationError} from '../../components/ValidationError';
-import {useGames} from '../../../features/game/hooks/useGames';
->>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championshipEvents/ChampionshipEventEditor.tsx
 
 interface ChampionshipEventEditorProps {
     championshipEvent: ChampionshipEvent;

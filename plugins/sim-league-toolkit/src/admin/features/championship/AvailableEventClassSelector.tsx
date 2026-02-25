@@ -3,10 +3,7 @@ import {DropdownChangeEvent, Dropdown} from 'primereact/dropdown';
 import {ListItem} from '../../types/ListItem';
 import {__} from '@wordpress/i18n';
 import {ValidationError} from '../../components/ValidationError';
-<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championship/AvailableEventClassSelector.tsx
 import {useAvailableChampionshipClasses} from '../../../features/championship';
-========
->>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championships/AvailableEventClassSelector.tsx
 
 interface AvailableEventClassSelectorProps {
     championshipId: number;

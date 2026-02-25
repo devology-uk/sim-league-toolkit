@@ -5,11 +5,7 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
-<<<<<<<< HEAD:plugins/sim-league-toolkit/src/admin/features/championshipEvent/ChampionshipEvents.tsx
 import {ChampionshipEvent, useChampionshipEvents, useDeleteChampionshipEvent} from '../../../features/championship';
-========
-import {ChampionshipEvent} from '../../types/ChampionshipEvent';
->>>>>>>> 296a59c8d227e3a0bd5351d4345008cdb62b384f:plugins/sim-league-toolkit/src/admin/features/championshipEvents/ChampionshipEvents.tsx
 import {ChampionshipEventCard} from './ChampionshipEventCard';
 import {ChampionshipEventEditor} from './ChampionshipEventEditor';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
