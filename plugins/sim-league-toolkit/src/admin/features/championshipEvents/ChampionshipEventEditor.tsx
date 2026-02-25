@@ -8,16 +8,16 @@ import {Checkbox} from 'primereact/checkbox';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/BusyIndicator';
+import {CancelButton} from '../../components/CancelButton';
 import {ChampionshipEvent} from '../../types/ChampionshipEvent';
 import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
 import {Dialog} from 'primereact/dialog';
-import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {TrackSelector} from '../../features/game/TrackSelector';
+import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {TrackSelector} from '../game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 import {useGames} from '../../../features/game/hooks/useGames';
 
 interface ChampionshipEventEditorProps {

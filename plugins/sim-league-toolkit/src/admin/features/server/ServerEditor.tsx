@@ -6,14 +6,14 @@ import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusyIndicator} from '../../components/shared/BusyIndicator';
-import {CancelButton} from '../../components/shared/CancelButton';
+import {BusyIndicator} from '../../components/BusyIndicator';
+import {CancelButton} from '../../components/CancelButton';
 import {GameSelector} from '../game/GameSelector';
 import {PlatformSelector} from '../game/PlatformSelector';
-import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {Server, ServerFormData, useCreateServer, useUpdateServer} from '../../../features/server';
 import {ServerSettingList} from './ServerSettingList';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface ServerEditorProps {
     show: boolean;

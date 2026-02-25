@@ -8,20 +8,20 @@ import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/BusyIndicator';
+import {CancelButton} from '../../components/CancelButton';
 import {Championship} from '../../types/Championship';
 import {ChampionshipType} from '../../../enums/generated/ChampionshipType';
 import {ChampionshipTypeSelector} from './ChampionshipTypeSelector';
-import {GameSelector} from '../../features/game/GameSelector';
-import {PlatformSelector} from '../../features/game/PlatformSelector';
-import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {ScoringSetSelector} from '../../features/scoringSet/ScoringSetSelector';
-import {TrackSelector} from '../../features/game/TrackSelector';
+import {GameSelector} from '../game/GameSelector';
+import {PlatformSelector} from '../game/PlatformSelector';
+import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {ScoringSetSelector} from '../scoringSet/ScoringSetSelector';
+import {TrackSelector} from '../game/TrackSelector';
 import {useChampionships} from '../../hooks/useChampionships';
 import {useGames} from '../../../features/game/hooks/useGames';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface NewChampionshipEditorProps {
     onSaved: () => void;

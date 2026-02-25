@@ -4,7 +4,7 @@ import {EventClass} from '../../types/EventClass';
 import {DropdownChangeEvent, Dropdown} from 'primereact/dropdown';
 import {ListItem} from '../../types/ListItem';
 import {__} from '@wordpress/i18n';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface AvailableEventClassSelectorProps {
     championshipId: number;

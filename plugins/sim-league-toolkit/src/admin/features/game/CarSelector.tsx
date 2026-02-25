@@ -5,7 +5,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {Car, useCars} from '../../../features/game';
 import {ListItem} from '../../types/ListItem';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface CarSelectorProps {
     gameId: number;

@@ -6,14 +6,14 @@ import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 
-import {BusySpinner} from '../../components/shared/BusySpinner';
-import {CancelButton} from '../../components/shared/CancelButton';
+import {BusySpinner} from '../../components/BusySpinner';
+import {CancelButton} from '../../components/CancelButton';
 import {CAR_CLASS_SELECTOR_DEFAULT_VALUE, CarClassSelector} from '../game/CarClassSelector';
 import {CarSelector} from '../game/CarSelector';
 import {DriverCategorySelector} from './DriverCategorySelector';
 import {GameSelector} from '../game/GameSelector';
-import {SaveSubmitButton} from '../../components/shared/SaveSubmitButton';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {ValidationError} from '../../components/ValidationError';
 import {EventClass, EventClassFormData, useCreateEventClass, useUpdateEventClass} from '../../../features/eventClass';
 
 interface EventClassEditorProps {

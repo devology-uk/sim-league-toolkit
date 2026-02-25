@@ -7,15 +7,15 @@ import {FormEvent} from 'react';
 import {InputText} from 'primereact/inputtext';
 
 import {InputTextarea} from 'primereact/inputtextarea';
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/BusyIndicator';
+import {CancelButton} from '../../components/CancelButton';
 import {ChampionshipEventFormData} from '../../types/ChampionshipEventFormData';
-import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {TrackSelector} from '../../features/game/TrackSelector';
+import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {TrackSelector} from '../game/TrackSelector';
 import {useChampionshipEvents} from '../../hooks/useChampionshipEvents';
 import {useGame} from '../../../features/game';
-import {ValidationError} from '../shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface NewChampionshipEventEditorProps {
     championshipId: number;

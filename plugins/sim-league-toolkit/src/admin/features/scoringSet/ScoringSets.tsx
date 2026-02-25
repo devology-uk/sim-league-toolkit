@@ -4,7 +4,7 @@ import {useState} from '@wordpress/element';
 import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
-import {BusyIndicator} from '../../components/shared/BusyIndicator';
+import {BusyIndicator} from '../../components/BusyIndicator';
 import {ScoringSetCard} from './ScoringSetCard';
 import {ScoringSetEditor} from './ScoringSetEditor';
 import {ScoringSet, useDeleteScoringSet, useScoringSets} from '../../../features/scoringSet';

@@ -9,19 +9,19 @@ import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
 import {InputTextarea} from 'primereact/inputtextarea';
 
-import {BusyIndicator} from '../shared/BusyIndicator';
-import {CancelButton} from '../shared/CancelButton';
+import {BusyIndicator} from '../../components/BusyIndicator';
+import {CancelButton} from '../../components/CancelButton';
 import {Championship} from '../../types/Championship';
 import {ChampionshipClasses} from './ChampionshipClasses';
 import {ChampionshipEvents} from '../championshipEvents/ChampionshipEvents';
 import {ChampionshipFormData} from '../../types/ChampionshipFormData';
 import {ChampionshipType, ChampionshipTypeLabels} from '../../../enums/generated/ChampionshipType';
-import {PlatformSelector} from '../../features/game/PlatformSelector';
-import {RuleSetSelector} from '../../features/ruleSet/RuleSetSelector';
-import {SaveSubmitButton} from '../shared/SaveSubmitButton';
-import {ScoringSetSelector} from '../../features/scoringSet/ScoringSetSelector';
-import {TrackSelector} from '../../features/game/TrackSelector';
-import {ValidationError} from '../shared/ValidationError';
+import {PlatformSelector} from '../game/PlatformSelector';
+import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
+import {SaveSubmitButton} from '../../components/SaveSubmitButton';
+import {ScoringSetSelector} from '../scoringSet/ScoringSetSelector';
+import {TrackSelector} from '../game/TrackSelector';
+import {ValidationError} from '../../components/ValidationError';
 import {useChampionships} from '../../hooks/useChampionships';
 import {useGames} from '../../../features/game/hooks/useGames';
 

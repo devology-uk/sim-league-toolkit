@@ -5,7 +5,7 @@ import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {ListItem} from '../../types/ListItem';
 import {useTracks, useTrackLayouts} from '../../../features/game';
-import {ValidationError} from '../../components/shared/ValidationError';
+import {ValidationError} from '../../components/ValidationError';
 
 interface TrackSelectorProps {
     onSelectedTrackChanged: (itemId: number) => void;
