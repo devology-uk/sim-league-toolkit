@@ -7,11 +7,17 @@ import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
 import {DataTable, DataTableRowReorderEvent} from 'primereact/datatable';
 import {Dialog} from 'primereact/dialog';
 
-import {useGameConfig} from '../../../features/game/hooks/useGameConfig';
+import {useGameConfig} from '../../../features/game';
 import {DynamicSessionForm} from './DynamicSessionForm';
-import {EventSession} from '../../types/EventSession';
-import {EventSessionFormData} from '../../types/EventSessionFormData';
-import {useEventSessions} from '../../hooks/useEventSessions';
+import {
+    EventSession,
+    EventSessionFormData,
+    useCreateEventSession,
+    useDeleteEventSession,
+    useEventSessions,
+    useReorderEventSessions,
+    useUpdateEventSession,
+} from '../../../features/eventSession';
 import {SessionTypeLabels} from '../../../enums/generated/SessionType';
 
 interface EventSessionListProps {
@@ -20,20 +26,17 @@ interface EventSessionListProps {
 }
 
 export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) => {
-    const {
-        createEventSession,
-        deleteEventSession,
-        eventSessions,
-        isLoading,
-        reorderEventSessions,
-        updateEventSession,
-    } = useEventSessions(eventRefId);
+    const {data: eventSessions = [], isLoading} = useEventSessions(eventRefId);
+    const {mutateAsync: createEventSession, isPending: isCreating} = useCreateEventSession(eventRefId);
+    const {mutateAsync: updateEventSession, isPending: isUpdating} = useUpdateEventSession(eventRefId);
+    const {mutateAsync: deleteEventSession} = useDeleteEventSession(eventRefId);
+    const {mutateAsync: reorderEventSessions} = useReorderEventSessions(eventRefId);
 
-    const {config: gameConfig} = useGameConfig(gameId);
+    const {data: gameConfig} = useGameConfig(gameId);
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [editingSession, setEditingSession] = useState<EventSession | null>(null);
-    const [saving, setSaving] = useState(false);
+    const saving = isCreating || isUpdating;
 
     const openCreateDialog = () => {
         setEditingSession(null);
@@ -51,18 +54,12 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
     };
 
     const handleSubmit = async (data: EventSessionFormData) => {
-        setSaving(true);
-
-        try {
-            if (editingSession?.id) {
-                await updateEventSession(editingSession.id, data);
-            } else {
-                await createEventSession(data);
-            }
-            closeDialog();
-        } finally {
-            setSaving(false);
+        if (editingSession?.id) {
+            await updateEventSession({id: editingSession.id, data});
+        } else {
+            await createEventSession(data);
         }
+        closeDialog();
     };
 
     const handleDelete = (session: EventSession) => {
@@ -71,20 +68,20 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                           header: __('Confirm Delete', 'sim-league-toolkit'),
                           icon: 'pi pi-exclamation-triangle',
                           acceptClassName: 'p-button-danger',
-                          accept: async () => {
+                          accept: () => {
                               if (session.id) {
-                                  await deleteEventSession(session.id);
+                                  deleteEventSession(session.id).then(() => {});
                               }
                           },
                       });
     };
 
-    const handleReorder = async (e: DataTableRowReorderEvent<EventSession[]>) => {
+    const handleReorder = (e: DataTableRowReorderEvent<EventSession[]>) => {
         const reorderedSessions = e.value;
         const sessionIds = reorderedSessions
             .map((s) => s.id)
             .filter((id): id is number => id !== undefined);
-        await reorderEventSessions(sessionIds);
+        reorderEventSessions(sessionIds).then(() => {});
     };
 
     const sessionTypeTemplate = (rowData: EventSession) => {
@@ -168,7 +165,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                 <DynamicSessionForm
                     eventRefId={eventRefId}
                     gameId={gameId}
-                    gameConfig={gameConfig}
+                    gameConfig={gameConfig ?? null}
                     initialData={editingSession ?? undefined}
                     onSubmit={handleSubmit}
                     onCancel={closeDialog}

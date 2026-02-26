@@ -1,4 +1,6 @@
 {
+  "gameId": "acc",
+  "gameName": "Assetto Corsa Competizione",
   "serverSettings": [
     {"name": "tcpPort", "default": 9201, "canEditIfHosted": false},
     {"name": "udpPort", "default": 9201, "canEditIfHosted": false},
@@ -15,5 +17,8 @@
     {"name": "randomizeTrackWhenEmpty", "default": 1, "canEditIfHosted": true},
     {"name": "registerToLobby", "default": 1, "canEditIfHosted": true},
     {"name": "serverName", "default": "", "canEditIfHosted": true}
-  ]
+  ],
+  "sessionTypes": {
+
+  }
 }

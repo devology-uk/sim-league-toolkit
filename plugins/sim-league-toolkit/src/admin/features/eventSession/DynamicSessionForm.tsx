@@ -8,8 +8,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 
-import {GameConfig} from '../../../features/game/types/GameConfig';
-import {EventSessionFormData} from '../../types/EventSessionFormData';
+import {GameConfig} from '../../../features/game';
+import {EventSessionFormData} from '../../../features/eventSession';
 import {FieldDefinition} from '../../types/FieldDefinition';
 import {SessionType, SessionTypeOptions} from '../../../enums/generated/SessionType';
 

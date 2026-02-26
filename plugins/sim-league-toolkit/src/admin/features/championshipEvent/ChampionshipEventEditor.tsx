@@ -11,6 +11,7 @@ import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
 import {ChampionshipEvent, ChampionshipEventFormData, useUpdateChampionshipEvent} from '../../../features/championship';
 import {Dialog} from 'primereact/dialog';
+import {EventSessionList} from '../eventSession/EventSessionsList';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
 import {useGames} from '../../../features/game';
@@ -152,7 +153,10 @@ export const ChampionshipEventEditor = ({
                         </form>
                     </AccordionTab>
                     <AccordionTab header={__('Sessions', 'sim-league-toolkit')}>
-
+                        <EventSessionList
+                            eventRefId={championshipEvent.eventRefId}
+                            gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
+                        />
                     </AccordionTab>
                 </Accordion>
 
