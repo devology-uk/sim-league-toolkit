@@ -12,7 +12,7 @@
     {
       if (!isset(self::$cache[$gameKey]))
       {
-        $path = SLTK_PLUGIN_DIR . '/Config/' . strtolower($gameKey) . '.json';
+        $path = SLTK_PLUGIN_DIR . '/Config/' . $gameKey . '.json';
 
         if (!file_exists($path))
         {
