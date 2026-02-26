@@ -1,5 +1,5 @@
 {
-  "gameId": "acc",
+  "gameId": "ACC",
   "gameName": "Assetto Corsa Competizione",
   "serverSettings": [
     {"name": "tcpPort", "default": 9201, "canEditIfHosted": false},
