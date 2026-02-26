@@ -12,7 +12,7 @@
     {
       if (!isset(self::$cache[$gameKey]))
       {
-        $path = SLTK_PLUGIN_DIR . "/config/games/{$gameKey}.json";
+        $path = SLTK_PLUGIN_DIR . '/Config/' . strtolower($gameKey) . '.json';
 
         if (!file_exists($path))
         {
@@ -28,7 +28,7 @@
     public static function getAvailableGames(): array
     {
       $games = [];
-      $configDir = SLTK_PLUGIN_DIR . '/config/games/';
+      $configDir = SLTK_PLUGIN_DIR . '/Config/';
 
       foreach (glob($configDir . '*.json') as $file)
       {

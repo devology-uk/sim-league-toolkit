@@ -7,6 +7,8 @@ import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
 import {DataTable, DataTableRowReorderEvent} from 'primereact/datatable';
 import {Dialog} from 'primereact/dialog';
 
+import {Tooltip} from 'primereact/tooltip';
+
 import {useGameConfig} from '../../../features/game';
 import {DynamicSessionForm} from './DynamicSessionForm';
 import {
@@ -18,7 +20,7 @@ import {
     useReorderEventSessions,
     useUpdateEventSession,
 } from '../../../features/eventSession';
-import {SessionTypeLabels} from '../../../enums/generated/SessionType';
+import {SessionType, SessionTypeLabels} from '../../../enums/generated/SessionType';
 
 interface EventSessionListProps {
     eventRefId: number;
@@ -36,6 +38,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [editingSession, setEditingSession] = useState<EventSession | null>(null);
+    const [isQuickAdding, setIsQuickAdding] = useState(false);
     const saving = isCreating || isUpdating;
 
     const openCreateDialog = () => {
@@ -51,6 +54,24 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
     const closeDialog = () => {
         setDialogVisible(false);
         setEditingSession(null);
+    };
+
+    const handleQuickAdd = async () => {
+        const baseOrder = eventSessions.length;
+        const quickSessions = [
+            {name: SessionTypeLabels[SessionType.PRACTICE], sessionType: SessionType.PRACTICE, sortOrder: baseOrder},
+            {name: SessionTypeLabels[SessionType.QUALIFYING], sessionType: SessionType.QUALIFYING, sortOrder: baseOrder + 1},
+            {name: SessionTypeLabels[SessionType.RACE], sessionType: SessionType.RACE, sortOrder: baseOrder + 2},
+        ];
+
+        setIsQuickAdding(true);
+        try {
+            for (const session of quickSessions) {
+                await createEventSession({eventRefId, gameId, attributes: {}, ...session});
+            }
+        } finally {
+            setIsQuickAdding(false);
+        }
     };
 
     const handleSubmit = async (data: EventSessionFormData) => {
@@ -84,12 +105,39 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
         reorderEventSessions(sessionIds).then(() => {});
     };
 
+    const tableHeader = () => (
+        <div className='flex justify-content-between align-items-center'>
+            <span>{__('Sessions', 'sim-league-toolkit')}</span>
+            <div className='flex align-items-center gap-1'>
+                <Tooltip target='.quick-add-sessions-info' position='top'/>
+                <i
+                    className='pi pi-info-circle quick-add-sessions-info'
+                    data-pr-tooltip={__('Adds Practice, Qualifying and Race sessions with default values', 'sim-league-toolkit')}
+                    style={{cursor: 'default'}}
+                />
+                <button
+                    type='button'
+                    className='p-panel-header-icon p-link'
+                    onClick={handleQuickAdd}
+                    disabled={isQuickAdding}
+                    title={__('Quick Add Sessions', 'sim-league-toolkit')}
+                >
+                    <span className={isQuickAdding ? 'pi pi-spin pi-spinner' : 'pi pi-bolt'}></span>
+                </button>
+                <button
+                    type='button'
+                    className='p-panel-header-icon p-link'
+                    onClick={openCreateDialog}
+                    title={__('Add Session', 'sim-league-toolkit')}
+                >
+                    <span className='pi pi-plus'></span>
+                </button>
+            </div>
+        </div>
+    );
+
     const sessionTypeTemplate = (rowData: EventSession) => {
         return SessionTypeLabels[rowData.sessionType] ?? rowData.sessionType;
-    };
-
-    const durationTemplate = (rowData: EventSession) => {
-        return `${rowData.duration} ${__('min', 'sim-league-toolkit')}`;
     };
 
     const actionsTemplate = (rowData: EventSession) => {
@@ -119,18 +167,10 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
         <div className='event-session-list'>
             <ConfirmDialog/>
 
-            <div className='flex justify-content-between align-items-center mb-3'>
-                <h3>{__('Sessions', 'sim-league-toolkit')}</h3>
-                <Button
-                    label={__('Add Session', 'sim-league-toolkit')}
-                    icon='pi pi-plus'
-                    onClick={openCreateDialog}
-                />
-            </div>
-
             <DataTable
                 value={eventSessions}
                 loading={isLoading}
+                header={tableHeader}
                 reorderableRows
                 onRowReorder={handleReorder}
                 emptyMessage={__('No sessions defined', 'sim-league-toolkit')}
@@ -141,12 +181,6 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                     field='sessionType'
                     header={__('Type', 'sim-league-toolkit')}
                     body={sessionTypeTemplate}
-                />
-                <Column field='startTime' header={__('Start Time', 'sim-league-toolkit')}/>
-                <Column
-                    field='duration'
-                    header={__('Duration', 'sim-league-toolkit')}
-                    body={durationTemplate}
                 />
                 <Column body={actionsTemplate} style={{width: '8rem'}}/>
             </DataTable>

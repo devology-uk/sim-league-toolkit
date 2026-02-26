@@ -14,14 +14,12 @@
     use HasIdentity;
 
     private array $attributes = [];
-    private int $duration = 15;
     private int $eventRefId = Constants::DEFAULT_ID;
     private string $eventType = '';
     private string $gameId = '';
     private string $name = '';
     private string $sessionType = '';
     private int $sortOrder = 0;
-    private string $startTime = '08:00';
 
     public static function fromStdClass(?stdClass $data): ?self {
       if(!$data) {
@@ -33,9 +31,7 @@
       $result->setEventRefId($data->eventRefId ?? Constants::DEFAULT_ID);
       $result->setName($data->name ?? '');
       $result->setSessionType($data->sessionType ?? '');
-      $result->setStartTime($data->startTime ?? '');
-      $result->setDuration($data->duration ?? 15);
-      $result->setSortOrder($data->order ?? 0);
+      $result->setSortOrder($data->sortOrder ?? 0);
       $result->setGameId($data->gameId ?? '');
       $result->setEventType($data->eventType ?? '');
       $result->setAttributes($result->hydrateAttributes($data->attributes ?? []));
@@ -53,14 +49,6 @@
 
     public function setAttributes(array $value): void {
       $this->attributes = $value;
-    }
-
-    public function getDuration(): int {
-      return $this->duration;
-    }
-
-    public function setDuration(int $value): void {
-      $this->duration = $value;
     }
 
     public function getEventRefId(): int {
@@ -107,14 +95,6 @@
       $this->sortOrder = $value;
     }
 
-    public function getStartTime(): string {
-      return $this->startTime;
-    }
-
-    public function setStartTime(string $value): void {
-      $this->startTime = $value;
-    }
-
     public function removeAttribute(string $key): void {
       unset($this->attributes[$key]);
     }
@@ -128,9 +108,8 @@
         'eventRefId' => $this->getEventRefId(),
         'name' => $this->getName(),
         'sessionType' => $this->getSessionType(),
-        'startTime' => $this->getStartTime(),
-        'duration' => $this->getDuration(),
         'sortOrder' => $this->getSortOrder(),
+        'attributes' => $this->getAttributes(),
       ];
     }
 
@@ -141,8 +120,6 @@
         'eventType' => $this->getEventType(),
         'name' => $this->getName(),
         'sessionType' => $this->getSessionType(),
-        'startTime' => $this->getStartTime(),
-        'duration' => $this->getDuration(),
         'sortOrder' => $this->getSortOrder(),
         'attributes' => $this->getAttributes(),
       ];

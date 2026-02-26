@@ -36,8 +36,6 @@ export const DynamicSessionForm = ({
     const [sessionType, setSessionType] = useState<SessionType>(
         initialData?.sessionType ?? SessionType.PRACTICE
     );
-    const [startTime, setStartTime] = useState(initialData?.startTime ?? '08:00');
-    const [duration, setDuration] = useState(initialData?.duration ?? 15);
     const [attributes, setAttributes] = useState<Record<string, unknown>>(
         initialData?.attributes ?? {}
     );
@@ -81,8 +79,6 @@ export const DynamicSessionForm = ({
             gameId,
             name,
             sessionType,
-            startTime,
-            duration,
             sortOrder: initialData?.sortOrder ?? 0,
             attributes,
         };
@@ -192,31 +188,6 @@ export const DynamicSessionForm = ({
                     onChange={(e) => setSessionType(e.value)}
                     className="w-full"
                 />
-            </div>
-
-            <div className="formgrid grid">
-                <div className="field col-6">
-                    <label htmlFor="startTime">{__('Start Time', 'sim-league-toolkit')}</label>
-                    <Calendar
-                        id="startTime"
-                        value={parseTimeString(startTime)}
-                        onChange={(e) => setStartTime(formatTimeDate(e.value as Date))}
-                        timeOnly
-                        hourFormat="24"
-                        className="w-full"
-                    />
-                </div>
-
-                <div className="field col-6">
-                    <label htmlFor="duration">{__('Duration (minutes)', 'sim-league-toolkit')}</label>
-                    <InputNumber
-                        id="duration"
-                        value={duration}
-                        onValueChange={(e) => setDuration(e.value ?? 15)}
-                        min={1}
-                        className="w-full"
-                    />
-                </div>
             </div>
 
             {fields.length > 0 && (

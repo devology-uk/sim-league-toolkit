@@ -2,7 +2,7 @@
 
   namespace SLTK\Database;
 
-  use SLTK\Core\GameKeys;
+  use SLTK\Core\Enums\GameKey;
 
   class EventClassesTableBuilder extends TableBuilder {
 
@@ -43,7 +43,7 @@
         [
           'carClass' => 'GT3',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'gameKey' => GameKey::AssettoCorsaCompetizione->value,
           'isSingleCarClass' => false,
           'name' => 'GT3 Open',
           'singleCarKey' => null,
@@ -51,7 +51,7 @@
         [
           'carClass' => 'GT4',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'gameKey' => GameKey::AssettoCorsaCompetizione->value,
           'isSingleCarClass' => false,
           'name' => 'GT4 Open',
           'singleCarKey' => null,
@@ -59,7 +59,7 @@
         [
           'carClass' => 'GT2',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'gameKey' => GameKey::AssettoCorsaCompetizione->value,
           'isSingleCarClass' => false,
           'name' => 'GT2 Open',
           'singleCarKey' => null,
@@ -67,7 +67,7 @@
         [
           'carClass' => 'GTC',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'gameKey' => GameKey::AssettoCorsaCompetizione->value,
           'isSingleCarClass' => true,
           'name' => 'Porsche 992 Cup Open',
           'singleCarKey' => 'porsche_992_gt3_cup',
@@ -75,7 +75,7 @@
         [
           'carClass' => 'HYP',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'isSingleCarClass' => false,
           'name' => 'Hyper Car Open',
           'singleCarKey' => null,
@@ -83,7 +83,7 @@
         [
           'carClass' => 'LMP2',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'isSingleCarClass' => false,
           'name' => 'LMP2 Open',
           'singleCarKey' => null,
@@ -91,7 +91,7 @@
         [
           'carClass' => 'LMP3',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'isSingleCarClass' => false,
           'name' => 'LMP3 Open',
           'singleCarKey' => null,
@@ -99,7 +99,7 @@
         [
           'carClass' => 'GTE',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'isSingleCarClass' => false,
           'name' => 'GTE Open',
           'singleCarKey' => null,
@@ -107,7 +107,7 @@
         [
           'carClass' => 'GT3',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'isSingleCarClass' => false,
           'name' => 'GT3 Open',
           'singleCarKey' => null,
@@ -115,7 +115,7 @@
         [
           'carClass' => 'Porsche Carrera Cup',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AutoMobilista2,
+          'gameKey' => GameKey::AutoMobilista2->value,
           'isSingleCarClass' => false,
           'name' => 'Porsche Carrera Cup Open',
           'singleCarKey' => null,
@@ -123,7 +123,7 @@
         [
           'carClass' => 'GTE',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AutoMobilista2,
+          'gameKey' => GameKey::AutoMobilista2->value,
           'isSingleCarClass' => false,
           'name' => 'GTE Open',
           'singleCarKey' => null,
@@ -131,7 +131,7 @@
         [
           'carClass' => 'GT4',
           'driverCategoryName' => 'Bronze',
-          'gameKey' => GameKeys::AutoMobilista2,
+          'gameKey' => GameKey::AutoMobilista2->value,
           'isSingleCarClass' => false,
           'name' => 'GT4 Open',
           'singleCarKey' => null,

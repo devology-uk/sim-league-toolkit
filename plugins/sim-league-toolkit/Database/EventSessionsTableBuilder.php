@@ -18,8 +18,6 @@
             eventRefId BIGINT NOT NULL,
             name VARCHAR(255) NOT NULL,
             sessionType VARCHAR(50) NOT NULL,
-            startTime TIME NOT NULL,
-            duration INT NOT NULL,
             sortOrder INT NOT NULL DEFAULT 0,
             PRIMARY KEY (id),
             INDEX idx_event_ref (eventRefId),
@@ -38,5 +36,15 @@
 
     public function applyAdjustments(string $tablePrefix): void
     {
+      global $wpdb;
+      $tableName = $this->tableName($tablePrefix);
+
+      if (!empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'startTime'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} DROP COLUMN startTime");
+      }
+
+      if (!empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'duration'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} DROP COLUMN duration");
+      }
     }
   }

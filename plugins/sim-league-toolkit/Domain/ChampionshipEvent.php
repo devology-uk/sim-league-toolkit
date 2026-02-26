@@ -10,6 +10,7 @@
   use SLTK\Core\Constants;
   use SLTK\Database\Repositories\ChampionshipEventsRepository;
   use SLTK\Database\Repositories\EventRefsRepository;
+  use SLTK\Database\Repositories\EventSessionRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
   use SLTK\Domain\Abstractions\Deletable;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
@@ -184,6 +185,56 @@
 
     public function setTrackLayoutId(?int $value): void {
       $this->trackLayoutId = $value;
+    }
+
+    /**
+     * @return EventSession[]
+     * @throws Exception
+     */
+    public static function listSessions(int $eventRefId): array {
+      $results = EventSessionRepository::listByEventRefId($eventRefId);
+
+      return array_map(fn($row) => EventSession::fromStdClass($row), $results);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getSessionById(int $id): ?EventSession {
+      return EventSession::fromStdClass(EventSessionRepository::getById($id));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteSession(int $id): void {
+      EventSessionRepository::delete($id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function reorderSessions(int $eventRefId, array $sessionIds): void {
+      foreach ($sessionIds as $sortOrder => $id) {
+        EventSessionRepository::updateSortOrder((int)$id, $sortOrder);
+      }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function saveSession(EventSession $session): bool {
+      try {
+        if ($session->hasId()) {
+          EventSessionRepository::update($session->getId(), $session->toArray());
+        } else {
+          $session->setId(EventSessionRepository::add($session->toArray()));
+        }
+
+        return true;
+      } catch (Exception) {
+        return false;
+      }
     }
 
     public function hasEventRef(): bool {

@@ -7,6 +7,8 @@
     public const string API_NAMESPACE = 'sltk/v1';
     private static array $routeMap = [
       // More specific patterns first
+      '#/' . ResourceNames::EVENT_REFS . '/\d+/event-sessions#' => EventSessionApiController::class,
+      '#/' . ResourceNames::EVENT_SESSION . '#' => EventSessionApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_CLASS . '#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/classes#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '#' => ChampionshipEventApiController::class,
@@ -15,7 +17,7 @@
       '#/' . ResourceNames::DRIVER_CATEGORY . '#' => DriverCategoryApiController::class,
       '#/' . ResourceNames::EVENT_CLASS . '#' => EventClassApiController::class,
       '#/' . ResourceNames::GAME . '#' => GameApiController::class,
-      '#/' . ResourceNames::GAME_CONFIG . '#' => GameApiController::class,
+      '#/' . ResourceNames::GAME_CONFIG . '#' => GameConfigApiController::class,
       '#/' . ResourceNames::RULE_SET_RULE . '#' => RuleSetRuleApiController::class,
       '#/' . ResourceNames::RULE_SET . '/\d+/rules#' => RuleSetRuleApiController::class,
       '#/' . ResourceNames::RULE_SET . '#' => RuleSetApiController::class,

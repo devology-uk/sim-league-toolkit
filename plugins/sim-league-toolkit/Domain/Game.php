@@ -67,13 +67,6 @@
     /**
      * @throws Exception
      */
-    public static function getGameKey(int $id): string {
-      return GameRepository::getKey($id);
-    }
-
-    /**
-     * @throws Exception
-     */
     public static function getPlatformById(int $id): Platform {
       $queryResult = PlatformRepository::get($id);
 
@@ -134,6 +127,10 @@
       return self::mapGames($queryResults);
     }
 
+    public function getGameKey(): string {
+      return $this->gameKey;
+    }
+
     public function getIsPublished(): bool {
       return $this->published;
     }
@@ -168,6 +165,7 @@
     public function toDto(): array {
       return [
         'id' => $this->getId(),
+        'gameKey' => $this->getGameKey(),
         'name' => $this->getName(),
         'latestVersion' => $this->getLatestVersion(),
         'supportsResultUpload' => $this->getSupportsResultUpload(),

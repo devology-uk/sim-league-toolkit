@@ -11,6 +11,7 @@
     public final const string DRIVER_CATEGORY = 'driver-category';
     public final const string EVENT = 'event';
     public final const string EVENT_CLASS = 'event-class';
+    public final const string EVENT_REFS = 'event-refs';
     public final const string EVENT_SESSION = 'event-session';
     public final const string GAME = 'game';
     public final const string GAME_CONFIG = 'game-config';

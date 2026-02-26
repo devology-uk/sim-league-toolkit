@@ -1,11 +1,11 @@
+import {SessionType} from '../../../enums/generated/SessionType';
+
 export interface EventSession {
     id: number;
     eventRefId: number;
     eventType: string;
     name: string;
-    sessionType: string;
-    startTime: string;
-    duration: number;
+    sessionType: SessionType;
     sortOrder: number;
     attributes: Record<string, unknown>;
 }

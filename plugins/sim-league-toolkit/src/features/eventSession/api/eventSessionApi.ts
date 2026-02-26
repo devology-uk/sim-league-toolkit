@@ -6,8 +6,8 @@ const eventRefRoot = '/event-refs';
 const eventSessionRoot = '/event-session';
 
 const endpoints = {
-    listByEventRef: (eventRefId: number) => `${eventRefRoot}/${eventRefId}/eventSessions`,
-    reorder: (eventRefId: number) => `${eventRefRoot}/${eventRefId}/eventSessions/reorder`,
+    listByEventRef: (eventRefId: number) => `${eventRefRoot}/${eventRefId}/event-sessions`,
+    reorder: (eventRefId: number) => `${eventRefRoot}/${eventRefId}/event-sessions/reorder`,
     getById: (id: number) => `${eventSessionRoot}/${id}`,
     create: eventSessionRoot,
     update: (id: number) => `${eventSessionRoot}/${id}`,

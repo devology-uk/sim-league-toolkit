@@ -11,11 +11,13 @@ require_once __DIR__ . '/script-autoloader.php';
   use SLTK\Core\Enums\ChampionshipType;
   use SLTK\Core\Enums\EventType;
   use SLTK\Core\Enums\EventSessionType;
+  use SLTK\Core\Enums\GameKey;
 
   $enums = [
     'ChampionshipType' => ChampionshipType::class,
     'EventType' => EventType::class,
     'SessionType' => EventSessionType::class,
+    'GameKey' => GameKey::class,
   ];
 
   $output = "// Auto-generated from PHP enums - do not edit manually\n";
@@ -50,7 +52,7 @@ require_once __DIR__ . '/script-autoloader.php';
     }
     $output .= "] as const;\n\n";
 
-    $outputPath = __DIR__ . '/../src/admin/types/generated/' . $name . '.ts';
+    $outputPath = __DIR__ . '/../src/enums/generated/' . $name . '.ts';
     $outputDir = dirname($outputPath);
 
     if (!is_dir($outputDir)) {

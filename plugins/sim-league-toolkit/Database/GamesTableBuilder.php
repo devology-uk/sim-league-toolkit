@@ -2,7 +2,7 @@
 
   namespace SLTK\Database;
 
-  use SLTK\Core\GameKeys;
+  use SLTK\Core\Enums\GameKey;
 
   class GamesTableBuilder extends TableBuilder {
 
@@ -34,7 +34,7 @@
       $data = [
         [
           'name' => 'Assetto Corsa Competizione',
-          'gameKey' => GameKeys::AssettoCorsaCompetizione,
+          'gameKey' => GameKey::AssettoCorsaCompetizione->value,
           'latestVersion' => '1.10.2',
           'supportsResultUpload' => true,
           'published' => true,
@@ -42,7 +42,7 @@
         ],
         [
           'name' => 'Assetto Corsa',
-          'gameKey' => GameKeys::AssettoCorsa,
+          'gameKey' => GameKey::AssettoCorsa->value,
           'latestVersion' => '1.16.0',
           'supportsResultUpload' => false,
           'published' => false,
@@ -50,7 +50,7 @@
         ],
         [
           'name' => 'Le Mans Ultimate',
-          'gameKey' => GameKeys::LeMansUltimate,
+          'gameKey' => GameKey::LeMansUltimate->value,
           'latestVersion' => '1.4',
           'supportsResultUpload' => false,
           'published' => true,
@@ -58,7 +58,7 @@
         ],
         [
           'name' => 'Automobilista 2',
-          'gameKey' => GameKeys::AutoMobilista2,
+          'gameKey' => GameKey::AutoMobilista2->value,
           'latestVersion' => '1.6',
           'supportsResultUpload' => false,
           'published' => true,
@@ -66,7 +66,7 @@
         ],
         [
           'name' => 'F1 2025',
-          'gameKey' => GameKeys::F125,
+          'gameKey' => GameKey::F125->value,
           'latestVersion' => '2025',
           'supportsResultUpload' => false,
           'published' => false,
