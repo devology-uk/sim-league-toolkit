@@ -1,4 +1,4 @@
 export interface FieldOption {
-    value: string;
+    value: string | number;
     label: string;
 }
