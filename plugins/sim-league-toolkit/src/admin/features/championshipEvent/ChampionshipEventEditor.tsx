@@ -3,14 +3,13 @@ import {useState, useEffect} from '@wordpress/element';
 import {FormEvent} from 'react';
 
 import {Accordion, AccordionTab} from 'primereact/accordion';
+import {Button} from 'primereact/button';
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';
 import {InputText} from 'primereact/inputtext';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
-import {CancelButton} from '../../components/CancelButton';
 import {ChampionshipEvent, ChampionshipEventFormData, useUpdateChampionshipEvent} from '../../../features/championship';
-import {Dialog} from 'primereact/dialog';
 import {EventSessionList} from '../eventSession/EventSessionsList';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
@@ -20,7 +19,6 @@ import {ValidationError} from '../../components/ValidationError';
 interface ChampionshipEventEditorProps {
     championshipEvent: ChampionshipEvent;
     gameId: number;
-    onSaved: () => void;
     onCancelled: () => void;
 }
 
@@ -33,7 +31,6 @@ minDate.setMilliseconds(0);
 export const ChampionshipEventEditor = ({
                                             championshipEvent,
                                             gameId,
-                                            onSaved,
                                             onCancelled
                                         }: ChampionshipEventEditorProps) => {
 
@@ -75,7 +72,6 @@ export const ChampionshipEventEditor = ({
         }
 
         await updateChampionshipEvent({id: championshipEvent.id, data: formData});
-        onSaved();
     };
 
     const validate = () => {
@@ -99,69 +95,69 @@ export const ChampionshipEventEditor = ({
 
     return (
         <>
-            <Dialog visible={true} onHide={onCancelled} header={__('Edit Championship Event', 'sim-league-toolkit')}>
-                <BusyIndicator isBusy={isLoading}/>
-                <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
-                    <AccordionTab header={__('Details', 'sim-league-toolkit')}>
-                        <form onSubmit={onSave} noValidate>
-                            <div className='flex flex-row  align-items-stretch gap-4'>
-                                <div className='flex flex-column align-items-stretch gap-2'
-                                     style={{minWidth: '300px'}}>
-                                    <label htmlFor='championship-event-name'>{__('Name',
-                                                                                 'sim-league-toolkit')}</label>
-                                    <InputText id='championship-event-name' value={name}
-                                               onChange={(e) => setName(e.target.value)}
-                                               placeholder={__('Enter Name', 'sim-league-toolkit')}/>
-                                    <ValidationError
-                                        message={__('A name with at least 5 characters is required',
-                                                    'sim-league-toolkit')}
-                                        show={validationErrors.includes('name')}/>
+            <BusyIndicator isBusy={isLoading}/>
+            <div className='flex align-items-center gap-2'>
+                <Button icon='pi pi-arrow-left' text rounded onClick={onCancelled}
+                        tooltip={__('Back to Championship', 'sim-league-toolkit')} tooltipOptions={{position: 'right'}}/>
+                <h3 style={{margin: 0}}>{__('Event', 'sim-league-toolkit')} - {name}</h3>
+            </div>
+            <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
+                <AccordionTab header={__('Details', 'sim-league-toolkit')}>
+                    <form onSubmit={onSave} noValidate>
+                        <div className='flex flex-row  align-items-stretch gap-4'>
+                            <div className='flex flex-column align-items-stretch gap-2'
+                                 style={{minWidth: '300px'}}>
+                                <label htmlFor='championship-event-name'>{__('Name',
+                                                                             'sim-league-toolkit')}</label>
+                                <InputText id='championship-event-name' value={name}
+                                           onChange={(e) => setName(e.target.value)}
+                                           placeholder={__('Enter Name', 'sim-league-toolkit')}/>
+                                <ValidationError
+                                    message={__('A name with at least 5 characters is required',
+                                                'sim-league-toolkit')}
+                                    show={validationErrors.includes('name')}/>
 
+                                <label
+                                    htmlFor='championship-event-start-date'>{__('Start Date',
+                                                                                'sim-league-toolkit')}</label>
+                                <Calendar value={startDateTime} onChange={(e) => setStartDateTime(e.value)}
+                                          minDate={minDate} readOnlyInput dateFormat='D, M d yy' showTime
+                                          hourFormat='24'/>
+
+                                <TrackSelector onSelectedTrackChanged={setTrackId}
+                                               onSelectedTrackLayoutChanged={setTrackLayoutId} gameId={gameId}
+                                               gameSupportsLayouts={gameSupportsLayouts} trackId={trackId}
+                                               trackLayoutId={trackLayoutId} disabled={isLoading}
+                                               isInvalid={validationErrors.includes('track') || validationErrors.includes(
+                                                   'trackLayout')}
+                                               trackValidationMessage={__(
+                                                   'You must select the track that will be used' +
+                                                   ' for the event.',
+                                                   'sim-league-toolkit')}
+                                               trackLayoutValidationMessage={__(
+                                                   'The game supports track layouts, you' +
+                                                   ' must select a track layout that' +
+                                                   ' will be used for the event.',
+                                                   'sim-league-toolkit')}/>
+                                <div className='flex flex-row justify-content-between'>
                                     <label
-                                        htmlFor='championship-event-start-date'>{__('Start Date',
-                                                                                    'sim-league-toolkit')}</label>
-                                    <Calendar value={startDateTime} onChange={(e) => setStartDateTime(e.value)}
-                                              minDate={minDate} readOnlyInput dateFormat='D, M d yy' showTime
-                                              hourFormat='24'/>
-
-                                    <TrackSelector onSelectedTrackChanged={setTrackId}
-                                                   onSelectedTrackLayoutChanged={setTrackLayoutId} gameId={gameId}
-                                                   gameSupportsLayouts={gameSupportsLayouts} trackId={trackId}
-                                                   trackLayoutId={trackLayoutId} disabled={isLoading}
-                                                   isInvalid={validationErrors.includes('track') || validationErrors.includes(
-                                                       'trackLayout')}
-                                                   trackValidationMessage={__(
-                                                       'You must select the track that will be used' +
-                                                       ' for the event.',
-                                                       'sim-league-toolkit')}
-                                                   trackLayoutValidationMessage={__(
-                                                       'The game supports track layouts, you' +
-                                                       ' must select a track layout that' +
-                                                       ' will be used for the event.',
-                                                       'sim-league-toolkit')}/>
-                                    <div className='flex flex-row justify-content-between'>
-                                        <label
-                                            htmlFor='is-active'>{__('Active', 'sim-league-toolkit')}</label>
-                                        <Checkbox id='is-active' checked={isActive}
-                                                  onChange={(e) => setIsActive(e.checked)}
-                                                  style={{marginTop: '.75rem'}}/>
-                                    </div>
+                                        htmlFor='is-active'>{__('Active', 'sim-league-toolkit')}</label>
+                                    <Checkbox id='is-active' checked={isActive}
+                                              onChange={(e) => setIsActive(e.checked)}
+                                              style={{marginTop: '.75rem'}}/>
                                 </div>
                             </div>
-                            <SaveSubmitButton disabled={isLoading} name='submitForm'/>
-                            <CancelButton onCancel={onCancelled} disabled={isLoading}/>
-                        </form>
-                    </AccordionTab>
-                    <AccordionTab header={__('Sessions', 'sim-league-toolkit')}>
-                        <EventSessionList
-                            eventRefId={championshipEvent.eventRefId}
-                            gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
-                        />
-                    </AccordionTab>
-                </Accordion>
-
-            </Dialog>
-
+                        </div>
+                        <SaveSubmitButton disabled={isLoading} name='submitForm'/>
+                    </form>
+                </AccordionTab>
+                <AccordionTab header={__('Sessions', 'sim-league-toolkit')}>
+                    <EventSessionList
+                        eventRefId={championshipEvent.eventRefId}
+                        gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
+                    />
+                </AccordionTab>
+            </Accordion>
         </>
     );
 };

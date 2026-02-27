@@ -5,9 +5,10 @@ import {ConfirmDialog} from 'primereact/confirmdialog';
 import {DataView} from 'primereact/dataview';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
-import {Championship, useChampionships, useDeleteChampionship} from '../../../features/championship';
+import {Championship, ChampionshipEvent, useChampionships, useDeleteChampionship} from '../../../features/championship';
 import {ChampionshipCard} from './ChampionshipCard';
 import {ChampionshipEditor} from './ChampionshipEditor';
+import {ChampionshipEventEditor} from '../championshipEvent/ChampionshipEventEditor';
 import {NewChampionshipEditor} from './NewChampionshipEditor';
 
 export const Championships = () => {
@@ -18,6 +19,8 @@ export const Championships = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Championship>();
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [editingEvent, setEditingEvent] = useState<ChampionshipEvent | null>(null);
+    const [returnToEventsTab, setReturnToEventsTab] = useState(false);
 
     const onAdd = () => {
         setIsAdding(true);
@@ -50,12 +53,26 @@ export const Championships = () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
+        setEditingEvent(null);
+        setReturnToEventsTab(false);
     };
 
     const onEditorSaved = () => {
         setIsEditing(false);
         setIsAdding(false);
         setSelectedItem(null);
+        setEditingEvent(null);
+        setReturnToEventsTab(false);
+    };
+
+    const onEditEvent = (event: ChampionshipEvent) => {
+        setEditingEvent(event);
+        setReturnToEventsTab(false);
+    };
+
+    const onEventEditorDone = () => {
+        setEditingEvent(null);
+        setReturnToEventsTab(true);
     };
 
     const headerTemplate = () => {
@@ -92,8 +109,15 @@ export const Championships = () => {
             </>
             }
             {isAdding && <NewChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}/>}
-            {isEditing && <ChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}
-                                              championship={selectedItem}/>}
+            {isEditing && !editingEvent && (
+                <ChampionshipEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}
+                                    championship={selectedItem} onEditEvent={onEditEvent}
+                                    initialActiveTabIndex={returnToEventsTab ? 2 : 0}/>
+            )}
+            {isEditing && editingEvent && (
+                <ChampionshipEventEditor championshipEvent={editingEvent} gameId={selectedItem.gameId}
+                                         onCancelled={onEventEditorDone}/>
+            )}
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}
                                reject={onCancelDelete}

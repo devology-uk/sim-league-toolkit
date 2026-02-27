@@ -7,21 +7,20 @@ import {DataView} from 'primereact/dataview';
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {ChampionshipEvent, useChampionshipEvents, useDeleteChampionshipEvent} from '../../../features/championship';
 import {ChampionshipEventCard} from './ChampionshipEventCard';
-import {ChampionshipEventEditor} from './ChampionshipEventEditor';
 import {NewChampionshipEventEditor} from './NewChampionshipEventEditor';
 
 interface ChampionshipEventsProps {
     championshipId: number,
     gameId: number,
+    onEditEvent: (event: ChampionshipEvent) => void,
 }
 
-export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsProps) => {
+export const ChampionshipEvents = ({championshipId, gameId, onEditEvent}: ChampionshipEventsProps) => {
 
     const {data: championshipEvents = [], isLoading} = useChampionshipEvents(championshipId);
     const {mutateAsync: deleteChampionshipEvent} = useDeleteChampionshipEvent(championshipId);
 
     const [isAdding, setIsAdding] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
     const [selectedItem, setSelectedItem] = useState<ChampionshipEvent>(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -38,11 +37,6 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
         setSelectedItem(null);
     };
 
-    const onCancelEdit = () => {
-        setIsEditing(false);
-        setSelectedItem(null);
-    };
-
     const onConfirmDelete = async () => {
         setShowDeleteConfirmation(false);
         await deleteChampionshipEvent(selectedItem.id);
@@ -55,13 +49,7 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
     };
 
     const onEdit = (item: ChampionshipEvent) => {
-        setSelectedItem(item);
-        setIsEditing(true);
-    };
-
-    const onEditSaved = () => {
-        setIsEditing(false);
-        setSelectedItem(null);
+        onEditEvent(item);
     };
 
     const onNewSaved = () => {
@@ -98,10 +86,6 @@ export const ChampionshipEvents = ({championshipId, gameId}: ChampionshipEventsP
             {isAdding &&
                 <NewChampionshipEventEditor championshipId={championshipId} gameId={gameId} onSaved={onNewSaved}
                                             onCancelled={onCancelAdd}/>
-            }
-            {selectedItem && isEditing &&
-                <ChampionshipEventEditor championshipEvent={selectedItem} gameId={gameId} onSaved={onEditSaved}
-                                         onCancelled={onCancelEdit}/>
             }
             {selectedItem && showDeleteConfirmation &&
                 <ConfirmDialog visible={showDeleteConfirmation} onHide={onCancelDelete} accept={onConfirmDelete}

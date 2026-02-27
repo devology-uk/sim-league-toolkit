@@ -11,7 +11,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
-import {Championship, ChampionshipFormData, useUpdateChampionship} from '../../../features/championship';
+import {Championship, ChampionshipEvent, ChampionshipFormData, useUpdateChampionship} from '../../../features/championship';
 import {ChampionshipClasses} from './ChampionshipClasses';
 import {ChampionshipEvents} from '../championshipEvent/ChampionshipEvents';
 import {ChampionshipType, ChampionshipTypeLabels} from '../../../enums/generated/ChampionshipType';
@@ -27,16 +27,18 @@ interface ChampionshipEditorProps {
     onSaved: () => void;
     onCancelled: () => void;
     championship?: Championship;
+    onEditEvent: (event: ChampionshipEvent) => void;
+    initialActiveTabIndex?: number;
 }
 
 const minDate = new Date();
 
-export const ChampionshipEditor = ({onSaved, onCancelled, championship}: ChampionshipEditorProps) => {
+export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEvent, initialActiveTabIndex}: ChampionshipEditorProps) => {
 
     const {mutateAsync: updateChampionship, isPending: isLoading} = useUpdateChampionship();
     const {data: games = [], isLoading: gamesLoading} = useGames();
 
-    const [activeTabIndex, setActiveTabIndex] = useState<number | number[]>(0);
+    const [activeTabIndex, setActiveTabIndex] = useState<number | number[]>(initialActiveTabIndex ?? 0);
     const [allowEntryChange, setAllowEntryChange] = useState(true);
     const [bannerImageUrl, setBannerImageUrl] = useState('');
     const [championshipType, setChampionshipType] = useState<ChampionshipType>(ChampionshipType.STANDARD);
@@ -280,7 +282,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship}: Champio
                     <ChampionshipClasses championshipId={championship.id} gameId={gameId}/>
                 </AccordionTab>
                 <AccordionTab header={__('Events', 'sim-league-toolkit')}>
-                    <ChampionshipEvents championshipId={championship.id} gameId={gameId}/>
+                    <ChampionshipEvents championshipId={championship.id} gameId={gameId} onEditEvent={onEditEvent}/>
                 </AccordionTab>
                 <AccordionTab header={__('Server', 'sim-league-toolkit')}>
                 </AccordionTab>
