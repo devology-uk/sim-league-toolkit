@@ -31,9 +31,9 @@
 
     public function listCars(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use ($request) {
-        $data = Car::listForGame((int)$request->get_param('gameId'), $request->get_param('carClass'));
+        $data = Car::listForGame((int)$request->get_param('id'), $request->get_param('carClass'));
 
-        return ApiResponse::success($data);
+        return ApiResponse::success(array_map(fn($c) => $c->toDto(), $data));
       });
     }
 
@@ -82,6 +82,7 @@
       $this->registerGetByIdRoute();
       $routeBase = $this->getResourceName() . '/(?P<id>\\d+)/';
       $this->registerRoute($routeBase . 'cars', 'GET', [$this, 'canRead'], [$this, 'listCars']);
+      $this->registerRoute($routeBase . 'cars/(?P<carClass>[^/]+)', 'GET', [$this, 'canRead'], [$this, 'listCars']);
       $this->registerRoute($routeBase . 'car-classes', 'GET', [$this, 'canRead'], [$this, 'listCarClasses']);
       $this->registerRoute($routeBase . 'event-classes', 'GET', [$this, 'canRead'], [$this, 'listEventClasses']);
       $this->registerRoute($routeBase . 'platforms', 'GET', [$this, 'canRead'], [$this, 'listPlatforms']);

@@ -1,6 +1,6 @@
 import {ApiClient} from '../../../api';
 
-import {Championship, ChampionshipClass, ChampionshipClassFormData, ChampionshipEvent, ChampionshipEventFormData, ChampionshipFormData} from '../';
+import {Championship, ChampionshipClass, ChampionshipClassFormData, ChampionshipEntry, ChampionshipEntryFormData, ChampionshipEvent, ChampionshipEventFormData, ChampionshipFormData} from '../';
 
 const championshipRoot = '/championship';
 const championshipsRoot = '/championships';
@@ -16,6 +16,9 @@ const endpoints = {
     listAvailableClasses: (championshipId: number) => `${championshipRoot}/${championshipId}/classes/available`,
     createClass: (championshipId: number) => `${championshipRoot}/${championshipId}/classes`,
     deleteClass: (championshipId: number, eventClassId: number) => `${championshipRoot}/${championshipId}/classes/${eventClassId}`,
+    listEntries: (championshipId: number) => `${championshipRoot}/${championshipId}/entries`,
+    createEntry: (championshipId: number) => `${championshipRoot}/${championshipId}/entries`,
+    deleteEntry: (id: number) => `/championship-entry/${id}`,
     listEvents: (championshipId: number) => `${championshipRoot}/${championshipId}/events`,
     createEvent: (championshipId: number) => `${championshipRoot}/${championshipId}/events`,
     updateEvent: (id: number) => `${championshipEventRoot}/${id}`,
@@ -119,6 +122,29 @@ export const championshipApi = {
         const response = await ApiClient.delete(endpoints.deleteEvent(id));
         if (!response.success) {
             throw new Error(`Failed to delete championship event with id ${id}`);
+        }
+    },
+
+    listEntries: async (championshipId: number): Promise<ChampionshipEntry[]> => {
+        const response = await ApiClient.get<ChampionshipEntry[]>(endpoints.listEntries(championshipId));
+        if (!response.success) {
+            throw new Error(`Failed to fetch entries for championship with id ${championshipId}`);
+        }
+        return response.data ?? [];
+    },
+
+    createEntry: async (championshipId: number, data: ChampionshipEntryFormData): Promise<number> => {
+        const response = await ApiClient.post<number>(endpoints.createEntry(championshipId), data);
+        if (!response.success) {
+            throw new Error(`Failed to create entry for championship with id ${championshipId}`);
+        }
+        return response.data;
+    },
+
+    deleteEntry: async (id: number): Promise<void> => {
+        const response = await ApiClient.delete(endpoints.deleteEntry(id));
+        if (!response.success) {
+            throw new Error(`Failed to delete championship entry with id ${id}`);
         }
     },
 };

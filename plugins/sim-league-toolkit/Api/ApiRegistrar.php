@@ -13,6 +13,8 @@
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/classes#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '#' => ChampionshipEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/events#' => ChampionshipEventApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP_ENTRY . '#' => ChampionshipEntryApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/entries#' => ChampionshipEntryApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '#' => ChampionshipApiController::class,
       '#/' . ResourceNames::DRIVER_CATEGORY . '#' => DriverCategoryApiController::class,
       '#/' . ResourceNames::EVENT_CLASS . '#' => EventClassApiController::class,
@@ -27,6 +29,7 @@
       '#/' . ResourceNames::SERVER_SETTING . '#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '#' => ServerApiController::class,
+      '#/members#' => MemberApiController::class,
     ];
 
     public static function init(): void {

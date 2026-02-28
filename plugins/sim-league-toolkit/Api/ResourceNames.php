@@ -6,6 +6,7 @@
     public final const string CAR = 'car';
     public final const string CHAMPIONSHIP = 'championship';
     public final const string CHAMPIONSHIP_CLASS = 'championship-class';
+    public final const string CHAMPIONSHIP_ENTRY = 'championship-entry';
     public final const string CHAMPIONSHIP_EVENT = 'championship-event';
     public final const string COUNTRY = 'country';
     public final const string DRIVER_CATEGORY = 'driver-category';
@@ -15,6 +16,7 @@
     public final const string EVENT_SESSION = 'event-session';
     public final const string GAME = 'game';
     public final const string GAME_CONFIG = 'game-config';
+    public final const string MEMBER = 'member';
     public final const string RACE_NUMBER = 'race-number';
     public final const string RULE_SET = 'rule-set';
     public final const string RULE_SET_RULE = 'rule-set-rule';

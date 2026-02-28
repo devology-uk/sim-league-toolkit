@@ -13,6 +13,7 @@ import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
 import {Championship, ChampionshipEvent, ChampionshipFormData, useUpdateChampionship} from '../../../features/championship';
 import {ChampionshipClasses} from './ChampionshipClasses';
+import {ChampionshipEntrants} from './ChampionshipEntrants';
 import {ChampionshipEvents} from '../championshipEvent/ChampionshipEvents';
 import {ChampionshipType, ChampionshipTypeLabels} from '../../../enums/generated/ChampionshipType';
 import {PlatformSelector} from '../game/PlatformSelector';
@@ -287,6 +288,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
                 <AccordionTab header={__('Server', 'sim-league-toolkit')}>
                 </AccordionTab>
                 <AccordionTab header={__('Entrants', 'sim-league-toolkit')}>
+                    <ChampionshipEntrants championshipId={championship.id} gameId={gameId}/>
                 </AccordionTab>
                 <AccordionTab header={__('Standings', 'sim-league-toolkit')}>
                 </AccordionTab>
