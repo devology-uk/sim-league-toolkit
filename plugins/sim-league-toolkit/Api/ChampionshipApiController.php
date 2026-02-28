@@ -105,6 +105,7 @@
       $entity->setEntryChangeLimit((bool)$params['entryChangeLimit']);
       $entity->setGameId((int)$params['gameId']);
       $entity->setIsActive((bool)$params['isActive'] ?? false);
+      $entity->setMaxEntrants((int)($params['maxEntrants'] ?? 0));
       $entity->setName($params['name']);
       $entity->setPlatformId((int)$params['platformId']);
       $entity->setResultsToDiscard((int)$params['resultsToDiscard']);

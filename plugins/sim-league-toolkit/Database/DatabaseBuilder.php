@@ -32,6 +32,7 @@
       self::$builders[] = new ChampionshipEventClassesTableBuilder();
       self::$builders[] = new ChampionshipEntriesTableBuilder();
       self::$builders[] = new ChampionshipEventsTableBuilder();
+      self::$builders[] = new StandaloneEventsTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {

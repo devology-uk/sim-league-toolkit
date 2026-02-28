@@ -10,6 +10,7 @@ export interface Championship {
     game?: string;
     gameId: number;
     isActive: boolean;
+    maxEntrants: number;
     name: string;
     platform?: string;
     platformId: number;

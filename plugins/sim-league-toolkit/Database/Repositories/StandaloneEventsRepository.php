@@ -22,7 +22,7 @@
       $query = "SELECT 
                 e.*,
                 g.name as game,
-                t.name as track,
+                t.shortName as track,
                 tl.name as trackLayout,
                 ss.name as scoringSet,
                 rs.name as ruleSet
@@ -52,7 +52,7 @@
       $query = "SELECT 
                 e.*,
                 g.name as game,
-                t.name as track,
+                t.shortName as track,
                 tl.name as trackLayout,
                 ss.name as scoringSet,
                 rs.name as ruleSet
@@ -83,7 +83,7 @@
       $query = "SELECT 
                 e.*,
                 g.name as game,
-                t.name as track,
+                t.shortName as track,
                 tl.name as trackLayout,
                 ss.name as scoringSet,
                 rs.name as ruleSet

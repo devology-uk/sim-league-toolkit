@@ -41,6 +41,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
     const [name, setName] = useState('');
     const [platformId, setPlatformId] = useState(0);
+    const [maxEntrants, setMaxEntrants] = useState(0);
     const [resultsToDiscard, setResultsToDiscard] = useState(0);
     const [ruleSetId, setRuleSetId] = useState(0);
     const [scoringSetId, setScoringSetId] = useState(0);
@@ -61,6 +62,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
 
     const resetForm = () => {
         setGameId(0);
+        setMaxEntrants(0);
         setPlatformId(0);
         setAllowEntryChange(false);
         setChampionshipType(ChampionshipType.STANDARD);
@@ -91,6 +93,7 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
             entryChangeLimit: entryChangeLimit,
             gameId: gameId,
             isActive: false,
+            maxEntrants: maxEntrants,
             name: name,
             platformId: platformId,
             resultsToDiscard: resultsToDiscard,
@@ -217,6 +220,11 @@ export const NewChampionshipEditor = ({onSaved, onCancelled}: NewChampionshipEdi
                                                                      'sim-league-toolkit')}</label>
                                 <InputNumber id='results-to-discard' value={resultsToDiscard}
                                              onChange={(e) => setResultsToDiscard(e.value)}
+                                             min={0}/>
+                                <label
+                                    htmlFor='max-entrants'>{__('Max Entrants', 'sim-league-toolkit')}</label>
+                                <InputNumber id='max-entrants' value={maxEntrants}
+                                             onChange={(e) => setMaxEntrants(e.value ?? 0)}
                                              min={0}/>
                                 <div className='flex flex-row justify-content-between'>
                                     <label

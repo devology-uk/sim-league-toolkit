@@ -28,6 +28,7 @@
         entryChangeLimit tinyint NOT NULL DEFAULT 0,
         gameId bigint NOT NULL,
         isActive bit NOT NULL DEFAULT 0,
+        maxEntrants smallint NOT NULL DEFAULT 0,
         name tinytext NOT NULL,
         platformId bigint NOT NULL,
         resultsToDiscard tinyint NOT NULL DEFAULT 0,

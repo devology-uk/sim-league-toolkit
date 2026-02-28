@@ -162,6 +162,7 @@
     }
 
     protected function hydrateFromStdClass(stdClass $data): void {
+      $this->setId((int)($data->id ?? Constants::DEFAULT_ID));
       $this->setEventRefId(isset($data->eventRefId) ? (int)$data->eventRefId : null);
       $this->setName($data->name ?? '');
       $this->setDescription($data->description ?? '');

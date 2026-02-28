@@ -29,6 +29,7 @@
     private string $game = '';
     private int $gameId = Constants::DEFAULT_ID;
     private bool $isActive = false;
+    private int $maxEntrants = 0;
     private string $name = '';
     private string $platform = '';
     private int $platformId = Constants::DEFAULT_ID;
@@ -96,6 +97,7 @@
       $result->setGame($data->game ?? '');
       $result->setGameId($data->gameId);
       $result->setIsActive($data->isActive);
+      $result->setMaxEntrants((int)($data->maxEntrants ?? 0));
       $result->setName($data->name ?? '');
       $result->setPlatform($data->platform ?? '');
       $result->setPlatformId($data->platformId ?? Constants::DEFAULT_ID);
@@ -236,6 +238,14 @@
       $this->isActive = $value;
     }
 
+    public function getMaxEntrants(): int {
+      return $this->maxEntrants ?? 0;
+    }
+
+    public function setMaxEntrants(int $value): void {
+      $this->maxEntrants = $value;
+    }
+
     public function getName(): string {
       return trim($this->name ?? '');
     }
@@ -373,6 +383,7 @@
         'entryChangeLimit' => $this->getEntryChangeLimit(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
+        'maxEntrants' => $this->getMaxEntrants(),
         'name' => $this->getName(),
         'platformId' => $this->getPlatformId(),
         'resultsToDiscard' => $this->getResultsToDiscard(),
@@ -397,6 +408,7 @@
         'game' => $this->getGame(),
         'gameId' => $this->getGameId(),
         'isActive' => $this->getIsActive(),
+        'maxEntrants' => $this->getMaxEntrants(),
         'name' => $this->getName(),
         'platform' => $this->getPlatform(),
         'platformId' => $this->getPlatformId(),

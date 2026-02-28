@@ -20,6 +20,7 @@
     private ?int $ruleSetId = null;
     private string $scoringSet = '';
     private ?int $scoringSetId = null;
+    private string $startTime = '';
 
 
     /**
@@ -49,13 +50,24 @@
       return $result;
     }
 
+    protected function hydrateFromStdClass(stdClass $data): void {
+      parent::hydrateFromStdClass($data);
+      $this->isPublic = (bool)($data->isPublic ?? true);
+      $this->maxEntrants = (int)($data->maxEntrants ?? 0);
+      $this->scoringSetId = isset($data->scoringSetId) && $data->scoringSetId > 0 ? (int)$data->scoringSetId : null;
+      $this->scoringSet = $data->scoringSet ?? '';
+      $this->ruleSetId = isset($data->ruleSetId) && $data->ruleSetId > 0 ? (int)$data->ruleSetId : null;
+      $this->ruleSet = $data->ruleSet ?? '';
+      $this->startTime = $data->startTime ?? '';
+    }
+
     /**
      * @throws Exception
      */
     public static function get(int $id): ?self {
       $row = StandaloneEventsRepository::getById($id);
 
-      return $row ? new self($row) : null;
+      return $row ? self::fromStdClass($row) : null;
     }
 
     /**
@@ -64,7 +76,7 @@
     public static function getByEventRefId(int $eventRefId): ?self {
       $row = StandaloneEventsRepository::getByEventRefId($eventRefId);
 
-      return $row ? new self($row) : null;
+      return $row ? self::fromStdClass($row) : null;
     }
 
     /**
@@ -73,7 +85,7 @@
     public static function list(): array {
       $rows = StandaloneEventsRepository::listAll();
 
-      return array_map(fn($row) => new self($row), $rows);
+      return array_map(fn($row) => self::fromStdClass($row), $rows);
     }
 
     public function getEventType(): string {
@@ -112,6 +124,14 @@
       return $this->scoringSet;
     }
 
+    public function getStartTime(): string {
+      return $this->startTime;
+    }
+
+    public function setStartTime(string $value): void {
+      $this->startTime = $value;
+    }
+
     public function getScoringSetId(): ?int {
       return $this->scoringSetId;
     }
@@ -142,6 +162,7 @@
       $result['ruleSetId'] = $this->getRuleSetId();
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
+      $result['startTime'] = $this->getStartTime();
 
       return $result;
     }
@@ -155,6 +176,7 @@
       $result['ruleSet'] = $this->getRuleSet();
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
+      $result['startTime'] = $this->getStartTime();
 
       return $result;
     }

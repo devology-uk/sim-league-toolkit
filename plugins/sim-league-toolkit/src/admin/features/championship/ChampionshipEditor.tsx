@@ -49,6 +49,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
     const [gameName] = useState(championship.game);
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
     const [isActive, setIsActive] = useState<boolean>(false);
+    const [maxEntrants, setMaxEntrants] = useState(0);
     const [name, setName] = useState('');
     const [platformId, setPlatformId] = useState(0);
     const [resultsToDiscard, setResultsToDiscard] = useState(0);
@@ -72,6 +73,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
         setEntryChangeLimit(championship.entryChangeLimit);
         setGameId(championship.gameId);
         setIsActive(championship.isActive);
+        setMaxEntrants(championship.maxEntrants);
         setName(championship.name);
         setPlatformId(championship.platformId);
         setResultsToDiscard(championship.resultsToDiscard);
@@ -113,6 +115,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
             entryChangeLimit,
             gameId,
             isActive,
+            maxEntrants,
             name,
             platformId,
             resultsToDiscard,
@@ -228,6 +231,11 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
                                                                      'sim-league-toolkit')}</label>
                                 <InputNumber id='results-to-discard' value={resultsToDiscard}
                                              onChange={(e) => setResultsToDiscard(e.value)}
+                                             min={0}/>
+                                <label
+                                    htmlFor='max-entrants'>{__('Max Entrants', 'sim-league-toolkit')}</label>
+                                <InputNumber id='max-entrants' value={maxEntrants}
+                                             onChange={(e) => setMaxEntrants(e.value ?? 0)}
                                              min={0}/>
                                 <div className='flex flex-row justify-content-between'>
                                     <label

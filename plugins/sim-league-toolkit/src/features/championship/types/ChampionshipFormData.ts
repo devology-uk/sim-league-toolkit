@@ -8,6 +8,7 @@ export interface ChampionshipFormData {
     entryChangeLimit: number;
     gameId: number;
     isActive: boolean;
+    maxEntrants: number;
     name: string;
     platformId: number;
     resultsToDiscard: number;

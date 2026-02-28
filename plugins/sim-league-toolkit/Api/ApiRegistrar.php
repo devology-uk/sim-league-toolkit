@@ -15,6 +15,7 @@
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/events#' => ChampionshipEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_ENTRY . '#' => ChampionshipEntryApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/entries#' => ChampionshipEntryApiController::class,
+      '#/' . ResourceNames::STANDALONE_EVENT . '#' => StandaloneEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '#' => ChampionshipApiController::class,
       '#/' . ResourceNames::DRIVER_CATEGORY . '#' => DriverCategoryApiController::class,
       '#/' . ResourceNames::EVENT_CLASS . '#' => EventClassApiController::class,
