@@ -2,6 +2,7 @@ import {__} from '@wordpress/i18n';
 import {useEffect, useState} from '@wordpress/element';
 import {FormEvent} from 'react';
 
+import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Calendar} from 'primereact/calendar';
 import {Checkbox} from 'primereact/checkbox';
 import {InputNumber} from 'primereact/inputnumber';
@@ -12,29 +13,27 @@ import {BusyIndicator} from '../../components/BusyIndicator';
 import {CancelButton} from '../../components/CancelButton';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {ValidationError} from '../../components/ValidationError';
-import {GameSelector} from '../game/GameSelector';
+import {EventSessionList} from '../eventSession/EventSessionsList';
+import {StandaloneEventClasses} from './StandaloneEventClasses';
+import {StandaloneEventEntrants} from './StandaloneEventEntrants';
 import {TrackSelector} from '../game/TrackSelector';
 import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
 import {ScoringSetSelector} from '../scoringSet/ScoringSetSelector';
-import {StandaloneEvent, StandaloneEventFormData, useCreateStandaloneEvent, useUpdateStandaloneEvent} from '../../../features/standaloneEvent';
+import {StandaloneEvent, StandaloneEventFormData, useUpdateStandaloneEvent} from '../../../features/standaloneEvent';
 import {useGames} from '../../../features/game';
 
 interface StandaloneEventEditorProps {
     onSaved: () => void;
     onCancelled: () => void;
-    standaloneEvent?: StandaloneEvent;
+    standaloneEvent: StandaloneEvent;
 }
 
 export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: StandaloneEventEditorProps) => {
-    const isEditMode = standaloneEvent !== undefined;
-
-    const {mutateAsync: createEvent, isPending: isCreating} = useCreateStandaloneEvent();
-    const {mutateAsync: updateEvent, isPending: isUpdating} = useUpdateStandaloneEvent();
-    const isLoading = isCreating || isUpdating;
-
+    const {mutateAsync: updateEvent, isPending: isLoading} = useUpdateStandaloneEvent();
     const {data: games = [], isLoading: gamesLoading} = useGames();
 
-    const [gameId, setGameId] = useState(0);
+    const [activeTabIndex, setActiveTabIndex] = useState<number | number[]>(0);
+    const [gameId, setGameId] = useState(standaloneEvent.gameId);
     const [gameSupportsLayouts, setGameSupportsLayouts] = useState(false);
     const [trackId, setTrackId] = useState(0);
     const [trackLayoutId, setTrackLayoutId] = useState(0);
@@ -49,10 +48,6 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        if (!standaloneEvent) {
-            return;
-        }
-
         setGameId(standaloneEvent.gameId);
         setTrackId(standaloneEvent.trackId);
         setTrackLayoutId(standaloneEvent.trackLayoutId ?? 0);
@@ -83,28 +78,8 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
         }
     }, [gameId, games, gamesLoading]);
 
-    const resetForm = () => {
-        setGameId(0);
-        setGameSupportsLayouts(false);
-        setTrackId(0);
-        setTrackLayoutId(0);
-        setName('');
-        setDescription('');
-        setEventDate(new Date());
-        setStartTimeDate(null);
-        setIsActive(false);
-        setMaxEntrants(0);
-        setScoringSetId(0);
-        setRuleSetId(0);
-        setValidationErrors([]);
-    };
-
     const validate = () => {
         const errors: string[] = [];
-
-        if (gameId < 1) {
-            errors.push('game');
-        }
 
         if (trackId < 1) {
             errors.push('track');
@@ -144,7 +119,7 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
         const formData: StandaloneEventFormData = {
             name,
             description,
-            bannerImageUrl: standaloneEvent?.bannerImageUrl ?? '',
+            bannerImageUrl: standaloneEvent.bannerImageUrl ?? '',
             gameId,
             trackId,
             eventDate,
@@ -159,34 +134,18 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
             formData.trackLayoutId = trackLayoutId;
         }
 
-        if (isEditMode) {
-            await updateEvent({id: standaloneEvent.id, data: formData});
-        } else {
-            await createEvent(formData);
-            resetForm();
-        }
-
+        await updateEvent({id: standaloneEvent.id, data: formData});
         onSaved();
-    };
-
-    const onSelectedGameChanged = (id: number) => {
-        setTrackId(0);
-        setTrackLayoutId(0);
-        setGameId(id);
     };
 
     return (
         <>
             <BusyIndicator isBusy={isLoading}/>
-            <h3>{isEditMode ? __('Edit Event', 'sim-league-toolkit') : __('New Event', 'sim-league-toolkit')}</h3>
-            <form onSubmit={onSave} noValidate>
-                <GameSelector gameId={gameId}
-                              isInvalid={validationErrors.includes('game')}
-                              validationMessage={__('You must select the game that this event will use.', 'sim-league-toolkit')}
-                              onSelectedItemChanged={onSelectedGameChanged}
-                              disabled={isEditMode || isLoading}/>
-                {gameId !== 0 && (
-                    <>
+            <h3>{__('Event', 'sim-league-toolkit')} - {standaloneEvent.name}</h3>
+            <h4>{__('Game', 'sim-league-toolkit')} - {standaloneEvent.game}</h4>
+            <Accordion activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
+                <AccordionTab header={__('Details', 'sim-league-toolkit')}>
+                    <form onSubmit={onSave} noValidate>
                         <div className='flex flex-row flex-wrap justify-content-start gap-4' style={{marginTop: '1rem'}}>
                             <div className='flex flex-column align-items-stretch gap-2' style={{minWidth: '350px'}}>
                                 <TrackSelector gameId={gameId}
@@ -246,9 +205,24 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
                         </div>
                         <SaveSubmitButton disabled={isLoading} name='submitForm'/>
                         <CancelButton onCancel={onCancelled} disabled={isLoading}/>
-                    </>
-                )}
-            </form>
+                    </form>
+                </AccordionTab>
+                <AccordionTab header={__('Classes', 'sim-league-toolkit')}>
+                    <StandaloneEventClasses standaloneEventId={standaloneEvent.id}/>
+                </AccordionTab>
+                <AccordionTab header={__('Sessions', 'sim-league-toolkit')}>
+                    <EventSessionList
+                        eventRefId={standaloneEvent.eventRefId}
+                        gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
+                    />
+                </AccordionTab>
+                <AccordionTab header={__('Entrants', 'sim-league-toolkit')}>
+                    <StandaloneEventEntrants
+                        standaloneEventId={standaloneEvent.id}
+                        gameId={standaloneEvent.gameId}
+                    />
+                </AccordionTab>
+            </Accordion>
         </>
     );
 };

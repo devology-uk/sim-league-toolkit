@@ -25,5 +25,7 @@
     public final const string SERVER = 'server';
     public final const string SERVER_SETTING = 'server-setting';
     public final const string STANDALONE_EVENT = 'standalone-event';
+    public final const string STANDALONE_EVENT_CLASS = 'standalone-event-class';
+    public final const string STANDALONE_EVENT_ENTRY = 'standalone-event-entry';
     public final const string TRACK = 'track';
   }

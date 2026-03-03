@@ -7,6 +7,7 @@ import {DataView} from 'primereact/dataview';
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {StandaloneEvent, useStandaloneEvents, useDeleteStandaloneEvent} from '../../../features/standaloneEvent';
 import {StandaloneEventCard} from '../standaloneEvent/StandaloneEventCard';
+import {NewStandaloneEventEditor} from '../standaloneEvent/NewStandaloneEventEditor';
 import {StandaloneEventEditor} from '../standaloneEvent/StandaloneEventEditor';
 
 export const Events = () => {
@@ -88,7 +89,7 @@ export const Events = () => {
                           emptyMessage={__('No Events have been defined.', 'sim-league-toolkit')}
                           style={{marginRight: '1rem'}}/>
             </>}
-            {isAdding && <StandaloneEventEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}/>}
+            {isAdding && <NewStandaloneEventEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}/>}
             {isEditing && (
                 <StandaloneEventEditor onSaved={onEditorSaved} onCancelled={onEditorCancelled}
                                        standaloneEvent={selectedItem}/>

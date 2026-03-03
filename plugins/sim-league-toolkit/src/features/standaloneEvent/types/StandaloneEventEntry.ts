@@ -1,14 +1,14 @@
-export interface ChampionshipEntry {
+export interface StandaloneEventEntry {
     id: number;
-    championshipId: number;
-    eventClassId: number;
-    carId: number;
+    standaloneEventId: number;
     userId: number;
+    carId: number;
+    eventClassId?: number;
     memberName: string;
     firstName: string;
     lastName: string;
     raceNumber: number;
     avatarUrl: string;
-    className: string;
     carName: string;
+    className?: string;
 }

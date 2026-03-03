@@ -6,35 +6,35 @@ import {DataView} from 'primereact/dataview';
 import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 
 import {
-    ChampionshipEntry,
-    ChampionshipEntryFormData,
-    useChampionshipClasses,
-    useChampionshipEntries,
-    useCreateChampionshipEntry,
-    useDeleteChampionshipEntry,
-} from '../../../features/championship';
+    StandaloneEventEntry,
+    StandaloneEventEntryFormData,
+    useStandaloneEventEntries,
+    useStandaloneEventClasses,
+    useCreateStandaloneEventEntry,
+    useDeleteStandaloneEventEntry,
+} from '../../../features/standaloneEvent';
 import {useMembers} from '../../../features/member';
 import {useCars} from '../../../features/game';
 import {ListItem} from '../../types/ListItem';
-import {ChampionshipEntrantCard} from './ChampionshipEntrantCard';
+import {StandaloneEventEntrantCard} from './StandaloneEventEntrantCard';
 
-interface ChampionshipEntrantsProps {
-    championshipId: number;
+interface StandaloneEventEntrantsProps {
+    standaloneEventId: number;
     gameId: number;
 }
 
-export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntrantsProps) => {
-    const {data: entries, isLoading: entriesLoading} = useChampionshipEntries(championshipId);
+export const StandaloneEventEntrants = ({standaloneEventId, gameId}: StandaloneEventEntrantsProps) => {
+    const {data: entries, isLoading: entriesLoading} = useStandaloneEventEntries(standaloneEventId);
     const {data: members = [], isLoading: membersLoading} = useMembers();
-    const {data: championshipClasses = []} = useChampionshipClasses(championshipId);
-    const {mutateAsync: createEntry, isPending: isCreating} = useCreateChampionshipEntry(championshipId);
-    const {mutateAsync: deleteEntry} = useDeleteChampionshipEntry(championshipId);
+    const {data: eventClasses = []} = useStandaloneEventClasses(standaloneEventId);
+    const {mutateAsync: createEntry, isPending: isCreating} = useCreateStandaloneEventEntry(standaloneEventId);
+    const {mutateAsync: deleteEntry} = useDeleteStandaloneEventEntry(standaloneEventId);
 
     const [selectedMemberId, setSelectedMemberId] = useState(0);
     const [selectedClassEventClassId, setSelectedClassEventClassId] = useState(0);
     const [selectedCarId, setSelectedCarId] = useState(0);
 
-    const selectedClass = championshipClasses.find(c => c.eventClassId === selectedClassEventClassId) ?? null;
+    const selectedClass = eventClasses.find(c => c.eventClassId === selectedClassEventClassId) ?? null;
     const isSingleCarClass = selectedClass?.isSingleCarClass ?? false;
 
     const {data: cars = []} = useCars(
@@ -46,15 +46,13 @@ export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntra
         ? (selectedClass?.singleCarId ?? 0)
         : selectedCarId;
 
-    const canAdd = selectedMemberId > 0
-        && selectedClassEventClassId > 0
-        && resolvedCarId > 0;
+    const canAdd = selectedMemberId > 0 && selectedClassEventClassId > 0 && resolvedCarId > 0;
 
     const memberOptions: ListItem[] = ([{value: 0, label: __('Select member...', 'sim-league-toolkit')}] as ListItem[])
         .concat(members.map(m => ({value: m.id, label: m.displayName})));
 
     const classOptions: ListItem[] = ([{value: 0, label: __('Select class...', 'sim-league-toolkit')}] as ListItem[])
-        .concat(championshipClasses.map(c => ({value: c.eventClassId, label: c.name})));
+        .concat(eventClasses.map(c => ({value: c.eventClassId, label: c.name})));
 
     const carOptions: ListItem[] = ([{value: 0, label: __('Select car...', 'sim-league-toolkit')}] as ListItem[])
         .concat(cars.map(c => ({value: c.id, label: c.name})));
@@ -69,10 +67,10 @@ export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntra
             return;
         }
 
-        const formData: ChampionshipEntryFormData = {
-            eventClassId: selectedClassEventClassId,
-            carId: resolvedCarId,
+        const formData: StandaloneEventEntryFormData = {
             userId: selectedMemberId,
+            carId: resolvedCarId,
+            eventClassId: selectedClassEventClassId,
         };
 
         await createEntry(formData);
@@ -82,17 +80,17 @@ export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntra
         setSelectedCarId(0);
     };
 
-    const onDelete = async (entry: ChampionshipEntry) => {
+    const onDelete = async (entry: StandaloneEventEntry) => {
         await deleteEntry(entry.id);
     };
 
-    const itemTemplate = (entry: ChampionshipEntry) => (
-        <ChampionshipEntrantCard key={entry.id} entry={entry} onRequestDelete={onDelete}/>
+    const itemTemplate = (entry: StandaloneEventEntry) => (
+        <StandaloneEventEntrantCard key={entry.id} entry={entry} onRequestDelete={onDelete}/>
     );
 
     const isLoading = entriesLoading || membersLoading || isCreating;
 
-    if (championshipClasses.length === 0) {
+    if (eventClasses.length === 0) {
         return (
             <p>{__('You must assign at least one class in the Classes tab before adding entrants.', 'sim-league-toolkit')}</p>
         );

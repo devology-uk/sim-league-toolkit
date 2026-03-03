@@ -48,7 +48,8 @@
      * @throws Exception
      */
     public static function isInUse(int $id): bool {
-      return self::simpleExists(TableNames::CHAMPIONSHIP_EVENT_CLASSES, "eventClassId = $id");
+      return self::simpleExists(TableNames::CHAMPIONSHIP_EVENT_CLASSES, "eventClassId = $id")
+          || self::simpleExists(TableNames::STANDALONE_EVENT_CLASSES, "eventClassId = $id");
     }
 
     /**
@@ -131,6 +132,68 @@
                 LEFT OUTER JOIN $carsTableName c
                 ON ec.singleCarId = c.id                
                 WHERE cec.championshipId = $id;";
+
+      return self::getResults($query);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function listForStandaloneEvent(int $standaloneEventId): array {
+      $tableName = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $gamesTableName = self::prefixedTableName(TableNames::GAMES);
+      $driverCategoriesTableName = self::prefixedTableName(TableNames::DRIVER_CATEGORIES);
+      $carsTableName = self::prefixedTableName(TableNames::CARS);
+      $standaloneEventClassesTableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
+      $standaloneEventEntriesTableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
+
+      $id = $standaloneEventId;
+      $query = "SELECT $id as standaloneEventId,
+                        sec.eventClassId,
+                        ec.carClass,
+                        ec.driverCategoryId,
+                        ec.gameId,
+                        ec.isSingleCarClass,
+                        ec.name,
+                        ec.singleCarId,
+                        ec.isBuiltIn,
+                        g.name as game,
+                        dc.name as driverCategory,
+                        c.name as singleCarName,
+                        (SELECT COUNT(*) FROM $standaloneEventEntriesTableName WHERE standaloneEventId = $id AND eventClassId = sec.eventClassId) as isInUse
+                FROM $tableName ec
+                INNER JOIN $standaloneEventClassesTableName sec
+                ON ec.Id = sec.eventClassId
+                INNER JOIN $gamesTableName g
+                ON ec.gameId = g.id
+                INNER JOIN $driverCategoriesTableName dc
+                ON ec.driverCategoryId = dc.id
+                LEFT OUTER JOIN $carsTableName c
+                ON ec.singleCarId = c.id
+                WHERE sec.standaloneEventId = $id;";
+
+      return self::getResults($query);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function listAvailableForStandaloneEvent(int $standaloneEventId): array {
+      $tableName = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $standaloneEventClassesTableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
+      $standaloneEventsTableName = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+
+      $query = "SELECT ec.*
+                FROM $tableName ec
+                INNER JOIN $standaloneEventsTableName se
+                ON ec.gameId = se.gameId
+                LEFT OUTER JOIN $standaloneEventClassesTableName sec
+                ON se.id = sec.standaloneEventId
+                AND ec.id = sec.eventClassId
+                WHERE se.id = $standaloneEventId
+                AND sec.eventClassId IS NULL;";
 
       return self::getResults($query);
     }

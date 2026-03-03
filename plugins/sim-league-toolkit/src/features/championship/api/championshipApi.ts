@@ -1,6 +1,7 @@
 import {ApiClient} from '../../../api';
 
 import {Championship, ChampionshipClass, ChampionshipClassFormData, ChampionshipEntry, ChampionshipEntryFormData, ChampionshipEvent, ChampionshipEventFormData, ChampionshipFormData} from '../';
+import {EventClass} from '../../eventClass';
 
 const championshipRoot = '/championship';
 const championshipsRoot = '/championships';
@@ -72,8 +73,8 @@ export const championshipApi = {
         return response.data ?? [];
     },
 
-    listAvailableClasses: async (championshipId: number): Promise<ChampionshipClass[]> => {
-        const response = await ApiClient.get<ChampionshipClass[]>(endpoints.listAvailableClasses(championshipId));
+    listAvailableClasses: async (championshipId: number): Promise<EventClass[]> => {
+        const response = await ApiClient.get<EventClass[]>(endpoints.listAvailableClasses(championshipId));
         if (!response.success) {
             throw new Error(`Failed to fetch available classes for championship with id ${championshipId}`);
         }

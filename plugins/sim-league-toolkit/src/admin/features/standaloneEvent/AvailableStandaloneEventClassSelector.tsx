@@ -3,10 +3,10 @@ import {DropdownChangeEvent, Dropdown} from 'primereact/dropdown';
 import {ListItem} from '../../types/ListItem';
 import {__} from '@wordpress/i18n';
 import {ValidationError} from '../../components/ValidationError';
-import {useAvailableChampionshipClasses} from '../../../features/championship';
+import {useAvailableStandaloneEventClasses} from '../../../features/standaloneEvent';
 
-interface AvailableEventClassSelectorProps {
-    championshipId: number;
+interface AvailableStandaloneEventClassSelectorProps {
+    standaloneEventId: number;
     disabled?: boolean;
     isInvalid?: boolean;
     reload: boolean;
@@ -14,16 +14,16 @@ interface AvailableEventClassSelectorProps {
     validationMessage?: string;
 }
 
-export const AvailableEventClassSelector = ({
-                                                championshipId,
-                                                disabled = false,
-                                                isInvalid = false,
-                                                reload = false,
-                                                onSelectedItemChanged,
-                                                validationMessage = ''
-                                            }: AvailableEventClassSelectorProps) => {
+export const AvailableStandaloneEventClassSelector = ({
+                                                          standaloneEventId,
+                                                          disabled = false,
+                                                          isInvalid = false,
+                                                          reload = false,
+                                                          onSelectedItemChanged,
+                                                          validationMessage = ''
+                                                      }: AvailableStandaloneEventClassSelectorProps) => {
 
-    const {data: items = [], isLoading, refetch} = useAvailableChampionshipClasses(championshipId);
+    const {data: items = [], isLoading, refetch} = useAvailableStandaloneEventClasses(standaloneEventId);
     const [selectedItemId, setSelectedItemId] = useState(0);
 
     useEffect(() => {
@@ -46,8 +46,8 @@ export const AvailableEventClassSelector = ({
 
     return (
         <>
-            <label htmlFor='event-class-selector'>{__('Event Class', 'sim-league-toolkit')}</label>
-            <Dropdown id='event-class-selector' value={selectedItemId} options={listItems} onChange={onSelect}
+            <label htmlFor='standalone-event-class-selector'>{__('Event Class', 'sim-league-toolkit')}</label>
+            <Dropdown id='standalone-event-class-selector' value={selectedItemId} options={listItems} onChange={onSelect}
                       optionLabel='label'
                       optionValue='value' disabled={disabled || isLoading}
                       style={{marginLeft: '.5rem', marginRight: '.5rem'}}/>

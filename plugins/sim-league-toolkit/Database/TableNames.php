@@ -27,8 +27,11 @@
     public final const string SERVERS = 'sltk_servers';
     public final const string SERVER_SETTINGS = 'sltk_server_settings';
     public final const string STANDALONE_EVENTS = 'sltk_standalone_events';
+    public final const string STANDALONE_EVENT_CLASSES = 'sltk_standalone_event_classes';
+    public final const string STANDALONE_EVENT_ENTRIES = 'sltk_standalone_event_entries';
     public final const string TRACKS = 'sltk_tracks';
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
+    public final const string USER_META = 'usermeta';
     public final const string USERS = 'users';
     public final const string USER_PROFILES = 'sltk_user_profile';
   }

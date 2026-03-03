@@ -102,6 +102,18 @@
     }
 
     /**
+     * @return EventClass[]
+     * @throws Exception
+     */
+    public static function listAvailableForStandaloneEvent(int $standaloneEventId): array {
+      $queryResult = EventClassesRepository::listAvailableForStandaloneEvent($standaloneEventId);
+
+      return array_map(function (stdClass $item) {
+        return EventClass::fromStdClass($item);
+      }, $queryResult);
+    }
+
+    /**
      * @throws Exception
      */
     public function canDelete(): bool {

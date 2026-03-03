@@ -6,27 +6,27 @@ use Exception;
 use SLTK\Database\TableNames;
 use stdClass;
 
-class ChampionshipEntriesRepository extends RepositoryBase {
+class StandaloneEventEntriesRepository extends RepositoryBase {
 
     /**
      * @throws Exception
      */
     public static function add(array $data): int {
-        return self::insert(TableNames::CHAMPIONSHIP_ENTRIES, $data);
+        return self::insert(TableNames::STANDALONE_EVENT_ENTRIES, $data);
     }
 
     /**
      * @throws Exception
      */
     public static function delete(int $id): void {
-        self::deleteById(TableNames::CHAMPIONSHIP_ENTRIES, $id);
+        self::deleteById(TableNames::STANDALONE_EVENT_ENTRIES, $id);
     }
 
     /**
      * @throws Exception
      */
     public static function getById(int $id): ?stdClass {
-        $entriesTable = self::prefixedTableName(TableNames::CHAMPIONSHIP_ENTRIES);
+        $entriesTable = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
         $usersTable = self::prefixedTableName(TableNames::USERS);
         $userMetaTable = self::prefixedTableName(TableNames::USER_META);
         $eventClassesTable = self::prefixedTableName(TableNames::EVENT_CLASSES);
@@ -56,8 +56,8 @@ class ChampionshipEntriesRepository extends RepositoryBase {
      * @return stdClass[]
      * @throws Exception
      */
-    public static function listByChampionshipId(int $championshipId): array {
-        $entriesTable = self::prefixedTableName(TableNames::CHAMPIONSHIP_ENTRIES);
+    public static function listByStandaloneEventId(int $standaloneEventId): array {
+        $entriesTable = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
         $usersTable = self::prefixedTableName(TableNames::USERS);
         $userMetaTable = self::prefixedTableName(TableNames::USER_META);
         $eventClassesTable = self::prefixedTableName(TableNames::EVENT_CLASSES);
@@ -78,7 +78,7 @@ class ChampionshipEntriesRepository extends RepositoryBase {
                 LEFT JOIN {$userMetaTable} um_rn ON e.userId = um_rn.user_id AND um_rn.meta_key = 'sltk_race_number'
                 LEFT JOIN {$eventClassesTable} ec ON e.eventClassId = ec.id
                 LEFT JOIN {$carsTable} c ON e.carId = c.id
-                WHERE e.championshipId = '{$championshipId}'
+                WHERE e.standaloneEventId = '{$standaloneEventId}'
                 ORDER BY u.display_name;";
 
         return self::getResults($query);

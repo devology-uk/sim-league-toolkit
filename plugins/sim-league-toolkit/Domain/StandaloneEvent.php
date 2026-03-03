@@ -3,6 +3,7 @@
   namespace SLTK\Domain;
 
   use Exception;
+  use SLTK\Database\Repositories\EventClassesRepository;
   use SLTK\Database\Repositories\EventRefsRepository;
   use SLTK\Database\Repositories\StandaloneEventsRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
@@ -22,6 +23,37 @@
     private ?int $scoringSetId = null;
     private string $startTime = '';
 
+
+    /**
+     * @throws Exception
+     */
+    public static function addStandaloneEventClass(int $standaloneEventId, int $eventClassId): void {
+      $data = [
+        'standaloneEventId' => $standaloneEventId,
+        'eventClassId' => $eventClassId,
+      ];
+
+      StandaloneEventsRepository::addEventClass($data);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteStandaloneEventClass(int $standaloneEventId, int $eventClassId): void {
+      StandaloneEventsRepository::deleteEventClass($standaloneEventId, $eventClassId);
+    }
+
+    /**
+     * @return StandaloneEventEventClass[]
+     * @throws Exception
+     */
+    public static function listClasses(int $standaloneEventId): array {
+      $queryResults = EventClassesRepository::listForStandaloneEvent($standaloneEventId);
+
+      return array_map(function(&$item) {
+        return StandaloneEventEventClass::fromStdClass($item);
+      }, $queryResults);
+    }
 
     /**
      * @throws Exception

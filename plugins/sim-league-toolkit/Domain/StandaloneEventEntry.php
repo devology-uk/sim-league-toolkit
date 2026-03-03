@@ -4,7 +4,7 @@ namespace SLTK\Domain;
 
 use Exception;
 use SLTK\Core\Constants;
-use SLTK\Database\Repositories\ChampionshipEntriesRepository;
+use SLTK\Database\Repositories\StandaloneEventEntriesRepository;
 use SLTK\Domain\Abstractions\AggregateRoot;
 use SLTK\Domain\Abstractions\Deletable;
 use SLTK\Domain\Abstractions\ProvidesPersistableArray;
@@ -12,11 +12,11 @@ use SLTK\Domain\Abstractions\Saveable;
 use SLTK\Domain\Traits\HasIdentity;
 use stdClass;
 
-class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable {
+class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable {
     use HasIdentity;
 
-    private int $championshipId = Constants::DEFAULT_ID;
-    private int $eventClassId = Constants::DEFAULT_ID;
+    private int $standaloneEventId = Constants::DEFAULT_ID;
+    private ?int $eventClassId = null;
     private int $carId = Constants::DEFAULT_ID;
     private int $userId = Constants::DEFAULT_ID;
     private string $memberName = '';
@@ -24,14 +24,14 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
     private string $lastName = '';
     private int $raceNumber = 0;
     private string $avatarUrl = '';
-    private string $className = '';
     private string $carName = '';
+    private ?string $className = null;
 
     /**
      * @throws Exception
      */
     public static function delete(int $id): void {
-        ChampionshipEntriesRepository::delete($id);
+        StandaloneEventEntriesRepository::delete($id);
     }
 
     public static function fromStdClass(?stdClass $data): ?self {
@@ -41,8 +41,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
 
         $result = new self();
         $result->setId((int)$data->id);
-        $result->setChampionshipId((int)$data->championshipId);
-        $result->setEventClassId((int)$data->eventClassId);
+        $result->setStandaloneEventId((int)$data->standaloneEventId);
+        $result->setEventClassId($data->eventClassId !== null ? (int)$data->eventClassId : null);
         $result->setCarId((int)$data->carId);
         $result->setUserId((int)$data->userId);
         $result->setMemberName($data->memberName ?? '');
@@ -50,8 +50,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         $result->setLastName($data->lastName ?? '');
         $result->setRaceNumber((int)($data->raceNumber ?? 0));
         $result->setAvatarUrl(get_avatar_url((int)$data->userId) ?: '');
-        $result->setClassName($data->className ?? '');
         $result->setCarName($data->carName ?? '');
+        $result->setClassName($data->className ?? null);
 
         return $result;
     }
@@ -60,34 +60,34 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
      * @throws Exception
      */
     public static function get(int $id): ?self {
-        $row = ChampionshipEntriesRepository::getById($id);
+        $row = StandaloneEventEntriesRepository::getById($id);
 
         return self::fromStdClass($row);
     }
 
     /**
-     * @return ChampionshipEntry[]
+     * @return StandaloneEventEntry[]
      * @throws Exception
      */
-    public static function listByChampionship(int $championshipId): array {
-        $results = ChampionshipEntriesRepository::listByChampionshipId($championshipId);
+    public static function listByStandaloneEvent(int $standaloneEventId): array {
+        $results = StandaloneEventEntriesRepository::listByStandaloneEventId($standaloneEventId);
 
         return array_map(fn($row) => self::fromStdClass($row), $results);
     }
 
-    public function getChampionshipId(): int {
-        return $this->championshipId;
+    public function getStandaloneEventId(): int {
+        return $this->standaloneEventId;
     }
 
-    public function setChampionshipId(int $value): void {
-        $this->championshipId = $value;
+    public function setStandaloneEventId(int $value): void {
+        $this->standaloneEventId = $value;
     }
 
-    public function getEventClassId(): int {
+    public function getEventClassId(): ?int {
         return $this->eventClassId;
     }
 
-    public function setEventClassId(int $value): void {
+    public function setEventClassId(?int $value): void {
         $this->eventClassId = $value;
     }
 
@@ -147,14 +147,6 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         $this->avatarUrl = $value;
     }
 
-    public function getClassName(): string {
-        return $this->className;
-    }
-
-    private function setClassName(string $value): void {
-        $this->className = $value;
-    }
-
     public function getCarName(): string {
         return $this->carName;
     }
@@ -163,40 +155,53 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         $this->carName = $value;
     }
 
+    public function getClassName(): ?string {
+        return $this->className;
+    }
+
+    private function setClassName(?string $value): void {
+        $this->className = $value;
+    }
+
     /**
      * @throws Exception
      */
     public function save(): self {
         if (!$this->hasId()) {
-            $this->setId(ChampionshipEntriesRepository::add($this->toArray()));
+            $this->setId(StandaloneEventEntriesRepository::add($this->toArray()));
         }
 
         return $this;
     }
 
     public function toArray(): array {
-        return [
-            'championshipId' => $this->getChampionshipId(),
-            'eventClassId'   => $this->getEventClassId(),
-            'carId'          => $this->getCarId(),
-            'userId'         => $this->getUserId(),
+        $data = [
+            'standaloneEventId' => $this->getStandaloneEventId(),
+            'carId'             => $this->getCarId(),
+            'userId'            => $this->getUserId(),
         ];
+
+        if ($this->getEventClassId() !== null) {
+            $data['eventClassId'] = $this->getEventClassId();
+        }
+
+        return $data;
     }
 
     public function toDto(): array {
         return [
-            'id'             => $this->getId(),
-            'championshipId' => $this->getChampionshipId(),
-            'eventClassId'   => $this->getEventClassId(),
-            'carId'          => $this->getCarId(),
-            'userId'         => $this->getUserId(),
-            'memberName'     => $this->getMemberName(),
-            'firstName'      => $this->getFirstName(),
-            'lastName'       => $this->getLastName(),
-            'raceNumber'     => $this->getRaceNumber(),
-            'avatarUrl'      => $this->getAvatarUrl(),
-            'className'      => $this->getClassName(),
-            'carName'        => $this->getCarName(),
+            'id'                => $this->getId(),
+            'standaloneEventId' => $this->getStandaloneEventId(),
+            'eventClassId'      => $this->getEventClassId(),
+            'carId'             => $this->getCarId(),
+            'userId'            => $this->getUserId(),
+            'memberName'        => $this->getMemberName(),
+            'firstName'         => $this->getFirstName(),
+            'lastName'          => $this->getLastName(),
+            'raceNumber'        => $this->getRaceNumber(),
+            'avatarUrl'         => $this->getAvatarUrl(),
+            'carName'           => $this->getCarName(),
+            'className'         => $this->getClassName(),
         ];
     }
 }

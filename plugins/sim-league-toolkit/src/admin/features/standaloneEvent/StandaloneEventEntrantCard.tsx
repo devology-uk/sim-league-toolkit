@@ -4,14 +4,14 @@ import {Avatar} from 'primereact/avatar';
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
 
-import {ChampionshipEntry} from '../../../features/championship';
+import {StandaloneEventEntry} from '../../../features/standaloneEvent';
 
-interface ChampionshipEntrantCardProps {
-    entry: ChampionshipEntry;
-    onRequestDelete: (entry: ChampionshipEntry) => void;
+interface StandaloneEventEntrantCardProps {
+    entry: StandaloneEventEntry;
+    onRequestDelete: (entry: StandaloneEventEntry) => void;
 }
 
-export const ChampionshipEntrantCard = ({entry, onRequestDelete}: ChampionshipEntrantCardProps) => {
+export const StandaloneEventEntrantCard = ({entry, onRequestDelete}: StandaloneEventEntrantCardProps) => {
     const displayName = (entry.firstName || entry.lastName)
         ? `${entry.firstName} ${entry.lastName}`.trim()
         : entry.memberName;
@@ -35,10 +35,6 @@ export const ChampionshipEntrantCard = ({entry, onRequestDelete}: ChampionshipEn
                 <tr>
                     <th scope='row'>{__('Race #', 'sim-league-toolkit')}</th>
                     <td>{entry.raceNumber || '—'}</td>
-                </tr>
-                <tr>
-                    <th scope='row'>{__('Class', 'sim-league-toolkit')}</th>
-                    <td>{entry.className}</td>
                 </tr>
                 <tr>
                     <th scope='row'>{__('Car', 'sim-league-toolkit')}</th>

@@ -121,4 +121,26 @@
     {
       self::deleteById(TableNames::STANDALONE_EVENTS, $id);
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function addEventClass(array $mapping): void
+    {
+      self::insertWithoutReturn(TableNames::STANDALONE_EVENT_CLASSES, $mapping);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function deleteEventClass(int $standaloneEventId, int $eventClassId): void
+    {
+      $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
+
+      $query = "DELETE FROM $tableName
+                WHERE standaloneEventId = $standaloneEventId
+                AND eventClassId = $eventClassId";
+
+      self::execute($query);
+    }
   }
