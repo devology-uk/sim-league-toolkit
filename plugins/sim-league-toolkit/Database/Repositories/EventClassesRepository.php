@@ -111,10 +111,11 @@
 
       $query = "SELECT $id as championshipId,
                         cec.eventClassId,
+                        cec.max_entrants as maxEntrants,
                         ec.carClass,
                         ec.driverCategoryId,
                         ec.gameId,
-                        ec.isSingleCarClass,                    
+                        ec.isSingleCarClass,
                         ec.name,
                         ec.singleCarId,
                         ec.isBuiltIn,
@@ -124,13 +125,13 @@
                         (SELECT COUNT(*) FROM $championshipEntriesTableName WHERE championshipId = $id AND eventClassId = cec.eventClassId) as isInUse
                 FROM $tableName ec
                 INNER JOIN $championshipEventClassesTableName cec
-                ON ec.Id = cec.eventClassId                
+                ON ec.Id = cec.eventClassId
                 INNER JOIN $gamesTableName g
                 ON ec.gameId = g.id
                 INNER JOIN $driverCategoriesTableName dc
                 ON ec.driverCategoryId = dc.id
                 LEFT OUTER JOIN $carsTableName c
-                ON ec.singleCarId = c.id                
+                ON ec.singleCarId = c.id
                 WHERE cec.championshipId = $id;";
 
       return self::getResults($query);
@@ -151,6 +152,7 @@
       $id = $standaloneEventId;
       $query = "SELECT $id as standaloneEventId,
                         sec.eventClassId,
+                        sec.max_entrants as maxEntrants,
                         ec.carClass,
                         ec.driverCategoryId,
                         ec.gameId,

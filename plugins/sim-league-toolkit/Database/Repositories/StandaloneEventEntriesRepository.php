@@ -53,6 +53,41 @@ class StandaloneEventEntriesRepository extends RepositoryBase {
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getConfirmedCountForClass(int $standaloneEventId, int $eventClassId): int {
+        return (int)self::getCount(
+            TableNames::STANDALONE_EVENT_ENTRIES,
+            "standaloneEventId = {$standaloneEventId} AND eventClassId = {$eventClassId} AND status = 'confirmed'"
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function promoteFromWaitlist(int $standaloneEventId, int $eventClassId, int $maxEntrants): void {
+        $confirmedCount = self::getConfirmedCountForClass($standaloneEventId, $eventClassId);
+
+        if ($confirmedCount >= $maxEntrants) {
+            return;
+        }
+
+        $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
+        $row = self::getRow(
+            "SELECT id FROM {$tableName}
+             WHERE standaloneEventId = {$standaloneEventId}
+             AND eventClassId = {$eventClassId}
+             AND status = 'waitlisted'
+             ORDER BY created_at ASC
+             LIMIT 1;"
+        );
+
+        if ($row) {
+            self::updateById(TableNames::STANDALONE_EVENT_ENTRIES, (int)$row->id, ['status' => 'confirmed']);
+        }
+    }
+
+    /**
      * @return stdClass[]
      * @throws Exception
      */

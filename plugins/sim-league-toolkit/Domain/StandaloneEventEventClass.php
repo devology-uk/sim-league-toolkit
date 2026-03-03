@@ -21,6 +21,7 @@
     private bool $isInUse = false;
     private bool $isSingleCarClass = false;
     private string $name = '';
+    private ?int $maxEntrants = null;
     private ?int $singleCarId = null;
     private ?string $singleCarName = null;
     private int $standaloneEventId = 0;
@@ -38,6 +39,7 @@
       $result->setIsInUse($data->isInUse > 0);
       $result->setIsSingleCarClass($data->isSingleCarClass);
       $result->setName($data->name);
+      $result->setMaxEntrants(isset($data->maxEntrants) ? (int)$data->maxEntrants : null);
       $result->setSingleCarId($data->singleCarId ?? null);
       $result->setSingleCarName($data->singleCarName ?? null);
 
@@ -70,6 +72,10 @@
 
     public function getIsBuiltIn(): bool {
       return $this->isBuiltIn;
+    }
+
+    public function getMaxEntrants(): ?int {
+      return $this->maxEntrants;
     }
 
     public function getIsInUse(): bool {
@@ -129,6 +135,7 @@
         'name' => $this->getName(),
         'singleCarName' => $this->getSingleCarName(),
         'singleCarId' => $this->getSingleCarId(),
+        'maxEntrants' => $this->getMaxEntrants(),
       ];
     }
 
@@ -166,6 +173,10 @@
 
     private function setName(string $value): void {
       $this->name = $value;
+    }
+
+    private function setMaxEntrants(?int $value): void {
+      $this->maxEntrants = $value;
     }
 
     private function setSingleCarId(?int $singleCarId): void {

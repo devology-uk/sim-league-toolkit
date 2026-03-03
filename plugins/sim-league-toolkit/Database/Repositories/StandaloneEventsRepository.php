@@ -143,4 +143,41 @@
 
       self::execute($query);
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function getClassMaxEntrants(int $standaloneEventId, int $eventClassId): ?int
+    {
+      $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
+
+      $value = self::getValue(
+        "SELECT max_entrants FROM {$tableName}
+         WHERE standaloneEventId = {$standaloneEventId}
+         AND eventClassId = {$eventClassId}
+         LIMIT 1;"
+      );
+
+      return $value !== null ? (int)$value : null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function updateEventClass(int $standaloneEventId, int $eventClassId, array $updates): void
+    {
+      $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
+      $setClauses = [];
+
+      foreach ($updates as $column => $value) {
+        $setClauses[] = $value === null ? "{$column} = NULL" : "{$column} = " . (int)$value;
+      }
+
+      $set = implode(', ', $setClauses);
+      self::execute(
+        "UPDATE {$tableName} SET {$set}
+         WHERE standaloneEventId = {$standaloneEventId}
+         AND eventClassId = {$eventClassId};"
+      );
+    }
   }

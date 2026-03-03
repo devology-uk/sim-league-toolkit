@@ -26,6 +26,8 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
     private string $avatarUrl = '';
     private string $carName = '';
     private ?string $className = null;
+    private string $status = 'confirmed';
+    private string $createdAt = '';
 
     /**
      * @throws Exception
@@ -52,6 +54,8 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         $result->setAvatarUrl(get_avatar_url((int)$data->userId) ?: '');
         $result->setCarName($data->carName ?? '');
         $result->setClassName($data->className ?? null);
+        $result->setStatus($data->status ?? 'confirmed');
+        $result->setCreatedAt($data->created_at ?? '');
 
         return $result;
     }
@@ -163,6 +167,22 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         $this->className = $value;
     }
 
+    public function getStatus(): string {
+        return $this->status;
+    }
+
+    public function setStatus(string $value): void {
+        $this->status = $value;
+    }
+
+    public function getCreatedAt(): string {
+        return $this->createdAt;
+    }
+
+    private function setCreatedAt(string $value): void {
+        $this->createdAt = $value;
+    }
+
     /**
      * @throws Exception
      */
@@ -179,6 +199,7 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
             'standaloneEventId' => $this->getStandaloneEventId(),
             'carId'             => $this->getCarId(),
             'userId'            => $this->getUserId(),
+            'status'            => $this->getStatus(),
         ];
 
         if ($this->getEventClassId() !== null) {
@@ -202,6 +223,8 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
             'avatarUrl'         => $this->getAvatarUrl(),
             'carName'           => $this->getCarName(),
             'className'         => $this->getClassName(),
+            'status'            => $this->getStatus(),
+            'createdAt'         => $this->getCreatedAt(),
         ];
     }
 }

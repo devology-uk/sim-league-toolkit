@@ -26,6 +26,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
     private string $avatarUrl = '';
     private string $className = '';
     private string $carName = '';
+    private string $status = 'confirmed';
+    private string $createdAt = '';
 
     /**
      * @throws Exception
@@ -52,6 +54,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         $result->setAvatarUrl(get_avatar_url((int)$data->userId) ?: '');
         $result->setClassName($data->className ?? '');
         $result->setCarName($data->carName ?? '');
+        $result->setStatus($data->status ?? 'confirmed');
+        $result->setCreatedAt($data->created_at ?? '');
 
         return $result;
     }
@@ -163,6 +167,22 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         $this->carName = $value;
     }
 
+    public function getStatus(): string {
+        return $this->status;
+    }
+
+    public function setStatus(string $value): void {
+        $this->status = $value;
+    }
+
+    public function getCreatedAt(): string {
+        return $this->createdAt;
+    }
+
+    private function setCreatedAt(string $value): void {
+        $this->createdAt = $value;
+    }
+
     /**
      * @throws Exception
      */
@@ -180,6 +200,7 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
             'eventClassId'   => $this->getEventClassId(),
             'carId'          => $this->getCarId(),
             'userId'         => $this->getUserId(),
+            'status'         => $this->getStatus(),
         ];
     }
 
@@ -197,6 +218,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
             'avatarUrl'      => $this->getAvatarUrl(),
             'className'      => $this->getClassName(),
             'carName'        => $this->getCarName(),
+            'status'         => $this->getStatus(),
+            'createdAt'      => $this->getCreatedAt(),
         ];
     }
 }

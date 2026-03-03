@@ -6,6 +6,8 @@ use SLTK\Api\Traits\HasDelete;
 use SLTK\Api\Traits\HasGet;
 use SLTK\Api\Traits\HasPost;
 use SLTK\Core\Constants;
+use SLTK\Database\Repositories\StandaloneEventEntriesRepository;
+use SLTK\Database\Repositories\StandaloneEventsRepository;
 use SLTK\Domain\StandaloneEventEntry;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -56,7 +58,25 @@ class StandaloneEventEntryApiController extends ApiController {
 
     protected function onDelete(WP_REST_Request $request): WP_REST_Response {
         return $this->execute(function () use ($request) {
-            StandaloneEventEntry::delete($this->getId($request));
+            $id = $this->getId($request);
+            $entry = StandaloneEventEntry::get($id);
+
+            StandaloneEventEntry::delete($id);
+
+            if ($entry && $entry->getStatus() === 'confirmed' && $entry->getEventClassId() !== null) {
+                $maxEntrants = StandaloneEventsRepository::getClassMaxEntrants(
+                    $entry->getStandaloneEventId(),
+                    $entry->getEventClassId()
+                );
+
+                if ($maxEntrants !== null) {
+                    StandaloneEventEntriesRepository::promoteFromWaitlist(
+                        $entry->getStandaloneEventId(),
+                        $entry->getEventClassId(),
+                        $maxEntrants
+                    );
+                }
+            }
 
             return ApiResponse::noContent();
         });

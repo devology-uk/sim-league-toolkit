@@ -53,6 +53,41 @@ class ChampionshipEntriesRepository extends RepositoryBase {
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getConfirmedCountForClass(int $championshipId, int $eventClassId): int {
+        return (int)self::getCount(
+            TableNames::CHAMPIONSHIP_ENTRIES,
+            "championshipId = {$championshipId} AND eventClassId = {$eventClassId} AND status = 'confirmed'"
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function promoteFromWaitlist(int $championshipId, int $eventClassId, int $maxEntrants): void {
+        $confirmedCount = self::getConfirmedCountForClass($championshipId, $eventClassId);
+
+        if ($confirmedCount >= $maxEntrants) {
+            return;
+        }
+
+        $tableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_ENTRIES);
+        $row = self::getRow(
+            "SELECT id FROM {$tableName}
+             WHERE championshipId = {$championshipId}
+             AND eventClassId = {$eventClassId}
+             AND status = 'waitlisted'
+             ORDER BY created_at ASC
+             LIMIT 1;"
+        );
+
+        if ($row) {
+            self::updateById(TableNames::CHAMPIONSHIP_ENTRIES, (int)$row->id, ['status' => 'confirmed']);
+        }
+    }
+
+    /**
      * @return stdClass[]
      * @throws Exception
      */

@@ -44,6 +44,41 @@
     /**
      * @throws Exception
      */
+    public static function getClassMaxEntrants(int $championshipId, int $eventClassId): ?int {
+      $tableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+
+      $value = self::getValue(
+        "SELECT max_entrants FROM {$tableName}
+         WHERE championshipId = {$championshipId}
+         AND eventClassId = {$eventClassId}
+         LIMIT 1;"
+      );
+
+      return $value !== null ? (int)$value : null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function updateClass(int $championshipId, int $eventClassId, array $updates): void {
+      $tableName = self::prefixedTableName(TableNames::CHAMPIONSHIP_EVENT_CLASSES);
+      $setClauses = [];
+
+      foreach ($updates as $column => $value) {
+        $setClauses[] = $value === null ? "{$column} = NULL" : "{$column} = " . (int)$value;
+      }
+
+      $set = implode(', ', $setClauses);
+      self::execute(
+        "UPDATE {$tableName} SET {$set}
+         WHERE championshipId = {$championshipId}
+         AND eventClassId = {$eventClassId};"
+      );
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): stdClass {
       $championshipsTableName = self::prefixedTableName(TableNames::CHAMPIONSHIPS);
       $gamesTableName = self::prefixedTableName(TableNames::GAMES);

@@ -12,7 +12,16 @@
     }
 
     public function applyAdjustments(string $tablePrefix): void {
+      global $wpdb;
+      $tableName = $this->tableName($tablePrefix);
 
+      if (empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'status'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} ADD COLUMN status ENUM('confirmed', 'waitlisted') NOT NULL DEFAULT 'confirmed'");
+      }
+
+      if (empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'created_at'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
+      }
     }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {

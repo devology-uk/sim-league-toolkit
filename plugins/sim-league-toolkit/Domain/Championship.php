@@ -78,6 +78,13 @@
     /**
      * @throws Exception
      */
+    public static function updateChampionshipClass(int $championshipId, int $eventClassId, array $updates): void {
+      ChampionshipRepository::updateClass($championshipId, $eventClassId, $updates);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function deleteEvent(int $eventId): void {
       ChampionshipEvent::delete($eventId);
     }

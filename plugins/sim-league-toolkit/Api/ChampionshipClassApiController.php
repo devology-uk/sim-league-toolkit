@@ -10,6 +10,7 @@
   use WP_REST_Request;
   use WP_REST_Response;
 
+
   class ChampionshipClassApiController extends ApiController {
     use HasDelete, HasPost;
 
@@ -43,7 +44,28 @@
       $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/classes/available', 'GET', [$this, 'canGet'], [$this, 'listAvailable']);
       $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/classes', 'GET', [$this, 'canGet'], [$this, 'list']);
       $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/classes', 'POST', [$this, 'canPost'], [$this, 'post']);
+      $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/classes/(?P<eventClassId>\\d+)', 'PUT', [$this, 'canPut'], [$this, 'put']);
       $this->registerRoute(ResourceNames::CHAMPIONSHIP . '/' . Constants::ROUTE_PATTERN_ID . '/classes/(?P<eventClassId>\\d+)' , 'DELETE', [$this, 'canDelete'], [$this, 'delete']);
+    }
+
+    public function canPut(): bool {
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
+    }
+
+    public function put(WP_REST_Request $request): WP_REST_Response {
+      return $this->execute(function () use ($request) {
+        $championshipId = $this->getId($request);
+        $eventClassId = (int)$request->get_param('eventClassId');
+        $params = $this->getParams($request);
+
+        $maxEntrants = array_key_exists('maxEntrants', $params)
+          ? ($params['maxEntrants'] !== null && $params['maxEntrants'] !== '' ? (int)$params['maxEntrants'] : null)
+          : null;
+
+        Championship::updateChampionshipClass($championshipId, $eventClassId, ['max_entrants' => $maxEntrants]);
+
+        return ApiResponse::noContent();
+      });
     }
 
     public function canGet(): bool {

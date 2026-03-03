@@ -6,6 +6,8 @@ use SLTK\Api\Traits\HasDelete;
 use SLTK\Api\Traits\HasGet;
 use SLTK\Api\Traits\HasPost;
 use SLTK\Core\Constants;
+use SLTK\Database\Repositories\ChampionshipEntriesRepository;
+use SLTK\Database\Repositories\ChampionshipRepository;
 use SLTK\Domain\ChampionshipEntry;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -53,7 +55,25 @@ class ChampionshipEntryApiController extends ApiController {
 
     protected function onDelete(WP_REST_Request $request): WP_REST_Response {
         return $this->execute(function () use ($request) {
-            ChampionshipEntry::delete($this->getId($request));
+            $id = $this->getId($request);
+            $entry = ChampionshipEntry::get($id);
+
+            ChampionshipEntry::delete($id);
+
+            if ($entry && $entry->getStatus() === 'confirmed') {
+                $maxEntrants = ChampionshipRepository::getClassMaxEntrants(
+                    $entry->getChampionshipId(),
+                    $entry->getEventClassId()
+                );
+
+                if ($maxEntrants !== null) {
+                    ChampionshipEntriesRepository::promoteFromWaitlist(
+                        $entry->getChampionshipId(),
+                        $entry->getEventClassId(),
+                        $maxEntrants
+                    );
+                }
+            }
 
             return ApiResponse::noContent();
         });

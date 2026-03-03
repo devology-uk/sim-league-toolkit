@@ -44,6 +44,13 @@
     }
 
     /**
+     * @throws Exception
+     */
+    public static function updateStandaloneEventClass(int $standaloneEventId, int $eventClassId, array $updates): void {
+      StandaloneEventsRepository::updateEventClass($standaloneEventId, $eventClassId, $updates);
+    }
+
+    /**
      * @return StandaloneEventEventClass[]
      * @throws Exception
      */
