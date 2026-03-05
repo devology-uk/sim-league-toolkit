@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Bash(node -e \":*)",
+      "Bash(xargs grep -l \"LeaderBoard\\\\|Compiler\")",
+      "Bash(xargs grep -l \"add_shortcode\")"
+    ]
+  }
+}

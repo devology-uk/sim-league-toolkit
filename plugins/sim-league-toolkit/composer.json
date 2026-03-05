@@ -1,0 +1,10 @@
+{
+  "name": "sltk/sim-league-toolkit",
+  "description": "SIM League Toolkit WordPress Plugin",
+  "autoload": {
+    "psr-4": {
+      "SLTK\\": ""
+    }
+  },
+  "require": {}
+}
