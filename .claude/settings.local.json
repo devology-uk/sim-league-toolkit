@@ -4,7 +4,14 @@
       "Bash(python3 -c \":*)",
       "Bash(node -e \":*)",
       "Bash(xargs grep -l \"LeaderBoard\\\\|Compiler\")",
-      "Bash(xargs grep -l \"add_shortcode\")"
+      "Bash(xargs grep -l \"add_shortcode\")",
+      "Bash(python3:*)",
+      "Bash(where python:*)",
+      "Read(//usr/**)",
+      "Bash(/c/Users/contr/AppData/Local/Microsoft/WindowsApps/python3 --version)",
+      "Bash(PYTHON=/c/Users/contr/AppData/Local/Microsoft/WindowsApps/python3)",
+      "Bash(__NEW_LINE_8231c14b916d171b__ $PYTHON:*)",
+      "Bash($PYTHON \"c:/Users/contr/Local Sites/accleaugetools/app/public/wp-content/themes/acc-league-tools/data/compute_standings.py\")"
     ]
   }
 }
