@@ -20,7 +20,7 @@
     }
 
     public function canGetById(): bool {
-      return true;
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
     protected function registerGetByIdRoute(): void {

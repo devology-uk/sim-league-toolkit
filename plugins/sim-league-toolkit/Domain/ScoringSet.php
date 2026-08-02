@@ -183,8 +183,7 @@
     public function saveScore(ScoringSetScore $score): bool {
       try {
         if($score->hasId()) {
-          $existing = ScoringSetRepository::getScoreById($this->getId());
-          ScoringSetRepository::updateScore($existing->id, $score->toArray());
+          ScoringSetRepository::updateScore($score->getId(), $score->toArray());
         } else {
           $score->setId(ScoringSetRepository::addScore($score->toArray()));
         }

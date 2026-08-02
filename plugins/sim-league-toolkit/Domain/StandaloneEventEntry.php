@@ -189,6 +189,8 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
     public function save(): self {
         if (!$this->hasId()) {
             $this->setId(StandaloneEventEntriesRepository::add($this->toArray()));
+        } else {
+            StandaloneEventEntriesRepository::update($this->getId(), $this->toArray());
         }
 
         return $this;

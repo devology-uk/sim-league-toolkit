@@ -25,6 +25,13 @@ class StandaloneEventEntriesRepository extends RepositoryBase {
     /**
      * @throws Exception
      */
+    public static function update(int $id, array $data): void {
+        self::updateById(TableNames::STANDALONE_EVENT_ENTRIES, $id, $data);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): ?stdClass {
         $entriesTable = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
         $usersTable = self::prefixedTableName(TableNames::USERS);

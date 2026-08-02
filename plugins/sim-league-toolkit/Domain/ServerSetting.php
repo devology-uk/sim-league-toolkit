@@ -15,6 +15,10 @@
     private string $settingValue;
 
     public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
+      }
+
       $result = new ServerSetting();
 
       $result->setId($data->id);

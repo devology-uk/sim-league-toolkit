@@ -11,7 +11,6 @@
       '#/' . ResourceNames::EVENT_SESSION . '/\d+/championship-results#' => ChampionshipSessionResultApiController::class,
       '#/' . ResourceNames::EVENT_SESSION . '/\d+/standalone-results#' => StandaloneSessionResultApiController::class,
       '#/' . ResourceNames::EVENT_SESSION . '#' => EventSessionApiController::class,
-      '#/' . ResourceNames::CHAMPIONSHIP_CLASS . '#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/classes#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '/\d+/trophies/preview#' => TrophyApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_EVENT . '/\d+/trophies/award#' => TrophyApiController::class,
@@ -26,7 +25,6 @@
       '#/' . ResourceNames::STANDALONE_SESSION_RESULT . '/\d+/penalties#' => StandaloneResultPenaltyApiController::class,
       '#/' . ResourceNames::STANDALONE_SESSION_RESULT . '#' => StandaloneSessionResultApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT . '/\d+/classes/available#' => StandaloneEventClassApiController::class,
-      '#/' . ResourceNames::STANDALONE_EVENT_CLASS . '#' => StandaloneEventClassApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT . '/\d+/classes#' => StandaloneEventClassApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT_ENTRY . '#' => StandaloneEventEntryApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT . '/\d+/entries#' => StandaloneEventEntryApiController::class,
@@ -49,7 +47,7 @@
       '#/' . ResourceNames::SERVER_SETTING . '#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '#' => ServerApiController::class,
-      '#/members#' => MemberApiController::class,
+      '#/' . ResourceNames::MEMBER . '#' => MemberApiController::class,
       '#/' . ResourceNames::MIGRATION . '#' => MigrationApiController::class,
     ];
 

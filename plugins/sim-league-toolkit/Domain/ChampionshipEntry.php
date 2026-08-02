@@ -189,6 +189,8 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
     public function save(): self {
         if (!$this->hasId()) {
             $this->setId(ChampionshipEntriesRepository::add($this->toArray()));
+        } else {
+            ChampionshipEntriesRepository::update($this->getId(), $this->toArray());
         }
 
         return $this;

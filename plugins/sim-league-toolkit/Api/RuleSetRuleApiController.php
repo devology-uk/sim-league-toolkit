@@ -66,6 +66,10 @@
         $entity = $this->hydrateFromRequest(new RuleSetRule(), $request);
         $ruleSet = RuleSet::get($this->getId($request));
 
+        if ($ruleSet === null) {
+          return ApiResponse::notFound('RuleSet');
+        }
+
         if (!$ruleSet->saveRule($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to save Rule', 'sim-league-toolkit'));
         }
@@ -84,6 +88,10 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
         $ruleSet = RuleSet::get($this->getId($request));
+
+        if ($ruleSet === null) {
+          return ApiResponse::notFound('RuleSet');
+        }
 
         if (!$ruleSet->saveRule($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to update Rule', 'sim-league-toolkit'));

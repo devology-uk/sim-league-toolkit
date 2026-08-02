@@ -26,7 +26,7 @@ class ChampionshipEntryApiController extends ApiController {
     }
 
     public function canGet(): bool {
-        return true;
+        return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
     protected function onGet(WP_REST_Request $request): WP_REST_Response {

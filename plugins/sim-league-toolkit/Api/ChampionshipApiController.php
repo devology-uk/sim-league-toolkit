@@ -69,9 +69,7 @@
           $entity->setBannerImageUrl(BannerImageProvider::getRandomBannerImageUrl());
         }
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to save Championship', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::created($entity->getId());
       });
@@ -87,9 +85,7 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to update Championship', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::noContent();
       });

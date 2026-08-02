@@ -102,20 +102,20 @@ export const EventSessionList = ({eventRefId, gameId, championshipId, standalone
                           header: __('Confirm Delete', 'sim-league-toolkit'),
                           icon: 'pi pi-exclamation-triangle',
                           acceptClassName: 'p-button-danger',
-                          accept: () => {
+                          accept: async () => {
                               if (session.id) {
-                                  deleteEventSession(session.id).then(() => {});
+                                  await deleteEventSession(session.id);
                               }
                           },
                       });
     };
 
-    const handleReorder = (e: DataTableRowReorderEvent<EventSession[]>) => {
+    const handleReorder = async (e: DataTableRowReorderEvent<EventSession[]>) => {
         const reorderedSessions = e.value;
         const sessionIds = reorderedSessions
             .map((s) => s.id)
             .filter((id): id is number => id !== undefined);
-        reorderEventSessions(sessionIds).then(() => {});
+        await reorderEventSessions(sessionIds);
     };
 
     const tableHeader = () => (

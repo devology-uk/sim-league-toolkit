@@ -32,7 +32,8 @@
     public static function listForGame(int $gameId, ?string $carClass = null): array {
       $filter = "gameId = $gameId";
       if(isset($carClass)) {
-        $filter .= " AND carClass = '$carClass'";
+        $escapedCarClass = self::db()->prepare('%s', $carClass);
+        $filter .= " AND carClass = {$escapedCarClass}";
       }
 
       return self::getResultsFromTable(TableNames::CARS, $filter, "name, year");

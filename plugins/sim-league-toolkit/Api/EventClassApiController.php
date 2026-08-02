@@ -63,9 +63,7 @@
 
         $entity = $this->hydrateFromRequest(new EventClass(), $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to save Event Class', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::created($entity->getId());
       });
@@ -81,9 +79,7 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to update Event Class', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::noContent();
       });

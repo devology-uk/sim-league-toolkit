@@ -7,7 +7,10 @@
 
   abstract class DomainRepositoryBase extends RepositoryBase {
 
-    private static string $tableName;
+    /**
+     * @var array<string, string>
+     */
+    private static array $tableNamesByClass = [];
 
     /**
      * @throws Exception
@@ -31,11 +34,11 @@
     }
 
     public static function init(string $tableName): void {
-      if(!empty(self::$tableName)) {
+      if(!empty(self::$tableNamesByClass[static::class])) {
         return;
       }
 
-      self::$tableName = $tableName;
+      self::$tableNamesByClass[static::class] = $tableName;
     }
 
     /**
@@ -49,11 +52,11 @@
      * @throws Exception
      */
     private static function getTableName(): string {
-      if (!isset(self::$tableName)) {
+      if (empty(self::$tableNamesByClass[static::class])) {
         throw new Exception(esc_html__('Table name not set, did you forget to call init', 'sim-league-toolkit'));
       }
 
-      return self::$tableName;
+      return self::$tableNamesByClass[static::class];
     }
 
   }

@@ -16,6 +16,10 @@
     private string $plaque = '';
 
     public static function fromStdClass(?stdClass $data): ?self {
+      if (!$data) {
+        return null;
+      }
+
       $result = new self();
 
       $result->setId($data->id);
@@ -27,7 +31,9 @@
     }
 
     public static function get(int $id): DriverCategory|null {
-      return null;
+      $queryResult = DriverCategoriesRepository::getById($id);
+
+      return self::fromStdClass($queryResult);
     }
 
     /**

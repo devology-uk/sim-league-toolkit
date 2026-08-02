@@ -69,13 +69,13 @@
     }
 
     public function canGet(): bool {
-      return true;
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
     protected function onDelete(WP_REST_Request $request): WP_REST_Response {
       return $this->execute(function () use($request) {
         $championshipId = $this->getId($request);
-        $eventClassId  = $request->get_param('eventClassId');
+        $eventClassId  = (int)$request->get_param('eventClassId');
 
         Championship::deleteChampionshipClass($championshipId, $eventClassId);
 

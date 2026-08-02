@@ -25,6 +25,13 @@ class ChampionshipEntriesRepository extends RepositoryBase {
     /**
      * @throws Exception
      */
+    public static function update(int $id, array $data): void {
+        self::updateById(TableNames::CHAMPIONSHIP_ENTRIES, $id, $data);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getById(int $id): ?stdClass {
         $entriesTable = self::prefixedTableName(TableNames::CHAMPIONSHIP_ENTRIES);
         $usersTable = self::prefixedTableName(TableNames::USERS);

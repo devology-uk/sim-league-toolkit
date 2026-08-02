@@ -83,7 +83,7 @@
     private function hydrateFromRequest(ServerSetting $serverSetting, WP_REST_Request $request): ServerSetting {
       $params = $this->getParams($request);
 
-      $serverSetting->setServerId($request->get_param('id'));
+      $serverSetting->setServerId($this->getId($request));
       $serverSetting->setSettingName($params['settingName']);
       $serverSetting->setSettingValue($params['settingValue']);
 

@@ -122,8 +122,7 @@
     public function saveRule(RuleSetRule $rule): bool {
       try {
         if($rule->hasId()){
-          $existing = RuleSetRepository::getRuleById($rule->getId());
-          RuleSetRepository::updateRule($existing->id, $rule->toArray());
+          RuleSetRepository::updateRule($rule->getId(), $rule->toArray());
         } else {
           $rule->setId(RuleSetRepository::addRule($rule->toArray()));
         }

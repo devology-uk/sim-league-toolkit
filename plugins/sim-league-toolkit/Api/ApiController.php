@@ -2,7 +2,7 @@
 
   namespace SLTK\Api;
 
-  use Exception;
+  use Throwable;
   use WP_Error;
   use WP_REST_Request;
   use WP_REST_Response;
@@ -29,7 +29,7 @@
     protected function execute(callable $action): WP_REST_Response {
       try {
         return $action();
-      } catch (Exception $e) {
+      } catch (Throwable $e) {
         return ApiResponse::serverError($e->getMessage());
       }
     }

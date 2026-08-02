@@ -120,7 +120,7 @@
       if (!$entity->hasId()) {
         $entity->setId(ServerSettingRepository::add($entity->toArray()));
       } else {
-        ServerRepository::update($entity->getId(), $entity->toArray());
+        ServerSettingRepository::update($entity->getId(), $entity->toArray());
       }
 
       return $entity;

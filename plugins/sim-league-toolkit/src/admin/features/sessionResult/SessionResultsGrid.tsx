@@ -143,8 +143,8 @@ export const SessionResultsGrid = ({
                           header: __('Confirm Delete', 'sim-league-toolkit'),
                           icon: 'pi pi-exclamation-triangle',
                           acceptClassName: 'p-button-danger',
-                          accept: () => {
-                              onDeleteResult(row.resultId as number).then(() => {});
+                          accept: async () => {
+                              await onDeleteResult(row.resultId as number);
                           },
                       });
     };

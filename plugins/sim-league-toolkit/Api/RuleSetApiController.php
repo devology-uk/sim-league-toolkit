@@ -45,11 +45,15 @@
     }
 
     protected function onGetById(WP_REST_Request $request): WP_REST_Response {
-      $id = $request->get_param('id');
+      return $this->execute(function () use ($request) {
+        $data = RuleSet::get($this->getId($request));
 
-      $data = RuleSet::get($id);
+        if ($data === null) {
+          return ApiResponse::notFound('RuleSet');
+        }
 
-      return rest_ensure_response($data->toDto());
+        return ApiResponse::success($data->toDto());
+      });
     }
 
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
@@ -57,9 +61,7 @@
 
         $entity = $this->hydrateFromRequest(new RuleSet(), $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to save Rule Set', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::created($entity->getId());
       });
@@ -75,9 +77,7 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
 
-        if (!$entity->save()) {
-          return ApiResponse::badRequest(esc_html__('Failed to update Rule Set', 'sim-league-toolkit'));
-        }
+        $entity->save();
 
         return ApiResponse::noContent();
       });

@@ -22,7 +22,8 @@
      * @throws Exception
      */
     public static function getByName(int $serverId, string $settingName): ?stdClass {
-      $filter = "serverId = {$serverId} and settingName = '{$settingName}'";
+      $escapedSettingName = self::db()->prepare('%s', $settingName);
+      $filter = "serverId = {$serverId} and settingName = {$escapedSettingName}";
 
       return self::getRowFromTable(TableNames::SERVER_SETTINGS, $filter);
     }

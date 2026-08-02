@@ -53,7 +53,7 @@
     public static function reset(int $raceNumber): void {
       $users = get_users(['fields' => 'all_with_meta']);
       foreach($users as $user) {
-        if($user->get(UserMetaKeys::RACE_NUMBER) === $raceNumber) {
+        if((int)$user->get(UserMetaKeys::RACE_NUMBER) === $raceNumber) {
           update_user_meta($user->ID, UserMetaKeys::RACE_NUMBER, 0);
         }
       }

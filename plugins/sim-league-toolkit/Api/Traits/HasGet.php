@@ -2,6 +2,7 @@
 
   namespace SLTK\Api\Traits;
 
+  use SLTK\Core\Constants;
   use WP_REST_Request;
   use WP_REST_Response;
 
@@ -17,7 +18,7 @@
     }
 
     public function canGet(): bool {
-      return true;
+      return current_user_can(Constants::MANAGE_OPTIONS_PERMISSION);
     }
 
     protected function registerGetRoute(): void {

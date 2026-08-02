@@ -66,11 +66,15 @@
         $entity = $this->hydrateFromRequest(new ScoringSetScore(), $request);
         $scoringSet = ScoringSet::get($entity->getScoringSetId());
 
+        if ($scoringSet === null) {
+          return ApiResponse::notFound('ScoringSet');
+        }
+
         if (!$scoringSet->saveScore($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to save Score', 'sim-league-toolkit'));
         }
 
-        return ApiResponse::success($entity);
+        return ApiResponse::created($entity->getId());
       });
     }
 
@@ -84,6 +88,10 @@
 
         $entity = $this->hydrateFromRequest($entity, $request);
         $scoringSet = ScoringSet::get($entity->getScoringSetId());
+
+        if ($scoringSet === null) {
+          return ApiResponse::notFound('ScoringSet');
+        }
 
         if (!$scoringSet->saveScore($entity)) {
           return ApiResponse::badRequest(esc_html__('Failed to update Score', 'sim-league-toolkit'));

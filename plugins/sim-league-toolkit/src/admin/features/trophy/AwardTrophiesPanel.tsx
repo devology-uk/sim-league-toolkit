@@ -49,8 +49,8 @@ export const AwardTrophiesPanel = ({trophiesAwarded, preview, isPreviewLoading, 
                               : __('Award the trophies shown below?', 'sim-league-toolkit'),
                           header: __('Confirm Award', 'sim-league-toolkit'),
                           icon: 'pi pi-trophy',
-                          accept: () => {
-                              onAward().then(() => {});
+                          accept: async () => {
+                              await onAward();
                           },
                       });
     };
