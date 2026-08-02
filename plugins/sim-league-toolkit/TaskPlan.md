@@ -85,3 +85,10 @@ later.
   !important; }` in `src/admin/index.scss` applies to every button in the admin app, unscoped. Left
   in place since other layouts may depend on it, but worth properly scoping if it causes trouble
   elsewhere — a misaligned button with no obvious cause is probably this.
+- `tsconfig.json`: `moduleResolution` updated from the deprecated `node` (TS10-style) to `bundler`,
+  the correct setting for a webpack-bundled app — silences a VS Code deprecation warning without
+  just suppressing it.
+- Removed a dead `gameId` prop being passed to `ChampionshipClasses` in `ChampionshipEditor.tsx`
+  (its props interface never declared it, and the component never used it — classes are already
+  scoped to the championship's game server-side). Was the one TS error present in every type-check
+  this session; `npx tsc --noEmit` is now fully clean.
