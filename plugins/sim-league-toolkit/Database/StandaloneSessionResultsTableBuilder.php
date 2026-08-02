@@ -1,0 +1,48 @@
+<?php
+
+  namespace SLTK\Database;
+
+  class StandaloneSessionResultsTableBuilder extends TableBuilder
+  {
+    public function tableName(string $tablePrefix): string
+    {
+      return $tablePrefix . TableNames::STANDALONE_SESSION_RESULTS;
+    }
+
+    public function definitionSql(string $tablePrefix, string $charsetCollate): string
+    {
+      $tableName = $this->tableName($tablePrefix);
+
+      return "CREATE TABLE {$tableName} (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            eventSessionId BIGINT NOT NULL,
+            standaloneEventEntryId BIGINT NOT NULL,
+            position INT NULL,
+            totalTimeMs INT NULL,
+            fastestLapMs INT NULL,
+            sector1TimeMs INT NULL,
+            sector2TimeMs INT NULL,
+            sector3TimeMs INT NULL,
+            lapsCompleted INT NOT NULL DEFAULT 0,
+            status VARCHAR(20) NOT NULL DEFAULT 'finished',
+            points INT NULL,
+            PRIMARY KEY (id),
+            UNIQUE INDEX idx_session_entry (eventSessionId, standaloneEventEntryId),
+            INDEX idx_session (eventSessionId)
+        ) {$charsetCollate};";
+    }
+
+    public function addConstraints(string $tablePrefix): void
+    {
+      $this->addSimpleForeignKey($tablePrefix, TableNames::EVENT_SESSIONS, 'eventSessionId');
+      $this->addSimpleForeignKey($tablePrefix, TableNames::STANDALONE_EVENT_ENTRIES, 'standaloneEventEntryId');
+    }
+
+    public function initialData(string $tablePrefix): void
+    {
+    }
+
+    public function applyAdjustments(string $tablePrefix): void
+    {
+    }
+  }

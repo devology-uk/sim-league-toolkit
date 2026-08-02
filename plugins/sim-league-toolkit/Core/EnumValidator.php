@@ -6,6 +6,7 @@
   use SLTK\Core\Enums\EventType;
   use SLTK\Core\Enums\EventSessionType;
   use SLTK\Core\Enums\GameKey;
+  use SLTK\Core\Enums\ResultStatus;
   use SLTK\Database\TableNames;
 
   class EnumValidator
@@ -37,10 +38,22 @@
         EventSessionType::class
       ));
 
-      return array_merge($errors, self::validateColumn(
+      $errors = array_merge($errors, self::validateColumn(
         TableNames::GAMES,
         'gameKey',
         GameKey::class
+      ));
+
+      $errors = array_merge($errors, self::validateColumn(
+        TableNames::CHAMPIONSHIP_SESSION_RESULTS,
+        'status',
+        ResultStatus::class
+      ));
+
+      return array_merge($errors, self::validateColumn(
+        TableNames::STANDALONE_SESSION_RESULTS,
+        'status',
+        ResultStatus::class
       ));
     }
 

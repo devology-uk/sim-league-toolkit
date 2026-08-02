@@ -155,6 +155,7 @@ export const ChampionshipEventEditor = ({
                     <EventSessionList
                         eventRefId={championshipEvent.eventRefId}
                         gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
+                        championshipId={championshipEvent.championshipId}
                     />
                 </AccordionTab>
             </Accordion>

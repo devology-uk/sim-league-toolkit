@@ -8,6 +8,8 @@
     private static array $routeMap = [
       // More specific patterns first
       '#/' . ResourceNames::EVENT_REFS . '/\d+/event-sessions#' => EventSessionApiController::class,
+      '#/' . ResourceNames::EVENT_SESSION . '/\d+/championship-results#' => ChampionshipSessionResultApiController::class,
+      '#/' . ResourceNames::EVENT_SESSION . '/\d+/standalone-results#' => StandaloneSessionResultApiController::class,
       '#/' . ResourceNames::EVENT_SESSION . '#' => EventSessionApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_CLASS . '#' => ChampionshipClassApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/classes#' => ChampionshipClassApiController::class,
@@ -15,6 +17,12 @@
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/events#' => ChampionshipEventApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP_ENTRY . '#' => ChampionshipEntryApiController::class,
       '#/' . ResourceNames::CHAMPIONSHIP . '/\d+/entries#' => ChampionshipEntryApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP_RESULT_PENALTY . '#' => ChampionshipResultPenaltyApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP_SESSION_RESULT . '/\d+/penalties#' => ChampionshipResultPenaltyApiController::class,
+      '#/' . ResourceNames::CHAMPIONSHIP_SESSION_RESULT . '#' => ChampionshipSessionResultApiController::class,
+      '#/' . ResourceNames::STANDALONE_RESULT_PENALTY . '#' => StandaloneResultPenaltyApiController::class,
+      '#/' . ResourceNames::STANDALONE_SESSION_RESULT . '/\d+/penalties#' => StandaloneResultPenaltyApiController::class,
+      '#/' . ResourceNames::STANDALONE_SESSION_RESULT . '#' => StandaloneSessionResultApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT . '/\d+/classes/available#' => StandaloneEventClassApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT_CLASS . '#' => StandaloneEventClassApiController::class,
       '#/' . ResourceNames::STANDALONE_EVENT . '/\d+/classes#' => StandaloneEventClassApiController::class,

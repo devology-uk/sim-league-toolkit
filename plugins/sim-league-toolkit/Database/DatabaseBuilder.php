@@ -35,6 +35,10 @@
       self::$builders[] = new StandaloneEventsTableBuilder();
       self::$builders[] = new StandaloneEventEventClassesTableBuilder();
       self::$builders[] = new StandaloneEventEntriesTableBuilder();
+      self::$builders[] = new ChampionshipSessionResultsTableBuilder();
+      self::$builders[] = new ChampionshipResultPenaltiesTableBuilder();
+      self::$builders[] = new StandaloneSessionResultsTableBuilder();
+      self::$builders[] = new StandaloneResultPenaltiesTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {

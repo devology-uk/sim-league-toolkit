@@ -214,6 +214,7 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
                     <EventSessionList
                         eventRefId={standaloneEvent.eventRefId}
                         gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
+                        standaloneEventId={standaloneEvent.id}
                     />
                 </AccordionTab>
                 <AccordionTab header={__('Entrants', 'sim-league-toolkit')}>

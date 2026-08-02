@@ -12,12 +12,14 @@ require_once __DIR__ . '/script-autoloader.php';
   use SLTK\Core\Enums\EventType;
   use SLTK\Core\Enums\EventSessionType;
   use SLTK\Core\Enums\GameKey;
+  use SLTK\Core\Enums\ResultStatus;
 
   $enums = [
     'ChampionshipType' => ChampionshipType::class,
     'EventType' => EventType::class,
     'SessionType' => EventSessionType::class,
     'GameKey' => GameKey::class,
+    'ResultStatus' => ResultStatus::class,
   ];
 
   $output = "// Auto-generated from PHP enums - do not edit manually\n";

@@ -13,11 +13,11 @@
 
     abstract public function tableName(string $tablePrefix): string;
 
-    protected function addSimpleForeignKey(string $tablePrefix, string $parentTableName, string $columnName, string $parentColumn = 'id'): void {
+    protected function addSimpleForeignKey(string $tablePrefix, string $parentTableName, string $columnName, string $parentColumn = 'id', ?string $constraintName = null): void {
       global $wpdb;
       $tableName = $this->tableName($tablePrefix);
       $prefixedParentTableName = $tablePrefix . $parentTableName;
-      $constraintName = 'fk_' . $tableName . '_' . $columnName;
+      $constraintName ??= 'fk_' . $tableName . '_' . $columnName;
 
       $constraintExistsCheckSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
                         WHERE TABLE_NAME = '$tableName'

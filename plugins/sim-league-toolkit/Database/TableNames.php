@@ -9,6 +9,8 @@
     public final const string CHAMPIONSHIP_ENTRIES = 'sltk_championship_entries';
     public final const string CHAMPIONSHIP_EVENTS = 'sltk_championship_events';
     public final const string CHAMPIONSHIP_EVENT_CLASSES = 'sltk_championship_event_classes';
+    public final const string CHAMPIONSHIP_RESULT_PENALTIES = 'sltk_championship_result_penalties';
+    public final const string CHAMPIONSHIP_SESSION_RESULTS = 'sltk_championship_session_results';
     public final const string COUNTRIES = 'sltk_countries';
     public final const string DRIVER_CATEGORIES = 'sltk_driver_categories';
     public final const string EVENTS = 'sltk_events';
@@ -29,6 +31,8 @@
     public final const string STANDALONE_EVENTS = 'sltk_standalone_events';
     public final const string STANDALONE_EVENT_CLASSES = 'sltk_standalone_event_classes';
     public final const string STANDALONE_EVENT_ENTRIES = 'sltk_standalone_event_entries';
+    public final const string STANDALONE_RESULT_PENALTIES = 'sltk_standalone_result_penalties';
+    public final const string STANDALONE_SESSION_RESULTS = 'sltk_standalone_session_results';
     public final const string TRACKS = 'sltk_tracks';
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
     public final const string USER_META = 'usermeta';

@@ -10,7 +10,9 @@ import {Dialog} from 'primereact/dialog';
 import {Tooltip} from 'primereact/tooltip';
 
 import {useGameConfig} from '../../../features/game';
+import {ChampionshipSessionResults} from '../championship/ChampionshipSessionResults';
 import {DynamicSessionForm} from './DynamicSessionForm';
+import {StandaloneSessionResults} from '../standaloneEvent/StandaloneSessionResults';
 import {
     EventSession,
     EventSessionFormData,
@@ -25,9 +27,11 @@ import {SessionType, SessionTypeLabels} from '../../../enums/generated/SessionTy
 interface EventSessionListProps {
     eventRefId: number;
     gameId: string;
+    championshipId?: number;
+    standaloneEventId?: number;
 }
 
-export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) => {
+export const EventSessionList = ({eventRefId, gameId, championshipId, standaloneEventId}: EventSessionListProps) => {
     const {data: eventSessions = [], isLoading} = useEventSessions(eventRefId);
     const {mutateAsync: createEventSession, isPending: isCreating} = useCreateEventSession(eventRefId);
     const {mutateAsync: updateEventSession, isPending: isUpdating} = useUpdateEventSession(eventRefId);
@@ -38,6 +42,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [editingSession, setEditingSession] = useState<EventSession | null>(null);
+    const [resultsSession, setResultsSession] = useState<EventSession | null>(null);
     const [isQuickAdding, setIsQuickAdding] = useState(false);
     const saving = isCreating || isUpdating;
 
@@ -54,6 +59,14 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
     const closeDialog = () => {
         setDialogVisible(false);
         setEditingSession(null);
+    };
+
+    const openResultsDialog = (session: EventSession) => {
+        setResultsSession(session);
+    };
+
+    const closeResultsDialog = () => {
+        setResultsSession(null);
     };
 
     const handleQuickAdd = async () => {
@@ -144,6 +157,14 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
         return (
             <div className='flex gap-2'>
                 <Button
+                    icon='pi pi-flag-fill'
+                    rounded
+                    text
+                    severity='success'
+                    onClick={() => openResultsDialog(rowData)}
+                    tooltip={__('Enter Results', 'sim-league-toolkit')}
+                />
+                <Button
                     icon='pi pi-pencil'
                     rounded
                     text
@@ -182,7 +203,7 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                     header={__('Type', 'sim-league-toolkit')}
                     body={sessionTypeTemplate}
                 />
-                <Column body={actionsTemplate} style={{width: '8rem'}}/>
+                <Column body={actionsTemplate} style={{width: '11rem'}}/>
             </DataTable>
 
             <Dialog
@@ -205,6 +226,21 @@ export const EventSessionList = ({eventRefId, gameId}: EventSessionListProps) =>
                     onCancel={closeDialog}
                     loading={saving}
                 />
+            </Dialog>
+
+            <Dialog
+                visible={resultsSession !== null}
+                onHide={closeResultsDialog}
+                header={__('Results', 'sim-league-toolkit') + (resultsSession ? ` - ${resultsSession.name}` : '')}
+                style={{width: '90vw'}}
+                modal
+            >
+                {resultsSession && championshipId !== undefined && (
+                    <ChampionshipSessionResults championshipId={championshipId} eventSessionId={resultsSession.id}/>
+                )}
+                {resultsSession && standaloneEventId !== undefined && (
+                    <StandaloneSessionResults standaloneEventId={standaloneEventId} eventSessionId={resultsSession.id}/>
+                )}
             </Dialog>
         </div>
     );

@@ -112,9 +112,15 @@ export const SimLeagueToolkitApp = () => {
                                                 },
                                             },
                                         });
+    // WP admin's own chrome sits as high as z-index 99999 (#wpadminbar), above PrimeReact's
+    // defaults ({modal: 1100, overlay: 1000, menu: 1000, tooltip: 1100, toast: 1200}) - shifting
+    // every category up by the same amount keeps their relative stacking order (so an overlay like
+    // a Dropdown still layers correctly above a Dialog that contains it) while clearing WP's chrome.
+    const primeReactZIndex = {modal: 100100, overlay: 100000, menu: 100000, tooltip: 100100, toast: 100200};
+
     return (
         <QueryClientProvider client={queryClient}>
-            <PrimeReactProvider>
+            <PrimeReactProvider value={{zIndex: primeReactZIndex}}>
                 <Notifications/>
                 <HeaderBar
                     startContent={

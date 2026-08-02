@@ -8,6 +8,8 @@
     public final const string CHAMPIONSHIP_CLASS = 'championship-class';
     public final const string CHAMPIONSHIP_ENTRY = 'championship-entry';
     public final const string CHAMPIONSHIP_EVENT = 'championship-event';
+    public final const string CHAMPIONSHIP_RESULT_PENALTY = 'championship-result-penalty';
+    public final const string CHAMPIONSHIP_SESSION_RESULT = 'championship-session-result';
     public final const string COUNTRY = 'country';
     public final const string DRIVER_CATEGORY = 'driver-category';
     public final const string EVENT = 'event';
@@ -27,5 +29,7 @@
     public final const string STANDALONE_EVENT = 'standalone-event';
     public final const string STANDALONE_EVENT_CLASS = 'standalone-event-class';
     public final const string STANDALONE_EVENT_ENTRY = 'standalone-event-entry';
+    public final const string STANDALONE_RESULT_PENALTY = 'standalone-result-penalty';
+    public final const string STANDALONE_SESSION_RESULT = 'standalone-session-result';
     public final const string TRACK = 'track';
   }
