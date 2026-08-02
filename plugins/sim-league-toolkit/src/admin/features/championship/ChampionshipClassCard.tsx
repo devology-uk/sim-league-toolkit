@@ -1,11 +1,5 @@
-import {__} from '@wordpress/i18n';
-import {useEffect, useState} from '@wordpress/element';
-
-import {Button} from 'primereact/button';
-import {Card} from 'primereact/card';
-import {InputNumber} from 'primereact/inputnumber';
-
 import {ChampionshipClass, useUpdateChampionshipClass} from '../../../features/championship';
+import {EventClassCard} from '../../components/EventClassCard';
 
 interface ChampionshipClassCardProps {
     championshipClass: ChampionshipClass;
@@ -15,71 +9,15 @@ interface ChampionshipClassCardProps {
 export const ChampionshipClassCard = ({championshipClass, onRequestDelete}: ChampionshipClassCardProps) => {
     const {mutateAsync: updateChampionshipClass, isPending: isSaving} = useUpdateChampionshipClass(championshipClass.championshipId);
 
-    const [maxEntrants, setMaxEntrants] = useState<number | null>(championshipClass.maxEntrants);
+    const onSaveMaxEntrants = (maxEntrants: number | null) =>
+        updateChampionshipClass({eventClassId: championshipClass.eventClassId, maxEntrants});
 
-    useEffect(() => {
-        setMaxEntrants(championshipClass.maxEntrants);
-    }, [championshipClass.maxEntrants]);
-
-    const hasUnsavedChange = maxEntrants !== championshipClass.maxEntrants;
-
-    const onSaveMaxEntrants = async () => {
-        await updateChampionshipClass({eventClassId: championshipClass.eventClassId, maxEntrants});
-    };
-
-    const footer = (
-        <>
-            {!championshipClass.isInUse && (
-                <Button label={__('Remove', 'sim-league-toolkit')} icon='pi pi-times' severity='danger'
-                        onClick={() => onRequestDelete(championshipClass)} style={{marginLeft: '1rem'}}/>)
-            }
-        </>
-    );
     return (
-        <>
-            <Card title={championshipClass.name} subTitle={championshipClass.game}
-                  footer={footer}
-                  style={{margin: '1rem', maxWidth: '400px'}}>
-                <table className='table-no-border'>
-                    <tbody>
-                    <tr>
-                        <th scope='row'>{__('Car Class', 'sim-league-toolkit')}</th>
-                        <td>{championshipClass.carClass}</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>{__('Driver Category', 'sim-league-toolkit')}</th>
-                        <td>{championshipClass.driverCategory}</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>{__('Is Single Car Class', 'sim-league-toolkit')}</th>
-                        <td>{championshipClass.isSingleCarClass ? __('Yes', 'sim-league-toolkit') : __('No', 'sim-league-toolkit')}</td>
-                    </tr>
-                    {championshipClass.isSingleCarClass &&
-                        <tr>
-                            <th scope='row'>{__('Car', 'sim-league-toolkit')}</th>
-                            <td>{championshipClass.singleCarName}</td>
-                        </tr>
-                    }
-                    <tr>
-                        <th scope='row'>{__('Is In Use', 'sim-league-toolkit')}</th>
-                        <td>{championshipClass.isInUse ? __('Yes', 'sim-league-toolkit') : __('No', 'sim-league-toolkit')}</td>
-                    </tr>
-                    <tr>
-                        <th scope='row'>{__('Max Entrants', 'sim-league-toolkit')}</th>
-                        <td>
-                            <div className='max-entrants-editor flex align-items-center gap-2'>
-                                <InputNumber value={maxEntrants} onValueChange={(e) => setMaxEntrants(e.value ?? null)}
-                                             placeholder={__('Unlimited', 'sim-league-toolkit')} min={0}
-                                             inputStyle={{width: '4rem'}}/>
-                                <Button icon='pi pi-check' disabled={!hasUnsavedChange || isSaving}
-                                        onClick={onSaveMaxEntrants}
-                                        aria-label={__('Save max entrants', 'sim-league-toolkit')}/>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </Card>
-        </>
+        <EventClassCard
+            item={championshipClass}
+            isSaving={isSaving}
+            onRequestDelete={onRequestDelete}
+            onSaveMaxEntrants={onSaveMaxEntrants}
+        />
     );
 };

@@ -9,25 +9,16 @@ use SLTK\Domain\Abstractions\AggregateRoot;
 use SLTK\Domain\Abstractions\Deletable;
 use SLTK\Domain\Abstractions\ProvidesPersistableArray;
 use SLTK\Domain\Abstractions\Saveable;
+use SLTK\Domain\Traits\HasEntrantFields;
 use SLTK\Domain\Traits\HasIdentity;
 use stdClass;
 
 class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersistableArray, Saveable {
-    use HasIdentity;
+    use HasEntrantFields, HasIdentity;
 
-    private int $standaloneEventId = Constants::DEFAULT_ID;
-    private ?int $eventClassId = null;
-    private int $carId = Constants::DEFAULT_ID;
-    private int $userId = Constants::DEFAULT_ID;
-    private string $memberName = '';
-    private string $firstName = '';
-    private string $lastName = '';
-    private int $raceNumber = 0;
-    private string $avatarUrl = '';
-    private string $carName = '';
     private ?string $className = null;
-    private string $status = 'confirmed';
-    private string $createdAt = '';
+    private ?int $eventClassId = null;
+    private int $standaloneEventId = Constants::DEFAULT_ID;
 
     /**
      * @throws Exception
@@ -45,17 +36,8 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         $result->setId((int)$data->id);
         $result->setStandaloneEventId((int)$data->standaloneEventId);
         $result->setEventClassId($data->eventClassId !== null ? (int)$data->eventClassId : null);
-        $result->setCarId((int)$data->carId);
-        $result->setUserId((int)$data->userId);
-        $result->setMemberName($data->memberName ?? '');
-        $result->setFirstName($data->firstName ?? '');
-        $result->setLastName($data->lastName ?? '');
-        $result->setRaceNumber((int)($data->raceNumber ?? 0));
-        $result->setAvatarUrl(get_avatar_url((int)$data->userId) ?: '');
-        $result->setCarName($data->carName ?? '');
         $result->setClassName($data->className ?? null);
-        $result->setStatus($data->status ?? 'confirmed');
-        $result->setCreatedAt($data->created_at ?? '');
+        $result->hydrateEntrantFieldsFromStdClass($data);
 
         return $result;
     }
@@ -79,12 +61,12 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         return array_map(fn($row) => self::fromStdClass($row), $results);
     }
 
-    public function getStandaloneEventId(): int {
-        return $this->standaloneEventId;
+    public function getClassName(): ?string {
+        return $this->className;
     }
 
-    public function setStandaloneEventId(int $value): void {
-        $this->standaloneEventId = $value;
+    private function setClassName(?string $value): void {
+        $this->className = $value;
     }
 
     public function getEventClassId(): ?int {
@@ -95,92 +77,12 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         $this->eventClassId = $value;
     }
 
-    public function getCarId(): int {
-        return $this->carId;
+    public function getStandaloneEventId(): int {
+        return $this->standaloneEventId;
     }
 
-    public function setCarId(int $value): void {
-        $this->carId = $value;
-    }
-
-    public function getUserId(): int {
-        return $this->userId;
-    }
-
-    public function setUserId(int $value): void {
-        $this->userId = $value;
-    }
-
-    public function getMemberName(): string {
-        return $this->memberName;
-    }
-
-    private function setMemberName(string $value): void {
-        $this->memberName = $value;
-    }
-
-    public function getFirstName(): string {
-        return $this->firstName;
-    }
-
-    private function setFirstName(string $value): void {
-        $this->firstName = $value;
-    }
-
-    public function getLastName(): string {
-        return $this->lastName;
-    }
-
-    private function setLastName(string $value): void {
-        $this->lastName = $value;
-    }
-
-    public function getRaceNumber(): int {
-        return $this->raceNumber;
-    }
-
-    private function setRaceNumber(int $value): void {
-        $this->raceNumber = $value;
-    }
-
-    public function getAvatarUrl(): string {
-        return $this->avatarUrl;
-    }
-
-    private function setAvatarUrl(string $value): void {
-        $this->avatarUrl = $value;
-    }
-
-    public function getCarName(): string {
-        return $this->carName;
-    }
-
-    private function setCarName(string $value): void {
-        $this->carName = $value;
-    }
-
-    public function getClassName(): ?string {
-        return $this->className;
-    }
-
-    private function setClassName(?string $value): void {
-        $this->className = $value;
-    }
-
-    public function getStatus(): string {
-        return $this->status;
-    }
-
-    public function setStatus(string $value): void {
-        $this->status = $value;
-    }
-
-    public function getCreatedAt(): string {
-        return $this->createdAt;
-    }
-
-    private function setCreatedAt(string $value): void {
-        $this->createdAt = $value;
+    public function setStandaloneEventId(int $value): void {
+        $this->standaloneEventId = $value;
     }
 
     /**
@@ -197,12 +99,9 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
     }
 
     public function toArray(): array {
-        $data = [
+        $data = array_merge($this->entrantFieldsToArray(), [
             'standaloneEventId' => $this->getStandaloneEventId(),
-            'carId'             => $this->getCarId(),
-            'userId'            => $this->getUserId(),
-            'status'            => $this->getStatus(),
-        ];
+        ]);
 
         if ($this->getEventClassId() !== null) {
             $data['eventClassId'] = $this->getEventClassId();
@@ -212,21 +111,10 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
     }
 
     public function toDto(): array {
-        return [
-            'id'                => $this->getId(),
+        return array_merge(['id' => $this->getId()], $this->entrantFieldsToDto(), [
             'standaloneEventId' => $this->getStandaloneEventId(),
-            'eventClassId'      => $this->getEventClassId(),
-            'carId'             => $this->getCarId(),
-            'userId'            => $this->getUserId(),
-            'memberName'        => $this->getMemberName(),
-            'firstName'         => $this->getFirstName(),
-            'lastName'          => $this->getLastName(),
-            'raceNumber'        => $this->getRaceNumber(),
-            'avatarUrl'         => $this->getAvatarUrl(),
-            'carName'           => $this->getCarName(),
-            'className'         => $this->getClassName(),
-            'status'            => $this->getStatus(),
-            'createdAt'         => $this->getCreatedAt(),
-        ];
+            'eventClassId' => $this->getEventClassId(),
+            'className' => $this->getClassName(),
+        ]);
     }
 }
