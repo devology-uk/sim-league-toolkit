@@ -16,6 +16,7 @@ import {
 import {useMembers} from '../../../features/member';
 import {useCars} from '../../../features/game';
 import {ListItem} from '../../types/ListItem';
+import {BusyIndicator} from '../../components/BusyIndicator';
 import {ChampionshipEntrantCard} from './ChampionshipEntrantCard';
 
 interface ChampionshipEntrantsProps {
@@ -26,7 +27,7 @@ interface ChampionshipEntrantsProps {
 export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntrantsProps) => {
     const {data: entries, isLoading: entriesLoading} = useChampionshipEntries(championshipId);
     const {data: members = [], isLoading: membersLoading} = useMembers();
-    const {data: championshipClasses = []} = useChampionshipClasses(championshipId);
+    const {data: championshipClasses = [], isLoading: classesLoading} = useChampionshipClasses(championshipId);
     const {mutateAsync: createEntry, isPending: isCreating} = useCreateChampionshipEntry(championshipId);
     const {mutateAsync: deleteEntry} = useDeleteChampionshipEntry(championshipId);
 
@@ -91,6 +92,10 @@ export const ChampionshipEntrants = ({championshipId, gameId}: ChampionshipEntra
     );
 
     const isLoading = entriesLoading || membersLoading || isCreating;
+
+    if (classesLoading) {
+        return <BusyIndicator isBusy={true}/>;
+    }
 
     if (championshipClasses.length === 0) {
         return (

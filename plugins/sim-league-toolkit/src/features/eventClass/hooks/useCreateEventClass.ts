@@ -9,8 +9,8 @@ export const useCreateEventClass = () => {
 
     return useMutation({
         mutationFn: (data: EventClassFormData) => eventClassApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all});
         },
     });
 };

@@ -10,8 +10,10 @@ export const useUpdateStandaloneEvent = () => {
     return useMutation({
         mutationFn: ({id, data}: {id: number; data: StandaloneEventFormData}) => standaloneEventApi.update(id, data),
         onSuccess: async (_, {id}) => {
-            await queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.all});
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.single(id)}).then(() => {});
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.all}),
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.single(id)}),
+            ]);
         },
     });
 };

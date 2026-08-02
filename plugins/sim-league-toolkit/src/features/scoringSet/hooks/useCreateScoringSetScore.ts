@@ -9,8 +9,8 @@ export const useCreateScoringSetScore = (scoringSetId: number) => {
 
     return useMutation({
         mutationFn: (data: ScoringSetScoreFormData) => scoringSetApi.createScore(scoringSetId, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.scores(scoringSetId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.scores(scoringSetId)});
         },
     });
 };

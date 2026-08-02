@@ -8,9 +8,11 @@ export const useDeleteStandaloneEventClass = (standaloneEventId: number) => {
 
     return useMutation({
         mutationFn: (eventClassId: number) => standaloneEventApi.deleteClass(standaloneEventId, eventClassId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.classes(standaloneEventId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.availableClasses(standaloneEventId)}).then(() => {});
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.classes(standaloneEventId)}),
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.availableClasses(standaloneEventId)}),
+            ]);
         },
     });
 };

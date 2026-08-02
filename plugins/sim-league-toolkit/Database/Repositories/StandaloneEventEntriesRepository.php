@@ -65,18 +65,31 @@ class StandaloneEventEntriesRepository extends RepositoryBase {
     /**
      * @throws Exception
      */
-    public static function promoteFromWaitlist(int $standaloneEventId, int $eventClassId, int $maxEntrants): void {
-        $confirmedCount = self::getConfirmedCountForClass($standaloneEventId, $eventClassId);
+    public static function getConfirmedCountForStandaloneEvent(int $standaloneEventId): int {
+        return (int)self::getCount(
+            TableNames::STANDALONE_EVENT_ENTRIES,
+            "standaloneEventId = {$standaloneEventId} AND status = 'confirmed'"
+        );
+    }
 
-        if ($confirmedCount >= $maxEntrants) {
+    /**
+     * @throws Exception
+     */
+    public static function promoteFromWaitlist(int $standaloneEventId, ?int $eventClassId, ?int $classMaxEntrants, int $standaloneEventMaxEntrants): void {
+        if ($eventClassId !== null && $classMaxEntrants !== null && self::getConfirmedCountForClass($standaloneEventId, $eventClassId) >= $classMaxEntrants) {
+            return;
+        }
+
+        if ($standaloneEventMaxEntrants > 0 && self::getConfirmedCountForStandaloneEvent($standaloneEventId) >= $standaloneEventMaxEntrants) {
             return;
         }
 
         $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
+        $classCondition = $eventClassId !== null ? "AND eventClassId = {$eventClassId}" : 'AND eventClassId IS NULL';
         $row = self::getRow(
             "SELECT id FROM {$tableName}
              WHERE standaloneEventId = {$standaloneEventId}
-             AND eventClassId = {$eventClassId}
+             {$classCondition}
              AND status = 'waitlisted'
              ORDER BY created_at ASC
              LIMIT 1;"

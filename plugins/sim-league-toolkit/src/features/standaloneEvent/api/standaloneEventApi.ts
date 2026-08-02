@@ -23,6 +23,7 @@ const endpoints = {
     listClasses: (id: number) => `${standaloneEventRoot}/${id}/classes`,
     listAvailableClasses: (id: number) => `${standaloneEventRoot}/${id}/classes/available`,
     createClass: (id: number) => `${standaloneEventRoot}/${id}/classes`,
+    updateClass: (id: number, eventClassId: number) => `${standaloneEventRoot}/${id}/classes/${eventClassId}`,
     deleteClass: (id: number, eventClassId: number) => `${standaloneEventRoot}/${id}/classes/${eventClassId}`,
 };
 
@@ -108,6 +109,13 @@ export const standaloneEventApi = {
         const response = await ApiClient.post<void>(endpoints.createClass(standaloneEventId), data);
         if (!response.success) {
             throw new Error('Failed to create standalone event class');
+        }
+    },
+
+    updateClass: async (standaloneEventId: number, eventClassId: number, maxEntrants: number | null): Promise<void> => {
+        const response = await ApiClient.put<void>(endpoints.updateClass(standaloneEventId, eventClassId), {maxEntrants});
+        if (!response.success) {
+            throw new Error(`Failed to update class ${eventClassId} for standalone event ${standaloneEventId}`);
         }
     },
 

@@ -8,8 +8,8 @@ export const useDeleteStandaloneEventEntry = (standaloneEventId: number) => {
 
     return useMutation({
         mutationFn: (id: number) => standaloneEventApi.deleteEntry(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.entries(standaloneEventId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.entries(standaloneEventId)});
         },
     });
 };

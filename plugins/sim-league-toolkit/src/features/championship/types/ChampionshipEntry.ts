@@ -11,4 +11,5 @@ export interface ChampionshipEntry {
     avatarUrl: string;
     className: string;
     carName: string;
+    status: string;
 }

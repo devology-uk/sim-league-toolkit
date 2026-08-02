@@ -40,12 +40,15 @@ class ChampionshipEntryApiController extends ApiController {
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
         return $this->execute(function () use ($request) {
             $params = $this->getParams($request);
+            $championshipId = $this->getId($request);
+            $eventClassId = (int)$params['eventClassId'];
 
             $entry = new ChampionshipEntry();
-            $entry->setChampionshipId($this->getId($request));
-            $entry->setEventClassId((int)$params['eventClassId']);
+            $entry->setChampionshipId($championshipId);
+            $entry->setEventClassId($eventClassId);
             $entry->setCarId((int)$params['carId']);
             $entry->setUserId((int)$params['userId']);
+            $entry->setStatus($this->resolveEntryStatus($championshipId, $eventClassId));
 
             $entry->save();
 
@@ -61,21 +64,36 @@ class ChampionshipEntryApiController extends ApiController {
             ChampionshipEntry::delete($id);
 
             if ($entry && $entry->getStatus() === 'confirmed') {
-                $maxEntrants = ChampionshipRepository::getClassMaxEntrants(
+                $classMaxEntrants = ChampionshipRepository::getClassMaxEntrants(
                     $entry->getChampionshipId(),
                     $entry->getEventClassId()
                 );
 
-                if ($maxEntrants !== null) {
-                    ChampionshipEntriesRepository::promoteFromWaitlist(
-                        $entry->getChampionshipId(),
-                        $entry->getEventClassId(),
-                        $maxEntrants
-                    );
-                }
+                ChampionshipEntriesRepository::promoteFromWaitlist(
+                    $entry->getChampionshipId(),
+                    $entry->getEventClassId(),
+                    $classMaxEntrants,
+                    ChampionshipRepository::getMaxEntrants($entry->getChampionshipId())
+                );
             }
 
             return ApiResponse::noContent();
         });
+    }
+
+    private function resolveEntryStatus(int $championshipId, int $eventClassId): string {
+        $classMaxEntrants = ChampionshipRepository::getClassMaxEntrants($championshipId, $eventClassId);
+
+        if ($classMaxEntrants !== null && ChampionshipEntriesRepository::getConfirmedCountForClass($championshipId, $eventClassId) >= $classMaxEntrants) {
+            return 'waitlisted';
+        }
+
+        $championshipMaxEntrants = ChampionshipRepository::getMaxEntrants($championshipId);
+
+        if ($championshipMaxEntrants > 0 && ChampionshipEntriesRepository::getConfirmedCountForChampionship($championshipId) >= $championshipMaxEntrants) {
+            return 'waitlisted';
+        }
+
+        return 'confirmed';
     }
 }

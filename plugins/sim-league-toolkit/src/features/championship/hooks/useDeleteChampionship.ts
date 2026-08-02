@@ -8,8 +8,8 @@ export const useDeleteChampionship = () => {
 
     return useMutation({
         mutationFn: (id: number) => championshipApi.delete(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: championshipQueryKeys.all});
         },
     });
 };

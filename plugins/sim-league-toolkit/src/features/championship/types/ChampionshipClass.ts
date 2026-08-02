@@ -8,6 +8,7 @@ export interface ChampionshipClass {
     gameId: number;
     isInUse?: boolean;
     isSingleCarClass: boolean;
+    maxEntrants: number | null;
     name: string;
     singleCarId?: number;
     singleCarName?: string;

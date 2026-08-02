@@ -9,9 +9,11 @@ export const useUpdateServerSetting = (serverId: number) => {
 
     return useMutation({
         mutationFn: ({id, data}: { id: number; data: ServerSettingFormData }) => serverApi.updateSetting(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: serverQueryKeys.settings(serverId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: serverQueryKeys.setting(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: serverQueryKeys.settings(serverId)}),
+                queryClient.invalidateQueries({queryKey: serverQueryKeys.setting(id)}),
+            ]);
         },
     });
 };

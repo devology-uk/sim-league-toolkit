@@ -40,15 +40,15 @@ class StandaloneEventEntryApiController extends ApiController {
     protected function onPost(WP_REST_Request $request): WP_REST_Response {
         return $this->execute(function () use ($request) {
             $params = $this->getParams($request);
+            $standaloneEventId = $this->getId($request);
+            $eventClassId = !empty($params['eventClassId']) ? (int)$params['eventClassId'] : null;
 
             $entry = new StandaloneEventEntry();
-            $entry->setStandaloneEventId($this->getId($request));
+            $entry->setStandaloneEventId($standaloneEventId);
             $entry->setCarId((int)$params['carId']);
             $entry->setUserId((int)$params['userId']);
-
-            if (!empty($params['eventClassId'])) {
-                $entry->setEventClassId((int)$params['eventClassId']);
-            }
+            $entry->setEventClassId($eventClassId);
+            $entry->setStatus($this->resolveEntryStatus($standaloneEventId, $eventClassId));
 
             $entry->save();
 
@@ -63,22 +63,38 @@ class StandaloneEventEntryApiController extends ApiController {
 
             StandaloneEventEntry::delete($id);
 
-            if ($entry && $entry->getStatus() === 'confirmed' && $entry->getEventClassId() !== null) {
-                $maxEntrants = StandaloneEventsRepository::getClassMaxEntrants(
-                    $entry->getStandaloneEventId(),
-                    $entry->getEventClassId()
-                );
+            if ($entry && $entry->getStatus() === 'confirmed') {
+                $classMaxEntrants = $entry->getEventClassId() !== null
+                    ? StandaloneEventsRepository::getClassMaxEntrants($entry->getStandaloneEventId(), $entry->getEventClassId())
+                    : null;
 
-                if ($maxEntrants !== null) {
-                    StandaloneEventEntriesRepository::promoteFromWaitlist(
-                        $entry->getStandaloneEventId(),
-                        $entry->getEventClassId(),
-                        $maxEntrants
-                    );
-                }
+                StandaloneEventEntriesRepository::promoteFromWaitlist(
+                    $entry->getStandaloneEventId(),
+                    $entry->getEventClassId(),
+                    $classMaxEntrants,
+                    StandaloneEventsRepository::getMaxEntrants($entry->getStandaloneEventId())
+                );
             }
 
             return ApiResponse::noContent();
         });
+    }
+
+    private function resolveEntryStatus(int $standaloneEventId, ?int $eventClassId): string {
+        if ($eventClassId !== null) {
+            $classMaxEntrants = StandaloneEventsRepository::getClassMaxEntrants($standaloneEventId, $eventClassId);
+
+            if ($classMaxEntrants !== null && StandaloneEventEntriesRepository::getConfirmedCountForClass($standaloneEventId, $eventClassId) >= $classMaxEntrants) {
+                return 'waitlisted';
+            }
+        }
+
+        $standaloneEventMaxEntrants = StandaloneEventsRepository::getMaxEntrants($standaloneEventId);
+
+        if ($standaloneEventMaxEntrants > 0 && StandaloneEventEntriesRepository::getConfirmedCountForStandaloneEvent($standaloneEventId) >= $standaloneEventMaxEntrants) {
+            return 'waitlisted';
+        }
+
+        return 'confirmed';
     }
 }

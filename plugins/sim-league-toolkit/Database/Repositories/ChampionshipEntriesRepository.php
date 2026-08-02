@@ -65,10 +65,22 @@ class ChampionshipEntriesRepository extends RepositoryBase {
     /**
      * @throws Exception
      */
-    public static function promoteFromWaitlist(int $championshipId, int $eventClassId, int $maxEntrants): void {
-        $confirmedCount = self::getConfirmedCountForClass($championshipId, $eventClassId);
+    public static function getConfirmedCountForChampionship(int $championshipId): int {
+        return (int)self::getCount(
+            TableNames::CHAMPIONSHIP_ENTRIES,
+            "championshipId = {$championshipId} AND status = 'confirmed'"
+        );
+    }
 
-        if ($confirmedCount >= $maxEntrants) {
+    /**
+     * @throws Exception
+     */
+    public static function promoteFromWaitlist(int $championshipId, int $eventClassId, ?int $classMaxEntrants, int $championshipMaxEntrants): void {
+        if ($classMaxEntrants !== null && self::getConfirmedCountForClass($championshipId, $eventClassId) >= $classMaxEntrants) {
+            return;
+        }
+
+        if ($championshipMaxEntrants > 0 && self::getConfirmedCountForChampionship($championshipId) >= $championshipMaxEntrants) {
             return;
         }
 

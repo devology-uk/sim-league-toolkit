@@ -8,8 +8,8 @@ export const useDeleteEventClass = () => {
 
     return useMutation({
         mutationFn: (id: number) => eventClassApi.delete(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all});
         },
     });
 };

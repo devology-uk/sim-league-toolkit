@@ -9,7 +9,7 @@ const endpoints = {
     get: gamesRootEndpoint,
     getById: (gameId: number)=> `${gameRootEndpoint}/${gameId}`,
     getConfig: (gameKey: string) => `${gameConfigRootEndpoint}/${gameKey}`,
-    getCarClasses: (gameId: number) => `${gameRootEndpoint}/${gameId}/carClasses`,
+    getCarClasses: (gameId: number) => `${gameRootEndpoint}/${gameId}/car-classes`,
     getCars: (gameId: number) => `${gameRootEndpoint}/${gameId}/cars`,
     getCarsByClass: (gameId: number, carClass: string) => `${gameRootEndpoint}/${gameId}/cars/${carClass}`,
     getPlatforms: (gameId: number) => `${gameRootEndpoint}/${gameId}/platforms`,

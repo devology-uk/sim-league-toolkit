@@ -9,9 +9,11 @@ export const useUpdateChampionshipEvent = (championshipId: number) => {
 
     return useMutation({
         mutationFn: ({id, data}: { id: number; data: ChampionshipEventFormData }) => championshipApi.updateEvent(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.events(championshipId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.event(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.events(championshipId)}),
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.event(id)}),
+            ]);
         },
     });
 };

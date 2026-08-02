@@ -8,8 +8,8 @@ export const useReorderEventSessions = (eventRefId: number) => {
 
     return useMutation({
         mutationFn: (sessionIds: number[]) => eventSessionApi.reorder(eventRefId, sessionIds),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)});
         },
     });
 };

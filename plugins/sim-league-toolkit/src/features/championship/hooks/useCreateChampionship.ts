@@ -9,8 +9,8 @@ export const useCreateChampionship = () => {
 
     return useMutation({
         mutationFn: (data: ChampionshipFormData) => championshipApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: championshipQueryKeys.all});
         },
     });
 };

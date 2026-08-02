@@ -8,8 +8,8 @@ export const useDeleteRuleSetRule = (ruleSetId: number) => {
 
     return useMutation({
         mutationFn: (id: number) => ruleSetApi.deleteRule(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.rules(ruleSetId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.rules(ruleSetId)});
         },
     });
 };

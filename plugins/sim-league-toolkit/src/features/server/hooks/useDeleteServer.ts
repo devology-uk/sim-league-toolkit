@@ -8,8 +8,8 @@ export const useDeleteServer = () => {
 
     return useMutation({
         mutationFn: (id: number) => serverApi.delete(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: serverQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: serverQueryKeys.all});
         },
     });
 };

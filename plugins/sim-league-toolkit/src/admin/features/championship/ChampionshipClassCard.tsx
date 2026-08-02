@@ -1,9 +1,11 @@
 import {__} from '@wordpress/i18n';
+import {useEffect, useState} from '@wordpress/element';
 
 import {Button} from 'primereact/button';
 import {Card} from 'primereact/card';
+import {InputNumber} from 'primereact/inputnumber';
 
-import {ChampionshipClass} from '../../../features/championship';
+import {ChampionshipClass, useUpdateChampionshipClass} from '../../../features/championship';
 
 interface ChampionshipClassCardProps {
     championshipClass: ChampionshipClass;
@@ -11,6 +13,20 @@ interface ChampionshipClassCardProps {
 }
 
 export const ChampionshipClassCard = ({championshipClass, onRequestDelete}: ChampionshipClassCardProps) => {
+    const {mutateAsync: updateChampionshipClass, isPending: isSaving} = useUpdateChampionshipClass(championshipClass.championshipId);
+
+    const [maxEntrants, setMaxEntrants] = useState<number | null>(championshipClass.maxEntrants);
+
+    useEffect(() => {
+        setMaxEntrants(championshipClass.maxEntrants);
+    }, [championshipClass.maxEntrants]);
+
+    const hasUnsavedChange = maxEntrants !== championshipClass.maxEntrants;
+
+    const onSaveMaxEntrants = async () => {
+        await updateChampionshipClass({eventClassId: championshipClass.eventClassId, maxEntrants});
+    };
+
     const footer = (
         <>
             {!championshipClass.isInUse && (
@@ -47,6 +63,19 @@ export const ChampionshipClassCard = ({championshipClass, onRequestDelete}: Cham
                     <tr>
                         <th scope='row'>{__('Is In Use', 'sim-league-toolkit')}</th>
                         <td>{championshipClass.isInUse ? __('Yes', 'sim-league-toolkit') : __('No', 'sim-league-toolkit')}</td>
+                    </tr>
+                    <tr>
+                        <th scope='row'>{__('Max Entrants', 'sim-league-toolkit')}</th>
+                        <td>
+                            <div className='max-entrants-editor flex align-items-center gap-2'>
+                                <InputNumber value={maxEntrants} onValueChange={(e) => setMaxEntrants(e.value ?? null)}
+                                             placeholder={__('Unlimited', 'sim-league-toolkit')} min={0}
+                                             inputStyle={{width: '4rem'}}/>
+                                <Button icon='pi pi-check' disabled={!hasUnsavedChange || isSaving}
+                                        onClick={onSaveMaxEntrants}
+                                        aria-label={__('Save max entrants', 'sim-league-toolkit')}/>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

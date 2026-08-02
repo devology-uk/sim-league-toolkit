@@ -9,8 +9,8 @@ export const useCreateStandaloneEvent = () => {
 
     return useMutation({
         mutationFn: (data: StandaloneEventFormData) => standaloneEventApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.all});
         },
     });
 };

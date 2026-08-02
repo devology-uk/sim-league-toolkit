@@ -16,6 +16,7 @@ import {
 import {useMembers} from '../../../features/member';
 import {useCars} from '../../../features/game';
 import {ListItem} from '../../types/ListItem';
+import {BusyIndicator} from '../../components/BusyIndicator';
 import {StandaloneEventEntrantCard} from './StandaloneEventEntrantCard';
 
 interface StandaloneEventEntrantsProps {
@@ -26,7 +27,7 @@ interface StandaloneEventEntrantsProps {
 export const StandaloneEventEntrants = ({standaloneEventId, gameId}: StandaloneEventEntrantsProps) => {
     const {data: entries, isLoading: entriesLoading} = useStandaloneEventEntries(standaloneEventId);
     const {data: members = [], isLoading: membersLoading} = useMembers();
-    const {data: eventClasses = []} = useStandaloneEventClasses(standaloneEventId);
+    const {data: eventClasses = [], isLoading: classesLoading} = useStandaloneEventClasses(standaloneEventId);
     const {mutateAsync: createEntry, isPending: isCreating} = useCreateStandaloneEventEntry(standaloneEventId);
     const {mutateAsync: deleteEntry} = useDeleteStandaloneEventEntry(standaloneEventId);
 
@@ -89,6 +90,10 @@ export const StandaloneEventEntrants = ({standaloneEventId, gameId}: StandaloneE
     );
 
     const isLoading = entriesLoading || membersLoading || isCreating;
+
+    if (classesLoading) {
+        return <BusyIndicator isBusy={true}/>;
+    }
 
     if (eventClasses.length === 0) {
         return (

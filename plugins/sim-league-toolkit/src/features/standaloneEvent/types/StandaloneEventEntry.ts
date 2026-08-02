@@ -11,4 +11,5 @@ export interface StandaloneEventEntry {
     avatarUrl: string;
     carName: string;
     className?: string;
+    status: string;
 }

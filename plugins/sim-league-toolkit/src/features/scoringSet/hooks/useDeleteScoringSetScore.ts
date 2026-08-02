@@ -8,8 +8,8 @@ export const useDeleteScoringSetScore = (scoringSetId: number) => {
 
     return useMutation({
         mutationFn: (id: number) => scoringSetApi.deleteScore(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.scores(scoringSetId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.scores(scoringSetId)});
         },
     });
 };

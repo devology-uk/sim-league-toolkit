@@ -9,8 +9,8 @@ export const useCreateRuleSet = () => {
 
     return useMutation({
         mutationFn: (data: RuleSetFormData) => ruleSetApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.all});
         },
     });
 };

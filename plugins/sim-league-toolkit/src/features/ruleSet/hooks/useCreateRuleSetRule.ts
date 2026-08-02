@@ -9,8 +9,8 @@ export const useCreateRuleSetRule = (ruleSetId: number) => {
 
     return useMutation({
         mutationFn: (data: RuleSetRuleFormData) => ruleSetApi.createRule(ruleSetId, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.rules(ruleSetId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.rules(ruleSetId)});
         },
     });
 };

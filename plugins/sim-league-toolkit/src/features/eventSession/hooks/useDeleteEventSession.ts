@@ -8,8 +8,8 @@ export const useDeleteEventSession = (eventRefId: number) => {
 
     return useMutation({
         mutationFn: (id: number) => eventSessionApi.delete(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)});
         },
     });
 };

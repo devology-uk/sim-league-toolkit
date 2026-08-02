@@ -9,8 +9,8 @@ export const useCreateServer = () => {
 
     return useMutation({
         mutationFn: (data: ServerFormData) => serverApi.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: serverQueryKeys.all}).then(() => {});
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: serverQueryKeys.all});
         },
     });
 };

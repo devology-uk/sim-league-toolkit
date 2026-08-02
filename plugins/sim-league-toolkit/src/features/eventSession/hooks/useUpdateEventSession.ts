@@ -9,9 +9,11 @@ export const useUpdateEventSession = (eventRefId: number) => {
 
     return useMutation({
         mutationFn: ({id, data}: {id: number; data: EventSessionFormData}) => eventSessionApi.update(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.single(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.byEventRef(eventRefId)}),
+                queryClient.invalidateQueries({queryKey: eventSessionQueryKeys.single(id)}),
+            ]);
         },
     });
 };

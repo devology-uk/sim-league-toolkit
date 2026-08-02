@@ -9,9 +9,11 @@ export const useUpdateEventClass = () => {
 
     return useMutation({
         mutationFn: ({id, data}: { id: number; data: EventClassFormData }) => eventClassApi.update(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all}).then(() => {});
-            queryClient.invalidateQueries({queryKey: eventClassQueryKeys.single(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: eventClassQueryKeys.all}),
+                queryClient.invalidateQueries({queryKey: eventClassQueryKeys.single(id)}),
+            ]);
         },
     });
 };

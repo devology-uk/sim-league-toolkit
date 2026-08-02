@@ -10,6 +10,7 @@ export interface StandaloneEventClass {
     isBuiltIn: boolean;
     isInUse: boolean;
     isSingleCarClass: boolean;
+    maxEntrants: number | null;
     singleCarId?: number;
     singleCarName?: string;
 }

@@ -16,4 +16,5 @@ export {useDeleteStandaloneEventEntry} from './hooks/useDeleteStandaloneEventEnt
 export {useStandaloneEventClasses} from './hooks/useStandaloneEventClasses';
 export {useAvailableStandaloneEventClasses} from './hooks/useAvailableStandaloneEventClasses';
 export {useCreateStandaloneEventClass} from './hooks/useCreateStandaloneEventClass';
+export {useUpdateStandaloneEventClass} from './hooks/useUpdateStandaloneEventClass';
 export {useDeleteStandaloneEventClass} from './hooks/useDeleteStandaloneEventClass';

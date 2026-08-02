@@ -9,9 +9,11 @@ export const useUpdateScoringSet = () => {
 
     return useMutation({
         mutationFn: ({id, data}: { id: number; data: ScoringSetFormData }) => scoringSetApi.update(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.all}).then(() => {});
-            queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.single(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.all}),
+                queryClient.invalidateQueries({queryKey: scoringSetQueryKeys.single(id)}),
+            ]);
         },
     });
 };

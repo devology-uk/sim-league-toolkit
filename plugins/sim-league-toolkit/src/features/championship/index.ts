@@ -16,6 +16,7 @@ export {useDeleteChampionship} from './hooks/useDeleteChampionship';
 export {useChampionshipClasses} from './hooks/useChampionshipClasses';
 export {useAvailableChampionshipClasses} from './hooks/useAvailableChampionshipClasses';
 export {useCreateChampionshipClass} from './hooks/useCreateChampionshipClass';
+export {useUpdateChampionshipClass} from './hooks/useUpdateChampionshipClass';
 export {useDeleteChampionshipClass} from './hooks/useDeleteChampionshipClass';
 
 export {useChampionshipEntries} from './hooks/useChampionshipEntries';

@@ -9,9 +9,11 @@ export const useUpdateRuleSet = () => {
 
     return useMutation({
         mutationFn: ({id, data}: { id: number; data: RuleSetFormData }) => ruleSetApi.update(id, data),
-        onSuccess: (_, {id}) => {
-            queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.all}).then(() => {});
-            queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.single(id)}).then(() => {});
+        onSuccess: async (_, {id}) => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.all}),
+                queryClient.invalidateQueries({queryKey: ruleSetQueryKeys.single(id)}),
+            ]);
         },
     });
 };

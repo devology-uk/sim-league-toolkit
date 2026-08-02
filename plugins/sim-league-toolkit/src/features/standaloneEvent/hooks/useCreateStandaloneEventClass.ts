@@ -9,9 +9,11 @@ export const useCreateStandaloneEventClass = (standaloneEventId: number) => {
 
     return useMutation({
         mutationFn: (data: StandaloneEventClassFormData) => standaloneEventApi.createClass(standaloneEventId, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.classes(standaloneEventId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.availableClasses(standaloneEventId)}).then(() => {});
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.classes(standaloneEventId)}),
+                queryClient.invalidateQueries({queryKey: standaloneEventQueryKeys.availableClasses(standaloneEventId)}),
+            ]);
         },
     });
 };

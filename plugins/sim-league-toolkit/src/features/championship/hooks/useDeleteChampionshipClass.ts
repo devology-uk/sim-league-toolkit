@@ -8,9 +8,11 @@ export const useDeleteChampionshipClass = (championshipId: number) => {
 
     return useMutation({
         mutationFn: (eventClassId: number) => championshipApi.deleteClass(championshipId, eventClassId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.classes(championshipId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.availableClasses(championshipId)}).then(() => {});
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.classes(championshipId)}),
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.availableClasses(championshipId)}),
+            ]);
         },
     });
 };

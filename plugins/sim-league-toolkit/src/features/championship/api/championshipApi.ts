@@ -16,6 +16,7 @@ const endpoints = {
     listClasses: (championshipId: number) => `${championshipRoot}/${championshipId}/classes`,
     listAvailableClasses: (championshipId: number) => `${championshipRoot}/${championshipId}/classes/available`,
     createClass: (championshipId: number) => `${championshipRoot}/${championshipId}/classes`,
+    updateClass: (championshipId: number, eventClassId: number) => `${championshipRoot}/${championshipId}/classes/${eventClassId}`,
     deleteClass: (championshipId: number, eventClassId: number) => `${championshipRoot}/${championshipId}/classes/${eventClassId}`,
     listEntries: (championshipId: number) => `${championshipRoot}/${championshipId}/entries`,
     createEntry: (championshipId: number) => `${championshipRoot}/${championshipId}/entries`,
@@ -87,6 +88,13 @@ export const championshipApi = {
             throw new Error(`Failed to create class for championship with id ${championshipId}`);
         }
         return response.data;
+    },
+
+    updateClass: async (championshipId: number, eventClassId: number, maxEntrants: number | null): Promise<void> => {
+        const response = await ApiClient.put<void>(endpoints.updateClass(championshipId, eventClassId), {maxEntrants});
+        if (!response.success) {
+            throw new Error(`Failed to update class ${eventClassId} for championship with id ${championshipId}`);
+        }
     },
 
     deleteClass: async (championshipId: number, eventClassId: number): Promise<void> => {

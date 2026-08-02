@@ -9,9 +9,11 @@ export const useCreateChampionshipClass = (championshipId: number) => {
 
     return useMutation({
         mutationFn: (data: ChampionshipClassFormData) => championshipApi.createClass(championshipId, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.classes(championshipId)}).then(() => {});
-            queryClient.invalidateQueries({queryKey: championshipQueryKeys.availableClasses(championshipId)}).then(() => {});
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.classes(championshipId)}),
+                queryClient.invalidateQueries({queryKey: championshipQueryKeys.availableClasses(championshipId)}),
+            ]);
         },
     });
 };

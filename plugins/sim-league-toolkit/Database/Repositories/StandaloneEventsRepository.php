@@ -147,6 +147,22 @@
     /**
      * @throws Exception
      */
+    public static function getMaxEntrants(int $id): int
+    {
+      $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+
+      $value = self::getValue(
+        "SELECT maxEntrants FROM {$tableName}
+         WHERE id = {$id}
+         LIMIT 1;"
+      );
+
+      return $value !== null ? (int)$value : 0;
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function getClassMaxEntrants(int $standaloneEventId, int $eventClassId): ?int
     {
       $tableName = self::prefixedTableName(TableNames::STANDALONE_EVENT_CLASSES);
