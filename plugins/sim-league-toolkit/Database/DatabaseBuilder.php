@@ -40,6 +40,7 @@
       self::$builders[] = new StandaloneSessionResultsTableBuilder();
       self::$builders[] = new StandaloneResultPenaltiesTableBuilder();
       self::$builders[] = new TrophiesTableBuilder();
+      self::$builders[] = new MigrationRecordsTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {

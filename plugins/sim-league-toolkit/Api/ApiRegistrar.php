@@ -50,6 +50,7 @@
       '#/' . ResourceNames::SERVER . '/\d+/settings#' => ServerSettingApiController::class,
       '#/' . ResourceNames::SERVER . '#' => ServerApiController::class,
       '#/members#' => MemberApiController::class,
+      '#/' . ResourceNames::MIGRATION . '#' => MigrationApiController::class,
     ];
 
     public static function init(): void {

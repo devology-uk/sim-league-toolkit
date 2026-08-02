@@ -1,5 +1,7 @@
 import {__} from '@wordpress/i18n';
 
+import {MigrationCard} from './MigrationCard';
+
 export const Dashboard = () => {
     return (
         <>
@@ -13,6 +15,8 @@ export const Dashboard = () => {
             <p>
                 {__('The plugin also provides Gutenburg Blocks that you can add to your WordPress pages to provide you league members with the information they need to go racing and view results and stats.', 'sim-league-toolkit')}
             </p>
+
+            <MigrationCard/>
         </>
     )
 }
