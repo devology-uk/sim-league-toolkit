@@ -5,11 +5,9 @@
   use SLTK\Core\Constants;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
   use SLTK\Domain\Abstractions\ValueObject;
-  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
   class ChampionshipEventClass implements ValueObject, ProvidesPersistableArray {
-    use HasIdentity;
 
     private string $carClass = '';
     private string $championship = '';
@@ -91,7 +89,7 @@
       return $this->isInUse ?? false;
     }
 
-    public function setIsInUse(string $value): void {
+    public function setIsInUse(bool $value): void {
       $this->isInUse = $value;
     }
 
@@ -126,7 +124,6 @@
 
     public function toDto(): array {
       return [
-        'id' => $this->getId(),
         'carClass' => $this->getCarClass(),
         'championshipId' => $this->getChampionshipId(),
         'championship' => $this->getChampionship(),

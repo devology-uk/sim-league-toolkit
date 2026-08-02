@@ -5,11 +5,9 @@
   use SLTK\Core\Constants;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
   use SLTK\Domain\Abstractions\ValueObject;
-  use SLTK\Domain\Traits\HasIdentity;
   use stdClass;
 
   class StandaloneEventEventClass implements ValueObject, ProvidesPersistableArray {
-    use HasIdentity;
 
     private string $carClass = '';
     private string $driverCategory = '';
@@ -121,7 +119,6 @@
 
     public function toDto(): array {
       return [
-        'id' => $this->getId(),
         'carClass' => $this->getCarClass(),
         'standaloneEventId' => $this->getStandaloneEventId(),
         'driverCategoryId' => $this->getDriverCategoryId(),
