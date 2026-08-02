@@ -3,6 +3,7 @@
   namespace SLTK\Domain;
 
   use Exception;
+  use SLTK\Core\Constants;
   use SLTK\Database\Repositories\CountriesRepository;
   use SLTK\Domain\Abstractions\AggregateRoot;
   use SLTK\Domain\Traits\HasIdentity;
@@ -20,6 +21,7 @@
     public static function fromStdClass(?stdClass $data): ?self {
       $result = new self();
 
+      $result->setId((int)($data->id ?? Constants::DEFAULT_ID));
       $result->setName($data->name ?? '');
       $result->setAlpha2($data->alpha2 ?? '');
       $result->setAlpha3($data->alpha3 ?? '');
