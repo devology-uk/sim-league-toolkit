@@ -19,8 +19,10 @@
 
     private int $eventSessionId = Constants::DEFAULT_ID;
     private int $standaloneEventEntryId = Constants::DEFAULT_ID;
+    private int $userId = Constants::DEFAULT_ID;
     private string $memberName = '';
     private int $raceNumber = 0;
+    private ?int $eventClassId = null;
     private ?string $className = null;
 
     /**
@@ -39,8 +41,10 @@
       $result->setId((int)$data->id);
       $result->setEventSessionId((int)$data->eventSessionId);
       $result->setStandaloneEventEntryId((int)$data->standaloneEventEntryId);
+      $result->setUserId((int)($data->userId ?? Constants::DEFAULT_ID));
       $result->setMemberName($data->memberName ?? '');
       $result->setRaceNumber((int)($data->raceNumber ?? 0));
+      $result->setEventClassId(isset($data->eventClassId) && $data->eventClassId > 0 ? (int)$data->eventClassId : null);
       $result->setClassName($data->className ?? null);
       $result->hydrateSessionResultFields($data);
 
@@ -80,6 +84,14 @@
       $this->standaloneEventEntryId = $value;
     }
 
+    public function getUserId(): int {
+      return $this->userId;
+    }
+
+    private function setUserId(int $value): void {
+      $this->userId = $value;
+    }
+
     public function getMemberName(): string {
       return $this->memberName;
     }
@@ -94,6 +106,14 @@
 
     private function setRaceNumber(int $value): void {
       $this->raceNumber = $value;
+    }
+
+    public function getEventClassId(): ?int {
+      return $this->eventClassId;
+    }
+
+    private function setEventClassId(?int $value): void {
+      $this->eventClassId = $value;
     }
 
     public function getClassName(): ?string {
@@ -133,8 +153,10 @@
           'id' => $this->getId(),
           'eventSessionId' => $this->getEventSessionId(),
           'standaloneEventEntryId' => $this->getStandaloneEventEntryId(),
+          'userId' => $this->getUserId(),
           'memberName' => $this->getMemberName(),
           'raceNumber' => $this->getRaceNumber(),
+          'eventClassId' => $this->getEventClassId(),
           'className' => $this->getClassName(),
         ],
         $this->sessionResultFieldsToArray()

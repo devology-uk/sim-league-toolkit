@@ -35,6 +35,7 @@
     public final const string STANDALONE_SESSION_RESULTS = 'sltk_standalone_session_results';
     public final const string TRACKS = 'sltk_tracks';
     public final const string TRACK_LAYOUTS = 'sltk_track_layouts';
+    public final const string TROPHIES = 'sltk_trophies';
     public final const string USER_META = 'usermeta';
     public final const string USERS = 'users';
     public final const string USER_PROFILES = 'sltk_user_profile';

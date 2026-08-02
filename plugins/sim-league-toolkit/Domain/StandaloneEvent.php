@@ -22,6 +22,7 @@
     private string $scoringSet = '';
     private ?int $scoringSetId = null;
     private string $startTime = '';
+    private bool $trophiesAwarded = false;
 
 
     /**
@@ -98,6 +99,7 @@
       $this->ruleSetId = isset($data->ruleSetId) && $data->ruleSetId > 0 ? (int)$data->ruleSetId : null;
       $this->ruleSet = $data->ruleSet ?? '';
       $this->startTime = $data->startTime ?? '';
+      $this->trophiesAwarded = (bool)($data->trophiesAwarded ?? false);
     }
 
     /**
@@ -179,6 +181,14 @@
       $this->scoringSetId = $value;
     }
 
+    public function getTrophiesAwarded(): bool {
+      return $this->trophiesAwarded;
+    }
+
+    public function setTrophiesAwarded(bool $value): void {
+      $this->trophiesAwarded = $value;
+    }
+
     /**
      * @throws Exception
      */
@@ -202,6 +212,7 @@
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
       $result['startTime'] = $this->getStartTime();
+      $result['trophiesAwarded'] = $this->getTrophiesAwarded();
 
       return $result;
     }
@@ -216,6 +227,7 @@
       $result['maxEntrants'] = $this->getMaxEntrants();
       $result['isPublic'] = $this->getIsPublic();
       $result['startTime'] = $this->getStartTime();
+      $result['trophiesAwarded'] = $this->getTrophiesAwarded();
 
       return $result;
     }

@@ -10,6 +10,7 @@ import {InputText} from 'primereact/inputtext';
 
 import {BusyIndicator} from '../../components/BusyIndicator';
 import {ChampionshipEvent, ChampionshipEventFormData, useUpdateChampionshipEvent} from '../../../features/championship';
+import {ChampionshipEventTrophies} from './ChampionshipEventTrophies';
 import {EventSessionList} from '../eventSession/EventSessionsList';
 import {SaveSubmitButton} from '../../components/SaveSubmitButton';
 import {TrackSelector} from '../game/TrackSelector';
@@ -156,6 +157,13 @@ export const ChampionshipEventEditor = ({
                         eventRefId={championshipEvent.eventRefId}
                         gameId={games.find(g => g.id === gameId)?.gameKey ?? ''}
                         championshipId={championshipEvent.championshipId}
+                    />
+                </AccordionTab>
+                <AccordionTab header={__('Trophies', 'sim-league-toolkit')}>
+                    <ChampionshipEventTrophies
+                        championshipEventId={championshipEvent.id}
+                        championshipId={championshipEvent.championshipId}
+                        trophiesAwarded={championshipEvent.trophiesAwarded}
                     />
                 </AccordionTab>
             </Accordion>

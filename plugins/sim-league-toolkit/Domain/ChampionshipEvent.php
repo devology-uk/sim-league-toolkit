@@ -33,6 +33,7 @@
     private int $trackId = Constants::DEFAULT_ID;
     private ?string $trackLayout = null;
     private ?int $trackLayoutId = null;
+    private bool $trophiesAwarded = false;
 
     /**
      * @throws DateMalformedStringException
@@ -78,6 +79,7 @@
       $result->setChampionship($data->championship ?? '');
       $result->setTrack($data->track ?? '');
       $result->setTrackLayout($data->trackLayout ?? null);
+      $result->setTrophiesAwarded((bool)($data->trophiesAwarded ?? false));
 
       return $result;
     }
@@ -187,6 +189,14 @@
       $this->trackLayoutId = $value;
     }
 
+    public function getTrophiesAwarded(): bool {
+      return $this->trophiesAwarded;
+    }
+
+    public function setTrophiesAwarded(bool $value): void {
+      $this->trophiesAwarded = $value;
+    }
+
     /**
      * @return EventSession[]
      * @throws Exception
@@ -267,6 +277,7 @@
         'isActive' => $this->getIsActive(),
         'isCompleted' => $this->getIsCompleted(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
+        'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
     }
 
@@ -285,6 +296,7 @@
         'championship' => $this->getChampionship(),
         'track' => $this->getTrack(),
         'trackLayout' => $this->getTrackLayout(),
+        'trophiesAwarded' => $this->getTrophiesAwarded(),
       ];
     }
   }

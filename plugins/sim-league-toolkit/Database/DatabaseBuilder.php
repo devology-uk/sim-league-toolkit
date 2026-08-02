@@ -39,6 +39,7 @@
       self::$builders[] = new ChampionshipResultPenaltiesTableBuilder();
       self::$builders[] = new StandaloneSessionResultsTableBuilder();
       self::$builders[] = new StandaloneResultPenaltiesTableBuilder();
+      self::$builders[] = new TrophiesTableBuilder();
     }
 
     public static function initialiseOrUpdate(): void {

@@ -34,6 +34,8 @@
 
       $query = "SELECT
                   r.*,
+                  e.userId as userId,
+                  e.eventClassId as eventClassId,
                   u.display_name as memberName,
                   um_rn.meta_value as raceNumber,
                   ec.name as className
@@ -60,6 +62,8 @@
 
       $query = "SELECT
                   r.*,
+                  e.userId as userId,
+                  e.eventClassId as eventClassId,
                   u.display_name as memberName,
                   um_rn.meta_value as raceNumber,
                   ec.name as className

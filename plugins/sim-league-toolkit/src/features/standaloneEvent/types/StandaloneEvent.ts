@@ -19,4 +19,5 @@ export interface StandaloneEvent {
     ruleSet?: string;
     scoringSetId?: number;
     scoringSet?: string;
+    trophiesAwarded: boolean;
 }

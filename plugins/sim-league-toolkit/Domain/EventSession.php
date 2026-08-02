@@ -28,6 +28,7 @@
 
       $result = new self();
 
+      $result->setId((int)($data->id ?? Constants::DEFAULT_ID));
       $result->setEventRefId($data->eventRefId ?? Constants::DEFAULT_ID);
       $result->setName($data->name ?? '');
       $result->setSessionType($data->sessionType ?? '');

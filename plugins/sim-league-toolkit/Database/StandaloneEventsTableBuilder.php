@@ -14,6 +14,12 @@
     }
 
     public function applyAdjustments(string $tablePrefix): void {
+      global $wpdb;
+      $tableName = $this->tableName($tablePrefix);
+
+      if (empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'trophiesAwarded'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} ADD COLUMN trophiesAwarded BIT NOT NULL DEFAULT 0");
+      }
     }
 
     public function definitionSql(string $tablePrefix, string $charsetCollate): string {

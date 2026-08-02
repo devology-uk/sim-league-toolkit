@@ -32,4 +32,5 @@
     public final const string STANDALONE_RESULT_PENALTY = 'standalone-result-penalty';
     public final const string STANDALONE_SESSION_RESULT = 'standalone-session-result';
     public final const string TRACK = 'track';
+    public final const string TROPHY = 'trophy';
   }

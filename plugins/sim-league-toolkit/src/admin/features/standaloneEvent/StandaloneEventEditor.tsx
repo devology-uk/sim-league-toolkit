@@ -16,6 +16,7 @@ import {ValidationError} from '../../components/ValidationError';
 import {EventSessionList} from '../eventSession/EventSessionsList';
 import {StandaloneEventClasses} from './StandaloneEventClasses';
 import {StandaloneEventEntrants} from './StandaloneEventEntrants';
+import {StandaloneEventTrophies} from './StandaloneEventTrophies';
 import {TrackSelector} from '../game/TrackSelector';
 import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
 import {ScoringSetSelector} from '../scoringSet/ScoringSetSelector';
@@ -221,6 +222,12 @@ export const StandaloneEventEditor = ({onSaved, onCancelled, standaloneEvent}: S
                     <StandaloneEventEntrants
                         standaloneEventId={standaloneEvent.id}
                         gameId={standaloneEvent.gameId}
+                    />
+                </AccordionTab>
+                <AccordionTab header={__('Trophies', 'sim-league-toolkit')}>
+                    <StandaloneEventTrophies
+                        standaloneEventId={standaloneEvent.id}
+                        trophiesAwarded={standaloneEvent.trophiesAwarded}
                     />
                 </AccordionTab>
             </Accordion>

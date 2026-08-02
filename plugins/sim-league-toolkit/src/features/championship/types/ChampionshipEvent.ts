@@ -12,4 +12,5 @@ export interface ChampionshipEvent {
     championship?: string;
     track?: string;
     trackLayout?: string;
+    trophiesAwarded: boolean;
 }

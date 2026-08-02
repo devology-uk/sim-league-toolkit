@@ -15,6 +15,7 @@ import {Championship, ChampionshipEvent, ChampionshipFormData, useUpdateChampion
 import {ChampionshipClasses} from './ChampionshipClasses';
 import {ChampionshipEntrants} from './ChampionshipEntrants';
 import {ChampionshipEvents} from '../championshipEvent/ChampionshipEvents';
+import {ChampionshipTrophies} from './ChampionshipTrophies';
 import {ChampionshipType, ChampionshipTypeLabels} from '../../../enums/generated/ChampionshipType';
 import {PlatformSelector} from '../game/PlatformSelector';
 import {RuleSetSelector} from '../ruleSet/RuleSetSelector';
@@ -299,6 +300,7 @@ export const ChampionshipEditor = ({onSaved, onCancelled, championship, onEditEv
                     <ChampionshipEntrants championshipId={championship.id} gameId={gameId}/>
                 </AccordionTab>
                 <AccordionTab header={__('Standings', 'sim-league-toolkit')}>
+                    <ChampionshipTrophies championshipId={championship.id} trophiesAwarded={trophiesAwarded}/>
                 </AccordionTab>
             </Accordion>
         </>

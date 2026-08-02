@@ -24,21 +24,33 @@ into adding a third game (Assetto Corsa Evo) to the theme again — avoids doing
 
 ## Sequencing plan
 
+Revised 2026-08-02: after manual result entry, Mike wants **Trophies** completed next (not result
+import) so championships/standalone events are fully manageable end-to-end — create, enter results,
+award trophies — before starting the Gutenberg blocks / SLTK theme work, where trophies will
+eventually surface on public member profiles.
+
 1. ✅ **Wait-list support for event entrants** — per-class and championship/event-wide entrant caps,
    auto-waitlisting on creation, promotion on cancellation, status shown in entrant UI, plus the
    editable per-class Max Entrants field on the class-assignment screen (the piece that made it
    actually usable). Done and confirmed working by Mike 2026-08-02.
-2. ⏭ **Manual result entry** *(next up)* — game-agnostic core for admins to enter session results by
-   hand. Deliberately built before any import facility, so a brand-new game can be supported quickly
-   via manual entry alone.
-3. **Per-game result import** — parsing/import per game, built on manual entry. The theme's biggest
+2. ✅ **Manual result entry** — game-agnostic core for admins to enter session results by hand.
+   Deliberately built before any import facility, so a brand-new game can be supported quickly via
+   manual entry alone.
+3. ✅ **Trophies** — event-level (per Race session: 1st/2nd/3rd overall + per class, Pole, Fastest
+   Lap, with preview/confirm) and championship-level (1st/2nd/3rd overall + per class from season
+   points once all events are complete) award flows. Built 2026-08-02; see "Trophies feature" notes
+   below for architecture and known follow-ups. *Awaiting Mike's manual pass in the editor.*
+4. ⏭ **Gutenberg blocks / SLTK theme** *(next up)* — front-end blocks and eventually a prebuilt
+   theme, so members can see standings, entrant lists, schedules, and (via the new Trophies table)
+   member trophy displays, in any theme.
+5. **Per-game result import** — parsing/import per game, built on manual entry. The theme's biggest
    complexity area (3 separate bespoke parsers for ACC/AMS2 old/AMS2 new) — needs a real
    `ResultParser`-per-`GameKey` abstraction here, not the theme's string-branching approach.
-4. **Member CSV import** — bulk-onboard an existing league's roster. Note: per-user SLTK fields
+6. **Member CSV import** — bulk-onboard an existing league's roster. Note: per-user SLTK fields
    (Steam/PSN/Xbox ID, nationality, race number) already exist via `Core/UserProfileExtension.php` on
    WordPress's native Edit User screen — the gap is specifically bulk creation/import, since "Add New
    User" doesn't surface those fields and there's no one-at-a-time-avoiding path today.
-5. **Demo/test data seed-and-clean tool** — quickly populate realistic test data and clean it up
+7. **Demo/test data seed-and-clean tool** — quickly populate realistic test data and clean it up
    again, mirroring the theme's `demo-admin-page.php`. Convenience for Mike and for admins evaluating
    the plugin, not automated test infrastructure.
 
@@ -69,6 +81,47 @@ later.
   settings/session schemas) but currently only covers settings, not result parsing or game-specific
   scoring rules — those will need a real strategy/provider interface, not more JSON, to hold up once
   ACE (or any future sim) is added.
+
+## Trophies feature (2026-08-02)
+
+Full plan is in the session's plan file (`tranquil-wiggling-pinwheel.md`); summary for future
+reference:
+
+- New domain: `Trophy` (persisted, member-linked award record — `memberId`, `scope`, `scopeId`,
+  `eventSessionId`, `eventClassId`, `awardType`, `awardedDate`), `TrophyEligibleResult` (adapter over
+  `ChampionshipSessionResult`/`StandaloneSessionResult` so one calculator works for both),
+  `ProposedTrophy`/`TrophyPreviewResult` (unsaved preview DTOs), `EventTrophyCalculator` (per-race
+  podium/class-podium/Fastest-Lap/Pole), `StandingLine`/`ChampionshipStandingsCalculator` (season
+  points aggregation — didn't exist anywhere before this), `ChampionshipTrophyCalculator`, and
+  `TrophyAwardService` (orchestration: eligibility, preview, award-with-replace, flips
+  `trophiesAwarded`).
+- New table `sltk_trophies`. `trophiesAwarded` bool added to `StandaloneEvent`/`ChampionshipEvent`
+  (mirrors the field `Championship` already had, unused, before this).
+- API: `TrophyApiController` with `GET/POST .../trophies/preview` and `.../trophies/award` on
+  `standalone-event`, `championship-event`, and `championship`.
+- Frontend: new "Trophies" accordion tab on both event editors; the championship editor's
+  previously-empty "Standings" tab now hosts the championship-level award panel. Shared
+  `AwardTrophiesPanel` component always shows a live preview (recomputed from current results/
+  standings) rather than a separate "stored trophies" read view — simpler, and always accurate even
+  if results change after an award.
+- **Multi-race events**: each Race-type session in an event gets its own full trophy set, paired
+  with the nearest *preceding* Qualifying session for Pole (Mike's call — a shared quali before two
+  races awards Pole for both; a quali-per-race format naturally pairs each race with its own).
+- **Bug found and fixed along the way**: `EventSession::fromStdClass()` never called `setId()`, so
+  every loaded session had the default id. Since the frontend keys edit/delete/reorder/results-fetch
+  off `session.id` (`EventSessionsList.tsx`), this meant editing an existing session was silently
+  *inserting a duplicate* instead of updating (`hasId()` always false → `saveSession()` always took
+  the insert branch). One-line fix in `Domain/EventSession.php`. Worth Mike double-checking his
+  sessions data for any duplicate rows this may have already produced.
+- **Known simplification, flagged for later**: championship standings are a straight sum of
+  points — `Championship::resultsToDiscard` (already an unused field) is not applied yet.
+- `npm run build` (webpack) still fails with a pre-existing `Unexpected end of JSON input` error
+  unrelated to this work (confirmed by clearing `node_modules/.cache` and retrying — same failure).
+  `npx tsc --noEmit` is clean, which is the check this project actually relies on.
+- Not yet tested by Mike in the editor — automated checks only (`php -l` on all changed/new files,
+  `tsc --noEmit`). Needs the manual pass described in the plan file's Verification section:
+  multi-class event with Qualifying + Race results → preview/award → re-award after editing a
+  result → same for a championship event → full championship with 2+ completed events.
 
 ## Recent notable fixes (2026-08-01 – 2026-08-02)
 
