@@ -1,6 +1,6 @@
 export type {Car} from './types/Car';
 export type {Game} from './types/Game';
-export type {GameConfig} from './types/GameConfig';
+export type {GameConfig, GameServerSettingDefinition} from './types/GameConfig';
 export type {Platform} from './types/Platform';
 export type {SessionTypeConfig} from './types/SessionTypeConfig';
 export type {Track} from './types/Track';

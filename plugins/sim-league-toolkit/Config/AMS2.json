@@ -1,7 +1,20 @@
 {
   "gameId": "AMS2",
   "gameName": "Automobilista 2",
-  "serverSettings": [],
+  "serverSettings": [
+    {"name": "hostPort", "default": 9600, "canEditIfHosted": false},
+    {"name": "queryPort", "default": 9601, "canEditIfHosted": false},
+    {"name": "steamPort", "default": 8766, "canEditIfHosted": false},
+    {"name": "maxPlayerCount", "default": 32, "canEditIfHosted": false},
+    {"name": "bindIP", "default": "", "canEditIfHosted": false},
+    {"name": "password", "default": "", "canEditIfHosted": true},
+    {"name": "controlGameSetup", "default": 1, "canEditIfHosted": true},
+    {"name": "sportsPlay", "default": 1, "canEditIfHosted": true},
+    {"name": "allowEmptyJoin", "default": 0, "canEditIfHosted": true},
+    {"name": "enableHttpApi", "default": 0, "canEditIfHosted": true},
+    {"name": "httpApiPort", "default": 9000, "canEditIfHosted": true},
+    {"name": "httpApiInterface", "default": "", "canEditIfHosted": true}
+  ],
   "sessionTypes": {
     "practice": {
       "fields": [
