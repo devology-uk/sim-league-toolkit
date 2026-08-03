@@ -26,9 +26,31 @@
       $constraintExists = (int)$wpdb->get_var($constraintExistsCheckSql);
       if (!$constraintExists) {
         $fkSql = "ALTER TABLE {$tableName}
-                    ADD CONSTRAINT $constraintName 
+                    ADD CONSTRAINT $constraintName
                         FOREIGN KEY ($columnName) REFERENCES $prefixedParentTableName($parentColumn);";
         $wpdb->query($fkSql);
+      }
+    }
+
+    /**
+     * Inserts a seed row, or updates it in place if a row already matches on $matchColumns.
+     * Keeps CSV-seeded reference tables (cars, tracks, track layouts) in sync on re-seed
+     * rather than only ever inserting rows that are new since the last run.
+     */
+    protected function upsertSeedRow(string $tableName, array $matchColumns, array $data): void {
+      global $wpdb;
+
+      $whereClauses = [];
+      foreach ($matchColumns as $column => $value) {
+        $whereClauses[] = $wpdb->prepare("{$column} = %s", $value);
+      }
+
+      $existingId = $wpdb->get_var("SELECT id FROM {$tableName} WHERE " . implode(' AND ', $whereClauses) . ';');
+
+      if ($existingId === null) {
+        $wpdb->insert($tableName, array_merge($matchColumns, $data));
+      } else {
+        $wpdb->update($tableName, $data, ['id' => $existingId]);
       }
     }
   }

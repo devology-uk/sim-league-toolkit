@@ -42,6 +42,7 @@
           name tinytext NOT NULL,
           corners tinyint NOT NULL,
           length int NOT NULL,
+          dlcPack tinytext NULL,
           PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
@@ -66,24 +67,17 @@
 
           $trackKey = $data[0];
           $layoutId = $data[1];
+          $dlcPack = !empty($data[9]) ? $data[9] : null;
 
           $gameId = $wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = '{$gameKey}'");
           $trackId = $wpdb->get_var("SELECT id FROM {$tracksTableName} WHERE trackId = '{$trackKey}'");
 
-          $existingId = $wpdb->get_var("SELECT id FROM {$tableName} WHERE gameId = {$gameId} AND trackId = {$trackId} AND layoutId = '{$layoutId}';");
-
-          if ($existingId == null) {
-            $gameTrackLayout = array(
-              'gameId' => $gameId,
-              'trackId' => $trackId,
-              'layoutId' => $layoutId,
-              'name' => $data[2],
-              'corners' => $data[3],
-              'length' => $data[4]
-            );
-
-            $wpdb->insert($tableName, $gameTrackLayout);
-          }
+          $this->upsertSeedRow($tableName, ['gameId' => $gameId, 'trackId' => $trackId, 'layoutId' => $layoutId], [
+            'name' => $data[2],
+            'corners' => $data[3],
+            'length' => $data[4],
+            'dlcPack' => $dlcPack,
+          ]);
         }
 
         fclose($handle);

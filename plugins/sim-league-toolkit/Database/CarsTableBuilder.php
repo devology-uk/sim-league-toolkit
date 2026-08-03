@@ -39,6 +39,7 @@
           name tinytext NOT NULL,
           year mediumint NOT NULL,
           manufacturer tinytext NOT NULL,
+          dlcPack tinytext NULL,
           PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
@@ -69,22 +70,16 @@
 
           $carClass = $data[0];
           $carKey = $data[1];
+          $dlcPack = !empty($data[5]) ? $data[5] : null;
 
           $gameId = $wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = '$gameKey'");
-          $existingId = $wpdb->get_var("SELECT id FROM {$carsTableName} WHERE gameId = {$gameId} AND carKey = '{$carKey}';");
 
-          if ($existingId == null) {
-            $car = [
-              'gameId' => $gameId,
-              'carClass' => $carClass,
-              'carKey' => $carKey,
-              'name' => $data[2],
-              'year' => $data[3],
-              'manufacturer' => $data[4]
-            ];
-
-            $wpdb->insert($carsTableName, $car);
-          }
+          $this->upsertSeedRow($carsTableName, ['gameId' => $gameId, 'carKey' => $carKey, 'carClass' => $carClass], [
+            'name' => $data[2],
+            'year' => $data[3],
+            'manufacturer' => $data[4],
+            'dlcPack' => $dlcPack,
+          ]);
         }
 
         fclose($handle);

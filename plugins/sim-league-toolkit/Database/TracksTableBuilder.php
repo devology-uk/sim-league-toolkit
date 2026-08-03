@@ -27,6 +27,7 @@
           countryCode tinytext NOT NULL,
           latitude double(10,6) NOT NULL,
           longitude double(10,6) NOT NULL,
+          elevation int NULL,
           PRIMARY KEY  (id)
         ) {$charsetCollate};";
     }
@@ -54,24 +55,19 @@
         while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) != false) {
 
           $trackId = $data[0];
+          $elevation = ($gameKey === 'AMS2' && !empty($data[7])) ? $data[7] : null;
 
           $gameId = $wpdb->get_var("SELECT id FROM {$gamesTableName} WHERE gameKey = '$gameKey'");
-          $existingId = $wpdb->get_var("SELECT id FROM {$tracksTableName} WHERE gameId = {$gameId} AND  trackId = '{$trackId}';");
 
-          if ($existingId == null) {
-            $track = array(
-              'gameId' => $gameId,
-              'trackId' => $trackId,
-              'shortName' => $data[1],
-              'fullName' => $data[2],
-              'country' => $data[3],
-              'countryCode' => $data[4],
-              'latitude' => $data[5],
-              'longitude' => $data[6],
-            );
-
-            $wpdb->insert($tracksTableName, $track);
-          }
+          $this->upsertSeedRow($tracksTableName, ['gameId' => $gameId, 'trackId' => $trackId], [
+            'shortName' => $data[1],
+            'fullName' => $data[2],
+            'country' => $data[3],
+            'countryCode' => $data[4],
+            'latitude' => $data[5],
+            'longitude' => $data[6],
+            'elevation' => $elevation,
+          ]);
         }
 
         fclose($handle);
