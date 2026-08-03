@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash('C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe' -c 'C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\gu5SKPNWc\\\\conf\\\\php\\\\php.ini' -r ' *)",
+      "Bash(grep -v \"Deprecated\\\\|Call Stack\\\\|^\\\\s*[0-9]\\\\|^$\")"
+    ]
+  }
+}

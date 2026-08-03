@@ -29,6 +29,7 @@
     private const string SERVERS_TABLE = 'acclt_servers';
     private const string TRACKS_TABLE = 'acclt_tracks';
     private const string USER_PROFILE_TABLE = 'acclt_user_profile';
+    private const string USER_TROPHIES_TABLE = 'acclt_user_trophies';
 
     /**
      * @return stdClass[]
@@ -225,5 +226,16 @@
      */
     public static function getUserProfiles(): array {
       return self::getResultsFromTable(self::USER_PROFILE_TABLE);
+    }
+
+    /**
+     * Append-only historical log, not a canonical current-state table - may contain duplicate rows
+     * from a re-triggered award (no uniqueness constraint in the legacy schema).
+     *
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getUserTrophies(): array {
+      return self::getResultsFromTable(self::USER_TROPHIES_TABLE);
     }
   }

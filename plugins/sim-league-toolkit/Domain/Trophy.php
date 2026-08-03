@@ -71,6 +71,13 @@
     }
 
     /**
+     * @throws Exception
+     */
+    public static function get(int $id): ?self {
+      return self::fromStdClass(TrophiesRepository::getById($id));
+    }
+
+    /**
      * @return Trophy[]
      * @throws Exception
      */

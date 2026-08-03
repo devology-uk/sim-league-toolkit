@@ -48,4 +48,13 @@
 
       return $eventClass->getId();
     }
+
+    /**
+     * Lookup-only variant of `resolveOrCreate()` - never creates a new class. For contexts where a
+     * missing match (e.g. a class renamed since the legacy record was written) should be treated as
+     * unresolvable rather than silently spawning a phantom class.
+     */
+    public function tryResolve(string $name, int $gameId): ?int {
+      return $this->idsByGameAndName[$gameId . '|' . strtolower(trim($name))] ?? null;
+    }
   }

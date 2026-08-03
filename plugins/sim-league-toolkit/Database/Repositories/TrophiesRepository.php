@@ -29,6 +29,29 @@
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getById(int $id): ?stdClass {
+      $trophiesTable = self::prefixedTableName(TableNames::TROPHIES);
+      $usersTable = self::prefixedTableName(TableNames::USERS);
+      $eventClassesTable = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $eventSessionsTable = self::prefixedTableName(TableNames::EVENT_SESSIONS);
+
+      $query = "SELECT
+                  t.*,
+                  u.display_name as memberName,
+                  ec.name as className,
+                  es.name as sessionName
+              FROM {$trophiesTable} t
+              LEFT JOIN {$usersTable} u ON t.memberId = u.ID
+              LEFT JOIN {$eventClassesTable} ec ON t.eventClassId = ec.id
+              LEFT JOIN {$eventSessionsTable} es ON t.eventSessionId = es.id
+              WHERE t.id = '{$id}';";
+
+      return self::getRow($query);
+    }
+
+    /**
      * @return stdClass[]
      * @throws Exception
      */

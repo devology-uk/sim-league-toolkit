@@ -28,6 +28,7 @@
         new ChampionshipEventImporter(),
         new StandaloneSessionResultImporter(),
         new ChampionshipSessionResultImporter(),
+        new TrophyImporter(),
       ];
     }
   }
