@@ -17,6 +17,11 @@
     private const string EVENT_CLASSES_TABLE = 'acclt_event_classes';
     private const string EVENT_ENTRANTS_TABLE = 'acclt_event_entrants';
     private const string EVENT_SESSIONS_TABLE = 'acclt_event_sessions';
+    private const string EVENT_LEADER_BOARDS_TABLE = 'acclt_event_leader_boards';
+    private const string EVENT_RESULT_CARS_TABLE = 'acclt_event_result_cars';
+    private const string EVENT_RESULT_DRIVERS_TABLE = 'acclt_event_result_drivers';
+    private const string EVENT_RESULT_LAPS_TABLE = 'acclt_event_result_laps';
+    private const string EVENT_RESULT_SESSIONS_TABLE = 'acclt_event_result_sessions';
     private const string NATIONALITIES_TABLE = 'acclt_nationalities';
     private const string PLATFORMS_TABLE = 'acclt_platforms';
     private const string SCORING_SET_SCORES_TABLE = 'acclt_scoring_set_scores';
@@ -116,6 +121,17 @@
     }
 
     /**
+     * League-adjusted, denormalized rollup - class points, position after any manual time penalty,
+     * driver/car display data. See `getResultCars()` for the raw per-session import.
+     *
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getLeaderBoardRows(): array {
+      return self::getResultsFromTable(self::EVENT_LEADER_BOARDS_TABLE);
+    }
+
+    /**
      * @return stdClass[]
      * @throws Exception
      */
@@ -129,6 +145,46 @@
      */
     public static function getPlatforms(): array {
       return self::getResultsFromTable(self::PLATFORMS_TABLE);
+    }
+
+    /**
+     * Raw per-session import: one row per car. `carId` here is `acclt_event_result_cars.id` itself
+     * (a self-referencing surrogate key oddity in the legacy schema), not a `acclt_cars` reference -
+     * join `getResultDrivers()`/`getResultLaps()` on `sessionId` + this row's own `id`.
+     *
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getResultCars(): array {
+      return self::getResultsFromTable(self::EVENT_RESULT_CARS_TABLE);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getResultDrivers(): array {
+      return self::getResultsFromTable(self::EVENT_RESULT_DRIVERS_TABLE);
+    }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getResultLaps(): array {
+      return self::getResultsFromTable(self::EVENT_RESULT_LAPS_TABLE);
+    }
+
+    /**
+     * Anchor row per imported session - `eventSessionId` (legacy) -> this row's own `id`, which
+     * `getResultCars()`/`getResultDrivers()`/`getResultLaps()`/`getLeaderBoardRows()` key off as
+     * `sessionId`.
+     *
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function getResultSessions(): array {
+      return self::getResultsFromTable(self::EVENT_RESULT_SESSIONS_TABLE);
     }
 
     /**

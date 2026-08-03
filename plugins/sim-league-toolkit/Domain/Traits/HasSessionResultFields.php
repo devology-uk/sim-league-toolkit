@@ -13,6 +13,7 @@
     private ?int $sector2TimeMs = null;
     private ?int $sector3TimeMs = null;
     private int $lapsCompleted = 0;
+    private ?int $validLapsCount = null;
     private ResultStatus $status = ResultStatus::Finished;
     private ?int $points = null;
 
@@ -72,6 +73,14 @@
       $this->lapsCompleted = $value;
     }
 
+    public function getValidLapsCount(): ?int {
+      return $this->validLapsCount;
+    }
+
+    public function setValidLapsCount(?int $value): void {
+      $this->validLapsCount = $value;
+    }
+
     public function getStatus(): ResultStatus {
       return $this->status;
     }
@@ -96,6 +105,7 @@
       $this->setSector2TimeMs(isset($data->sector2TimeMs) ? (int)$data->sector2TimeMs : null);
       $this->setSector3TimeMs(isset($data->sector3TimeMs) ? (int)$data->sector3TimeMs : null);
       $this->setLapsCompleted((int)($data->lapsCompleted ?? 0));
+      $this->setValidLapsCount(isset($data->validLapsCount) ? (int)$data->validLapsCount : null);
       $this->setStatus(ResultStatus::tryFrom($data->status ?? '') ?? ResultStatus::Finished);
       $this->setPoints(isset($data->points) ? (int)$data->points : null);
     }
@@ -109,6 +119,7 @@
         'sector2TimeMs' => $this->getSector2TimeMs(),
         'sector3TimeMs' => $this->getSector3TimeMs(),
         'lapsCompleted' => $this->getLapsCompleted(),
+        'validLapsCount' => $this->getValidLapsCount(),
         'status' => $this->getStatus()->value,
         'points' => $this->getPoints(),
       ];

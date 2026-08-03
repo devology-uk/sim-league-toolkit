@@ -6,6 +6,7 @@
   use SLTK\Core\Enums\EventSessionType;
   use SLTK\Core\Enums\GameKey;
   use SLTK\Database\Repositories\EventSessionRepository;
+  use SLTK\Database\Repositories\MigrationRecordsRepository;
   use SLTK\Domain\EventSession;
   use stdClass;
 
@@ -15,6 +16,8 @@
    * purely by `eventRefId`, so nothing here is event-type-specific.
    */
   class EventSessionMigrator {
+    private const string ENTITY_KEY = 'event-session';
+
     /**
      * AMS2 weather conditions are identified by a hashed 32-bit id rather than a sequential enum;
      * this is ACCLT's `data/ams2-weather.json` lookup, re-expressed as SLTK's select option values.
@@ -66,7 +69,8 @@
         $session->setSortOrder($index);
         $session->setAttributes($this->buildSessionAttributes($legacySession, $sessionType, $legacyGameType));
 
-        EventSessionRepository::add($session->toArray());
+        $newSessionId = EventSessionRepository::add($session->toArray());
+        MigrationRecordsRepository::recordMigration(self::ENTITY_KEY, (int)$legacySession->id, $newSessionId);
       }
     }
 

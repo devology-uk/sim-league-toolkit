@@ -44,5 +44,11 @@
 
     public function applyAdjustments(string $tablePrefix): void
     {
+      global $wpdb;
+      $tableName = $this->tableName($tablePrefix);
+
+      if (empty($wpdb->get_results("SHOW COLUMNS FROM {$tableName} LIKE 'validLapsCount'"))) {
+        $wpdb->query("ALTER TABLE {$tableName} ADD COLUMN validLapsCount INT NULL");
+      }
     }
   }
