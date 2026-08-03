@@ -19,6 +19,10 @@
     public static function all(): array {
       return [
         new MemberProfileImporter(),
+        new ScoringSetImporter(),
+        new AccServerImporter(),
+        new Ams2ServerImporter(),
+        new EventClassImporter(),
       ];
     }
   }

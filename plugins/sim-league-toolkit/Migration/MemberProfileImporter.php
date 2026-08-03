@@ -26,7 +26,7 @@
       $countryIdsByAlpha3 = $this->buildCountryLookup();
       $flagIconNamesByNationalityCode = $this->buildNationalityLookup();
 
-      foreach (AcclLegacyDatabase::getUserProfiles() as $profile) {
+      foreach (AccltLegacyDatabase::getUserProfiles() as $profile) {
         $this->migrateProfile($profile, $countryIdsByAlpha3, $flagIconNamesByNationalityCode, $result);
       }
 
@@ -46,7 +46,7 @@
     private function buildNationalityLookup(): array {
       $lookup = [];
 
-      foreach (AcclLegacyDatabase::getNationalities() as $nationality) {
+      foreach (AccltLegacyDatabase::getNationalities() as $nationality) {
         $lookup[(int)$nationality->accNationalityCode] = $nationality->flagIconName;
       }
 

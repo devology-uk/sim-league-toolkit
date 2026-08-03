@@ -29,6 +29,12 @@ import) so championships/standalone events are fully manageable end-to-end — c
 award trophies — before starting the Gutenberg blocks / SLTK theme work, where trophies will
 eventually surface on public member profiles.
 
+**Deliberate detour in progress (2026-08-02 → present)**: before starting the Gutenberg blocks/theme
+work, a legacy data migration framework was built to pull real data from the old `acc-league-tools`
+(ACCLT) theme into SLTK — see "Legacy data migration" section below. This gets realistic test data
+flowing early and de-risks the eventual theme cutover. Blocks/theme work resumes once
+Championships/Events/Session Results are migrated.
+
 1. ✅ **Wait-list support for event entrants** — per-class and championship/event-wide entrant caps,
    auto-waitlisting on creation, promotion on cancellation, status shown in entrant UI, plus the
    editable per-class Max Entrants field on the class-assignment screen (the piece that made it
@@ -122,6 +128,56 @@ reference:
   `tsc --noEmit`). Needs the manual pass described in the plan file's Verification section:
   multi-class event with Qualifying + Race results → preview/award → re-award after editing a
   result → same for a championship event → full championship with 2+ completed events.
+
+## Legacy data migration (ACCLT → SLTK, 2026-08-02 → present)
+
+`Migration\` namespace (sibling to `Domain`/`Core`/`Api`/`Database`) — see CLAUDE.md for the
+architecture summary. Single "Migrate" button runs every registered importer; idempotent, safe to
+re-run. Dev/test setup: directory junction between the `accleaugetools` and `sim-league-toolkit`
+Local sites (confirmed working incl. hot reload) — the real ACCLT data (26 championships, 225 events,
+~2,000 entrants) lives on the `accleaugetools` test site's DB.
+
+**Done:**
+- Member profiles (Steam/PSN id, nationality, race number).
+- Scoring Sets — ACCLT's one "Default Scoring Set" didn't match any SLTK preset despite expecting it
+  to, migrated as a new custom 25-position scoring set.
+- Servers — ACC and AMS2 servers, core record + all game-specific settings (including a full AMS2
+  server-settings schema added to `Config/ams2.json`, which didn't exist before this).
+- Event Classes (ACCLT: "Car Driver Classes") — 19 of 22 legacy templates migrated; 3 "Track Master"
+  ones permanently skipped (see "Agreed future features" below). Single-car classes resolve their
+  real car class from the matched SLTK car (by name) rather than trusting the legacy row's often-stale
+  `carClass` field.
+- Confirmed **no migration needed** for: Rule Sets (no legacy data exists), Driver Categories, Cars,
+  Tracks, Car Classes (all plugin-seeded reference data on both sides, not user data). Removed dead
+  `CarClassRepository`/`sltk_car_classes` scaffolding found during that investigation.
+- AMS2 cars/tracks/track-layouts CSVs refreshed 2026-08-03 from Mike's desktop app (same games) —
+  added nullable `dlcPack` (Cars, TrackLayouts) and `elevation` (Tracks) columns.
+
+**Not started:** Championships → Events/Sessions/Entrants → Session Results (blocked on a new "Lap"
+domain entity SLTK doesn't have yet — ACC result files include per-lap time/splits/valid-for-fastest-
+lap flags Mike wants preserved) → Trophies.
+
+**Real bugs found and fixed along the way** (not migration-specific, general codebase issues surfaced
+by testing against real data):
+- `useServerSettingDefinitions.ts` had its own hardcoded duplicate of the server-settings schema,
+  completely disconnected from `Config/*.json`/`GameConfigProvider` — AMS2/LMU were stubbed empty, so
+  migrated AMS2 server settings were correctly in the DB but never rendered in the UI. Fixed by wiring
+  it to the existing `useGameConfig` API path instead (same one already used for session-type fields).
+- Cars upsert matched only on `(gameId, carKey)`; AMS2's `Ligier JS P217` and `Oreca 07` are each two
+  distinct cars (Gen1/Gen2 LMP2) sharing a `carKey`, so the second overwrote the first. Fixed by
+  matching on `(gameId, carKey, carClass)`.
+- 3 SLTK pre-seeded ACC built-in Event Classes ("GT3 Open", "GT4 Open", "GT2 Open") share a name with
+  real ACCLT templates; "GT3 Open" actually had a different driver category (Platinum vs Bronze) —
+  corrected via direct DB update since SLTK has no live users yet.
+
+**Agreed future features surfaced during migration work (not yet sequenced):**
+- **Track Master championships** — same track all season, single-car class rotates every event. No
+  SLTK equivalent yet; the 3 skipped Event Class templates should be re-migrated once this is built.
+- **Guest handling** — decided **against** adding to SLTK core (too single-league/edge-case — an
+  ACCLT-only feature for Sixty Simthings' 60+ age restriction). If ever wanted, as a separate
+  extension plugin, not core.
+- **Game/DLC ownership on member profiles** — ACCLT feature Mike wants ported eventually; the new
+  `dlcPack` columns (Cars, TrackLayouts) are the reference data such a feature would need.
 
 ## Recent notable fixes (2026-08-01 – 2026-08-02)
 
