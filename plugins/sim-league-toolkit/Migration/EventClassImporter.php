@@ -3,7 +3,6 @@
   namespace SLTK\Migration;
 
   use Exception;
-  use SLTK\Database\Repositories\CarRepository;
   use SLTK\Database\Repositories\MigrationRecordsRepository;
   use SLTK\Domain\DriverCategory;
   use SLTK\Domain\EventClass;
@@ -26,11 +25,10 @@
       $result = new MigrationRunResult();
       $gameIdsByKey = $this->buildGameIdsByKey();
       $driverCategoryIdsByName = $this->buildDriverCategoryIdsByName();
-      $legacyCarNamesById = $this->buildLegacyCarNamesById();
-      $sltkCarsByGameAndName = $this->buildSltkCarsByGameAndName();
+      $carClassResolver = new CarClassResolver();
 
       foreach (AccltLegacyDatabase::getCarDriverClasses() as $legacyClass) {
-        $this->migrateClass($legacyClass, $gameIdsByKey, $driverCategoryIdsByName, $legacyCarNamesById, $sltkCarsByGameAndName, $result);
+        $this->migrateClass($legacyClass, $gameIdsByKey, $driverCategoryIdsByName, $carClassResolver, $result);
       }
 
       return $result;
@@ -56,55 +54,7 @@
       return $lookup;
     }
 
-    /**
-     * @throws Exception
-     */
-    private function buildLegacyCarNamesById(): array {
-      $lookup = [];
-
-      foreach (AccltLegacyDatabase::getCars() as $legacyCar) {
-        $lookup[(int)$legacyCar->id] = $legacyCar->name;
-      }
-
-      return $lookup;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function buildSltkCarsByGameAndName(): array {
-      $lookup = [];
-
-      foreach (CarRepository::list() as $car) {
-        $lookup[$car->gameId . '|' . $car->name] = $car;
-      }
-
-      return $lookup;
-    }
-
-    /**
-     * A single-car class trusts the linked car's real class over the legacy row's own carClass
-     * field, which is frequently stale (e.g. a class recorded as GT3 whose linked car is really GTC).
-     */
-    private function resolveCarClassAndSingleCarId(stdClass $legacyClass, int $gameId, array $legacyCarNamesById, array $sltkCarsByGameAndName): array {
-      if (!$legacyClass->isSingleCarClass) {
-        return [$legacyClass->carClass, null];
-      }
-
-      $legacyCarName = $legacyCarNamesById[(int)$legacyClass->singleCarId] ?? null;
-      if ($legacyCarName === null) {
-        throw new Exception(sprintf('linked car (legacy id %d) no longer exists', (int)$legacyClass->singleCarId));
-      }
-
-      $sltkCar = $sltkCarsByGameAndName[$gameId . '|' . $legacyCarName] ?? null;
-      if ($sltkCar === null) {
-        throw new Exception(sprintf('no matching SLTK car found for "%s"', $legacyCarName));
-      }
-
-      return [$sltkCar->carClass, (int)$sltkCar->id];
-    }
-
-    private function migrateClass(stdClass $legacyClass, array $gameIdsByKey, array $driverCategoryIdsByName, array $legacyCarNamesById, array $sltkCarsByGameAndName, MigrationRunResult $result): void {
+    private function migrateClass(stdClass $legacyClass, array $gameIdsByKey, array $driverCategoryIdsByName, CarClassResolver $carClassResolver, MigrationRunResult $result): void {
       $legacyId = (int)$legacyClass->id;
 
       if (!empty($legacyClass->eventId)) {
@@ -133,7 +83,7 @@
           throw new Exception(sprintf('unknown driver category "%s"', $legacyClass->driverCategory));
         }
 
-        [$carClass, $singleCarId] = $this->resolveCarClassAndSingleCarId($legacyClass, $gameId, $legacyCarNamesById, $sltkCarsByGameAndName);
+        [$carClass, $singleCarId] = $carClassResolver->resolveCarClassAndSingleCarId((bool)$legacyClass->isSingleCarClass, $legacyClass->carClass, (int)$legacyClass->singleCarId, $gameId);
 
         $eventClass = new EventClass();
         $eventClass->setName($legacyClass->name);

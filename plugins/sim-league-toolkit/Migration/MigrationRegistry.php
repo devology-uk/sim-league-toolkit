@@ -23,6 +23,9 @@
         new AccServerImporter(),
         new Ams2ServerImporter(),
         new EventClassImporter(),
+        new StandaloneEventImporter(),
+        new ChampionshipImporter(),
+        new ChampionshipEventImporter(),
       ];
     }
   }

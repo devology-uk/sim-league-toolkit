@@ -385,7 +385,7 @@
       return [
         'allowEntryChange' => $this->getAllowEntryChange(),
         'bannerImageUrl' => $this->getBannerImageUrl(),
-        'championshipType' => $this->getChampionshipType(),
+        'championshipType' => $this->getChampionshipType()->value,
         'description' => $this->getDescription(),
         'entryChangeLimit' => $this->getEntryChangeLimit(),
         'gameId' => $this->getGameId(),
