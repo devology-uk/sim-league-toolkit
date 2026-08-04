@@ -29,7 +29,7 @@
       ]);
 
       return '<!-- wp:sltk/tabs -->'
-        . '<div class="wp-block-sltk-tabs sltk-tabs">'
+        . '<div class="wp-block-sltk-tabs sltk-tabs" data-active-tab-index="0">'
         . self::tabMarkup('current', __('Current & Recent', 'sim-league-toolkit'), $currentListBlock)
         . self::tabMarkup('past', __('Past', 'sim-league-toolkit'), $pastListBlock)
         . '</div>'

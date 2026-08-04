@@ -12,7 +12,9 @@
       $championships = Championship::search($this->filterFromAttributes($attributes));
 
       if (empty($championships)) {
-        return '<p class="sltk-tile-list-empty">' . esc_html__('No championships found.', 'sim-league-toolkit') . '</p>';
+        $emptyAttributes = get_block_wrapper_attributes(['class' => 'sltk-tile-list-empty']);
+
+        return "<p {$emptyAttributes}>" . esc_html__('No championships found.', 'sim-league-toolkit') . '</p>';
       }
 
       $tiles = array_map(
@@ -23,6 +25,8 @@
         $championships
       );
 
-      return '<div class="sltk-tile-grid">' . implode('', $tiles) . '</div>';
+      $gridAttributes = get_block_wrapper_attributes(['class' => 'sltk-tile-grid']);
+
+      return "<div {$gridAttributes}>" . implode('', $tiles) . '</div>';
     }
   }

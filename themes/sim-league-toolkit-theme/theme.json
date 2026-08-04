@@ -6,6 +6,103 @@
     "layout": {
       "contentSize": "800px",
       "wideSize": "1200px"
+    },
+    "color": {
+      "palette": [
+        {
+          "slug": "background",
+          "name": "Background",
+          "color": "#ffffff"
+        },
+        {
+          "slug": "foreground",
+          "name": "Foreground",
+          "color": "#1a1a1a"
+        },
+        {
+          "slug": "primary",
+          "name": "Primary",
+          "color": "#c8102e"
+        },
+        {
+          "slug": "secondary",
+          "name": "Secondary",
+          "color": "#101830"
+        },
+        {
+          "slug": "surface",
+          "name": "Surface",
+          "color": "#f4f4f5"
+        },
+        {
+          "slug": "muted",
+          "name": "Muted",
+          "color": "#6b7280"
+        }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "slug": "body",
+          "name": "Body",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+        },
+        {
+          "slug": "heading",
+          "name": "Heading",
+          "fontFamily": "\"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+        }
+      ],
+      "fontSizes": [
+        {
+          "slug": "small",
+          "name": "Small",
+          "size": "0.875rem"
+        },
+        {
+          "slug": "medium",
+          "name": "Medium",
+          "size": "1rem"
+        },
+        {
+          "slug": "large",
+          "name": "Large",
+          "size": "1.5rem"
+        },
+        {
+          "slug": "x-large",
+          "name": "Extra Large",
+          "size": "2.25rem"
+        }
+      ]
+    },
+    "spacing": {
+      "defaultSpacingSizes": true,
+      "padding": true,
+      "margin": true,
+      "blockGap": true
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var(--wp--preset--color--background)",
+      "text": "var(--wp--preset--color--foreground)"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--body)"
+    },
+    "elements": {
+      "link": {
+        "color": {
+          "text": "var(--wp--preset--color--primary)"
+        }
+      },
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--heading)"
+        }
+      }
     }
   },
   "templateParts": [

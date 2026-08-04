@@ -18,6 +18,7 @@
             "default": ""
         }
     },
+    "usesContext": ["sltk/activeTabIndex"],
     "supports": {
         "html": false
     },

@@ -14,7 +14,12 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k, v.get\\('name'\\), v.get\\('phpVersion'\\), v.get\\('services',{}\\).get\\('mysql',{}\\).get\\('ports',{}\\)\\) for k,v in d.items\\(\\)]\")",
       "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\gu5SKPNWc\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\inspect-championships.php\")",
       "Bash(php -l Blocks/BlockManager.php)",
-      "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\YGLBZVzub\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\verify-pattern-parse.php\")"
+      "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\YGLBZVzub\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\verify-pattern-parse.php\")",
+      "Bash(php -l Blocks/Patterns/CurrentAndPastTabsPattern.php)",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('theme.json'\\)\\); echo json_last_error_msg\\(\\);\")",
+      "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\gu5SKPNWc\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\verify-pattern-parse.php\")",
+      "Bash(php -l Blocks/Render/ChampionshipTileRenderer.php)",
+      "Bash(php -l Blocks/Render/EventTileRenderer.php)"
     ]
   }
 }

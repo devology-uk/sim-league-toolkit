@@ -34,7 +34,12 @@
         }
     },
     "supports": {
-        "html": false
+        "html": false,
+        "spacing": {
+            "padding": true,
+            "margin": true,
+            "blockGap": true
+        }
     },
     "editorScript": "file:./index.js",
     "style": "file:./style-index.css"

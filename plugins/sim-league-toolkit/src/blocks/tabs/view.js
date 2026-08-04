@@ -16,7 +16,9 @@ function initTabs(tabsEl) {
     });
 
     if (buttons.length > 0) {
-        activate(0);
+        const savedIndex = parseInt(tabsEl.dataset.activeTabIndex ?? '0', 10);
+        const initialIndex = Number.isInteger(savedIndex) && savedIndex >= 0 && savedIndex < buttons.length ? savedIndex : 0;
+        activate(initialIndex);
     }
 }
 

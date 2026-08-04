@@ -1,14 +1,22 @@
 import {__} from '@wordpress/i18n';
 import {registerBlockType, type BlockEditProps, type BlockSaveProps} from '@wordpress/blocks';
-import {InnerBlocks, InspectorControls, useBlockProps} from '@wordpress/block-editor';
+import {InnerBlocks, InspectorControls, store as blockEditorStore, useBlockProps} from '@wordpress/block-editor';
 import {PanelBody, TextControl} from '@wordpress/components';
 import {useEffect} from '@wordpress/element';
+import {useSelect} from '@wordpress/data';
 
 import metadata from './block.json';
 
-function Edit({attributes, setAttributes, clientId}: BlockEditProps<Record<string, unknown>>) {
+function Edit({attributes, setAttributes, clientId, context}: BlockEditProps<Record<string, unknown>>) {
     const blockProps = useBlockProps();
     const label = String(attributes.label ?? 'Tab');
+    const activeTabIndex = Number(context['sltk/activeTabIndex'] ?? 0);
+
+    const ownIndex = useSelect(
+        (select) => select(blockEditorStore).getBlockIndex(clientId),
+        [clientId]
+    );
+    const isActive = ownIndex === activeTabIndex;
 
     useEffect(() => {
         if (!attributes.tabId) {
@@ -17,7 +25,7 @@ function Edit({attributes, setAttributes, clientId}: BlockEditProps<Record<strin
     }, [attributes.tabId, clientId, setAttributes]);
 
     return (
-        <div {...blockProps}>
+        <div {...blockProps} style={isActive ? undefined : {display: 'none'}}>
             <InspectorControls>
                 <PanelBody title={__('Tab', 'sim-league-toolkit')}>
                     <TextControl
@@ -27,7 +35,6 @@ function Edit({attributes, setAttributes, clientId}: BlockEditProps<Record<strin
                     />
                 </PanelBody>
             </InspectorControls>
-            <p className="sltk-tab-editor-label">{label}</p>
             <InnerBlocks />
         </div>
     );

@@ -28,7 +28,7 @@
         . '</dl>';
 
       $dialogBody = ($event->getDescription() !== ''
-          ? '<p class="sltk-tile-description">' . esc_html($event->getDescription()) . '</p>'
+          ? '<div class="sltk-tile-description">' . wp_kses_post($event->getDescription()) . '</div>'
           : '')
         . '<dl class="sltk-tile-meta">'
         . $this->renderMetaRow(__('Game', 'sim-league-toolkit'), $event->getGame())

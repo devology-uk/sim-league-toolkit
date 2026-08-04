@@ -13,16 +13,17 @@
 .sltk-tab-button {
     order: 0;
     padding: 0.6rem 1.25rem;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.15));
     border-bottom: none;
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--wp--preset--color--surface, rgba(0, 0, 0, 0.03));
+    color: inherit;
     cursor: pointer;
     font: inherit;
     font-weight: 600;
 
     &[aria-selected="true"] {
-        background: #fff;
-        border-bottom: 2px solid currentColor;
+        background: var(--wp--preset--color--background, #fff);
+        border-bottom: 2px solid var(--wp--preset--color--primary, currentColor);
     }
 }
 
@@ -30,21 +31,27 @@
     order: 1;
     flex: 0 0 100%;
     padding: 1.25rem 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    border-top: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.15));
 }
 
-@media (prefers-color-scheme: dark) {
-    .sltk-tab-button {
-        border-color: rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.05);
-        color: #f0f0f0;
+// Editor-only: the clickable tab strip rendered above the InnerBlocks list.
+.sltk-tabs-editor-strip {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
 
-        &[aria-selected="true"] {
-            background: transparent;
-        }
-    }
+.sltk-tabs-editor-tab-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.15));
+    border-radius: 3px 3px 0 0;
+    background: var(--wp--preset--color--surface, rgba(0, 0, 0, 0.03));
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
 
-    .sltk-tab-panel {
-        border-top-color: rgba(255, 255, 255, 0.15);
+    &[aria-selected="true"] {
+        background: var(--wp--preset--color--background, #fff);
+        border-bottom-color: var(--wp--preset--color--background, #fff);
     }
 }

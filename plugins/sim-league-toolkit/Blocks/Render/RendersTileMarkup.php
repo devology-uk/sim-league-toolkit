@@ -5,11 +5,12 @@
   trait RendersTileMarkup {
     private function renderTileMarkup(string $idPrefix, int $id, string $bannerImageUrl, string $title, string $cardBodyHtml, string $dialogBodyHtml): string {
       $dialogId = 'sltk-tile-dialog-' . $idPrefix . '-' . $id;
+      $tileAttributes = get_block_wrapper_attributes(['class' => 'sltk-tile']);
 
       ob_start();
       ?>
       <div class="sltk-tile-wrapper">
-        <button type="button" class="sltk-tile" aria-haspopup="dialog" data-dialog-target="<?= esc_attr($dialogId) ?>">
+        <button type="button" <?= $tileAttributes ?> aria-haspopup="dialog" data-dialog-target="<?= esc_attr($dialogId) ?>">
           <?php if ($bannerImageUrl !== '') : ?>
             <img class="sltk-tile-banner" src="<?= esc_url($bannerImageUrl) ?>" alt="" />
           <?php endif; ?>

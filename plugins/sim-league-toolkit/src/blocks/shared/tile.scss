@@ -1,7 +1,7 @@
 .sltk-tile-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem;
+    gap: var(--wp--preset--spacing--40, 1.25rem);
 }
 
 .sltk-tile-list-empty {
@@ -13,18 +13,22 @@
     display: contents;
 }
 
+// Colors/border/padding here are the *default* appearance when no admin choice has been made via
+// the block's Style sidebar (color/border/spacing supports, wired server-side in RendersTileMarkup
+// via get_block_wrapper_attributes()) — those always take precedence when set. The var() fallbacks
+// keep this looking reasonable even against a theme that defines no palette at all.
 .sltk-tile {
     display: block;
     width: 320px;
     padding: 0;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.15));
     border-radius: 8px;
-    background: #fff;
+    background: var(--wp--preset--color--surface, #fff);
+    color: var(--wp--preset--color--foreground, inherit);
     text-align: left;
     cursor: pointer;
     overflow: hidden;
     font: inherit;
-    color: inherit;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 
     &:hover,
@@ -63,7 +67,7 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 0.25rem 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-top: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.08));
 
     &:first-child {
         border-top: none;
@@ -90,6 +94,8 @@
     border: none;
     border-radius: 8px;
     padding: 1.5rem;
+    background: var(--wp--preset--color--background, #fff);
+    color: var(--wp--preset--color--foreground, inherit);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 
     &::backdrop {
@@ -111,29 +117,9 @@
     float: right;
     background: none;
     border: none;
+    color: inherit;
     font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
     padding: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-    .sltk-tile {
-        background: #1e1e1e;
-        border-color: rgba(255, 255, 255, 0.15);
-        color: #f0f0f0;
-    }
-
-    .sltk-tile-meta-row {
-        border-top-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .sltk-tile-dialog {
-        background: #1e1e1e;
-        color: #f0f0f0;
-    }
-
-    .sltk-dialog-close {
-        color: #f0f0f0;
-    }
 }

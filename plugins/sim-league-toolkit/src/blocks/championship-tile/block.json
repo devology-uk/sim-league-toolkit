@@ -14,7 +14,21 @@
         }
     },
     "supports": {
-        "html": false
+        "html": false,
+        "color": {
+            "background": true,
+            "text": true,
+            "link": false
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "width": true
+        }
     },
     "editorScript": "file:./index.js",
     "style": "file:./style-index.css",

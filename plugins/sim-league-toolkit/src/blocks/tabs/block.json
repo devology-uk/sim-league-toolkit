@@ -7,9 +7,32 @@
     "icon": "list-view",
     "description": "A tab strip. Add Tab blocks inside to build labelled panels of content.",
     "textdomain": "sim-league-toolkit",
-    "attributes": {},
+    "attributes": {
+        "activeTabIndex": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "providesContext": {
+        "sltk/activeTabIndex": "activeTabIndex"
+    },
     "supports": {
-        "html": false
+        "html": false,
+        "color": {
+            "background": true,
+            "text": true,
+            "link": false
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true,
+            "blockGap": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "width": true
+        }
     },
     "editorScript": "file:./index.js",
     "style": "file:./style-index.css",

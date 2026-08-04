@@ -28,7 +28,7 @@
         . '</dl>';
 
       $dialogBody = ($championship->getDescription() !== ''
-          ? '<p class="sltk-tile-description">' . esc_html($championship->getDescription()) . '</p>'
+          ? '<div class="sltk-tile-description">' . wp_kses_post($championship->getDescription()) . '</div>'
           : '')
         . '<dl class="sltk-tile-meta">'
         . $this->renderMetaRow(__('Start Date', 'sim-league-toolkit'), $startDate)
