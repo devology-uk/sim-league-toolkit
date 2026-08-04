@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "title": "Endurance Green",
+  "settings": {
+    "color": {
+      "palette": [
+        {
+          "slug": "background",
+          "name": "Background",
+          "color": "#faf7f0"
+        },
+        {
+          "slug": "foreground",
+          "name": "Foreground",
+          "color": "#1b2e22"
+        },
+        {
+          "slug": "primary",
+          "name": "Primary",
+          "color": "#1b4d3e"
+        },
+        {
+          "slug": "secondary",
+          "name": "Secondary",
+          "color": "#c9a35a"
+        },
+        {
+          "slug": "surface",
+          "name": "Surface",
+          "color": "#f0ead9"
+        },
+        {
+          "slug": "muted",
+          "name": "Muted",
+          "color": "#8a8577"
+        }
+      ]
+    }
+  }
+}
