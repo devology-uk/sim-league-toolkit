@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/visibility",
+    "title": "Visibility",
+    "category": "sltk",
+    "icon": "hidden",
+    "description": "Shows its inner blocks only to logged-in users, only to logged-out users, or to everyone.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "visibleTo": {
+            "type": "string",
+            "default": "everyone"
+        }
+    },
+    "supports": {
+        "html": false,
+        "spacing": {
+            "padding": true,
+            "margin": true,
+            "blockGap": true
+        }
+    },
+    "editorScript": "file:./index.js"
+}

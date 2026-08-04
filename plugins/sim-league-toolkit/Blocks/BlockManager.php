@@ -6,6 +6,12 @@
   use SLTK\Blocks\Render\ChampionshipTileRenderer;
   use SLTK\Blocks\Render\EventListRenderer;
   use SLTK\Blocks\Render\EventTileRenderer;
+  use SLTK\Blocks\Render\JoinableItemsRenderer;
+  use SLTK\Blocks\Render\LatestResultsRenderer;
+  use SLTK\Blocks\Render\MyEventsRenderer;
+  use SLTK\Blocks\Render\MyResultsRenderer;
+  use SLTK\Blocks\Render\MyTrophiesRenderer;
+  use SLTK\Blocks\Render\VisibilityRenderer;
 
   class BlockManager {
     private const array RENDERERS = [
@@ -13,6 +19,12 @@
       'championship-list' => ChampionshipListRenderer::class,
       'event-tile' => EventTileRenderer::class,
       'event-list' => EventListRenderer::class,
+      'visibility' => VisibilityRenderer::class,
+      'my-events' => MyEventsRenderer::class,
+      'my-results' => MyResultsRenderer::class,
+      'my-trophies' => MyTrophiesRenderer::class,
+      'latest-results' => LatestResultsRenderer::class,
+      'joinable-items' => JoinableItemsRenderer::class,
     ];
 
     public static function init(): void {

@@ -87,6 +87,16 @@
       return array_map(fn($row) => self::fromStdClass($row), $results);
     }
 
+    /**
+     * @return Trophy[]
+     * @throws Exception
+     */
+    public static function listByMemberId(int $memberId): array {
+      $results = TrophiesRepository::listByMemberId($memberId);
+
+      return array_map(fn($row) => self::fromStdClass($row), $results);
+    }
+
     public function getMemberId(): int {
       return $this->memberId;
     }

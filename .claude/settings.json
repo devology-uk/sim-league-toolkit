@@ -21,7 +21,11 @@
       "Bash(php -l Blocks/Render/ChampionshipTileRenderer.php)",
       "Bash(php -l Blocks/Render/EventTileRenderer.php)",
       "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\YGLBZVzub\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\check-active-theme.php\")",
-      "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\YGLBZVzub\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\verify-style-variations.php\")"
+      "Bash(\"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\lightning-services\\\\php-8.4.16+1\\\\bin\\\\win64\\\\php.exe\" -c \"C:\\\\Users\\\\contr\\\\AppData\\\\Roaming\\\\Local\\\\run\\\\YGLBZVzub\\\\conf\\\\php\\\\php.ini\" \"C:\\\\Users\\\\contr\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-contr-Local-Sites-sim-league-toolkit-app-public-wp-content\\\\fe7a799a-b80f-4365-9133-3a67955b7d41\\\\scratchpad\\\\verify-style-variations.php\")",
+      "Bash(php -l \"plugins/sim-league-toolkit/Blocks/BlockManager.php\")",
+      "Bash(php -l \"plugins/sim-league-toolkit/Blocks/Render/VisibilityRenderer.php\")",
+      "Bash(php -l \"plugins/sim-league-toolkit/Blocks/Render/JoinableItemsRenderer.php\")",
+      "Bash(xargs -0 -n1 php -l)"
     ]
   }
 }

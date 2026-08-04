@@ -1,0 +1,30 @@
+.sltk-trophy-list-empty {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+.sltk-trophy-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sltk-trophy-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--wp--preset--color--muted, rgba(0, 0, 0, 0.15));
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.sltk-trophy-award-type {
+    font-weight: 600;
+}
+
+.sltk-trophy-date {
+    opacity: 0.75;
+}

@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/my-events",
+    "title": "My Events",
+    "category": "sltk",
+    "icon": "calendar-alt",
+    "description": "Shows the current logged-in user's championships and events.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "limit": {
+            "type": "number",
+            "default": 0
+        },
+        "includePast": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false,
+        "spacing": {
+            "padding": true,
+            "margin": true,
+            "blockGap": true
+        }
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css"
+}

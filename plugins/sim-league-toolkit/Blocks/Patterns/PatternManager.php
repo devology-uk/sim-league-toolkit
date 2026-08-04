@@ -27,5 +27,12 @@
         'categories' => [self::CATEGORY],
         'content' => CurrentAndPastTabsPattern::forEvents(),
       ]);
+
+      register_block_pattern('sltk/personal-dashboard', [
+        'title' => __('Personal Dashboard', 'sim-league-toolkit'),
+        'description' => __('A logged-in dashboard (joinable items, My Events / My Results / My Trophies / Latest Results tabs) with logged-out welcome content.', 'sim-league-toolkit'),
+        'categories' => [self::CATEGORY],
+        'content' => PersonalDashboardPattern::build(),
+      ]);
     }
   }

@@ -61,6 +61,16 @@ class ChampionshipEntry implements AggregateRoot, Deletable, ProvidesPersistable
         return array_map(fn($row) => self::fromStdClass($row), $results);
     }
 
+    /**
+     * @return ChampionshipEntry[]
+     * @throws Exception
+     */
+    public static function listByUserId(int $userId): array {
+        $results = ChampionshipEntriesRepository::listByUserId($userId);
+
+        return array_map(fn($row) => self::fromStdClass($row), $results);
+    }
+
     public function getChampionshipId(): int {
         return $this->championshipId;
     }

@@ -74,4 +74,29 @@
 
       return self::getResults($query);
     }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function listByMemberId(int $memberId): array {
+      $trophiesTable = self::prefixedTableName(TableNames::TROPHIES);
+      $usersTable = self::prefixedTableName(TableNames::USERS);
+      $eventClassesTable = self::prefixedTableName(TableNames::EVENT_CLASSES);
+      $eventSessionsTable = self::prefixedTableName(TableNames::EVENT_SESSIONS);
+
+      $query = "SELECT
+                  t.*,
+                  u.display_name as memberName,
+                  ec.name as className,
+                  es.name as sessionName
+              FROM {$trophiesTable} t
+              LEFT JOIN {$usersTable} u ON t.memberId = u.ID
+              LEFT JOIN {$eventClassesTable} ec ON t.eventClassId = ec.id
+              LEFT JOIN {$eventSessionsTable} es ON t.eventSessionId = es.id
+              WHERE t.memberId = '{$memberId}'
+              ORDER BY t.awardedDate DESC;";
+
+      return self::getResults($query);
+    }
   }

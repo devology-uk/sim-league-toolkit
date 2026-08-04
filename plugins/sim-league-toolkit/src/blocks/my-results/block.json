@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/my-results",
+    "title": "My Results",
+    "category": "sltk",
+    "icon": "chart-bar",
+    "description": "Shows the current logged-in user's most recent session results.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "limit": {
+            "type": "number",
+            "default": 10
+        }
+    },
+    "supports": {
+        "html": false,
+        "color": {
+            "background": true,
+            "text": true,
+            "link": false
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true
+        },
+        "border": {
+            "color": true,
+            "radius": true,
+            "width": true
+        }
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css"
+}

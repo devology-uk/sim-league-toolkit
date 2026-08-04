@@ -138,4 +138,36 @@ class StandaloneEventEntriesRepository extends RepositoryBase {
 
         return self::getResults($query);
     }
+
+    /**
+     * @return stdClass[]
+     * @throws Exception
+     */
+    public static function listByUserId(int $userId): array {
+        $entriesTable = self::prefixedTableName(TableNames::STANDALONE_EVENT_ENTRIES);
+        $usersTable = self::prefixedTableName(TableNames::USERS);
+        $userMetaTable = self::prefixedTableName(TableNames::USER_META);
+        $eventClassesTable = self::prefixedTableName(TableNames::EVENT_CLASSES);
+        $carsTable = self::prefixedTableName(TableNames::CARS);
+
+        $query = "SELECT
+                    e.*,
+                    u.display_name as memberName,
+                    um_fn.meta_value as firstName,
+                    um_ln.meta_value as lastName,
+                    um_rn.meta_value as raceNumber,
+                    ec.name as className,
+                    c.name as carName
+                FROM {$entriesTable} e
+                LEFT JOIN {$usersTable} u ON e.userId = u.ID
+                LEFT JOIN {$userMetaTable} um_fn ON e.userId = um_fn.user_id AND um_fn.meta_key = 'first_name'
+                LEFT JOIN {$userMetaTable} um_ln ON e.userId = um_ln.user_id AND um_ln.meta_key = 'last_name'
+                LEFT JOIN {$userMetaTable} um_rn ON e.userId = um_rn.user_id AND um_rn.meta_key = 'sltk_race_number'
+                LEFT JOIN {$eventClassesTable} ec ON e.eventClassId = ec.id
+                LEFT JOIN {$carsTable} c ON e.carId = c.id
+                WHERE e.userId = '{$userId}'
+                ORDER BY e.created_at DESC;";
+
+        return self::getResults($query);
+    }
 }

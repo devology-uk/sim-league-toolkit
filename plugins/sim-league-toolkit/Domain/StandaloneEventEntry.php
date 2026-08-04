@@ -61,6 +61,16 @@ class StandaloneEventEntry implements AggregateRoot, Deletable, ProvidesPersista
         return array_map(fn($row) => self::fromStdClass($row), $results);
     }
 
+    /**
+     * @return StandaloneEventEntry[]
+     * @throws Exception
+     */
+    public static function listByUserId(int $userId): array {
+        $results = StandaloneEventEntriesRepository::listByUserId($userId);
+
+        return array_map(fn($row) => self::fromStdClass($row), $results);
+    }
+
     public function getClassName(): ?string {
         return $this->className;
     }

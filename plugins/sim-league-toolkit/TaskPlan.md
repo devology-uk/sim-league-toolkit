@@ -51,9 +51,18 @@ migrated** (member profiles through Trophies) — Gutenberg blocks/theme work re
 3.5 ✅ **Legacy data migration (ACCLT → SLTK)** — deliberate detour, completed 2026-08-03. Real
    league data (26 championships, 225 events, ~2,000 entrants, 2,504 session results, 1,180 trophies)
    now in SLTK. See "Legacy data migration" section below for full detail.
-4. ⏭ **Gutenberg blocks / SLTK theme** *(next up)* — front-end blocks and eventually a prebuilt
-   theme, so members can see standings, entrant lists, schedules, and (via the new Trophies table)
-   member trophy displays, in any theme. Now has real migrated data to build and test against.
+4. 🔶 **Gutenberg blocks / SLTK theme** *(in progress)* — front-end blocks and a prebuilt theme, so
+   members can see standings, entrant lists, schedules, and (via the new Trophies table) member
+   trophy displays, in any theme. First slice done 2026-08-03 → 2026-08-04: Championships/Events
+   list+tile blocks, a generic Tabs block, two "Current & Recent / Past" patterns, and theme-level
+   styling support. Second slice done 2026-08-04: a generic logged-in/logged-out `sltk/visibility`
+   block plus a personalized-member-dashboard block set (My Events/My Results/My Trophies/Latest
+   Results/Joinable Items) and pattern replicating ACCLT's home page — see "Personalized dashboard
+   blocks phase" section below. Built but **not yet tested by Mike in the editor**. Still to come
+   before this phase can be called done: **Championship Plans** (pre-season voting) needs building
+   so it can get its own block too — Mike flagged 2026-08-04 that he'd nearly forgotten this feature
+   and wants it built specifically to complete the blocks work, not deferred further. My Time Trials
+   will **not** be built — see decision note below.
 5. **Per-game result import** — parsing/import per game, built on manual entry. The theme's biggest
    complexity area (3 separate bespoke parsers for ACC/AMS2 old/AMS2 new) — needs a real
    `ResultParser`-per-`GameKey` abstraction here, not the theme's string-branching approach.
@@ -81,10 +90,17 @@ later.
   2. Car/track ID reconciliation per game (hand-maintained alias tables in the theme)
   3. Server config file generation (game-specific server config ZIP download)
   4. Standings/scoring calculation engine
-  5. Championship pre-season plan/voting subsystem (sizeable, arguably deferrable)
+  5. **Championship pre-season plan/voting subsystem** — was "sizeable, arguably deferrable"; Mike
+     un-deferred this 2026-08-04 specifically so the blocks/theme phase can present it as a block
+     too (it was one of ACCLT's home-dashboard tabs). Next up after the personalized-dashboard
+     blocks are tested. Not yet designed — needs a plan session before building.
 - Smaller missing subsystems: teams (formation/invite/request), race-number pre-allocation,
-  in-app notifications, time trials, trophies, sponsors, automatic podium-penalty/BoP carry-forward
-  (theme hard-gates this to ACC only — may not generalize).
+  in-app notifications, trophies, sponsors, automatic podium-penalty/BoP carry-forward (theme
+  hard-gates this to ACC only — may not generalize).
+- **Time Trials — decided against**, 2026-08-04. Mike tried this on Sixty Simthings (ACCLT) and no
+  one used it. Not being ported to SLTK. If a similar need resurfaces, his stated fallback is just
+  fastest-lap tracking, not a full time-trial subsystem — worth remembering before ever proposing
+  a "My Time Trials" block or ACCLT-style time-trial leaderboard again.
 - **Game-coupling anti-pattern to avoid**: the theme has no game abstraction — `gameType` is a plain
   string, checked via scattered `if ($gameType === 'AMS2')` branches; AMS2 support was added by
   copy-pasting classes/tables (e.g. fully duplicated `Server`/`Ams2Server` models). SLTK's
@@ -126,13 +142,157 @@ reference:
   sessions data for any duplicate rows this may have already produced.
 - **Known simplification, flagged for later**: championship standings are a straight sum of
   points — `Championship::resultsToDiscard` (already an unused field) is not applied yet.
-- `npm run build` (webpack) still fails with a pre-existing `Unexpected end of JSON input` error
-  unrelated to this work (confirmed by clearing `node_modules/.cache` and retrying — same failure).
-  `npx tsc --noEmit` is clean, which is the check this project actually relies on.
+- `npm run build` (webpack) failed at the time with a pre-existing `Unexpected end of JSON input`
+  error unrelated to this work. **Root cause found and fixed 2026-08-04** — see "Gutenberg blocks
+  phase" section below; `npm run build` is clean now, not just `tsc --noEmit`.
 - Not yet tested by Mike in the editor — automated checks only (`php -l` on all changed/new files,
   `tsc --noEmit`). Needs the manual pass described in the plan file's Verification section:
   multi-class event with Qualifying + Race results → preview/award → re-award after editing a
   result → same for a championship event → full championship with 2+ completed events.
+
+## Gutenberg blocks phase (2026-08-03 → 2026-08-04) — first slice done
+
+First real Gutenberg blocks in the plugin. New `Blocks\` namespace (sibling to `Domain`/`Api`/
+`Database`/`Core`/`Migration`): `BlockManager` (registers every `build/blocks/*/block.json` on
+`init`; blocks with a mapped renderer get a PHP `render_callback`, others register as plain static
+blocks), `Blocks\Render\*` (one renderer class per dynamic block, `BlockRenderer` interface,
+shared `RendersTileMarkup`/`ParsesListingFilterAttributes` traits), `Blocks\Patterns\*` (see below).
+
+**Six blocks**, all under `sltk` block category:
+- `sltk/championship-tile`, `sltk/event-tile` — dynamic (PHP `render_callback`), single-item cards.
+  Standalone-usable (editor `SelectControl` picks the item) and reused *by* the list blocks below via
+  `render_block()` — one render path, no duplicated tile markup. Clicking a tile opens a native
+  `<dialog>` (vanilla JS, `view.js`, ~20 lines, no framework/Interactivity API) instead of navigating
+  anywhere — no detail pages exist in SLTK yet.
+- `sltk/championship-list`, `sltk/event-list` — dynamic, filterable grids. Filter model went through
+  three iterations before landing on: `showAll` (default true, ignores everything else) → off exposes
+  independent optional **start** and **end** bounds, each its own toggle + day-offset-from-today
+  field (`hasStartLimit`/`startOffsetDays`, `hasEndLimit`/`endOffsetDays`). This is what makes a
+  "Past" view expressible (no start bound, end bound only) — the original duration-based model
+  couldn't represent that. `Domain/ValueObjects/ListingFilter.php` (new, entity-agnostic) +
+  `ChampionshipRepository::search()`/`StandaloneEventsRepository::search()` +
+  `Championship::search()`/`StandaloneEvent::search()` are additive — the existing unfiltered
+  `list()` used by admin CRUD screens is untouched (Open/Closed). Championship date filtering matches
+  on **event dates** (`EXISTS` against `sltk_championship_events.startDateTime`, and the matched
+  event's own `isActive` unless `includeInactive`) — a championship's own `startDate` doesn't reflect
+  whether it's current, ACCLT bucketed by event dates too.
+- `sltk/tabs`, `sltk/tab` — **generic, reusable** tab strip (static blocks, plain `InnerBlocks`
+  composition — any blocks in any tab, not just ours). Active tab shared via block context
+  (`sltk/activeTabIndex`); each `sltk/tab` looks up its own live sibling index (`getBlockIndex()`)
+  rather than storing one, so it survives reordering. CSS trick: each `.sltk-tab` wrapper is
+  `display: contents` so its button+panel act as direct flex children of `.sltk-tabs`, and `order`
+  groups all buttons before all panels despite each pair being adjacent in the DOM/source.
+
+**Patterns**: `Blocks\Patterns\CurrentAndPastTabsPattern` is the single source of truth for a
+"Tabs block with Current & Recent / Past panels, each holding a List block with the matching
+start/end offsets (±14 days, matching ACCLT's lookback)" — used both by `Blocks\Patterns\
+PatternManager` (registers 2 patterns, "Championships:..." / "Events:...", in a new "Sim League
+Toolkit" pattern category, discoverable in any theme) and by the theme's `PredefinedPages`/
+`PageProvisioningService`, which now seed the Championships/Events pages with this content on
+first creation (theme activation) instead of empty `post_content`. Only applies on *create* — won't
+retroactively touch pages that already exist.
+
+**Theme junction**: a second directory junction (matching the existing plugin one) —
+`accleaugetools\...\wp-content\themes\sim-league-toolkit-theme` → the real theme folder in
+`sim-league-toolkit` — so the theme (and its provisioned pages) can be tested against real migrated
+ACCLT data. Standing setup now, like the plugin junction.
+
+**Block theming**: added `color`/`spacing`/`border` supports to the tile and tabs blocks (`spacing`
+only on the list blocks), wired server-side via `get_block_wrapper_attributes()` in the PHP
+renderers (the `render_callback` equivalent of `useBlockProps()`) — this is what makes WP's native
+Style sidebar appear and reflect the *active theme's* actual palette, not something SLTK invents.
+Block CSS (`shared/tile.scss`, `tabs/style.scss`) rewritten to use `var(--wp--preset--color--*)`
+tokens with hardcoded fallbacks instead of hardcoded-only values, so the un-styled default also
+tracks the theme.
+`theme.json` given a real starting palette/typography (6 color slugs — `background`/`foreground`/
+`primary`/`secondary`/`surface`/`muted` — 2 font-family slugs, a font-size scale) — explicitly a
+placeholder Mike asked to be proposed, not a brand decision; his to adjust.
+Four **theme style variations** added (`styles/*.json`: Midnight, Circuit Blue, Checkered, Endurance
+Green) — WP's native equivalent of the ACCLT "pick a free Bootstrap theme" site-setup feature,
+surfaced at Appearance → Editor → Styles → Browse styles, zero plugin code needed. Each variation
+only overrides `settings.color.palette` (same 6 slugs, different values) since the base `theme.json`
+already points `styles.*` at tokens rather than literal colors — confirmed via
+`WP_Theme_JSON_Resolver::get_style_variations()` that all four are discovered correctly. A
+plugin-hosted "site setup" picker page (mirroring ACCLT's UX more closely than the native Site
+Editor panel) is agreed as a future item, not started — when built, likely just points admins at the
+native picker rather than duplicating it.
+
+**Real bugs found and fixed along the way**:
+- `npm run build` (webpack) was crashing with "Unexpected end of JSON input" — not just for new
+  block entries, this was the same pre-existing failure already noted under Trophies above. Root
+  cause: webpack's module-concatenation ("scope hoisting") optimization crashing inside its own
+  `ConcatenationScope.matchModuleReference`. Fixed by setting `optimization.concatenateModules:
+  false` in `webpack.config.js` — `npm run build` is clean now, for the whole project, not a
+  block-specific workaround.
+- Championship/event descriptions (migrated from ACCLT as stored HTML) were rendered via
+  `esc_html()`, showing literal `&lt;p&gt;` tags instead of formatted text. Fixed to `wp_kses_post()`
+  in `ChampionshipTileRenderer`/`EventTileRenderer`.
+- `tsconfig.json` needed `resolveJsonModule: true` added (block.json metadata imports in TS).
+- New devDependencies: `@wordpress/blocks`, `@wordpress/server-side-render` — needed for block
+  registration/editor preview, weren't previously used anywhere in the project.
+
+**Not yet done**: Standings/results display blocks, member trophy display blocks — the rest of the
+front-end parity gap (~30 ACCLT page templates) is still ahead. Typography variety across style
+variations deliberately deferred (system font stacks only, to avoid webfont-loading/licensing
+concerns) — revisit if Mike wants more visual distinction than color alone gives.
+
+## Personalized dashboard blocks phase (2026-08-04) — built, not yet tested by Mike
+
+Replicates ACCLT's home page behaviour (anonymous visitors see a welcome description; logged-in
+members see a tabbed personal dashboard) as Gutenberg blocks/patterns, continuing straight on from
+the first blocks slice above. Full plan is in the session's plan file
+(`pure-honking-marble.md`); summary for future reference:
+
+- **No WP core block exists for conditional logged-in/logged-out content** (`core/loginout` is just
+  a login/logout link). Built a generic **`sltk/visibility`** block instead (`visibleTo`:
+  `everyone`/`loggedIn`/`loggedOut`), following the same "generic, reusable" philosophy as
+  `sltk/tabs`/`sltk/tab` rather than hardcoding the switch into one dashboard-specific block —
+  usable on any content, not just this dashboard. `Blocks\Render\VisibilityRenderer` gates via
+  `is_user_logged_in()`; deliberately returns raw `$content` with **no** `get_block_wrapper_attributes()`
+  wrapper div (it's a pure conditional gate, not a visual container) — the one place this block's
+  `save()` (`InnerBlocks.Content`, no wrapper) differs from `sltk/tabs`/`sltk/tab`, which do wrap.
+- **Five new dashboard blocks**, all under `sltk` category: `sltk/my-events` (composes the existing
+  `championship-tile`/`event-tile` blocks — card shape fits), `sltk/my-results`, `sltk/latest-results`
+  (league-wide, unauthenticated-safe, no login gate), `sltk/my-trophies` (all three render plain
+  `<table>`/`<ul>` markup instead of tiles — tabular/list data doesn't fit the tile-with-dialog shape,
+  and ACCLT itself renders these as tables), and `sltk/joinable-items` (banner of active
+  championships/events the user hasn't entered yet, reuses the `championship-list` filter-attribute
+  shape via `ParsesListingFilterAttributes`).
+- **No separate SLTK member/profile table exists** — confirmed `Domain\Member::get()` just wraps
+  `get_user_by()`, and every `userId`/`memberId` column across the schema is a literal `wp_users.ID`
+  FK. So all five blocks call `get_current_user_id()` directly with no mapping/lookup service needed
+  — this was the first place in the plugin `get_current_user_id()` gets used (previously only
+  `is_user_logged_in()` existed, for 401 vs 403 in `Api/ApiController.php`).
+- New repository methods (`listByUserId` on `ChampionshipEntriesRepository`/
+  `StandaloneEventEntriesRepository`, `listByUserId`+`listRecent` on both session-results
+  repositories, `listByMemberId` on `TrophiesRepository`) all mirror existing by-id query methods'
+  join shape exactly, just swapping the `WHERE` clause — no new join patterns introduced. New
+  `Domain\ResultSummary` (display-only read model, same precedent as the existing `Domain\StandingLine`)
+  is the single seam both `MyResultsRenderer` and `LatestResultsRenderer` depend on, so the
+  championship/standalone merge-and-sort logic exists once, not duplicated across renderers.
+- **Joinable-items "skip/dismiss" deliberately not built.** ACCLT's version let members dismiss a
+  suggestion; SLTK has **no public join flow at all yet** (entry creation only exists inside the
+  admin SPA's `ChampionshipEntrants`/`StandaloneEventEntrants` screens) — a dismiss button with
+  nothing to actually join would be worse than not offering it. Fast-follow once a public join flow
+  exists: port ACCLT's `JoinableItemSkipRepository`/skip table directly, add a REST route to pair
+  with it.
+- **`sltk/personal-dashboard` pattern** (`Blocks\Patterns\PersonalDashboardPattern`, registered in
+  `PatternManager`) assembles: a logged-out `sltk/visibility` wrapping a placeholder welcome
+  paragraph (admin edits/replaces directly — deliberately **no dedicated settings field** like
+  ACCLT's `acclt-league-front-matter` option; Mike's call, more Gutenberg-native) + a logged-in
+  `sltk/visibility` wrapping the joinable-items banner above a 4-tab `sltk/tabs` (My Events/My
+  Results/My Trophies/Latest Results). Same PHP-generates-the-markup-once precedent as
+  `CurrentAndPastTabsPattern`.
+- **No new REST endpoints needed** — confirmed `ServerSideRender` (already used by `championship-tile`
+  for editor previews) calls the core WP `block-renderer` endpoint, which invokes the real
+  `render_callback` authenticated as whoever is logged into wp-admin at the time, so editor previews
+  of the four "my ___" blocks correctly show the editing admin's own data as a stand-in.
+- **Explicitly out of scope for this phase**: Championship Plans (voting) and My Time Trials — see
+  the parity-gap-analysis updates above for the decisions on each (Plans now agreed-next; Time
+  Trials declined outright).
+- Verification so far: `php -l` on all new/changed PHP files, `tsc --noEmit`, `npm run build` — all
+  clean. **Not yet exercised in the browser** — needs the pattern inserted into a test page and
+  checked both logged-in and logged-out (private window), plus each block's editor preview.
 
 ## Legacy data migration (ACCLT → SLTK, 2026-08-02 → 2026-08-03) — DONE
 
