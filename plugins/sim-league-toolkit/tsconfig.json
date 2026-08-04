@@ -8,6 +8,7 @@
     "checkJs": false,
     "moduleResolution": "bundler",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "types": ["webpack-env"]
   },

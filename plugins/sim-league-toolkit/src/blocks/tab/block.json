@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/tab",
+    "title": "Tab",
+    "category": "sltk",
+    "icon": "index-card",
+    "description": "A single labelled tab panel. Used inside a Tabs block.",
+    "textdomain": "sim-league-toolkit",
+    "parent": ["sltk/tabs"],
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": "Tab"
+        },
+        "tabId": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js"
+}

@@ -12,6 +12,7 @@
   use SLTK\Domain\Abstractions\Listable;
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
   use SLTK\Domain\Abstractions\Saveable;
+  use SLTK\Domain\ValueObjects\ListingFilter;
   use stdClass;
 
   class StandaloneEvent extends EventBase implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
@@ -125,6 +126,16 @@
      */
     public static function list(): array {
       $rows = StandaloneEventsRepository::listAll();
+
+      return array_map(fn($row) => self::fromStdClass($row), $rows);
+    }
+
+    /**
+     * @return StandaloneEvent[]
+     * @throws Exception
+     */
+    public static function search(ListingFilter $filter): array {
+      $rows = StandaloneEventsRepository::search($filter);
 
       return array_map(fn($row) => self::fromStdClass($row), $rows);
     }

@@ -29,11 +29,11 @@ import) so championships/standalone events are fully manageable end-to-end — c
 award trophies — before starting the Gutenberg blocks / SLTK theme work, where trophies will
 eventually surface on public member profiles.
 
-**Deliberate detour in progress (2026-08-02 → present)**: before starting the Gutenberg blocks/theme
+**Deliberate detour, done (2026-08-02 → 2026-08-03)**: before starting the Gutenberg blocks/theme
 work, a legacy data migration framework was built to pull real data from the old `acc-league-tools`
 (ACCLT) theme into SLTK — see "Legacy data migration" section below. This gets realistic test data
-flowing early and de-risks the eventual theme cutover. Blocks/theme work resumes once
-Championships/Events/Session Results are migrated.
+flowing early and de-risks the eventual theme cutover. **All originally-planned entities are now
+migrated** (member profiles through Trophies) — Gutenberg blocks/theme work resumes next.
 
 1. ✅ **Wait-list support for event entrants** — per-class and championship/event-wide entrant caps,
    auto-waitlisting on creation, promotion on cancellation, status shown in entrant UI, plus the
@@ -45,10 +45,15 @@ Championships/Events/Session Results are migrated.
 3. ✅ **Trophies** — event-level (per Race session: 1st/2nd/3rd overall + per class, Pole, Fastest
    Lap, with preview/confirm) and championship-level (1st/2nd/3rd overall + per class from season
    points once all events are complete) award flows. Built 2026-08-02; see "Trophies feature" notes
-   below for architecture and known follow-ups. *Awaiting Mike's manual pass in the editor.*
+   below for architecture and known follow-ups. Fixed 2026-08-03 (see Legacy data migration section)
+   — was fatally crashing on every use, not just unconfirmed. *Still awaiting Mike's manual pass in
+   the editor.*
+3.5 ✅ **Legacy data migration (ACCLT → SLTK)** — deliberate detour, completed 2026-08-03. Real
+   league data (26 championships, 225 events, ~2,000 entrants, 2,504 session results, 1,180 trophies)
+   now in SLTK. See "Legacy data migration" section below for full detail.
 4. ⏭ **Gutenberg blocks / SLTK theme** *(next up)* — front-end blocks and eventually a prebuilt
    theme, so members can see standings, entrant lists, schedules, and (via the new Trophies table)
-   member trophy displays, in any theme.
+   member trophy displays, in any theme. Now has real migrated data to build and test against.
 5. **Per-game result import** — parsing/import per game, built on manual entry. The theme's biggest
    complexity area (3 separate bespoke parsers for ACC/AMS2 old/AMS2 new) — needs a real
    `ResultParser`-per-`GameKey` abstraction here, not the theme's string-branching approach.
@@ -129,7 +134,7 @@ reference:
   multi-class event with Qualifying + Race results → preview/award → re-award after editing a
   result → same for a championship event → full championship with 2+ completed events.
 
-## Legacy data migration (ACCLT → SLTK, 2026-08-02 → present)
+## Legacy data migration (ACCLT → SLTK, 2026-08-02 → 2026-08-03) — DONE
 
 `Migration\` namespace (sibling to `Domain`/`Core`/`Api`/`Database`) — see CLAUDE.md for the
 architecture summary. Single "Migrate" button runs every registered importer; idempotent, safe to
@@ -137,7 +142,8 @@ re-run. Dev/test setup: directory junction between the `accleaugetools` and `sim
 Local sites (confirmed working incl. hot reload) — the real ACCLT data (26 championships, 225 events,
 ~2,000 entrants) lives on the `accleaugetools` test site's DB.
 
-**Done:**
+**All originally-planned entities migrated, confirmed working by Mike in the admin UI (including the
+Migrate button itself) as of 2026-08-03:**
 - Member profiles (Steam/PSN id, nationality, race number).
 - Scoring Sets — ACCLT's one "Default Scoring Set" didn't match any SLTK preset despite expecting it
   to, migrated as a new custom 25-position scoring set.
@@ -147,18 +153,40 @@ Local sites (confirmed working incl. hot reload) — the real ACCLT data (26 cha
   ones permanently skipped (see "Agreed future features" below). Single-car classes resolve their
   real car class from the matched SLTK car (by name) rather than trusting the legacy row's often-stale
   `carClass` field.
+- Standalone Events — event + classes + sessions + entrants together (19 migrated, 1 team event
+  skipped per Mike's call).
+- Championships + Championship Events — 24 championships, 190 events (Track Master championships/
+  events skipped, same reasoning as the Event Class templates above). Extracted shared services
+  (`GameKeyLookup`, `DriverCategoryLookup`, `TrackResolver`, `EventClassCatalog`,
+  `EventSessionMigrator`) used by both this and the standalone-event importer.
+- Session Results — `ChampionshipSessionResultImporter` + `StandaloneSessionResultImporter`, 2,504
+  results migrated (72 dropped — genuinely orphaned in ACCLT itself, not a migration gap). The
+  originally-anticipated "Lap" domain entity blocker was resolved by adding one `validLapsCount`
+  field instead — a deliberate SLTK-vs-Sim-Racer-Tools scope boundary (league management, not
+  per-lap/telemetry analysis).
+- Trophies — `TrophyImporter`, 1,180 of 1,215 legacy trophies migrated (35 skipped, all Track Master
+  content; 0 failed). Last item in the migration sequence.
 - Confirmed **no migration needed** for: Rule Sets (no legacy data exists), Driver Categories, Cars,
   Tracks, Car Classes (all plugin-seeded reference data on both sides, not user data). Removed dead
   `CarClassRepository`/`sltk_car_classes` scaffolding found during that investigation.
 - AMS2 cars/tracks/track-layouts CSVs refreshed 2026-08-03 from Mike's desktop app (same games) —
   added nullable `dlcPack` (Cars, TrackLayouts) and `elevation` (Tracks) columns.
 
-**Not started:** Championships → Events/Sessions/Entrants → Session Results (blocked on a new "Lap"
-domain entity SLTK doesn't have yet — ACC result files include per-lap time/splits/valid-for-fastest-
-lap flags Mike wants preserved) → Trophies.
-
 **Real bugs found and fixed along the way** (not migration-specific, general codebase issues surfaced
 by testing against real data):
+- `Domain\Trophy` never implemented the required `AggregateRoot::get()` method, so `new Trophy()`
+  fatally crashed everywhere — the live "Award Trophies" feature had been completely non-functional
+  since it was built, not just unconfirmed. Found while building the Trophy migration; now fixed.
+- `Championship::toArray()` never persisted `championshipType` correctly (always saved empty
+  string) — affects the live app, not just migration data. Found while building the Championship
+  importer.
+- `TrackResolver` needed fixing to match SLTK `TrackLayout` rows, not just base `Track`s (ACCLT has
+  no track/layout split).
+- Schema trap in ACCLT's own data: `acclt_event_result_cars`/`_drivers`/`_laps` `carId` columns
+  reference the result_cars row's own surrogate id, not an `acclt_cars` reference — easy to
+  misinterpret as a car FK.
+- `EventSessionMigrator` now records legacy→new session id mappings (didn't originally) — backfilled
+  for sessions migrated before this was added.
 - `useServerSettingDefinitions.ts` had its own hardcoded duplicate of the server-settings schema,
   completely disconnected from `Config/*.json`/`GameConfigProvider` — AMS2/LMU were stubbed empty, so
   migrated AMS2 server settings were correctly in the DB but never rendered in the UI. Fixed by wiring

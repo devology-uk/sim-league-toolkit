@@ -3,6 +3,8 @@
   namespace SLTK;
 
   use SLTK\Api\ApiRegistrar;
+  use SLTK\Blocks\BlockManager;
+  use SLTK\Blocks\Patterns\PatternManager;
   use SLTK\Core\EnumValidator;
   use SLTK\Core\MenuManager;
   use SLTK\Core\ScriptManager;
@@ -43,6 +45,8 @@
       StyleManager::init();
       ScriptManager::init();
       ApiRegistrar::init();
+      BlockManager::init();
+      PatternManager::init();
     }
 
     public static function uninstall(): void {

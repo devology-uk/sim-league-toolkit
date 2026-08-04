@@ -1,0 +1,50 @@
+.sltk-tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+// Each .sltk-tab wrapper holds one button + one panel; promoting it to `display: contents`
+// makes its children act as direct flex items of .sltk-tabs, so the `order` below can group
+// all buttons together before all panels despite each pair being adjacent in the source.
+.sltk-tab {
+    display: contents;
+}
+
+.sltk-tab-button {
+    order: 0;
+    padding: 0.6rem 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-bottom: none;
+    background: rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+
+    &[aria-selected="true"] {
+        background: #fff;
+        border-bottom: 2px solid currentColor;
+    }
+}
+
+.sltk-tab-panel {
+    order: 1;
+    flex: 0 0 100%;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+    .sltk-tab-button {
+        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
+        color: #f0f0f0;
+
+        &[aria-selected="true"] {
+            background: transparent;
+        }
+    }
+
+    .sltk-tab-panel {
+        border-top-color: rgba(255, 255, 255, 0.15);
+    }
+}

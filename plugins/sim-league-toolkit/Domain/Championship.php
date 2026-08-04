@@ -16,6 +16,7 @@
   use SLTK\Domain\Abstractions\ProvidesPersistableArray;
   use SLTK\Domain\Abstractions\Saveable;
   use SLTK\Domain\Traits\HasIdentity;
+  use SLTK\Domain\ValueObjects\ListingFilter;
   use stdClass;
 
   class Championship implements AggregateRoot, Deletable, Listable, ProvidesPersistableArray, Saveable {
@@ -147,6 +148,18 @@
      */
     public static function list(): array {
       $queryResults = ChampionshipRepository::listAll();
+
+      return array_map(function ($item) {
+        return Championship::fromStdClass($item);
+      }, $queryResults);
+    }
+
+    /**
+     * @return Championship[]
+     * @throws Exception
+     */
+    public static function search(ListingFilter $filter): array {
+      $queryResults = ChampionshipRepository::search($filter);
 
       return array_map(function ($item) {
         return Championship::fromStdClass($item);

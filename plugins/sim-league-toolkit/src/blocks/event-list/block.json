@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/event-list",
+    "title": "Events List",
+    "category": "sltk",
+    "icon": "calendar-alt",
+    "description": "Displays a filterable grid of standalone events.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "showAll": {
+            "type": "boolean",
+            "default": true
+        },
+        "hasStartLimit": {
+            "type": "boolean",
+            "default": true
+        },
+        "startOffsetDays": {
+            "type": "number",
+            "default": 0
+        },
+        "hasEndLimit": {
+            "type": "boolean",
+            "default": false
+        },
+        "endOffsetDays": {
+            "type": "number",
+            "default": 0
+        },
+        "includeInactive": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css"
+}

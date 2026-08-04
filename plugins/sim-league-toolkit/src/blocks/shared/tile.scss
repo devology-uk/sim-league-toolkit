@@ -1,0 +1,139 @@
+.sltk-tile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.sltk-tile-list-empty {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+.sltk-tile-wrapper {
+    display: contents;
+}
+
+.sltk-tile {
+    display: block;
+    width: 320px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    background: #fff;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    font: inherit;
+    color: inherit;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+.sltk-tile-banner {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.sltk-tile-body {
+    padding: 1rem 1.25rem;
+}
+
+.sltk-tile-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+}
+
+.sltk-tile-description {
+    margin: 0 0 1rem;
+}
+
+.sltk-tile-meta {
+    margin: 0;
+}
+
+.sltk-tile-meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.25rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+    &:first-child {
+        border-top: none;
+    }
+
+    dt {
+        font-weight: 600;
+    }
+
+    dd {
+        margin: 0;
+        text-align: right;
+    }
+}
+
+.sltk-tile-placeholder {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+.sltk-tile-dialog {
+    max-width: min(90vw, 480px);
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .sltk-tile-banner {
+        height: 200px;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .sltk-tile-title {
+        margin-top: 0;
+    }
+}
+
+.sltk-dialog-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .sltk-tile {
+        background: #1e1e1e;
+        border-color: rgba(255, 255, 255, 0.15);
+        color: #f0f0f0;
+    }
+
+    .sltk-tile-meta-row {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sltk-tile-dialog {
+        background: #1e1e1e;
+        color: #f0f0f0;
+    }
+
+    .sltk-dialog-close {
+        color: #f0f0f0;
+    }
+}

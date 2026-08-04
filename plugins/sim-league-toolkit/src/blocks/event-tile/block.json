@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/event-tile",
+    "title": "Event Tile",
+    "category": "sltk",
+    "icon": "calendar-alt",
+    "description": "Displays a single standalone event as a card. Clicking it opens a dialog with more detail.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "eventId": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "viewScript": "file:./view.js"
+}

@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/tabs",
+    "title": "Tabs",
+    "category": "sltk",
+    "icon": "list-view",
+    "description": "A tab strip. Add Tab blocks inside to build labelled panels of content.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {},
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "viewScript": "file:./view.js"
+}

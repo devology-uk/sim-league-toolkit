@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "sltk/championship-tile",
+    "title": "Championship Tile",
+    "category": "sltk",
+    "icon": "awards",
+    "description": "Displays a single championship as a card. Clicking it opens a dialog with more detail.",
+    "textdomain": "sim-league-toolkit",
+    "attributes": {
+        "championshipId": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style-index.css",
+    "viewScript": "file:./view.js"
+}

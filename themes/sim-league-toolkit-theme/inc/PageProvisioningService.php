@@ -21,7 +21,7 @@
         'post_name'    => $page->slug,
         'post_status'  => 'publish',
         'post_type'    => 'page',
-        'post_content' => '',
+        'post_content' => $page->content,
       ]);
     }
 

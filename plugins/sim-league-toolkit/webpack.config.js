@@ -8,7 +8,15 @@ module.exports = {
     ...defaultConfig,
     entry: {
         'admin/index': path.resolve(__dirname, 'src/admin/index.tsx'),
-        // Add block entries here as needed
+        'blocks/championship-tile/index': path.resolve(__dirname, 'src/blocks/championship-tile/edit.tsx'),
+        'blocks/championship-tile/view': path.resolve(__dirname, 'src/blocks/championship-tile/view.js'),
+        'blocks/championship-list/index': path.resolve(__dirname, 'src/blocks/championship-list/edit.tsx'),
+        'blocks/event-tile/index': path.resolve(__dirname, 'src/blocks/event-tile/edit.tsx'),
+        'blocks/event-tile/view': path.resolve(__dirname, 'src/blocks/event-tile/view.js'),
+        'blocks/event-list/index': path.resolve(__dirname, 'src/blocks/event-list/edit.tsx'),
+        'blocks/tab/index': path.resolve(__dirname, 'src/blocks/tab/edit.tsx'),
+        'blocks/tabs/index': path.resolve(__dirname, 'src/blocks/tabs/edit.tsx'),
+        'blocks/tabs/view': path.resolve(__dirname, 'src/blocks/tabs/view.js'),
     },
     devServer: {
         port: devServerPort,
@@ -35,5 +43,12 @@ module.exports = {
         ...defaultConfig.output,
         path: path.resolve(__dirname, 'build'),
         publicPath: isProduction ? 'auto' : `http://localhost:${devServerPort}/`,
+    },
+    optimization: {
+        ...defaultConfig.optimization,
+        // Module concatenation ("scope hoisting") crashes here with "Unexpected end of JSON input"
+        // inside webpack's own ConcatenationScope.matchModuleReference. Disabling it avoids the
+        // crash; only cost is slightly larger (unconcatenated) bundles.
+        concatenateModules: false,
     },
 };

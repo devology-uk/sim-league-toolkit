@@ -3,7 +3,9 @@
   namespace SLTK\Database\Repositories;
 
   use Exception;
+  use SLTK\Core\Constants;
   use SLTK\Database\TableNames;
+  use SLTK\Domain\ValueObjects\ListingFilter;
 
   class StandaloneEventsRepository extends RepositoryBase
   {
@@ -195,5 +197,49 @@
          WHERE standaloneEventId = {$standaloneEventId}
          AND eventClassId = {$eventClassId};"
       );
+    }
+
+    /**
+     * @return \stdClass[]
+     * @throws Exception
+     */
+    public static function search(ListingFilter $filter): array
+    {
+      $events = self::prefixedTableName(TableNames::STANDALONE_EVENTS);
+      $games = self::prefixedTableName(TableNames::GAMES);
+      $tracks = self::prefixedTableName(TableNames::TRACKS);
+      $layouts = self::prefixedTableName(TableNames::TRACK_LAYOUTS);
+      $scoringSets = self::prefixedTableName(TableNames::SCORING_SETS);
+      $ruleSets = self::prefixedTableName(TableNames::RULE_SETS);
+
+      $conditions = [];
+      if (!$filter->includeInactive) {
+        $conditions[] = 'e.isActive = 1';
+      }
+      if ($filter->fromDate !== null) {
+        $conditions[] = self::db()->prepare('e.eventDate >= %s', $filter->fromDate->format(Constants::STANDARD_DATE_FORMAT));
+      }
+      if ($filter->toDate !== null) {
+        $conditions[] = self::db()->prepare('e.eventDate <= %s', $filter->toDate->format(Constants::STANDARD_DATE_FORMAT));
+      }
+      $where = empty($conditions) ? '' : ('WHERE ' . implode(' AND ', $conditions));
+
+      $query = "SELECT
+                e.*,
+                g.name as game,
+                t.shortName as track,
+                tl.name as trackLayout,
+                ss.name as scoringSet,
+                rs.name as ruleSet
+            FROM {$events} e
+            LEFT JOIN {$games} g ON e.gameId = g.id
+            LEFT JOIN {$tracks} t ON e.trackId = t.id
+            LEFT JOIN {$layouts} tl ON e.trackLayoutId = tl.id
+            LEFT JOIN {$scoringSets} ss ON e.scoringSetId = ss.id
+            LEFT JOIN {$ruleSets} rs ON e.ruleSetId = rs.id
+            {$where}
+            ORDER BY e.eventDate ASC;";
+
+      return self::getResults($query);
     }
   }
